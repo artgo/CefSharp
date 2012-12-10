@@ -1,0 +1,54 @@
+﻿<Window x:Class="MainApplication.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <UniformGrid>
+            <StackPanel Orientation="Horizontal" 
+                VerticalAlignment="Top">
+                <Image Width="48" 
+                Height="48" 
+                Source="app.png" />
+                <TextBlock VerticalAlignment="Center">
+            <Hyperlink>Application</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" 
+                VerticalAlignment="Top">
+                <Image Width="48" 
+                Height="48" 
+                Source="app.png" />
+                <TextBlock VerticalAlignment="Center">
+            <Hyperlink>Application</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" 
+                VerticalAlignment="Top">
+                <Image Width="48" 
+                Height="48" 
+                Source="app.png" />
+                <TextBlock VerticalAlignment="Center">
+            <Hyperlink>Application</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" 
+                VerticalAlignment="Top">
+                <Image Width="48" 
+                Height="48" 
+                Source="app.png" />
+                <TextBlock VerticalAlignment="Center">
+            <Hyperlink>Application</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" 
+                VerticalAlignment="Top">
+                <Image Width="48" 
+                Height="48" 
+                Source="app.png" />
+                <TextBlock VerticalAlignment="Center">
+            <Hyperlink>Application</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </UniformGrid>
+    </Grid>
+</Window>
