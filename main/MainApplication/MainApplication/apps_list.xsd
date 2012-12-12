@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="WebApplicationsList" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="WebApplicationsList" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="application">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="billingFrequency" type="xs:string" minOccurs="0" msdata:Ordinal="0" />
+              <xs:element name="blurb" type="xs:string" minOccurs="0" msdata:Ordinal="1" />
+              <xs:element name="buyable" type="xs:string" minOccurs="0" msdata:Ordinal="2" />
+              <xs:element name="description" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+              <xs:element name="developerName" type="xs:string" minOccurs="0" msdata:Ordinal="4" />
+              <xs:element name="discountAvailable" type="xs:string" minOccurs="0" msdata:Ordinal="5" />
+              <xs:element name="featured" type="xs:string" minOccurs="0" msdata:Ordinal="6" />
+              <xs:element name="free" type="xs:string" minOccurs="0" msdata:Ordinal="7" />
+              <xs:element name="freeTrialOrEditionPresent" type="xs:string" minOccurs="0" msdata:Ordinal="8" />
+              <xs:element name="iconUrl" type="xs:string" minOccurs="0" msdata:Ordinal="9" />
+              <xs:element name="id" type="xs:string" minOccurs="0" msdata:Ordinal="10" />
+              <xs:element name="lastModified" type="xs:string" minOccurs="0" msdata:Ordinal="11" />
+              <xs:element name="leadgen" type="xs:string" minOccurs="0" msdata:Ordinal="12" />
+              <xs:element name="name" type="xs:string" minOccurs="0" msdata:Ordinal="13" />
+              <xs:element name="numRatings" type="xs:string" minOccurs="0" msdata:Ordinal="14" />
+              <xs:element name="overview" type="xs:string" minOccurs="0" msdata:Ordinal="15" />
+              <xs:element name="overviewImageUrl" type="xs:string" minOccurs="0" msdata:Ordinal="16" />
+              <xs:element name="popular" type="xs:string" minOccurs="0" msdata:Ordinal="17" />
+              <xs:element name="productType" type="xs:string" minOccurs="0" msdata:Ordinal="18" />
+              <xs:element name="publishedOn" type="xs:string" minOccurs="0" msdata:Ordinal="19" />
+              <xs:element name="rating" type="xs:string" minOccurs="0" msdata:Ordinal="20" />
+              <xs:element name="referable" type="xs:string" minOccurs="0" msdata:Ordinal="21" />
+              <xs:element name="staffPick" type="xs:string" minOccurs="0" msdata:Ordinal="22" />
+              <xs:element name="startingPrice" type="xs:string" minOccurs="0" msdata:Ordinal="23" />
+              <xs:element name="url" type="xs:string" minOccurs="0" msdata:Ordinal="25" />
+              <xs:element name="tags" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tag" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="id" type="xs:string" minOccurs="0" />
+                          <xs:element name="name" type="xs:string" minOccurs="0" />
+                          <xs:element name="showBadge" type="xs:string" minOccurs="0" />
+                          <xs:element name="type" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="href" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
