@@ -16,7 +16,7 @@
                             <ColumnDefinition Width="180" SharedSizeGroup="Key" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Button Command="{Binding LaunchCommand}" Margin="0,0,0,0" Background="Transparent"  >
+                        <Button Command="{Binding LaunchApp}" Margin="0,0,0,0" Background="Transparent"  >
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Width="171">
                             <Image HorizontalAlignment="Left" Width="36" Height="36" Source="{Binding ImagePath}" />
                             <TextBlock Foreground="White" Width="72" Margin="10" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
@@ -27,26 +27,25 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox BorderThickness="0" Opacity="80" Background="Black" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="422,20,20,20" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
+        <ListBox BorderThickness="0" Opacity="80" Background="Black" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="442,53,0,52.92" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="4">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180" SharedSizeGroup="Key" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="96" SharedSizeGroup="Key" />
                         </Grid.ColumnDefinitions>
-                        <Button Command="{Binding LaunchCommand}" Margin="0,0,0,0" Background="Transparent"  >
-                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Width="171">
-                                <Image HorizontalAlignment="Left" Width="36" Height="36" Source="{Binding ImagePath}" />
-                                <TextBlock Foreground="White" Width="72" Margin="10" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
-                                <TextBox Background="Black" Foreground="WhiteSmoke" TextAlignment="Center" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Right" Width="24" Text="{Binding AlertCount}"></TextBox>
+                        <Button Height="24"  Margin="0,0,0,0" Background="Transparent" BorderThickness="0" >
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Width="114">
+                                <Image HorizontalAlignment="Left" Width="16" Height="16" Source="{Binding ImagePath}" />
+                                <TextBlock Foreground="White" Width="72" Margin="6, 2" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
                             </StackPanel>
                         </Button>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button BorderBrush="Transparent" Background="DarkSlateGray" Foreground="White" Content="Browse App Store" VerticalAlignment="Bottom" Margin="427,0,80,52.92" />
-        <Button Background="DarkSlateGray" Foreground="White" Content="View Login" VerticalAlignment="Bottom" Margin="427,0,80,25.96" Click="LaunchLogin"/>
+        <Button BorderBrush="Transparent" Background="DarkSlateGray" Foreground="White" Content="Browse App Store" VerticalAlignment="Bottom" Margin="451,0,56,52.92" />
+        <Button Background="DarkSlateGray" Foreground="White" Content="View Login" VerticalAlignment="Bottom" Margin="451,0,56,25.96" Click="LaunchLogin"/>
+        <Label Foreground="White" Content="Popular One-click Installs" HorizontalAlignment="Left" Margin="442,20,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.539"/>
     </Grid>
 </Window>

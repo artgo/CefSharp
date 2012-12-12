@@ -1,6 +1,5 @@
 ﻿using MainApplication;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using com.appdirect.WindowsClient;
 using com.appdirect.WindowsClient.DataAccess;
 
 namespace MainApplicationUnitTests
