@@ -1,54 +1,52 @@
 ﻿<Window x:Class="MainApplication.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <UniformGrid>
-            <StackPanel Orientation="Horizontal" 
-                VerticalAlignment="Top">
-                <Image Width="48" 
-                Height="48" 
-                Source="app.png" />
-                <TextBlock VerticalAlignment="Center">
-            <Hyperlink>Application</Hyperlink>
-                </TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" 
-                VerticalAlignment="Top">
-                <Image Width="48" 
-                Height="48" 
-                Source="app.png" />
-                <TextBlock VerticalAlignment="Center">
-            <Hyperlink>Application</Hyperlink>
-                </TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" 
-                VerticalAlignment="Top">
-                <Image Width="48" 
-                Height="48" 
-                Source="app.png" />
-                <TextBlock VerticalAlignment="Center">
-            <Hyperlink>Application</Hyperlink>
-                </TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" 
-                VerticalAlignment="Top">
-                <Image Width="48" 
-                Height="48" 
-                Source="app.png" />
-                <TextBlock VerticalAlignment="Center">
-            <Hyperlink>Application</Hyperlink>
-                </TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" 
-                VerticalAlignment="Top">
-                <Image Width="48" 
-                Height="48" 
-                Source="app.png" />
-                <TextBlock VerticalAlignment="Center">
-            <Hyperlink>Application</Hyperlink>
-                </TextBlock>
-            </StackPanel>
-        </UniformGrid>
+        xmlns:viewmodel="clr-namespace:MainApplication"
+        Title="MyApps" Height="390" Width="630" Opacity="80" Background="Black"
+        BorderBrush="DarkSlateGray">
+    <Window.Resources>
+        <viewmodel:MainViewModel x:Key="MainViewModel"/>
+    </Window.Resources>
+    <Grid DataContext="{Binding Source={StaticResource MainViewModel}}" Margin="0,0,0,-20" >
+        <ListBox BorderThickness="0" Opacity="80" Background="Black" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="20,20,200,20" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180" SharedSizeGroup="Key" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Command="{Binding LaunchCommand}" Margin="0,0,0,0" Background="Transparent"  >
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Width="171">
+                            <Image HorizontalAlignment="Left" Width="36" Height="36" Source="{Binding ImagePath}" />
+                            <TextBlock Foreground="White" Width="72" Margin="10" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+                            <TextBox Background="Black" Foreground="WhiteSmoke" TextAlignment="Center" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Right" Width="24" Text="{Binding AlertCount}"></TextBox>
+                        </StackPanel>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox BorderThickness="0" Opacity="80" Background="Black" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="422,20,20,20" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180" SharedSizeGroup="Key" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Command="{Binding LaunchCommand}" Margin="0,0,0,0" Background="Transparent"  >
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Width="171">
+                                <Image HorizontalAlignment="Left" Width="36" Height="36" Source="{Binding ImagePath}" />
+                                <TextBlock Foreground="White" Width="72" Margin="10" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+                                <TextBox Background="Black" Foreground="WhiteSmoke" TextAlignment="Center" FontWeight="ExtraBold" VerticalAlignment="Center" HorizontalAlignment="Right" Width="24" Text="{Binding AlertCount}"></TextBox>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button BorderBrush="Transparent" Background="DarkSlateGray" Foreground="White" Content="Browse App Store" VerticalAlignment="Bottom" Margin="427,0,80,52.92" />
+        <Button Background="DarkSlateGray" Foreground="White" Content="View Login" VerticalAlignment="Bottom" Margin="427,0,80,25.96" Click="LaunchLogin"/>
     </Grid>
 </Window>

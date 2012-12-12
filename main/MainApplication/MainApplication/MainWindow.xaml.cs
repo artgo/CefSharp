@@ -23,5 +23,12 @@ namespace MainApplication
         {
             InitializeComponent();
         }
+
+        private void LaunchLogin(object sender, RoutedEventArgs e)
+        {
+            var login = new LoginWindow();
+            login.Show();
+        }
     }
 }
+    
