@@ -8,15 +8,15 @@ using com.appdirect.WindowsClient.DataAccess;
 
 namespace MainApplication
 {
-    public class CachedAppDirectAPI
+    public class CachedAppDirectApi
     {
         private readonly AppDirectApi _appDirectApi = AppDirectApi.Instance;
-        private static readonly CachedAppDirectAPI instance = new CachedAppDirectAPI();
+        private static readonly CachedAppDirectApi instance = new CachedAppDirectApi();
         private const int MaxApps = 10;
 
-        private CachedAppDirectAPI() { }
+        private CachedAppDirectApi() { }
 
-        public static CachedAppDirectAPI Instance {
+        public static CachedAppDirectApi Instance {
             get
             {
                 return instance;
@@ -27,7 +27,7 @@ namespace MainApplication
             get
             {
                 WebApplicationsListApplication[] myApps = _appDirectApi.MyApps;
-                return convertList(myApps);
+                return ConvertList(myApps);
             }
         }
         public IEnumerable<Application> SuggestedApps
@@ -35,11 +35,11 @@ namespace MainApplication
             get
             {
                 WebApplicationsListApplication[] suggestedApps = _appDirectApi.SuggestedApps;
-                return convertList(suggestedApps);
+                return ConvertList(suggestedApps);
             }
         }
 
-        private static IEnumerable<Application> convertList(WebApplicationsListApplication[] myApps)
+        private static IEnumerable<Application> ConvertList(WebApplicationsListApplication[] myApps)
         {
             IList<Application> appList = new List<Application>(MaxApps);
             int appN = 0;

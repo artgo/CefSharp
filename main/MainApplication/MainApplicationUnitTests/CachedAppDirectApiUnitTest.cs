@@ -12,7 +12,7 @@ namespace MainApplicationUnitTests
         [TestMethod]
         public void TestDataIsReturnedForMyApps()
         {
-            IEnumerable<Application> apps = CachedAppDirectAPI.Instance.MyApps;
+            IEnumerable<Application> apps = CachedAppDirectApi.Instance.MyApps;
 
             Assert.IsNotNull(apps);
         }
@@ -20,7 +20,7 @@ namespace MainApplicationUnitTests
         [TestMethod]
         public void TestDataIsReturnedForSuggestedApps()
         {
-            IEnumerable<Application> apps = CachedAppDirectAPI.Instance.SuggestedApps;
+            IEnumerable<Application> apps = CachedAppDirectApi.Instance.SuggestedApps;
 
             Assert.IsNotNull(apps);
         }
@@ -28,7 +28,7 @@ namespace MainApplicationUnitTests
         [TestMethod]
         public void TestDataIsReturnedSizeForMyAppsIsLessThan11()
         {
-            IEnumerable<Application> apps = CachedAppDirectAPI.Instance.MyApps;
+            IEnumerable<Application> apps = CachedAppDirectApi.Instance.MyApps;
 
             IList<Application> loadedApps = new List<Application>(apps);
 
@@ -38,7 +38,7 @@ namespace MainApplicationUnitTests
         [TestMethod]
         public void TestDataIsReturnedSizeForSuggestedAppsIsLessThan11()
         {
-            IEnumerable<Application> apps = CachedAppDirectAPI.Instance.SuggestedApps;
+            IEnumerable<Application> apps = CachedAppDirectApi.Instance.SuggestedApps;
 
             IList<Application> loadedApps = new List<Application>(apps);
 
