@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Web.Script.Serialization;
 using com.appdirect.WindowsClient;
+using com.appdirect.WindowsClient.DataAccess;
 
 namespace MainApplication
 {
@@ -12,8 +13,8 @@ namespace MainApplication
     {
         private static readonly AppDirectApi instance = new AppDirectApi();
         private static readonly Uri ServiceUri = new Uri("https://load.appdirect.com/api/marketplace/v1/listing?filter=FEATURED");
-        private JavaScriptSerializer serializer = new JavaScriptSerializer();
-        private WebClient serviceRequest = new WebClient();
+        private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
+        private readonly WebClient _serviceRequest = new WebClient();
 
         private AppDirectApi() { }
 
@@ -25,19 +26,19 @@ namespace MainApplication
             }
         }
 
-        public applicationsApplication[] MyApps
+        public WebApplicationsListApplication[] MyApps
         {
             get { 
-                string result = serviceRequest.DownloadString(ServiceUri);
-                return serializer.Deserialize<applicationsApplication[]>(result);
+                string result = _serviceRequest.DownloadString(ServiceUri);
+                return _serializer.Deserialize<WebApplicationsListApplication[]>(result);
             }
         }
-        public applications SuggestedApps
+        public WebApplicationsListApplication[] SuggestedApps
         {
             get
             {
-                string result = serviceRequest.DownloadString(ServiceUri);
-                return serializer.Deserialize<applications>(result);
+                string result = _serviceRequest.DownloadString(ServiceUri);
+                return _serializer.Deserialize<WebApplicationsListApplication[]>(result);
             }
         }
     }

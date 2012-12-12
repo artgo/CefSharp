@@ -1,7 +1,7 @@
-﻿using System;
-using MainApplication;
+﻿using MainApplication;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using com.appdirect.WindowsClient;
+using com.appdirect.WindowsClient.DataAccess;
 
 namespace MainApplicationUnitTests
 {
@@ -9,9 +9,17 @@ namespace MainApplicationUnitTests
     public class AppDirectApiUnitTest
     {
         [TestMethod]
-        public void TestDataIsReturned()
+        public void TestDataIsReturnedForMyApps()
         {
-            applicationsApplication[] apps = AppDirectApi.Instance.MyApps;
+            WebApplicationsListApplication[] apps = AppDirectApi.Instance.MyApps;
+
+            Assert.IsNotNull(apps);
+        }
+
+        [TestMethod]
+        public void TestDataIsReturnedForSuggestedApps()
+        {
+            WebApplicationsListApplication[] apps = AppDirectApi.Instance.SuggestedApps;
 
             Assert.IsNotNull(apps);
         }
