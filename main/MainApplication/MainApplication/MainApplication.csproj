@@ -50,8 +50,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Defaults.cs" />
+    <Compile Include="..\..\..\..\..\..\Desktop\Defaults.cs">
+      <Link>Defaults.cs</Link>
+    </Compile>
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="TemplateSelector.cs" />
     <Page Include="LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -117,14 +120,28 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="facebook.png" />
-    <Resource Include="gmail.png" />
+    <Resource Include="Icons\pandora.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="pandora.png" />
+    <Resource Include="titlebar.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="linkedIn.png" />
+    <Resource Include="Icons\facebook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\gmail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\linkedIn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="NoApp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Line.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

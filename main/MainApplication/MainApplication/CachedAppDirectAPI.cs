@@ -43,6 +43,10 @@ namespace MainApplication
         {
             IList<Application> appList = new List<Application>(MaxApps);
             int appN = 0;
+
+            if (myApps == null)
+                return appList;
+
             foreach (var applicationsApplication in myApps)
             {
                 Application app = new Application()
