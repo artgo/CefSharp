@@ -20,7 +20,7 @@ namespace MainApplication
     /// </summary>
     public partial class MainWindow : Window
     {
-        private LoginWindow loginWindow;
+        private LoginWindow _loginWindow;
 
         public MainWindow()
         {
@@ -32,10 +32,10 @@ namespace MainApplication
 
         private void LaunchLogin(object sender, RoutedEventArgs e)
         {
-            loginWindow = new LoginWindow();
-            loginWindow.Left = Left + Width;
-            loginWindow.Top = Top;
-            loginWindow.Show();
+            _loginWindow = new LoginWindow();
+            _loginWindow.Left = Left + Width;
+            _loginWindow.Top = Top;
+            _loginWindow.Show();
 
             LoginButton.Visibility = Visibility.Hidden;
             CancelLoginButton.Visibility = Visibility.Visible;
@@ -43,7 +43,7 @@ namespace MainApplication
 
         private void CollapseLogin(object sender, RoutedEventArgs e)
         {
-            loginWindow.Close();
+            _loginWindow.Close();
 
             LoginButton.Visibility = Visibility.Visible;
             CancelLoginButton.Visibility = Visibility.Hidden;
