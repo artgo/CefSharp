@@ -8,17 +8,32 @@ using System.Xml.Serialization;
 
 namespace MainApplication
 {
-    public class LocalApplicationData
+    public sealed class LocalApplicationData
     {
         [XmlIgnore]
         private static LocalApplicationData _instance;
+        
+        [XmlIgnore]
+        private static readonly object padlock = new object();
+
+        private const string AppStoreUrlString = "https://appcenter.staples.com/home";
+        private const string FileName = @"\LocalApplicationData";
+        private Uri _appStoreUrl;
 
         public static LocalApplicationData Instance
         {
             get 
             {
-                if(_instance == null)
-                    LoadAppSettings();
+                if (_instance == null)
+                {
+                    lock (padlock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new LocalApplicationData();
+                        }
+                    }
+                }
 
                 return _instance; 
             }
@@ -26,9 +41,6 @@ namespace MainApplication
 
         public List<Application> InstalledLocalApps { get; set; }          
         public List<Application> SuggestedLocalApps { get; set; }
-        private const string AppStoreUrlString = "https://appcenter.staples.com/home";
-        private const string FileName = @"\LocalApplicationData";
-        private Uri _appStoreUrl;
 
         [XmlIgnore]
         public Uri AppStoreUrl
@@ -42,7 +54,7 @@ namespace MainApplication
             }
         }
 
-        public static void LoadAppSettings()
+        public void LoadAppSettings()
         {
             XmlSerializer mySerializer = null;
             FileStream myFileStream = null;

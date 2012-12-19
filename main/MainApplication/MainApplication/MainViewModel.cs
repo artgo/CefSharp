@@ -67,6 +67,7 @@ namespace MainApplication
             MyApplications = new ObservableCollection<Application>(MyApplicationsList);
             SuggestedApplications = new ObservableCollection<Application>(SuggestedApplicationsList);
 
+
             while (MyApplications.Count < 12)
             {
                 MyApplications.Add(new Application());

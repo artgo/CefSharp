@@ -1,0 +1,74 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Input;
+using System.Xml.Serialization;
+
+namespace MainApplication
+{
+    [Serializable]
+    public class Application
+    {
+        private ICommand _launchApp;
+        private string _urlString;
+        private Uri _uri;
+
+        public string Id { get; set; } 
+        public string Name { get; set; }
+        public string ImagePath { get; set; }
+        public string Description { get; set; }
+<<<<<<< HEAD
+        public int AlertCount { get; set; }
+
+        [XmlIgnore]
+        public Uri Url
+        {
+            get
+            {
+                if (_uri == null)
+                {
+                    _uri = new Uri(UrlString);
+                }
+                return _uri;
+            }
+        }
+
+        public string UrlString
+        {
+            get
+            {
+                if (_urlString == null)
+                {
+                    _urlString = String.Empty;
+                }
+
+                return _urlString;
+            }
+            set { _urlString = value; }
+        }
+=======
+        public Uri URL { get; set; }
+        public int AlertCount { get; set; }
+>>>>>>> f840ea4ab9d960f3608524f6f7c2b98363acd98f
+
+        public ICommand LaunchApp
+        {
+            get
+            {
+                if (_launchApp == null)
+                {
+                    _launchApp = new RelayCommand<object>(param => Launch(),
+                        null);
+                }
+                return _launchApp;
+            }
+        } 
+
+        private void Launch()
+        {
+            System.Diagnostics.Process.Start("iexplore.exe", Url.AbsoluteUri);
+        }
+    }
+}

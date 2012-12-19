@@ -24,6 +24,8 @@ namespace MainApplication
 
         public MainWindow()
         {
+            LocalApplicationData.Instance.LoadAppSettings();
+
             InitializeComponent();
 
             Left = SystemParameters.WorkArea.Right * .003;
