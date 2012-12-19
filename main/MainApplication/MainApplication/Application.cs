@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using System.Xml.Serialization;
 
 namespace MainApplication
 {
+    [Serializable]
     public class Application
     {
         private ICommand _launchApp;
@@ -23,7 +25,7 @@ namespace MainApplication
             {
                 if (_launchApp == null)
                 {
-                    _launchApp = new RelayCommand(param => this.Launch(),
+                    _launchApp = new RelayCommand<object>(param => Launch(),
                         null);
                 }
                 return _launchApp;
