@@ -55,7 +55,7 @@ namespace MainApplication
                         Id = applicationsApplication.Id,
                         ImagePath = applicationsApplication.IconUrl,
                         Name = applicationsApplication.Name,
-                        URL = new Uri(applicationsApplication.Href)
+                        UrlString = applicationsApplication.Href
                     };
                 appList.Add(app);
                 if (++appN >= MaxApps)

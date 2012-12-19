@@ -29,7 +29,7 @@ namespace MainApplication
             Left = SystemParameters.WorkArea.Right * .003;
             Top = SystemParameters.WorkArea.Bottom - Height;
         }
-
+        
         private void LaunchLogin(object sender, RoutedEventArgs e)
         {
             if (!_isWindowExpanded)

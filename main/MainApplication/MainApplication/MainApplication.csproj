@@ -50,9 +50,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="..\..\..\..\..\..\Desktop\Defaults.cs">
-      <Link>Defaults.cs</Link>
-    </Compile>
+    <Compile Include="LocalApplicationData.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="TemplateSelector.cs" />
     <Page Include="LoginWindow.xaml">
@@ -129,9 +127,6 @@
     <Resource Include="Icons\facebook.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\gmail.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\linkedIn.png" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +137,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\gmail.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon1.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

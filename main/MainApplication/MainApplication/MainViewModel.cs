@@ -20,11 +20,11 @@ namespace MainApplication
                 if (!String.IsNullOrEmpty(_userName))
                 {
                     var myApps = CachedAppDirectApi.Instance.MyApps.ToList();
-                    myApps.AddRange(ApplicationSettings.Instance.InstalledLocalApps); 
+                    myApps.AddRange(LocalApplicationData.Instance.InstalledLocalApps); 
                     return myApps;
                 }
 
-                return ApplicationSettings.Instance.InstalledLocalApps;
+                return LocalApplicationData.Instance.InstalledLocalApps;
             }
         }
 
@@ -47,10 +47,10 @@ namespace MainApplication
             {
                 if (String.IsNullOrEmpty(_userName))
                 {
-                    return ApplicationSettings.Instance.SuggestedLocalApps;
+                    return LocalApplicationData.Instance.SuggestedLocalApps;
                 }
 
-                var suggestedApps = ApplicationSettings.Instance.SuggestedLocalApps;
+                var suggestedApps = LocalApplicationData.Instance.SuggestedLocalApps;
                 suggestedApps.AddRange(CachedAppDirectApi.Instance.SuggestedApps.ToList());
 
                 return suggestedApps;
@@ -88,10 +88,13 @@ namespace MainApplication
 
         private void Uninstall(Application application)
         {
-            ApplicationSettings.Instance.InstalledLocalApps.Remove(application);
+            LocalApplicationData.Instance.InstalledLocalApps.Remove(application);
+            LocalApplicationData.Instance.SuggestedLocalApps.Add(application);
             MyApplications.Remove(application);
             SuggestedApplications.Add(application);
             MyApplications.Add(new Application());
+
+            LocalApplicationData.SaveAppSettings();
         }
 
         public ICommand InstallApp
@@ -111,8 +114,11 @@ namespace MainApplication
         {
             SuggestedApplications.Remove(application);
 
-            ApplicationSettings.Instance.InstalledLocalApps.Add(application);
+            LocalApplicationData.Instance.InstalledLocalApps.Add(application);
+            LocalApplicationData.Instance.SuggestedLocalApps.Remove(application);
             MyApplications[MyApplicationsList.Count - 1] = application;
+
+            LocalApplicationData.SaveAppSettings();
         }
 
         protected void NotifyPropertyChanged(string propertyName)

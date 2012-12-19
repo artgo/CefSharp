@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
@@ -11,15 +12,41 @@ namespace MainApplication
     public class Application
     {
         private ICommand _launchApp;
+        private string _urlString;
+        private Uri _uri;
 
         public string Id { get; set; } 
         public string Name { get; set; }
         public string ImagePath { get; set; }
         public string Description { get; set; }
+        public int AlertCount { get; set; }
 
         [XmlIgnore]
-        public Uri URL { get; set; }
-        public int AlertCount { get; set; }
+        public Uri Url
+        {
+            get
+            {
+                if (_uri == null)
+                {
+                    _uri = new Uri(UrlString);
+                }
+                return _uri;
+            }
+        }
+
+        public string UrlString
+        {
+            get
+            {
+                if (_urlString == null)
+                {
+                    _urlString = String.Empty;
+                }
+
+                return _urlString;
+            }
+            set { _urlString = value; }
+        }
 
         public ICommand LaunchApp
         {
@@ -36,7 +63,7 @@ namespace MainApplication
 
         private void Launch()
         {
-            System.Diagnostics.Process.Start("iexplore.exe", URL.AbsoluteUri);
+            System.Diagnostics.Process.Start("iexplore.exe", Url.AbsoluteUri);
         }
     }
 }
