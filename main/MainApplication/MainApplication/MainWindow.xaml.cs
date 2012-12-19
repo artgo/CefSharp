@@ -20,7 +20,7 @@ namespace MainApplication
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _isWindowExpanded = false;
+        private LoginWindow loginWindow;
 
         public MainWindow()
         {
@@ -32,24 +32,22 @@ namespace MainApplication
 
         private void LaunchLogin(object sender, RoutedEventArgs e)
         {
-            if (!_isWindowExpanded)
-            {
-                LoginButton.Visibility = Visibility.Hidden;
-                CancelLoginButton.Visibility = Visibility.Visible;
-                Width += 220;
-                _isWindowExpanded = true;
-            }
+            loginWindow = new LoginWindow();
+            loginWindow.Left = Left + Width;
+            loginWindow.Top = Top;
+            loginWindow.Show();
+
+            LoginButton.Visibility = Visibility.Hidden;
+            CancelLoginButton.Visibility = Visibility.Visible;
         }
 
         private void CollapseLogin(object sender, RoutedEventArgs e)
         {
-            if (_isWindowExpanded)
-            {
-                LoginButton.Visibility = Visibility.Visible;
-                CancelLoginButton.Visibility = Visibility.Hidden;
-                Width -= 220;
-                _isWindowExpanded = false;
-            }
+            loginWindow.Close();
+
+            LoginButton.Visibility = Visibility.Visible;
+            CancelLoginButton.Visibility = Visibility.Hidden;
+
         }
 
         private void GoToAppStore(object sender, RoutedEventArgs e)

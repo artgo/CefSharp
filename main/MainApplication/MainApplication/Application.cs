@@ -16,8 +16,6 @@ namespace MainApplication
         public string Name { get; set; }
         public string ImagePath { get; set; }
         public string Description { get; set; }
-
-        [XmlIgnore]
         public Uri URL { get; set; }
         public int AlertCount { get; set; }
 

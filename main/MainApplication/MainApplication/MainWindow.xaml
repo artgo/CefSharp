@@ -9,191 +9,6 @@
         AllowsTransparency="True">
     <Window.Resources>
         <viewmodel:MainViewModel x:Key="MainViewModel"/>
-        <Style x:Key="LoginTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Background" >
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                        <GradientStop Color="#171717" Offset="0"/>
-                        <GradientStop Color="#292929" Offset="0.6"/>
-                        <GradientStop Color="#4c4c4c" Offset="0.95"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect ShadowDepth="0" Color="LightGray" BlurRadius="5" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="10,10,0,13"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="TextAlignment" Value="Left"/>
-            <Setter Property="Width" Value="180"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="TextWrapping" Value="NoWrap"/>
-        </Style>
-        <Style x:Key="InstallAppButton" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="DimGray" />
-                                <Setter Property="Foreground" Value="LightYellow" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Content" Value="LightYellow" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="BorderlessButton" TargetType="Button">
-            <Setter Property="Margin" Value="0,1,1,1"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Background" >
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                        <GradientStop Color="#4c4c4c" Offset="0"/>
-                        <GradientStop Color="#292929" Offset="0.05"/>
-                        <GradientStop Color="#171717" Offset="0.4"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="DimGray" />
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                                            <GradientStop Color="#424242" Offset="0"/>
-                                            <GradientStop Color="#2f2f2f" Offset="0.3"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="BorderlessButtonWithShadow" TargetType="Button">
-            <Setter Property="Margin" Value="0,1,1,1"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Background" >
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                        <GradientStop Color="#4c4c4c" Offset="0"/>
-                        <GradientStop Color="#292929" Offset="0.05"/>
-                        <GradientStop Color="#171717" Offset="0.4"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="6" ShadowDepth="3"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                                            <GradientStop Color="#424242" Offset="0"/>
-                                            <GradientStop Color="#2f2f2f" Offset="0.3"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="MainButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="0,1,1,1"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" >
-                <Setter.Value>
-                    <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
-                        <GradientStop Color="#2a414d" Offset="0"/>
-                        <GradientStop Color="#1C323D" Offset="0.3"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="6" ShadowDepth="3"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="DimGray" />
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                                            <GradientStop Color="#1C323D" Offset="0"/>
-                                            <GradientStop Color="#2a414d" Offset="0.3"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="Black" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
         <DataTemplate x:Key="EmptyDataTemplate">
             <Button Style="{StaticResource BorderlessButton}"  Width="160" >
                 <!--Command="{Binding LaunchApp}"-->
@@ -207,7 +22,7 @@
             </Button>
         </DataTemplate>
         <DataTemplate x:Key="AppDataTemplate">
-            <Button Style="{StaticResource BorderlessButtonWithShadow}"  Width="160" Command="{Binding LaunchApp}" >
+            <Button Style="{DynamicResource BorderlessButtonWithShadow}"  Width="160" Command="{Binding LaunchApp}" >
                 <Button.ContextMenu >
                     <ContextMenu >
                         <MenuItem Header="Uninstall" Command="{Binding Path=UninstallApp,  Source={StaticResource MainViewModel}}"   CommandParameter="{Binding}"/>
@@ -225,7 +40,7 @@
             </Button>
         </DataTemplate>
         <DataTemplate x:Key="AppDataWithAlertTemplate">
-            <Button Style="{StaticResource BorderlessButtonWithShadow}"  Width="160" Command="{Binding LaunchApp}" >
+            <Button Style="{DynamicResource BorderlessButtonWithShadow}"  Width="160" Command="{Binding LaunchApp}" >
                 <Button.ContextMenu >
                     <ContextMenu>
                         <MenuItem Header="Uninstall" Command="{Binding Path=UninstallApp,  Source={StaticResource MainViewModel}}"   CommandParameter="{Binding}"/>
@@ -274,7 +89,7 @@
             </ListBox.Resources>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Button Style="{StaticResource InstallAppButton}" Height="24"  Margin="0,0,0,0" Command="{Binding ElementName=ContentGrid, Path=DataContext.InstallApp}" CommandParameter="{Binding}" >
+                    <Button Style="{DynamicResource InstallAppButton}" Height="24"  Margin="0,0,0,0" Command="{Binding ElementName=ContentGrid, Path=DataContext.InstallApp}" CommandParameter="{Binding}" >
                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Width="140">
                             <Image HorizontalAlignment="Left" Width="16" Height="16" Source="{Binding ImagePath}" />
                             <TextBlock TextTrimming="CharacterEllipsis" Foreground="White" Width="124" Margin="6, 2" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
@@ -283,7 +98,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Style="{StaticResource MainButtonStyle}" BorderBrush="Transparent" Height="28" Content="Browse App Store" VerticalAlignment="Bottom" Margin="400,0,0,63" Click="GoToAppStore" HorizontalAlignment="Left" Width="133">
+        <Button Style="{DynamicResource MainButtonStyle}" BorderBrush="Transparent" Height="28" Content="Browse App Store" VerticalAlignment="Bottom" Margin="400,0,0,63" Click="GoToAppStore" HorizontalAlignment="Left" Width="133">
         </Button>
         <Label Name="SuggestedAppsLabel" Foreground="White" Content="Popular One-click Installs" HorizontalAlignment="Left" Margin="400,58,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.539"/>
         <Image Source="Line.png" Margin="380.5,64,0,63" HorizontalAlignment="Left" Width="19.5" />
@@ -298,15 +113,8 @@
                 <Image Source="Icons/icon.png" Height="18" />
                 <Label Content="My Apps" Foreground="White" />
             </StackPanel>
-            <Button Name="LoginButton" Click="LaunchLogin" Style="{StaticResource BorderlessButton}" Background="Transparent" Foreground="White" Content="{Binding DisplayUserName}" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
-            <Button Name="CancelLoginButton" Click="CollapseLogin" Visibility="Hidden" Style="{StaticResource BorderlessButton}" Background="Transparent" Foreground="White" Content="Cancel Log In    " Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
-        </Grid>
-            <Grid Name="LoginPanel" Height="160" Margin="640,0,0,230"> 
-                <Rectangle Fill="#181e1f"  HorizontalAlignment="Left" Width="220"/>
-            <Label FontSize="12" Foreground="White" Content="Log in to your account"  HorizontalAlignment="Left" Height="30" Margin="18,13,0,0" VerticalAlignment="Top" Width="130"/>
-            <Button Content="Log In" Style="{StaticResource MainButtonStyle}" HorizontalAlignment="Left" Margin="138,113,0,0" VerticalAlignment="Top" Width="60" Height="28"/>
-            <TextBox Style="{StaticResource LoginTextBoxStyle}" Height="30" TextWrapping="NoWrap" Text="USERNAME" VerticalAlignment="Top" HorizontalAlignment="Center" Width="180" Margin="18,43,22,0"/>
-            <TextBox Style="{StaticResource LoginTextBoxStyle}" Margin="18,78,22,0" TextWrapping="NoWrap" Text="PASSWORD" TextAlignment="Justify" RenderTransformOrigin="0.498,0.892" Height="30" VerticalAlignment="Top" HorizontalAlignment="Center" Width="180"/>
+            <Button Name="LoginButton" Click="LaunchLogin" Style="{DynamicResource BorderlessButton}" Background="Transparent" Foreground="White" Content="{Binding DisplayUserName}" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
+            <Button Name="CancelLoginButton" Click="CollapseLogin" Visibility="Hidden" Style="{DynamicResource BorderlessButton}" Background="Transparent" Foreground="White" Content="Cancel Log In    " Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
         </Grid>
     </Grid>
 </Window>
