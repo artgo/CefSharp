@@ -45,7 +45,9 @@ namespace MainApplication
             int appN = 0;
 
             if (myApps == null)
+            {
                 return appList;
+            }
 
             foreach (var applicationsApplication in myApps)
             {
