@@ -12,7 +12,8 @@ namespace MainApplication
     public class AppDirectApi
     {
         private static readonly AppDirectApi instance = new AppDirectApi();
-        private static readonly Uri ServiceUri = new Uri("https://test.appdirect.com/api/marketplace/v1/listing?filter=FEATURED");
+        private static readonly Uri ServiceUriFeatured = new Uri("https://test.appdirect.com/api/marketplace/v1/listing?filter=FEATURED");
+        private static readonly Uri ServiceUriPopular = new Uri("https://test.appdirect.com/api/marketplace/v1/listing?filter=POPULAR");
         private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
         private readonly WebClient _serviceRequest = new WebClient();
 
@@ -31,7 +32,7 @@ namespace MainApplication
             get {
                 try
                 {
-                    string result = _serviceRequest.DownloadString(ServiceUri);
+                    string result = _serviceRequest.DownloadString(ServiceUriPopular);
                     return _serializer.Deserialize<WebApplicationsListApplication[]>(result);
                 }
                 catch (Exception e)
@@ -45,7 +46,7 @@ namespace MainApplication
         {
             get
             {
-                string result = _serviceRequest.DownloadString(ServiceUri);
+                string result = _serviceRequest.DownloadString(ServiceUriFeatured);
                 return _serializer.Deserialize<WebApplicationsListApplication[]>(result);
             }
         }

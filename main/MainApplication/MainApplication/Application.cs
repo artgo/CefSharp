@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mime;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Xml.Serialization;
+using com.appdirect.WindowsClient.DataAccess;
 
 namespace MainApplication
 {
@@ -20,7 +24,10 @@ namespace MainApplication
         public string ImagePath { get; set; }
         public string Description { get; set; }
         public int AlertCount { get; set; }
-
+        public int Ranking { get; set; }
+        public bool IsLocalApp { get; set; }
+        public string Version { get; set; }
+        
         [XmlIgnore]
         public Uri Url
         {

@@ -34,6 +34,13 @@ namespace MainApplication
         
         private void LaunchLogin(object sender, RoutedEventArgs e)
         {
+            var loginButton = (Button)sender;
+            if ((string)loginButton.Content != "Log In")
+            {
+                loginButton.Content = "Log In";
+                return;
+            }
+
             _loginWindow = new LoginWindow();
             _loginWindow.Left = Left + Width;
             _loginWindow.Top = Top;
@@ -49,7 +56,6 @@ namespace MainApplication
 
             LoginButton.Visibility = Visibility.Visible;
             CancelLoginButton.Visibility = Visibility.Hidden;
-
         }
 
         private void GoToAppStore(object sender, RoutedEventArgs e)

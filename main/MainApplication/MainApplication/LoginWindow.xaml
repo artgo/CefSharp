@@ -6,42 +6,13 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Opacity="85"
-        Width="220" Height="160">
-    <Window.Resources>
-        <Style x:Key="LoginTextBoxStyle" TargetType="{x:Type TextBox}">
-            <Setter Property="Background" >
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                        <GradientStop Color="#171717" Offset="0"/>
-                        <GradientStop Color="#292929" Offset="0.6"/>
-                        <GradientStop Color="#4c4c4c" Offset="0.95"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect ShadowDepth="0" Color="LightGray" BlurRadius="5" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="10,10,0,13"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="TextAlignment" Value="Left"/>
-            <Setter Property="Width" Value="220"/>
-            <Setter Property="Height" Value="160"/>
-            <Setter Property="TextWrapping" Value="NoWrap"/>
-        </Style>
-    </Window.Resources>
-    <Grid x:Name="LoginPanel" Height="160" Margin="0,0,0,0">
+        Width="220" Height="160" >
+    <Grid x:Name="LoginPanel" Height="160" Margin="0,0,0,0"  DataContext="{Binding Source={StaticResource MainViewModel}}" >
         <Rectangle Fill="#181e1f"  HorizontalAlignment="Left" Width="220"/>
         <Label FontSize="12" Foreground="White" Content="Log in to your account"  HorizontalAlignment="Left" Height="30" Margin="18,13,0,0" VerticalAlignment="Top" Width="130"/>
-        <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Left" Margin="138,113,0,0" VerticalAlignment="Top" Width="60" Height="28"/>
-        <TextBox Style="{StaticResource LoginTextBoxStyle}" Height="30" TextWrapping="NoWrap" Text="USERNAME" VerticalAlignment="Top" HorizontalAlignment="Center" Width="180" Margin="18,43,22,0"/>
-        <TextBox Style="{StaticResource LoginTextBoxStyle}" Margin="18,78,22,0" TextWrapping="NoWrap" Text="PASSWORD" TextAlignment="Justify" RenderTransformOrigin="0.498,0.892" Height="30" VerticalAlignment="Top" HorizontalAlignment="Center" Width="180"/>
+        <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Left" Margin="138,113,0,0" VerticalAlignment="Top" Width="60" Height="28" Command="{Binding LoginToAppStore}" CommandParameter="{Binding LoginInfo}"/>
+        <TextBox Name="UsernameTextBox" Style="{DynamicResource UserNameTextBox}" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="18,43,22,0" Text="{Binding LoginInfo.UserName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
+        <TextBox Name="PasswordTextBox"  Style="{DynamicResource PasswordTextBox}" Margin="18,78,22,0" TextAlignment="Justify" RenderTransformOrigin="0.498,0.892" VerticalAlignment="Top" HorizontalAlignment="Center" Text="{Binding LoginInfo.Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" />
+        <Button Content="Forgot your password?" HorizontalContentAlignment="Left" Click="ForgotPassword" Style ="{DynamicResource BorderlessButton}" Margin="18,117.33,87,21.67" FontSize="10"></Button>
     </Grid>
 </Window>

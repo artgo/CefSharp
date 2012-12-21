@@ -8,10 +8,8 @@
         WindowStyle="None"
         AllowsTransparency="True">
     <Window.Resources>
-        <viewmodel:MainViewModel x:Key="MainViewModel"/>
         <DataTemplate x:Key="EmptyDataTemplate">
-            <Button Style="{StaticResource BorderlessButton}"  Width="160" >
-                <!--Command="{Binding LaunchApp}"-->
+            <Button Style="{DynamicResource BorderlessButton}"  Width="160" >
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                         <GradientStop Color="Transparent" Offset="0"/>
@@ -25,7 +23,7 @@
             <Button Style="{DynamicResource BorderlessButtonWithShadow}"  Width="160" Command="{Binding LaunchApp}" >
                 <Button.ContextMenu >
                     <ContextMenu >
-                        <MenuItem Header="Uninstall" Command="{Binding Path=UninstallApp,  Source={StaticResource MainViewModel}}"   CommandParameter="{Binding}"/>
+                        <MenuItem Header="Uninstall" Command="{Binding Path=UninstallAppCommand,  Source={StaticResource MainViewModel}}"   CommandParameter="{Binding}"/>
                     </ContextMenu>
                 </Button.ContextMenu>
                 <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="0">
@@ -43,7 +41,7 @@
             <Button Style="{DynamicResource BorderlessButtonWithShadow}"  Width="160" Command="{Binding LaunchApp}" >
                 <Button.ContextMenu >
                     <ContextMenu>
-                        <MenuItem Header="Uninstall" Command="{Binding Path=UninstallApp,  Source={StaticResource MainViewModel}}"   CommandParameter="{Binding}"/>
+                        <MenuItem Header="Uninstall" Command="{Binding Path=UninstallAppCommand,  Source={StaticResource MainViewModel}}"   CommandParameter="{Binding}"/>
                     </ContextMenu>
                 </Button.ContextMenu>
                 <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="0">
@@ -89,7 +87,7 @@
             </ListBox.Resources>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Button Style="{DynamicResource InstallAppButton}" Height="24"  Margin="0,0,0,0" Command="{Binding ElementName=ContentGrid, Path=DataContext.InstallApp}" CommandParameter="{Binding}" >
+                    <Button Style="{DynamicResource InstallAppButton}" Height="24"  Margin="0,0,0,0" Command="{Binding ElementName=ContentGrid, Path=DataContext.InstallAppCommand}" CommandParameter="{Binding}" >
                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Width="140">
                             <Image HorizontalAlignment="Left" Width="16" Height="16" Source="{Binding ImagePath}" />
                             <TextBlock TextTrimming="CharacterEllipsis" Foreground="White" Width="124" Margin="6, 2" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
@@ -113,8 +111,8 @@
                 <Image Source="Icons/icon.png" Height="18" />
                 <Label Content="My Apps" Foreground="White" />
             </StackPanel>
-            <Button Name="LoginButton" Click="LaunchLogin" Style="{DynamicResource BorderlessButton}" Background="Transparent" Foreground="White" Content="{Binding DisplayUserName}" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
-            <Button Name="CancelLoginButton" Click="CollapseLogin" Visibility="Hidden" Style="{DynamicResource BorderlessButton}" Background="Transparent" Foreground="White" Content="Cancel Log In    " Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
+            <Button Name="LoginButton" Command="{Binding ClickLoginCommand}" CommandParameter="{Binding IsLoggedIn}" Style="{DynamicResource BorderlessButton}" Content="{Binding LoginButtonDisplayText}" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
+            <Button Name="CancelLoginButton" Click="CollapseLogin" Visibility="Hidden" Style="{DynamicResource BorderlessButton}" Content="Cancel Log In" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
         </Grid>
     </Grid>
 </Window>

@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace MainApplication
@@ -11,70 +15,106 @@ namespace MainApplication
     {
         private ICommand _uninstallApp;
         private ICommand _installApp;
-        private string _userName;
+        private ICommand _login; 
+        private ICommand _clickLogin;
+        private LoginObject _loginInfo;
 
-        public List<Application> MyApplicationsList
+        public bool IsLoggedIn
         {
-            get
-            {
-                if (!String.IsNullOrEmpty(_userName))
-                {
-                    var myApps = CachedAppDirectApi.Instance.MyApps.ToList();
-                    myApps.AddRange(LocalApplicationData.Instance.InstalledLocalApps); 
-                    return myApps;
-                }
+            get { return LoginInfo.AuthToken != null; }
+        }
 
-                return LocalApplicationData.Instance.InstalledLocalApps;
+        public string LoginButtonDisplayText
+        {
+            get { return String.IsNullOrEmpty(LoginInfo.UserName) ? "Log In" : "Logout"; }
+            set
+            {
+                NotifyPropertyChanged("LoginInfo");
             }
         }
 
-        public string DisplayUserName
+        public LoginObject LoginInfo
         {
             get
             {
-                if (String.IsNullOrEmpty(_userName))
-                {
-                    return "Log In";
-                }
-                return _userName;
+                _loginInfo = LocalApplicationData.Instance.LoginInfo ?? new LoginObject();
+
+                return _loginInfo;
             }
-            set { _userName = value; }
-        }
-
-        public List<Application> SuggestedApplicationsList
-        {
-            get
+            set
             {
-                if (String.IsNullOrEmpty(_userName))
-                {
-                    return LocalApplicationData.Instance.SuggestedLocalApps;
-                }
-
-                var suggestedApps = LocalApplicationData.Instance.SuggestedLocalApps;
-                suggestedApps.AddRange(CachedAppDirectApi.Instance.SuggestedApps.ToList());
-
-                return suggestedApps;
+                _loginInfo = value;
+                NotifyPropertyChanged("LoginInfo");
             }
         }
 
         public ObservableCollection<Application> MyApplications { get; set; }
-        public ObservableCollection<Application> SuggestedApplications  { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-       
-        public MainViewModel() 
+        public ObservableCollection<Application> SuggestedApplications { get; set; }
+        
+        public void GetMyApplications()
         {
-            MyApplications = new ObservableCollection<Application>(MyApplicationsList);
-            SuggestedApplications = new ObservableCollection<Application>(SuggestedApplicationsList);
-
-
-            while (MyApplications.Count < 12)
+            if (MyApplications == null)
             {
-                MyApplications.Add(new Application());
+                MyApplications = new ObservableCollection<Application>();
+            }
+
+
+            var myAppsList = new List<Application>();
+
+            myAppsList.AddRange(LocalApplicationData.Instance.InstalledLocalApps);
+
+            if (!String.IsNullOrEmpty(LoginInfo.AuthToken))
+            {
+                myAppsList.AddRange(CachedAppDirectApi.Instance.MyApps.ToList());
+            }
+
+            MyApplications.Clear();
+
+            int myAppCount = 0;
+            foreach (Application application in myAppsList)
+            {
+                MyApplications.Add(application);
+                myAppCount++;
+
+                if (myAppCount == 12)
+                {
+                    break;
+                }
             }
         }
 
-        public ICommand UninstallApp
+        public void GetSuggestedApplications()
+        {
+            if (SuggestedApplications == null)
+            {
+                SuggestedApplications = new ObservableCollection<Application>();
+            }
+
+            var suggestedAppsList = new List<Application>();
+
+            suggestedAppsList.AddRange(LocalApplicationData.Instance.SuggestedLocalApps);
+            var myAppIds = MyApplications.Select(a => a.Id).ToList();
+
+            suggestedAppsList.AddRange(CachedAppDirectApi.Instance.SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+
+            SuggestedApplications.Clear();
+
+            int suggestedAppCount = 0;
+            foreach (Application application in suggestedAppsList)
+            {
+                SuggestedApplications.Add(application);
+                suggestedAppCount ++;
+
+                if (suggestedAppCount == 7)
+                {
+                    break;
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public ICommand UninstallAppCommand
         {
             get
             {
@@ -86,19 +126,8 @@ namespace MainApplication
                 return _uninstallApp;
             }
         }
-
-        private void Uninstall(Application application)
-        {
-            LocalApplicationData.Instance.InstalledLocalApps.Remove(application);
-            LocalApplicationData.Instance.SuggestedLocalApps.Add(application);
-            MyApplications.Remove(application);
-            SuggestedApplications.Add(application);
-            MyApplications.Add(new Application());
-
-            LocalApplicationData.SaveAppSettings();
-        }
-
-        public ICommand InstallApp
+       
+        public ICommand InstallAppCommand
         {
             get
             {
@@ -109,17 +138,126 @@ namespace MainApplication
                 }
                 return _installApp;
             }
-        } 
+        }
+
+        public ICommand ClickLoginCommand
+        {
+            get
+            {
+                if (_clickLogin == null)
+                {
+                    return _clickLogin = new RelayCommand<bool>(ClickLoginButton,
+                        null);
+                }
+                return _clickLogin;
+            }
+        }
+
+        public ICommand LoginToAppStore
+        {
+            get
+            {
+                if (_login == null)
+                {
+                    return _login = new RelayCommand<LoginObject>(Login,
+                        null);
+                }
+                return _login;
+            }
+        }
+
+        public MainViewModel()
+        {            
+            GetMyApplications();
+            GetSuggestedApplications();
+        }
+
+        private void Login(LoginObject loginObject)
+        {
+            if (CachedAppDirectApi.Instance.Login(loginObject))
+            {
+                LocalApplicationData.Instance.LoginInfo = loginObject;
+
+                GetSuggestedApplications();
+                GetMyApplications();
+
+                LocalApplicationData.SaveAppSettings();
+            }
+        }
+
+        private void Uninstall(Application application)
+        {
+            if (application.IsLocalApp)
+            {
+                LocalApplicationData.Instance.InstalledLocalApps.Remove(application);
+                LocalApplicationData.Instance.SuggestedLocalApps.Add(application);
+                
+                LocalApplicationData.SaveAppSettings();
+            }
+            else
+            {
+                //Start asynchronous call to Api to remove application
+
+                CachedAppDirectApi.Instance.SuggestedApps.Add(application);
+                CachedAppDirectApi.Instance.MyApps.Remove(application);
+            }
+            
+            GetSuggestedApplications();
+            GetMyApplications();
+        }
 
         private void Install(Application application)
         {
-            SuggestedApplications.Remove(application);
+            if (application.IsLocalApp)
+            {
+                LocalApplicationData.Instance.InstalledLocalApps.Add(application);
+                LocalApplicationData.Instance.SuggestedLocalApps.Remove(application);
 
-            LocalApplicationData.Instance.InstalledLocalApps.Add(application);
-            LocalApplicationData.Instance.SuggestedLocalApps.Remove(application);
-            MyApplications[MyApplicationsList.Count - 1] = application;
+                LocalApplicationData.SaveAppSettings();
+            }
+            else
+            {
+                if (String.IsNullOrEmpty(LoginInfo.AuthToken))
+                {
+                    ClickLoginButton(false);
+                }
 
-            LocalApplicationData.SaveAppSettings();
+                string localFilename = Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + application.Id + ".ico";
+
+                using (WebClient client = new WebClient())
+                {
+                    client.DownloadFile(application.ImagePath, localFilename);
+                }
+
+                application.ImagePath = Path.GetFullPath(localFilename);
+
+                //Start asynchronous call to Api to add application
+
+                CachedAppDirectApi.Instance.MyApps.Add(application);
+                CachedAppDirectApi.Instance.SuggestedApps.Remove(application);
+            }
+
+            GetSuggestedApplications();
+            GetMyApplications();
+        }
+
+        private void ClickLoginButton(bool isLoggedIn)
+        {
+            if (IsLoggedIn)
+            {
+                ClickLogout();
+            }
+            else
+            {
+                var loginWindow = new LoginWindow();
+                loginWindow.Show();
+            }
+        }
+
+        private void ClickLogout()
+        {
+            LocalApplicationData.Instance.LoginInfo = new LoginObject();
+            GetMyApplications();
         }
 
         protected void NotifyPropertyChanged(string propertyName)

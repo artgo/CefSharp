@@ -17,7 +17,7 @@ namespace MainApplication
         private static readonly object padlock = new object();
 
         private const string AppStoreUrlString = "https://appcenter.staples.com/home";
-        private const string FileName = @"\LocalApplicationData";
+        private const string FileName = @"\AppDirect\LocalApplicationData";
         private Uri _appStoreUrl;
 
         public static LocalApplicationData Instance
@@ -53,6 +53,9 @@ namespace MainApplication
                 return _appStoreUrl;
             }
         }
+        
+        [XmlIgnore]
+        public LoginObject LoginInfo{get;set;}
 
         public void LoadAppSettings()
         {
@@ -61,15 +64,15 @@ namespace MainApplication
 
             try
             {
-                // Create an XmlSerializer for the ApplicationSettings type.
+                // Create an XmlSerializer for the LocalApplicationData type.
                 mySerializer = new XmlSerializer(typeof (LocalApplicationData));
                 FileInfo fi = new FileInfo(Environment.SpecialFolder.ApplicationData
                     + FileName);
-                // If the config file exists, open it.
+                // If the file exists, open it.
                 if (fi.Exists)
                 {
                     myFileStream = fi.OpenRead();
-                    // Create a new instance of the ApplicationSettings by deserializing the file.
+                    // Create a new instance of the LocalApplicationData by deserializing the file.
                     _instance =
                         (LocalApplicationData)mySerializer.Deserialize(
                             myFileStream);
@@ -101,17 +104,20 @@ namespace MainApplication
         {
             StreamWriter myWriter = null;
 
+            var fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+            if (fileInfo.Directory != null)
+            {
+                fileInfo.Directory.Create();
+            }
+
             try
             {
-                // Create an XmlSerializer for the 
-                // ApplicationSettings type.
+                // Create an XmlSerializer for the LocalApplicationData type.
                 XmlSerializer mySerializer = new XmlSerializer(
                     typeof(LocalApplicationData));
                 myWriter =
-                    new StreamWriter(Environment.SpecialFolder.ApplicationData
-                    + FileName, false);
-                // Serialize this instance of the ApplicationSettings 
-                // class to the config file.
+                    new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false);
+                // Serialize this instance of the LocalApplicationData class to the config file.
                 mySerializer.Serialize(myWriter, _instance);
             }
             catch (Exception ex)
@@ -137,7 +143,8 @@ namespace MainApplication
                 ImagePath = "Icons/facebook.png",
                 Name = "Facebook",
                 UrlString = "http://www.facebook.com",
-                AlertCount = 0
+                AlertCount = 0,
+                IsLocalApp = true
             };
 
             var gmail = new Application
@@ -147,7 +154,8 @@ namespace MainApplication
                 ImagePath = "Icons/gmail.ico",
                 Name = "Gmail",
                 UrlString = "http://www.gmail.com",
-                AlertCount = 1
+                AlertCount = 1,
+                IsLocalApp = true
             };
 
             var pandora = new Application
@@ -157,7 +165,8 @@ namespace MainApplication
                 ImagePath = "Icons/pandora.png",
                 Name = "Pandora",
                 UrlString = "http://www.pandora.com",
-                AlertCount = 1
+                AlertCount = 1,
+                IsLocalApp = true
             };
 
             var linkedIn = new Application
@@ -167,7 +176,8 @@ namespace MainApplication
                 ImagePath = "Icons/linkedIn.png",
                 Name = "LinkedIn",
                 UrlString = "http://www.linkedIn.com",
-                AlertCount = 1
+                AlertCount = 1,
+                IsLocalApp = true
             };
 
             return new List<Application> {facebook, gmail, linkedIn, pandora};
