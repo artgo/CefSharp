@@ -32,21 +32,24 @@ namespace MainApplication
 
         private void Login(object sender, RoutedEventArgs e)
         {
+            MainViewModel model = (MainViewModel) LoginGrid.DataContext;
+
             var loginObject = new LoginObject
                 {
                     Password = PasswordTextBox.Text,
                     UserName = UsernameTextBox.Text
                 };
 
-            if (CachedAppDirectApi.Instance.Login(loginObject))
+            try
             {
-                LocalApplicationData.Instance.LoginInfo = loginObject;
-                LocalApplicationData.SaveAppSettings(); 
+                model.Login(loginObject);
                 Close();
+
+                model.LoginButtonDisplayText = "Log Out";
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Login was unsuccessful");
+                MessageBox.Show("Login Failed: " + ex.Message);
             }
         }
     }

@@ -24,8 +24,6 @@ namespace MainApplication
 
         public MainWindow()
         {
-            LocalApplicationData.Instance.LoadAppSettings();
-
             InitializeComponent();
 
             Left = SystemParameters.WorkArea.Right * .003;
@@ -34,20 +32,18 @@ namespace MainApplication
         
         private void LaunchLogin(object sender, RoutedEventArgs e)
         {
-            var loginButton = (Button)sender;
-            if ((string)loginButton.Content != "Log In")
+            MainViewModel model = (MainViewModel)ContentGrid.DataContext;
+
+            if (model.IsLoggedIn)
             {
-                loginButton.Content = "Log In";
+                model.ClickLogout();
                 return;
             }
 
             _loginWindow = new LoginWindow();
             _loginWindow.Left = Left + Width;
             _loginWindow.Top = Top;
-            _loginWindow.Show();
-
-            LoginButton.Visibility = Visibility.Hidden;
-            CancelLoginButton.Visibility = Visibility.Visible;
+            _loginWindow.ShowDialog();
         }
 
         private void CollapseLogin(object sender, RoutedEventArgs e)

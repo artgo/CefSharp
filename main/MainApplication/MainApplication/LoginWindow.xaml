@@ -7,12 +7,12 @@
         AllowsTransparency="True"
         Opacity="85"
         Width="220" Height="160" >
-    <Grid x:Name="LoginPanel" Height="160" Margin="0,0,0,0"  DataContext="{Binding Source={StaticResource MainViewModel}}" >
+    <Grid Name="LoginGrid" Height="160" Margin="0,0,0,0"  DataContext="{Binding Source={StaticResource MainViewModel}}" >
         <Rectangle Fill="#181e1f"  HorizontalAlignment="Left" Width="220"/>
         <Label FontSize="12" Foreground="White" Content="Log in to your account"  HorizontalAlignment="Left" Height="30" Margin="18,13,0,0" VerticalAlignment="Top" Width="130"/>
-        <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Left" Margin="138,113,0,0" VerticalAlignment="Top" Width="60" Height="28" Command="{Binding LoginToAppStore}" CommandParameter="{Binding LoginInfo}"/>
-        <TextBox Name="UsernameTextBox" Style="{DynamicResource UserNameTextBox}" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="18,43,22,0" Text="{Binding LoginInfo.UserName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
-        <TextBox Name="PasswordTextBox"  Style="{DynamicResource PasswordTextBox}" Margin="18,78,22,0" TextAlignment="Justify" RenderTransformOrigin="0.498,0.892" VerticalAlignment="Top" HorizontalAlignment="Center" Text="{Binding LoginInfo.Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" />
+        <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Left" Margin="138,113,0,0" VerticalAlignment="Top" Width="60" Height="28" Click="Login"/>
+        <TextBox Name="UsernameTextBox" Style="{DynamicResource UserNameTextBox}" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="18,43,22,0"/>
+        <TextBox Name="PasswordTextBox"  Style="{DynamicResource PasswordTextBox}" Margin="18,78,22,0" TextAlignment="Justify" RenderTransformOrigin="0.498,0.892" VerticalAlignment="Top" HorizontalAlignment="Center"/>
         <Button Content="Forgot your password?" HorizontalContentAlignment="Left" Click="ForgotPassword" Style ="{DynamicResource BorderlessButton}" Margin="18,117.33,87,21.67" FontSize="10"></Button>
     </Grid>
 </Window>

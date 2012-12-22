@@ -159,7 +159,7 @@
             <Setter Property="TextWrapping" Value="NoWrap"/>
         </Style>
         <Style x:Key="UserNameTextBox" TargetType="TextBox" BasedOn="{StaticResource LoginTextBoxStyle}">
-            <Setter Property="Text" Value="{Binding Path=LoginInfo.UserName, Source={StaticResource MainViewModel}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
+            <Setter Property="Text" Value="USERNAME"/>
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="Text" Value="{x:Null}" />
@@ -167,7 +167,7 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="PasswordTextBox" TargetType="TextBox" BasedOn="{StaticResource LoginTextBoxStyle}">
-            <Setter Property="Text" Value="{Binding Path=LoginInfo.Password, Source={StaticResource MainViewModel}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
+            <Setter Property="Text" Value="PASSWORD"/>
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="Text" Value="{x:Null}" />

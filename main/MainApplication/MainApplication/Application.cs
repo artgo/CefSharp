@@ -24,12 +24,10 @@ namespace MainApplication
         public string ImagePath { get; set; }
         public string Description { get; set; }
         public int AlertCount { get; set; }
-        public int Ranking { get; set; }
         public bool IsLocalApp { get; set; }
-        public string Version { get; set; }
         
         [XmlIgnore]
-        public Uri Url
+        public Uri Uri
         {
             get
             {
@@ -52,7 +50,11 @@ namespace MainApplication
 
                 return _urlString;
             }
-            set { _urlString = value; }
+            set
+            {
+                _urlString = value;
+                _uri = new Uri(UrlString);
+            }
         }
 
         public ICommand LaunchApp
@@ -70,7 +72,7 @@ namespace MainApplication
 
         private void Launch()
         {
-            System.Diagnostics.Process.Start("iexplore.exe", Url.AbsoluteUri);
+            System.Diagnostics.Process.Start("iexplore.exe", Uri.AbsoluteUri);
         }
     }
 }

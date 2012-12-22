@@ -50,7 +50,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="LocalApplicationData.cs" />
+    <Compile Include="LocalApplications.cs" />
+    <Compile Include="LocalStorage.cs" />
     <Compile Include="LoginObject.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="TemplateSelector.cs" />

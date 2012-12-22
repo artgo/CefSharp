@@ -27,23 +27,21 @@ namespace MainApplication
         public string LoginButtonDisplayText
         {
             get { return String.IsNullOrEmpty(LoginInfo.UserName) ? "Log In" : "Logout"; }
-            set
-            {
-                NotifyPropertyChanged("LoginInfo");
-            }
+            set { NotifyPropertyChanged("LoginInfoButtonDisplayText"); }
         }
 
         public LoginObject LoginInfo
         {
             get
             {
-                _loginInfo = LocalApplicationData.Instance.LoginInfo ?? new LoginObject();
+                _loginInfo = LocalStorage.Instance.LoginInfo ?? new LoginObject();
 
                 return _loginInfo;
             }
             set
             {
                 _loginInfo = value;
+                NotifyPropertyChanged("LoginInfoButtonDisplayText");
                 NotifyPropertyChanged("LoginInfo");
             }
         }
@@ -51,67 +49,6 @@ namespace MainApplication
         public ObservableCollection<Application> MyApplications { get; set; }
         public ObservableCollection<Application> SuggestedApplications { get; set; }
         
-        public void GetMyApplications()
-        {
-            if (MyApplications == null)
-            {
-                MyApplications = new ObservableCollection<Application>();
-            }
-
-
-            var myAppsList = new List<Application>();
-
-            myAppsList.AddRange(LocalApplicationData.Instance.InstalledLocalApps);
-
-            if (!String.IsNullOrEmpty(LoginInfo.AuthToken))
-            {
-                myAppsList.AddRange(CachedAppDirectApi.Instance.MyApps.ToList());
-            }
-
-            MyApplications.Clear();
-
-            int myAppCount = 0;
-            foreach (Application application in myAppsList)
-            {
-                MyApplications.Add(application);
-                myAppCount++;
-
-                if (myAppCount == 12)
-                {
-                    break;
-                }
-            }
-        }
-
-        public void GetSuggestedApplications()
-        {
-            if (SuggestedApplications == null)
-            {
-                SuggestedApplications = new ObservableCollection<Application>();
-            }
-
-            var suggestedAppsList = new List<Application>();
-
-            suggestedAppsList.AddRange(LocalApplicationData.Instance.SuggestedLocalApps);
-            var myAppIds = MyApplications.Select(a => a.Id).ToList();
-
-            suggestedAppsList.AddRange(CachedAppDirectApi.Instance.SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
-
-            SuggestedApplications.Clear();
-
-            int suggestedAppCount = 0;
-            foreach (Application application in suggestedAppsList)
-            {
-                SuggestedApplications.Add(application);
-                suggestedAppCount ++;
-
-                if (suggestedAppCount == 7)
-                {
-                    break;
-                }
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand UninstallAppCommand
@@ -167,21 +104,102 @@ namespace MainApplication
         }
 
         public MainViewModel()
-        {            
+        {
+            try
+            {
+                LocalStorage.Instance.LoadLocalStorage();
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("Unable to load applications from Storage or Local Applications list");
+            }
+
             GetMyApplications();
             GetSuggestedApplications();
         }
 
-        private void Login(LoginObject loginObject)
+        private void GetMyApplications()
         {
-            if (CachedAppDirectApi.Instance.Login(loginObject))
+            if (MyApplications == null)
             {
-                LocalApplicationData.Instance.LoginInfo = loginObject;
+                MyApplications = new ObservableCollection<Application>();
+            }
 
-                GetSuggestedApplications();
-                GetMyApplications();
+            var myAppsList = new List<Application>();
 
-                LocalApplicationData.SaveAppSettings();
+            myAppsList.AddRange(LocalStorage.Instance.InstalledLocalApps);
+            
+            if (!String.IsNullOrEmpty(LoginInfo.AuthToken))
+            {
+                myAppsList.AddRange(CachedAppDirectApi.Instance.MyApps.ToList());
+            }
+
+            MyApplications.Clear();
+
+            int myAppCount = 0;
+            foreach (Application application in myAppsList)
+            {
+                MyApplications.Add(application);
+                myAppCount++;
+
+                if (myAppCount == 12)
+                {
+                    break;
+                }
+            }
+        }
+
+        private void GetSuggestedApplications()
+        {
+            if (SuggestedApplications == null)
+            {
+                SuggestedApplications = new ObservableCollection<Application>();
+            }
+
+            var suggestedAppsList = new List<Application>();
+
+            suggestedAppsList.AddRange(LocalStorage.Instance.SuggestedLocalApps);
+
+            var myAppIds = MyApplications.Select(a => a.Id).ToList();
+
+            suggestedAppsList.AddRange(CachedAppDirectApi.Instance.SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+
+            SuggestedApplications.Clear();
+
+            int suggestedAppCount = 0;
+            foreach (Application application in suggestedAppsList)
+            {
+                SuggestedApplications.Add(application);
+                suggestedAppCount++;
+
+                if (suggestedAppCount == 7)
+                {
+                    break;
+                }
+            }
+        }
+
+        public void Login(LoginObject loginObject)
+        {
+            try
+            {
+                CachedAppDirectApi.Instance.Login(loginObject);
+                try
+                {
+                    LocalStorage.Instance.LoginInfo = loginObject;
+                    LocalStorage.Instance.SaveAppSettings();
+
+                    GetSuggestedApplications();
+                    GetMyApplications();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Failed to save login info to local storage");
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Login Failed: " + e.Message);
             }
         }
 
@@ -189,17 +207,24 @@ namespace MainApplication
         {
             if (application.IsLocalApp)
             {
-                LocalApplicationData.Instance.InstalledLocalApps.Remove(application);
-                LocalApplicationData.Instance.SuggestedLocalApps.Add(application);
-                
-                LocalApplicationData.SaveAppSettings();
+                LocalStorage.Instance.InstalledLocalApps.Remove(application);
+                LocalStorage.Instance.SuggestedLocalApps.Add(application);
+
+                try
+                {
+                    LocalStorage.Instance.SaveAppSettings();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Failed to save uninstall info to local storage");
+                }
             }
             else
             {
                 //Start asynchronous call to Api to remove application
 
                 CachedAppDirectApi.Instance.SuggestedApps.Add(application);
-                CachedAppDirectApi.Instance.MyApps.Remove(application);
+                CachedAppDirectApi.Instance.MyApps.RemoveAll(a => a.Id == application.Id);
             }
             
             GetSuggestedApplications();
@@ -210,10 +235,10 @@ namespace MainApplication
         {
             if (application.IsLocalApp)
             {
-                LocalApplicationData.Instance.InstalledLocalApps.Add(application);
-                LocalApplicationData.Instance.SuggestedLocalApps.Remove(application);
+                LocalStorage.Instance.InstalledLocalApps.Add(application);
+                LocalStorage.Instance.SuggestedLocalApps.Remove(application);
 
-                LocalApplicationData.SaveAppSettings();
+                LocalStorage.Instance.SaveAppSettings();
             }
             else
             {
@@ -250,13 +275,13 @@ namespace MainApplication
             else
             {
                 var loginWindow = new LoginWindow();
-                loginWindow.Show();
+                loginWindow.ShowDialog();
             }
         }
 
-        private void ClickLogout()
+        public void ClickLogout()
         {
-            LocalApplicationData.Instance.LoginInfo = new LoginObject();
+            LocalStorage.Instance.LoginInfo = new LoginObject();
             GetMyApplications();
         }
 

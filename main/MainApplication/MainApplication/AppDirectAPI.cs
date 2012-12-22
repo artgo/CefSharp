@@ -35,7 +35,7 @@ namespace MainApplication
                     string result = _serviceRequest.DownloadString(ServiceUriPopular);
                     return _serializer.Deserialize<WebApplicationsListApplication[]>(result);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }
