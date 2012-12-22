@@ -6,7 +6,7 @@
         WindowStartupLocation="Manual" 
         Background="Transparent"
         WindowStyle="None"
-        AllowsTransparency="True" Deactivated="HideWindow">
+        AllowsTransparency="True">
     <Window.Resources>
         <DataTemplate x:Key="EmptyDataTemplate">
             <Button Style="{DynamicResource BorderlessButton}"  Width="160" >
