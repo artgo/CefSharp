@@ -3,50 +3,49 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using AppDirect.WindowsClient.Models;
+using AppDirect.WindowsClient.ObjectMapping;
 using AppDirect.WindowsClient.ObjectMapping;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient
 {
-    ///<summary>
+    public class CachedAppDirectApi : ICachedAppDirectApi
     /// Represents a Cached AppDirect Web Api
     /// </summary>
-    public class CachedAppDirectApi
     {
-        private readonly AppDirectApi _appDirectApi = AppDirectApi.Instance;
-        private static readonly CachedAppDirectApi instance = new CachedAppDirectApi();
+        private readonly IAppDirectApi _appDirectApi;
+        private ObservableCollection<Application> _myApps;
         private const int MaxApps = 10;
         private List<Application> _suggestedApps;
         private List<Application> _myApps; 
 
 
-        private CachedAppDirectApi() { }
-
-        public static CachedAppDirectApi Instance {
-            get
-            {
-                return instance;
-            }
+        public CachedAppDirectApi(IAppDirectApi appDirectApi)
+        {
+            _appDirectApi = appDirectApi;
         }
 
-        public List<Application> MyApps
+        public ObservableCollection<Application> MyApps
         {
             get
             {
+                MyappsMyapp[] myApps = _appDirectApi.MyApps;
+                {
                 if (_myApps == null)
                 {
-                    WebApplicationsListApplication[] myApps = _appDirectApi.MyApps;
-                    _myApps = ConvertList(myApps);
+                    _myApps = ConvertList(new ObservableCollection<Application>(), myApps);
+                }
+                else
+                {
+                    _myApps.Clear();
+                    ConvertList(_myApps, myApps);
                 }
 
                 return _myApps;
             }
-            set { _myApps = value; }
         }
 
-        public List<Application> SuggestedApps
+        public ObservableCollection<Application> SuggestedApps
         {
             get
             {
@@ -54,16 +53,25 @@ namespace AppDirect.WindowsClient
                 {
 
                     WebApplicationsListApplication[] suggestedApps = _appDirectApi.SuggestedApps;
-                    _suggestedApps = ConvertList(suggestedApps);
+                return ConvertList(new ObservableCollection<Application>(), suggestedApps);
                 }
                 return _suggestedApps;
             }
             set { _suggestedApps = value; }
         }
 
-        private static List<Application> ConvertList(WebApplicationsListApplication[] myApps)
+        public void Authenticate(string key, string secret)
         {
-            List<Application> appList = new List<Application>(MaxApps);
+            _appDirectApi.Authenticate(key, secret);
+        }
+
+        public bool IsAuthenticated
+        {
+            get { return _appDirectApi.IsAuthenticated; }
+        }
+
+        private static ObservableCollection<Application> ConvertList(ObservableCollection<Application> appList, WebApplicationsListApplication[] myApps)
+        {
             int appN = 0;
 
             if (myApps == null)
@@ -78,7 +86,7 @@ namespace AppDirect.WindowsClient
                         Description = applicationsApplication.Description,
                         Id = applicationsApplication.Id,
                         Name = applicationsApplication.Name,
-                        UrlString = applicationsApplication.Href,
+                        Url = new Uri(applicationsApplication.Href)
                         ImagePath = applicationsApplication.IconUrl,
                         IsLocalApp = false,
                     };
@@ -88,6 +96,28 @@ namespace AppDirect.WindowsClient
                 {
                     break;
                 }
+            }
+            return appList;
+        }
+
+        private static ObservableCollection<Application> ConvertList(ObservableCollection<Application> appList, MyappsMyapp[] myApps)
+        {
+            if (myApps == null)
+            {
+                return appList;
+            }
+
+            foreach (var applicationsApplication in myApps)
+            {
+                Application app = new Application()
+                {
+                    Description = applicationsApplication.Description,
+                    Id = applicationsApplication.MarketplaceUrl,
+                    ImagePath = applicationsApplication.ImageUrl,
+                    Name = applicationsApplication.Name,
+                    Url = new Uri(applicationsApplication.MarketplaceUrl)
+                };
+                appList.Add(app);
             }
             return appList;
         }
