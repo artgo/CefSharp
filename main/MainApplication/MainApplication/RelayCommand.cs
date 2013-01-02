@@ -5,7 +5,10 @@ using System.Text;
 using System.Windows.Input;
 
 namespace AppDirect.WindowsClient
-{
+{    
+    ///<summary>
+    /// Represents A Command That Can Be Called Directly By The View
+    ///</summary>
     public class RelayCommand<T> : ICommand
     {
         public RelayCommand(Action<T> execute)

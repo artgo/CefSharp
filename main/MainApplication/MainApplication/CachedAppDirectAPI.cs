@@ -8,6 +8,9 @@ using AppDirect.WindowsClient;
 
 namespace AppDirect.WindowsClient
 {
+    ///<summary>
+    /// Represents a Cached AppDirect Web Api
+    /// </summary>
     public class CachedAppDirectApi
     {
         private readonly AppDirectApi _appDirectApi = AppDirectApi.Instance;

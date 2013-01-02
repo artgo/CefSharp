@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 
 namespace AppDirect.WindowsClient
 {
+    ///<summary>Represents an AppDirect Web Api</summary>
     public class AppDirectApi
     {
         private static readonly AppDirectApi instance = new AppDirectApi();

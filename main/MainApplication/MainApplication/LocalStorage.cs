@@ -8,6 +8,9 @@ using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient
 {
+    ///<summary>
+    /// Represents the Serializable Data that persists locally 
+    ///</summary>
     public sealed class LocalStorage
     {
         [XmlIgnore]

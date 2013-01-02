@@ -6,6 +6,9 @@ using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient
 {
+    ///<summary>
+    ///Represents the User's Login Credentials 
+    ///</summary>
     public class LoginObject
     {
         public string UserName { get; set; }

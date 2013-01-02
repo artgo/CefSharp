@@ -11,6 +11,9 @@ using System.Windows.Input;
 
 namespace AppDirect.WindowsClient
 {
+    ///<summary>
+    /// Represents the data and methods that are used to create the View
+    /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
         private ICommand _uninstallApp;

@@ -6,6 +6,9 @@ using System.Text;
 
 namespace AppDirect.WindowsClient
 {
+    ///<summary>
+    /// A list of the applications that the Windows Client will recommend in addition to those applications that are recommended via the AppDirect API calls 
+    ///</summary>
     public static class LocalApplications 
     {
         public static List<Application> GetBackUpLocalAppsList()

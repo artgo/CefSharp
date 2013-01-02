@@ -7,6 +7,9 @@ using System.Windows.Controls;
 
 namespace AppDirect.WindowsClient
 {
+    ///<summary>
+    /// Represents a DataTemplateSelector that determines which DataTemplate to use to display an Application Item in a ListView
+    /// </summary>
     public class TemplateSelector: DataTemplateSelector
     {
         public DataTemplate AppDataTemplate { get; set; }

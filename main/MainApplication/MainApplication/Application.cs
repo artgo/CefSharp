@@ -11,6 +11,9 @@ using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient
 {
+    ///<summary>
+    /// Represents an Application of the sort that AppDirect distributes 
+    ///</summary>
     [Serializable]
     public class Application
     {
