@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient
 {
     public class MainViewModel : INotifyPropertyChanged
     {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Xml.Serialization;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient
 {
     public sealed class LocalStorage
     {

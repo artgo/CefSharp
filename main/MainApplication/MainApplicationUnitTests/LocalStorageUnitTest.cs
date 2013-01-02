@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MainApplication;
+using AppDirect.WindowsClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MainApplicationUnitTests

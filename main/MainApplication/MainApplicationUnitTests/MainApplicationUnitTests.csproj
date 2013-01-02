@@ -58,9 +58,9 @@
     <Compile Include="CachedAppDirectApiUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MainApplication\MainApplication.csproj">
+    <ProjectReference Include="..\MainApplication\AppDirect.WindowsClient.csproj">
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
-      <Name>MainApplication</Name>
+      <Name>AppDirect.WindowsClient</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

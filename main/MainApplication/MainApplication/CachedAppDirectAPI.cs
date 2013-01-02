@@ -4,10 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using com.appdirect.WindowsClient;
-using com.appdirect.WindowsClient.DataAccess;
+using AppDirect.WindowsClient;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient
 {
     public class CachedAppDirectApi
     {

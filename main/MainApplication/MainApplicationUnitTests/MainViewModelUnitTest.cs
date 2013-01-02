@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using MainApplication;
+using AppDirect.WindowsClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MainApplicationUnitTests

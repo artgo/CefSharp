@@ -4,10 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.Script.Serialization;
-using com.appdirect.WindowsClient;
-using com.appdirect.WindowsClient.DataAccess;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient
 {
     public class AppDirectApi
     {

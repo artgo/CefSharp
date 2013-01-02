@@ -8,9 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Xml.Serialization;
-using com.appdirect.WindowsClient.DataAccess;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient
 {
     [Serializable]
     public class Application

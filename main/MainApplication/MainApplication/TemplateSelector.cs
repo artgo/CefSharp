@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient
 {
     public class TemplateSelector: DataTemplateSelector
     {
