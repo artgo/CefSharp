@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using MainApplication;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -25,6 +27,56 @@ namespace MainApplicationUnitTests
         public void SuggestedApplicationsCollectionIsNotNull()
         {
             Assert.IsNotNull(_mainViewModel.MyApplications);
+        }
+
+        [TestMethod]
+        public void LoginIsStored()
+        {
+            LoginObject loginObject = new LoginObject {Password = "PasswordTest", UserName = "UsernameTest"};
+
+            _mainViewModel.Login(loginObject);
+
+            Assert.AreEqual(loginObject.UserName, _mainViewModel.LoginInfo.UserName);
+            Assert.AreEqual(loginObject.Password, _mainViewModel.LoginInfo.Password);
+            Assert.IsNotNull(_mainViewModel.LoginInfo.AuthToken);
+
+            Assert.AreEqual("Log Out", _mainViewModel.LoginButtonDisplayText);
+        }
+
+        [TestMethod]
+        public void LogOutRemovesLoginInfo()
+        {
+            LoginObject loginObject = new LoginObject { Password = "PasswordTest", UserName = "UsernameTest" };
+            _mainViewModel.Login(loginObject);
+
+            Assert.IsNotNull(_mainViewModel.LoginInfo.AuthToken);
+            _mainViewModel.Logout();
+
+            Assert.IsNull(_mainViewModel.LoginInfo.AuthToken);
+            Assert.AreEqual("Log In", _mainViewModel.LoginButtonDisplayText);
+        }
+
+        [TestMethod]
+        public void InstallApplicationIncrementsMyApplicationDecrementsSuggested()
+        {
+            _mainViewModel.MyApplications.Clear();
+
+            var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
+
+            _mainViewModel.Install(app);
+
+            Assert.IsTrue(_mainViewModel.MyApplications.Contains(app));
+            Assert.IsFalse(_mainViewModel.SuggestedApplications.Contains(app));
+        }
+
+        [TestMethod]
+        public void UninstallLocalApplicationIncrementsSuggestedApplicationsDecrementsMyApplications()
+        {
+            var app = _mainViewModel.MyApplications.First(a => a.IsLocalApp);
+            _mainViewModel.Uninstall(app);
+
+            Assert.IsTrue(_mainViewModel.SuggestedApplications.Contains(app));
+            Assert.IsFalse(_mainViewModel.MyApplications.Contains(app));
         }
     }
 }

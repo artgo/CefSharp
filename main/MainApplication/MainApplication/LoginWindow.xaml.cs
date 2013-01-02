@@ -18,6 +18,11 @@ namespace MainApplication
     /// </summary>
     public partial class LoginWindow
     {
+        public MainViewModel ViewModel
+        {
+            get { return DataContext as MainViewModel; }
+        }
+
         public LoginWindow()
         {
             InitializeComponent();
@@ -32,8 +37,6 @@ namespace MainApplication
 
         private void Login(object sender, RoutedEventArgs e)
         {
-            MainViewModel model = (MainViewModel) LoginGrid.DataContext;
-
             var loginObject = new LoginObject
                 {
                     Password = PasswordTextBox.Text,
@@ -42,10 +45,10 @@ namespace MainApplication
 
             try
             {
-                model.Login(loginObject);
+                ViewModel.Login(loginObject);
                 Close();
 
-                model.LoginButtonDisplayText = "Log Out";
+                ViewModel.LoginButtonDisplayText = "Log Out";
             }
             catch (Exception ex)
             {

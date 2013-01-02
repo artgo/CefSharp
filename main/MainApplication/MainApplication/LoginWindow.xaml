@@ -6,8 +6,9 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Opacity="85"
-        Width="220" Height="160" >
-    <Grid Name="LoginGrid" Height="160" Margin="0,0,0,0"  DataContext="{Binding Source={StaticResource MainViewModel}}" >
+        Width="220" Height="160"
+        DataContext="{DynamicResource MainViewModel}">
+    <Grid Name="LoginGrid" Height="160" Margin="0,0,0,0">
         <Rectangle Fill="#181e1f"  HorizontalAlignment="Left" Width="220"/>
         <Label FontSize="12" Foreground="White" Content="Log in to your account"  HorizontalAlignment="Left" Height="30" Margin="18,13,0,0" VerticalAlignment="Top" Width="130"/>
         <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Left" Margin="138,113,0,0" VerticalAlignment="Top" Width="60" Height="28" Click="Login"/>

@@ -22,6 +22,11 @@ namespace MainApplication
     {
         private LoginWindow _loginWindow;
 
+        public MainViewModel ViewModel
+        {
+            get { return DataContext as MainViewModel; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,13 +35,11 @@ namespace MainApplication
             Top = SystemParameters.WorkArea.Bottom - Height;
         }
         
-        private void LaunchLogin(object sender, RoutedEventArgs e)
+        private void ClickLogin(object sender, RoutedEventArgs e)
         {
-            MainViewModel model = (MainViewModel)ContentGrid.DataContext;
-
-            if (model.IsLoggedIn)
+            if (ViewModel.IsLoggedIn)
             {
-                model.ClickLogout();
+                ViewModel.Logout();
                 return;
             }
 
@@ -49,9 +52,6 @@ namespace MainApplication
         private void CollapseLogin(object sender, RoutedEventArgs e)
         {
             _loginWindow.Close();
-
-            LoginButton.Visibility = Visibility.Visible;
-            CancelLoginButton.Visibility = Visibility.Hidden;
         }
 
         private void GoToAppStore(object sender, RoutedEventArgs e)

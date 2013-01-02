@@ -6,7 +6,8 @@
         WindowStartupLocation="Manual" 
         Background="Transparent"
         WindowStyle="None"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        DataContext="{DynamicResource MainViewModel}">
     <Window.Resources>
         <DataTemplate x:Key="EmptyDataTemplate">
             <Button Style="{DynamicResource BorderlessButton}"  Width="160" >
@@ -111,8 +112,7 @@
                 <Image Source="Icons/icon.png" Height="18" />
                 <Label Content="My Apps" Foreground="White" />
             </StackPanel>
-            <Button Name="LoginButton" Click="LaunchLogin" Style="{DynamicResource BorderlessButton}" Content="{Binding LoginButtonDisplayText}" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
-            <Button Name="CancelLoginButton" Click="CollapseLogin" Visibility="Hidden" Style="{DynamicResource BorderlessButton}" Content="Cancel Log In" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
+            <Button Name="LoginButton" Click="ClickLogin" Style="{DynamicResource BorderlessButton}" Content="{Binding LoginButtonDisplayText}" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>
         </Grid>
     </Grid>
 </Window>

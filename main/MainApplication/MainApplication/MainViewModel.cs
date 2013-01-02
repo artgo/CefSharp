@@ -15,8 +15,6 @@ namespace MainApplication
     {
         private ICommand _uninstallApp;
         private ICommand _installApp;
-        private ICommand _login; 
-        private ICommand _clickLogin;
         private LoginObject _loginInfo;
 
         public bool IsLoggedIn
@@ -26,7 +24,7 @@ namespace MainApplication
 
         public string LoginButtonDisplayText
         {
-            get { return String.IsNullOrEmpty(LoginInfo.UserName) ? "Log In" : "Logout"; }
+            get { return String.IsNullOrEmpty(LoginInfo.UserName) ? "Log In" : "Log Out"; }
             set { NotifyPropertyChanged("LoginInfoButtonDisplayText"); }
         }
 
@@ -74,32 +72,6 @@ namespace MainApplication
                         null);
                 }
                 return _installApp;
-            }
-        }
-
-        public ICommand ClickLoginCommand
-        {
-            get
-            {
-                if (_clickLogin == null)
-                {
-                    return _clickLogin = new RelayCommand<bool>(ClickLoginButton,
-                        null);
-                }
-                return _clickLogin;
-            }
-        }
-
-        public ICommand LoginToAppStore
-        {
-            get
-            {
-                if (_login == null)
-                {
-                    return _login = new RelayCommand<LoginObject>(Login,
-                        null);
-                }
-                return _login;
             }
         }
 
@@ -188,6 +160,7 @@ namespace MainApplication
                 {
                     LocalStorage.Instance.LoginInfo = loginObject;
                     LocalStorage.Instance.SaveAppSettings();
+                    LoginInfo = LocalStorage.Instance.LoginInfo;
 
                     GetSuggestedApplications();
                     GetMyApplications();
@@ -203,7 +176,7 @@ namespace MainApplication
             }
         }
 
-        private void Uninstall(Application application)
+        public void Uninstall(Application application)
         {
             if (application.IsLocalApp)
             {
@@ -231,7 +204,7 @@ namespace MainApplication
             GetMyApplications();
         }
 
-        private void Install(Application application)
+        public void Install(Application application)
         {
             if (application.IsLocalApp)
             {
@@ -244,7 +217,7 @@ namespace MainApplication
             {
                 if (String.IsNullOrEmpty(LoginInfo.AuthToken))
                 {
-                    ClickLoginButton(false);
+                    ClickLoginButton();
                 }
 
                 string localFilename = Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + application.Id + ".ico";
@@ -266,11 +239,11 @@ namespace MainApplication
             GetMyApplications();
         }
 
-        private void ClickLoginButton(bool isLoggedIn)
+        private void ClickLoginButton()
         {
             if (IsLoggedIn)
             {
-                ClickLogout();
+                Logout();
             }
             else
             {
@@ -279,7 +252,7 @@ namespace MainApplication
             }
         }
 
-        public void ClickLogout()
+        public void Logout()
         {
             LocalStorage.Instance.LoginInfo = new LoginObject();
             GetMyApplications();
