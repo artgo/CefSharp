@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDirect.WindowsClient", "MainApplication\AppDirect.WindowsClient.csproj", "{2FDC87A4-0C19-473E-A117-30A9C1477D18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainApplicationUnitTests", "MainApplicationUnitTests\MainApplicationUnitTests.csproj", "{80EBFDAF-BEFB-4561-951F-C13F36AAE116}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppDirect.WindowsClient.Tests", "MainApplicationUnitTests\AppDirect.WindowsClient.Tests.csproj", "{80EBFDAF-BEFB-4561-951F-C13F36AAE116}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,30 +1,36 @@
 ﻿using System;
-using System.Collections;
+using System.IO;
 using System.Linq;
-using AppDirect.WindowsClient;
+using AppDirect.WindowsClient.Models;
+using AppDirect.WindowsClient.Storage;
+using AppDirect.WindowsClient.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MainApplicationUnitTests
+namespace AppDirect.WindowsClient.Tests
 {
     [TestClass]
     public class MainViewModelUnitTest
     {
         private MainViewModel _mainViewModel;
 
+        private const string FileName = @"\AppDirect\LocalStorage";
+        private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+
         [TestInitialize]
         public void TestInitialize()
         {
+            File.Delete();
             _mainViewModel = new MainViewModel();
         }
 
         [TestMethod]
-        public void MyApplicationsCollectionIsPopulated()
+        public void SuggestedApplicationsCollectionIsNotNull()
         {
             Assert.IsTrue(_mainViewModel.SuggestedApplications.Count > 0);
         }
 
         [TestMethod]
-        public void SuggestedApplicationsCollectionIsNotNull()
+        public void MyApplicationsCollectionIsPopulated()
         {
             Assert.IsNotNull(_mainViewModel.MyApplications);
         }
@@ -77,6 +83,13 @@ namespace MainApplicationUnitTests
 
             Assert.IsTrue(_mainViewModel.SuggestedApplications.Contains(app));
             Assert.IsFalse(_mainViewModel.MyApplications.Contains(app));
+        }
+        
+        [TestMethod]
+        public void LocalStorageInitializedByConstructor()
+        {
+            Assert.IsNotNull(LocalStorage.Instance.InstalledLocalApps);
+            Assert.IsNotNull(LocalStorage.Instance.SuggestedLocalApps);
         }
     }
 }

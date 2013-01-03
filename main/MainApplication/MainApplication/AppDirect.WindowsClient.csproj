@@ -58,43 +58,42 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="UI\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="LocalApplications.cs" />
-    <Compile Include="LocalStorage.cs" />
-    <Compile Include="LoginObject.cs" />
-    <Compile Include="RelayCommand.cs" />
-    <Compile Include="TemplateSelector.cs" />
-    <Page Include="LoginWindow.xaml">
+    <Compile Include="Models\LoginObject.cs" />
+    <Compile Include="Storage\LocalStorage.cs" />
+    <Compile Include="UI\RelayCommand.cs" />
+    <Compile Include="UI\TemplateSelector.cs" />
+    <Compile Include="UI\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="UI\LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="UI\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppDirectAPI.cs" />
-    <Compile Include="Application.cs" />
+    <Compile Include="Models\Application.cs" />
     <Compile Include="apps_list.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>apps_list.xsd</DependentUpon>
     </Compile>
     <Compile Include="CachedAppDirectAPI.cs" />
-    <Compile Include="LoginWindow.xaml.cs">
+    <Compile Include="UI\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainViewModel.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="UI\MainViewModel.cs" />
+    <Page Include="UI\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -132,31 +131,28 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\pandora.png" />
+    <Resource Include="UI\Icons\pandora.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="titlebar.png" />
+    <Resource Include="UI\Images\titlebar.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\facebook.png" />
+    <Resource Include="UI\Icons\facebook.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\linkedIn.png" />
+    <Resource Include="UI\Icons\linkedIn.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="NoApp.png" />
+    <Resource Include="UI\Images\NoApp.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Line.png" />
+    <Resource Include="UI\Images\Line.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\icon.png" />
+    <Resource Include="UI\Icons\icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\gmail.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icon1.ico" />
+    <Resource Include="UI\Icons\gmail.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

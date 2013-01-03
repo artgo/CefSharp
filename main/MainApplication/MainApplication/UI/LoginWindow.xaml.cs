@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using AppDirect.WindowsClient.Models;
 
-namespace AppDirect.WindowsClient
+namespace AppDirect.WindowsClient.UI
 {
     /// <summary>
     /// Interaction logic for LoginWindow.xaml
     /// </summary>
     public partial class LoginWindow
     {
+        private const string ForgotPasswordUrl = "https://www.appdirect.com/forgotPassword";
+
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -26,13 +19,11 @@ namespace AppDirect.WindowsClient
         public LoginWindow()
         {
             InitializeComponent();
-            Left = (SystemParameters.WorkArea.Right *.003) + 640;
-            Top = SystemParameters.WorkArea.Bottom - 390;
         }
 
         private void ForgotPassword(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://www.appdirect.com/forgotPassword");
+            System.Diagnostics.Process.Start(ForgotPasswordUrl);
         }
 
         private void Login(object sender, RoutedEventArgs e)

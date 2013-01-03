@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using Application = AppDirect.WindowsClient.Models.Application;
 
-namespace AppDirect.WindowsClient
+namespace AppDirect.WindowsClient.UI
 {
     ///<summary>
     /// Represents a DataTemplateSelector that determines which DataTemplate to use to display an Application Item in a ListView

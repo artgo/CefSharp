@@ -1,44 +1,31 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Xml.Serialization;
+using AppDirect.WindowsClient.Models;
 
-namespace AppDirect.WindowsClient
+namespace AppDirect.WindowsClient.Storage
 {
     ///<summary>
     /// Represents the Serializable Data that persists locally 
     ///</summary>
     public sealed class LocalStorage
     {
-        [XmlIgnore]
-        private static LocalStorage _instance;
+        [XmlIgnore] private static LocalStorage _instance;
         
-        [XmlIgnore]
-        private static readonly object padlock = new object();
-
         private const string AppStoreUrlString = "https://appcenter.staples.com/home";
         private const string FileName = @"\AppDirect\LocalStorage";
         private Uri _appStoreUrl;
 
         public static LocalStorage Instance
         {
-            get 
+            get
             {
                 if (_instance == null)
                 {
-                    lock (padlock)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new LocalStorage();
-                        }
-                    }
+                    _instance = LoadLocalStorage();
                 }
-
-                return _instance; 
+                return _instance;
             }
         }
 
@@ -60,7 +47,7 @@ namespace AppDirect.WindowsClient
         [XmlIgnore]
         public LoginObject LoginInfo{get;set;}
 
-        public void LoadLocalStorage()
+        private static LocalStorage LoadLocalStorage()
         {
             // Create an XmlSerializer for the LocalStorage type.
             XmlSerializer mySerializer = new XmlSerializer(typeof(LocalStorage));
@@ -72,19 +59,19 @@ namespace AppDirect.WindowsClient
                 using (FileStream fileStream = fi.OpenRead())
                 {
                     // Create a new instance of the LocalStorage by deserializing the file.
-                    _instance = (LocalStorage) mySerializer.Deserialize(fileStream);
+                    return (LocalStorage) mySerializer.Deserialize(fileStream);
                 }
             }
             else
             {
-                _instance = new LocalStorage();
-                _instance.SuggestedLocalApps = LocalApplications.GetBackUpLocalAppsList();
-                _instance.InstalledLocalApps = new List<Application>();
-
-                SaveAppSettings();
+                return new LocalStorage();
             }
         }
 
+        public void ForceReloadFromFile()
+        {
+            _instance = null;
+        }
 
         public void SaveAppSettings()
         {

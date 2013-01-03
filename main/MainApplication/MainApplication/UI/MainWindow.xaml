@@ -1,7 +1,7 @@
-﻿<Window x:Class="AppDirect.WindowsClient.MainWindow"
+<Window x:Class="AppDirect.WindowsClient.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:AppDirect.WindowsClient"
+        xmlns:local="clr-namespace:AppDirect.WindowsClient.UI"
         Title="MyApps" Height="390" Width="640" 
         WindowStartupLocation="Manual" 
         Background="Transparent"
@@ -17,7 +17,7 @@
                         <GradientStop Color="Transparent" Offset="0.3"/>
                     </LinearGradientBrush>
                 </Button.Background>
-                <Image Source="NoApp.png"></Image>
+                <Image Source="Images\NoApp.png"></Image>
             </Button>
         </DataTemplate>
         <DataTemplate x:Key="AppDataTemplate">
@@ -100,7 +100,7 @@
         <Button Style="{DynamicResource MainButtonStyle}" BorderBrush="Transparent" Height="28" Content="Browse App Store" VerticalAlignment="Bottom" Margin="400,0,0,63" Click="GoToAppStore" HorizontalAlignment="Left" Width="133">
         </Button>
         <Label Name="SuggestedAppsLabel" Foreground="White" Content="Popular One-click Installs" HorizontalAlignment="Left" Margin="400,58,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.539"/>
-        <Image Source="Line.png" Margin="380.5,64,0,63" HorizontalAlignment="Left" Width="19.5" />
+        <Image Source="Images\Line.png" Margin="380.5,64,0,63" HorizontalAlignment="Left" Width="19.5" />
         <Grid Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="640">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
@@ -109,7 +109,7 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center">
-                <Image Source="Icons/icon.png" Height="18" />
+                <Image Source="Icons\icon.png" Height="18" />
                 <Label Content="My Apps" Foreground="White" />
             </StackPanel>
             <Button Name="LoginButton" Click="ClickLogin" Style="{DynamicResource BorderlessButton}" Content="{Binding LoginButtonDisplayText}" Margin="0,4,16,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Right" Width="80" HorizontalContentAlignment="Right"/>

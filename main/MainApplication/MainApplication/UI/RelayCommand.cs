@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
-namespace AppDirect.WindowsClient
+namespace AppDirect.WindowsClient.UI
 {    
     ///<summary>
     /// Represents A Command That Can Be Called Directly By The View

@@ -8,8 +8,11 @@ using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AppDirect.WindowsClient.Models;
+using AppDirect.WindowsClient.Storage;
+using Application = AppDirect.WindowsClient.Models.Application;
 
-namespace AppDirect.WindowsClient
+namespace AppDirect.WindowsClient.UI
 {
     ///<summary>
     /// Represents the data and methods that are used to create the View
@@ -80,13 +83,15 @@ namespace AppDirect.WindowsClient
 
         public MainViewModel()
         {
-            try
+            if (LocalStorage.Instance.SuggestedLocalApps == null)
             {
-                LocalStorage.Instance.LoadLocalStorage();
+                LocalStorage.Instance.SuggestedLocalApps = LocalApplications.GetBackUpLocalAppsList();
+                LocalStorage.Instance.SaveAppSettings();
             }
-            catch (Exception)
+
+            if (LocalStorage.Instance.InstalledLocalApps == null)
             {
-                //MessageBox.Show("Unable to load applications from Storage or Local Applications list");
+                LocalStorage.Instance.InstalledLocalApps = new List<Application>();
             }
 
             GetMyApplications();

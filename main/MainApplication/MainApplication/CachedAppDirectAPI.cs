@@ -4,7 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using AppDirect.WindowsClient;
+using AppDirect.WindowsClient.Models;
+using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient
 {
