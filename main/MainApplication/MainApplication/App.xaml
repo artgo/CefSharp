@@ -54,7 +54,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value ="LightYellow"/>
+                                <Setter Property="Background" Value="DimGray"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -95,12 +95,14 @@
         <Style x:Key="MainButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Foreground" Value="#b7bfc2" />
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="Background" >
                 <Setter.Value>
-                    <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
-                        <GradientStop Color="#2a414d" Offset="0"/>
-                        <GradientStop Color="#1C323D" Offset="0.3"/>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#748a96" Offset="0"/>
+                        <GradientStop Color="#587381" Offset="0.05"/>
+                        <GradientStop Color="#46616e" Offset="0.4"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
@@ -108,7 +110,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0">
                             <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       Margin="{TemplateBinding Padding}"
                                       RecognizesAccessKey="True"
@@ -120,8 +122,8 @@
                                 <Setter Property="Background">
                                     <Setter.Value>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                                            <GradientStop Color="#1C323D" Offset="0"/>
-                                            <GradientStop Color="#2a414d" Offset="0.3"/>
+                                            <GradientStop Color="#46616e" Offset="0"/>
+                                            <GradientStop Color="#587381" Offset="0.4"/>
                                         </LinearGradientBrush>
                                     </Setter.Value>
                                 </Setter>
@@ -131,32 +133,44 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="LoginTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Background" Value="#292929" >
-                <!--<Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                        <GradientStop Color="#171717" Offset="0"/>
-                        <GradientStop Color="#292929" Offset="0.6"/>
-                        <GradientStop Color="#4c4c4c" Offset="0.95"/>
-                    </LinearGradientBrush>
-                </Setter.Value>-->
-            </Setter>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect ShadowDepth="0" Color="LightGray" BlurRadius="5" />
-                </Setter.Value>
-            </Setter>
-            <Setter Property="FontSize" Value="10"/>
+        <Style x:Key="BadgeStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="Red"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Margin" Value="10,10,0,13"/>
             <Setter Property="Padding" Value="10,0,0,0"/>
             <Setter Property="Foreground" Value="White" />
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+             <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="8" BorderThickness="0">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                 </Setter>
+        </Style>
+        <Style x:Key="LoginTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#676767"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="10,10,0,13"/>
+            <Setter Property="Padding" Value="10,0,0,0"/>
+            <Setter Property="Foreground" Value="#bdbdbd" />
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="TextAlignment" Value="Left"/>
-            <Setter Property="Width" Value="180"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="Width" Value="282"/>
+            <Setter Property="Height" Value="40"/>
         </Style>
         <Style x:Key="UserNameTextBox" TargetType="TextBox" BasedOn="{StaticResource LoginTextBoxStyle}">
             <Setter Property="Text" Value="USERNAME"/>

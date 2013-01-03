@@ -16,9 +16,8 @@ namespace AppDirect.WindowsClient
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
-        private ICommand _uninstallApp;
-        private ICommand _installApp;
         private LoginObject _loginInfo;
+        private const int MyAppDisplayLimit = 10;
 
         public bool IsLoggedIn
         {
@@ -51,32 +50,6 @@ namespace AppDirect.WindowsClient
         public ObservableCollection<Application> SuggestedApplications { get; set; }
         
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public ICommand UninstallAppCommand
-        {
-            get
-            {
-                if (_uninstallApp == null)
-                {
-                    _uninstallApp = new RelayCommand<Application>(Uninstall,
-                        null);
-                }
-                return _uninstallApp;
-            }
-        }
-       
-        public ICommand InstallAppCommand
-        {
-            get
-            {
-                if (_installApp == null)
-                {
-                    return _installApp = new RelayCommand<Application>(Install,    
-                        null);
-                }
-                return _installApp;
-            }
-        }
 
         public MainViewModel()
         {
@@ -117,7 +90,7 @@ namespace AppDirect.WindowsClient
                 MyApplications.Add(application);
                 myAppCount++;
 
-                if (myAppCount == 12)
+                if (myAppCount == MyAppDisplayLimit)
                 {
                     break;
                 }
@@ -164,9 +137,9 @@ namespace AppDirect.WindowsClient
                     LocalStorage.Instance.LoginInfo = loginObject;
                     LocalStorage.Instance.SaveAppSettings();
                     LoginInfo = LocalStorage.Instance.LoginInfo;
-
-                    GetSuggestedApplications();
+                    
                     GetMyApplications();
+                    GetSuggestedApplications();
                 }
                 catch (Exception)
                 {
@@ -220,7 +193,7 @@ namespace AppDirect.WindowsClient
             {
                 if (String.IsNullOrEmpty(LoginInfo.AuthToken))
                 {
-                    ClickLoginButton();
+                    return;
                 }
 
                 string localFilename = Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + application.Id + ".ico";
@@ -238,27 +211,15 @@ namespace AppDirect.WindowsClient
                 CachedAppDirectApi.Instance.SuggestedApps.Remove(application);
             }
 
-            GetSuggestedApplications();
             GetMyApplications();
-        }
-
-        private void ClickLoginButton()
-        {
-            if (IsLoggedIn)
-            {
-                Logout();
-            }
-            else
-            {
-                var loginWindow = new LoginWindow();
-                loginWindow.ShowDialog();
-            }
+            GetSuggestedApplications();
         }
 
         public void Logout()
         {
             LocalStorage.Instance.LoginInfo = new LoginObject();
             GetMyApplications();
+            GetSuggestedApplications();
         }
 
         protected void NotifyPropertyChanged(string propertyName)
