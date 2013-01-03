@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using AppDirect.WindowsClient.ObjectMapping;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AppDirect.WindowsClient.Tests
 {

@@ -7,7 +7,7 @@
 
 using System.Xml.Serialization;
 
-namespace AppDirect.WindowsClient
+namespace AppDirect.WindowsClient.ObjectMapping
 {
     public partial class WebApplicationsList
     {
