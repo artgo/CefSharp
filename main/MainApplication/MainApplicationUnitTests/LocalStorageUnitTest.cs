@@ -1,55 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AppDirect.WindowsClient;
+using AppDirect.WindowsClient.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MainApplicationUnitTests
+namespace AppDirect.WindowsClient.Tests
 {
     [TestClass]
     public class LocalStorageUnitTest
     {
         private const string FileName = @"\AppDirect\LocalStorage";
+        private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+
+        [TestInitialize]
+        public void Setup()
+        {
+            File.Delete();
+            LocalStorage.Instance.ForceReloadFromFile();
+        }
 
         [TestMethod]
-        public void LoadLocalStorageInitializesAppsLists()
+        public void LocalStorageListsNullWithoutFile()
         {
             Assert.IsNull(LocalStorage.Instance.InstalledLocalApps);
             Assert.IsNull(LocalStorage.Instance.SuggestedLocalApps);
-            LocalStorage.Instance.LoadLocalStorage();
+        }
+
+        [TestMethod]
+        public void LocalStorageListsNotNullWhenFileContainsApps()
+        {
+            Assert.IsFalse(File.Exists);
+
+            LocalStorage.Instance.InstalledLocalApps = LocalApplications.GetBackUpLocalAppsList();
+            LocalStorage.Instance.SuggestedLocalApps = LocalApplications.GetBackUpLocalAppsList();
+
+            LocalStorage.Instance.SaveAppSettings();
+
+            File.Refresh();
+            Assert.IsTrue(File.Exists);
+            
+            LocalStorage.Instance.ForceReloadFromFile();
+
             Assert.IsNotNull(LocalStorage.Instance.InstalledLocalApps);
             Assert.IsNotNull(LocalStorage.Instance.SuggestedLocalApps);
         }
 
         [TestMethod]
-        public void LoadLocalStorageCreatesStorageFile()
-        {
-            FileInfo fi = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
-
-            fi.Delete();
-
-            Assert.IsFalse(fi.Exists);
-            LocalStorage.Instance.LoadLocalStorage();
-
-            fi.Refresh();
-            Assert.IsTrue(fi.Exists);
-        }
-
-        [TestMethod]
         public void SaveLocalStorageCreatesStorageFile()
         {
-            FileInfo fi = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
-
-            fi.Delete();
-
-            Assert.IsFalse(fi.Exists);
+            Assert.IsFalse(File.Exists);
             LocalStorage.Instance.SaveAppSettings();
 
-            fi.Refresh();
-            Assert.IsTrue(fi.Exists);
+            File.Refresh();
+            Assert.IsTrue(File.Exists);
         }
     }
 }

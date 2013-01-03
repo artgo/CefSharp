@@ -1,7 +1,7 @@
-﻿<Window x:Class="AppDirect.WindowsClient.MainWindow"
+<Window x:Class="AppDirect.WindowsClient.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:AppDirect.WindowsClient"
+        xmlns:local="clr-namespace:AppDirect.WindowsClient.UI"
         Title="MyApps" Height="330" Width="640" 
         WindowStartupLocation="Manual" 
         Background="Transparent"
@@ -17,7 +17,7 @@
                         <GradientStop Color="Transparent" Offset="0.3"/>
                     </LinearGradientBrush>
                 </Button.Background>
-                <Image Source="NoApp.png"></Image>
+                <Image Source="Images\NoApp.png"></Image>
             </Button>
         </DataTemplate>
         <DataTemplate x:Key="AppDataTemplate">
