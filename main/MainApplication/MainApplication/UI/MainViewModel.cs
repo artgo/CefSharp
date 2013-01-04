@@ -26,13 +26,7 @@ namespace AppDirect.WindowsClient.UI
         {
             get { return LoginInfo.AuthToken != null; }
         }
-
-        public string LoginButtonDisplayText
-        {
-            get { return String.IsNullOrEmpty(LoginInfo.UserName) ? "Log In" : "Log Out"; }
-            set { NotifyPropertyChanged("LoginInfoButtonDisplayText"); }
-        }
-
+        
         public LoginObject LoginInfo
         {
             get
@@ -44,7 +38,6 @@ namespace AppDirect.WindowsClient.UI
             set
             {
                 _loginInfo = value;
-                NotifyPropertyChanged("LoginInfoButtonDisplayText");
                 NotifyPropertyChanged("LoginInfo");
             }
         }
