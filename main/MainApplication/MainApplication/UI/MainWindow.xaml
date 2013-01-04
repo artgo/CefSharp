@@ -31,8 +31,7 @@
         </DataTemplate>
         <DataTemplate x:Key="AppDataTemplate">
             <Button Style="{DynamicResource AppButton}" Command="{Binding LaunchApp}">
-                
-                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Height="44" Margin="0">
+                <Grid Style="{DynamicResource YourAppsButtonGrid}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="44"/>
                         <ColumnDefinition Width="Auto"/>
@@ -44,8 +43,7 @@
         </DataTemplate>
         <DataTemplate x:Key="AppDataWithAlertTemplate">
             <Button Style="{DynamicResource AppButton}" Command="{Binding LaunchApp}">
-               
-                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Height="44" Margin="0">
+                <Grid Style="{DynamicResource YourAppsButtonGrid}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="44"/>
                         <ColumnDefinition Width="Auto"/>
