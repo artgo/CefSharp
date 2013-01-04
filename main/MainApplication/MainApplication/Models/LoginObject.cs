@@ -9,7 +9,6 @@ namespace AppDirect.WindowsClient.Models
     {
         public string UserName { get; set; }
 
-        [XmlIgnore]
         public string Password { get; set; }
 
         public string AuthToken { get; set; }

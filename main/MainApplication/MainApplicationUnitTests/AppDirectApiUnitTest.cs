@@ -1,5 +1,6 @@
 ﻿using AppDirect.WindowsClient.ObjectMapping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Ninject;
 
 namespace AppDirect.WindowsClient.Tests
 {
@@ -7,17 +8,17 @@ namespace AppDirect.WindowsClient.Tests
     public class AppDirectApiUnitTest
     {
         [TestMethod]
-        public void TestDataIsReturnedForMyApps()
+        public void TestDataIsNullForMyAppsNonAuthenticated()
         {
-            WebApplicationsListApplication[] apps = AppDirectApi.Instance.MyApps;
+            var apps = new AppDirectApi().MyApps;
 
-            Assert.IsNotNull(apps);
+            Assert.IsNull(apps);
         }
 
         [TestMethod]
         public void TestDataIsReturnedForSuggestedApps()
         {
-            WebApplicationsListApplication[] apps = AppDirectApi.Instance.SuggestedApps;
+            var apps = new AppDirectApi().SuggestedApps;
 
             Assert.IsNotNull(apps);
         }
