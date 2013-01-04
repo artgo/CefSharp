@@ -9,6 +9,5 @@ namespace AppDirect.WindowsClient
         IList<Application> SuggestedApps { get; }
         bool IsAuthenticated { get; }
         void Authenticate(string key, string secret);
-        bool Login(LoginObject loginInfo);
     }
 }

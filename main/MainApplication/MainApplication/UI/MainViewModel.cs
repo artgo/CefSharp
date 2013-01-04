@@ -22,18 +22,14 @@ namespace AppDirect.WindowsClient.UI
     {
         private LoginObject _loginInfo;
         private const int MyAppDisplayLimit = 10;
-
-        public bool IsLoggedIn
-        {
-            get { return LoginInfo.AuthToken != null; }
-        }
         
+        public bool IsLoggedIn { get; set; }
+       
         public LoginObject LoginInfo
         {
             get
             {
                 _loginInfo = LocalStorage.Instance.LoginInfo ?? new LoginObject();
-
                 return _loginInfo;
             }
             set
@@ -75,8 +71,8 @@ namespace AppDirect.WindowsClient.UI
             var myAppsList = new List<Application>();
 
             myAppsList.AddRange(LocalStorage.Instance.InstalledLocalApps);
-            
-            if (!String.IsNullOrEmpty(LoginInfo.AuthToken))
+
+            if (!ServiceLocator.CachedAppDirectApi.IsAuthenticated)
             {
                 myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList());
             }
@@ -130,7 +126,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                ServiceLocator.CachedAppDirectApi.Login(loginObject);
+                ServiceLocator.CachedAppDirectApi.Authenticate(loginObject.Key, loginObject.Secret);
                 try
                 {
                     LocalStorage.Instance.LoginInfo = loginObject;
@@ -190,7 +186,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                if (String.IsNullOrEmpty(LoginInfo.AuthToken))
+                if (!ServiceLocator.CachedAppDirectApi.IsAuthenticated)
                 {
                     return;
                 }
@@ -228,6 +224,5 @@ namespace AppDirect.WindowsClient.UI
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }
