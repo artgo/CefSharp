@@ -20,21 +20,15 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
-        private ICommand _uninstallApp;
-        private ICommand _installApp;
         private LoginObject _loginInfo;
-
-        public bool IsLoggedIn
-        {
-            get { return LoginInfo.AuthToken != null; }
-        }
         
+        public bool IsLoggedIn { get; set; }
+       
         public LoginObject LoginInfo
         {
             get
             {
                 _loginInfo = LocalStorage.Instance.LoginInfo ?? new LoginObject();
-
                 return _loginInfo;
             }
             set
@@ -48,32 +42,6 @@ namespace AppDirect.WindowsClient.UI
         public ObservableCollection<Application> SuggestedApplications { get; set; }
         
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public ICommand UninstallAppCommand
-        {
-            get
-            {
-                if (_uninstallApp == null)
-                {
-                    _uninstallApp = new RelayCommand<Application>(Uninstall,
-                        null);
-                }
-                return _uninstallApp;
-            }
-        }
-       
-        public ICommand InstallAppCommand
-        {
-            get
-            {
-                if (_installApp == null)
-                {
-                    return _installApp = new RelayCommand<Application>(Install,    
-                        null);
-                }
-                return _installApp;
-            }
-        }
 
         public MainViewModel()
         {
@@ -102,8 +70,8 @@ namespace AppDirect.WindowsClient.UI
             var myAppsList = new List<Application>();
 
             myAppsList.AddRange(LocalStorage.Instance.InstalledLocalApps);
-            
-            if (!String.IsNullOrEmpty(LoginInfo.AuthToken))
+
+            if (!ServiceLocator.CachedAppDirectApi.IsAuthenticated)
             {
                 myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList());
             }
@@ -157,7 +125,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                ServiceLocator.CachedAppDirectApi.Login(loginObject);
+                ServiceLocator.CachedAppDirectApi.Authenticate(loginObject.Key, loginObject.Secret);
                 try
                 {
                     LocalStorage.Instance.LoginInfo = loginObject;
@@ -217,7 +185,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                if (String.IsNullOrEmpty(LoginInfo.AuthToken))
+                if (!ServiceLocator.CachedAppDirectApi.IsAuthenticated)
                 {
                     ClickLoginButton();
                 }
@@ -267,6 +235,5 @@ namespace AppDirect.WindowsClient.UI
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }

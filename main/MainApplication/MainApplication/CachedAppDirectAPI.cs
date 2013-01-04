@@ -120,26 +120,5 @@ namespace AppDirect.WindowsClient
             }
             return appList;
         }
-
-        public bool Login(LoginObject loginInfo)
-        {
-            //Temporary condition to test behavior for failed login
-            if (loginInfo.UserName == "error")
-            {
-                return false;
-            }
-
-            try
-            {
-                //make call to API to login
-                Authenticate(loginInfo.UserName, loginInfo.Password);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            
-            return IsAuthenticated;
-        }
     }
 }

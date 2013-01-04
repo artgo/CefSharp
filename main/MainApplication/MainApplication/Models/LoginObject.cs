@@ -11,6 +11,8 @@ namespace AppDirect.WindowsClient.Models
 
         public string Password { get; set; }
 
-        public string AuthToken { get; set; }
+        public string Key { get; set; }
+
+        public string Secret { get; set; }
     }
 }
