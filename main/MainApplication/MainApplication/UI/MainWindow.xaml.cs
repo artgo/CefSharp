@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using AppDirect.WindowsClient.Models;
+using AppDirect.WindowsClient.Storage;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -11,6 +12,9 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const string MustLoginMessage = "You must log in to access ";
+
+
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -23,23 +27,7 @@ namespace AppDirect.WindowsClient.UI
             Left = SystemParameters.WorkArea.Right * .003;
             Top = SystemParameters.WorkArea.Bottom - Height;
         }
-        
-        private void ClickLogin(object sender, RoutedEventArgs e)
-        {
-            YourApps.Visibility = Visibility.Hidden;
-            SettingsGridView.Visibility = Visibility.Visible;
-            //if (ViewModel.IsLoggedIn)
-            //{
-            //    ViewModel.Logout();
-            //    return;
-            //}
-
-            //_loginWindow = new LoginWindow();
-            //_loginWindow.Left = Left + Width;
-            //_loginWindow.Top = Top;
-            //_loginWindow.ShowDialog();
-        }
-        
+      
         private void GoToAppStore(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://appcenter.staples.com/home");
@@ -58,33 +46,32 @@ namespace AppDirect.WindowsClient.UI
 
         private void Login(object sender, RoutedEventArgs e)
         {
-            var loginObject = new LoginObject
-                {
-                    Password = PasswordTextBox.Text,
-                    UserName = UsernameTextBox.Text
-                };
-
             try
             {
-                ViewModel.Login(loginObject);
-
-                YourApps.Visibility = Visibility.Visible;
-                SettingsGridView.Visibility = Visibility.Hidden;
+                if (ViewModel.Login(UsernameTextBox.Text, PasswordTextBox.Text))
+                {
+                    YourAppsTab.IsSelected = true;
+                }
+                else
+                {
+                    LoginFailedMessage.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Login Failed: " + ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void InstallAppClick(object sender, RoutedEventArgs e)
         {
             Application clickedApp = ((Button)sender).DataContext as Application;
          
-            if (!clickedApp.IsLocalApp && !ViewModel.IsLoggedIn)
+            if (!clickedApp.IsLocalApp && LocalStorage.Instance.LoginInfo == null)
             {
-                YourApps.Visibility = Visibility.Hidden;
-                SettingsGridView.Visibility = Visibility.Visible;
+                YouMustBeLoggedInMessage.Text = MustLoginMessage + clickedApp.Name;
+                YouMustBeLoggedInMessage.Visibility = Visibility.Visible;
+                SettingsTab.IsSelected = true;
             }
             else
             {

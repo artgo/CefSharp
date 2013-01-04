@@ -5,6 +5,8 @@ using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
+using Ninject;
 
 namespace AppDirect.WindowsClient.Tests
 {
@@ -16,10 +18,25 @@ namespace AppDirect.WindowsClient.Tests
         private const string FileName = @"\AppDirect\LocalStorage";
         private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
+        private const string UserName = "appdqa+t75adsa@gmail.com";
+        private const string Password = "origo2010";
+
         [TestInitialize]
-        public void TestInitialize()
+        public void Initialize()
         {
+            var appDirectApiMock = Substitute.For<IAppDirectApi>();
+            var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
+
+            cachedAppDirectApiMock.Authenticate(UserName, Password).Returns(true);
+
+            IKernel Kernel = new StandardKernel();
+            Kernel.Bind<IAppDirectApi>().ToConstant(appDirectApiMock);
+            Kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
+
+            ServiceLocator.Kernel = Kernel;
+            
             File.Delete();
+
             _mainViewModel = new MainViewModel();
         }
 
@@ -36,27 +53,40 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         [TestMethod]
-        public void LoginIsStored()
+        public void ValidLoginIsStored()
         {
-            LoginObject loginObject = new LoginObject {Password = "PasswordTest", UserName = "UsernameTest"};
+            LoginObject loginObject = new LoginObject {Password = Password, UserName = UserName};
+            
+            Assert.IsTrue(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
 
-            _mainViewModel.Login(loginObject);
+            Assert.AreEqual(loginObject.UserName, LocalStorage.Instance.LoginInfo.UserName);
+            Assert.AreEqual(loginObject.Password, LocalStorage.Instance.LoginInfo.Password);
+        }
 
-            Assert.AreEqual(loginObject.UserName, _mainViewModel.LoginInfo.UserName);
-            Assert.AreEqual(loginObject.Password, _mainViewModel.LoginInfo.Password);
-            Assert.IsTrue(_mainViewModel.IsLoggedIn);
+        [TestMethod]
+        public void IncorrectLoginIsNotStored()
+        {
+            LocalStorage.Instance.ForceReloadFromFile();
+
+            LoginObject loginObject = new LoginObject { Password = "WrongPassword", UserName = UserName };
+
+            Assert.IsFalse(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
+
+            Assert.IsNull(LocalStorage.Instance.LoginInfo);
         }
 
         [TestMethod]
         public void LogOutRemovesLoginInfo()
         {
-            LoginObject loginObject = new LoginObject { Password = "PasswordTest", UserName = "UsernameTest" };
-            _mainViewModel.Login(loginObject);
 
-            Assert.IsTrue(_mainViewModel.IsLoggedIn);
+            LoginObject loginObject = new LoginObject { Password = Password, UserName = UserName };
+
+            Assert.IsTrue(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
+            Assert.IsNotNull(LocalStorage.Instance.LoginInfo);
+
             _mainViewModel.Logout();
 
-            Assert.IsFalse(_mainViewModel.IsLoggedIn); ;
+            Assert.IsNull(LocalStorage.Instance.LoginInfo); ;
         }
 
         [TestMethod]
@@ -75,7 +105,11 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void UninstallLocalApplicationIncrementsSuggestedApplicationsDecrementsMyApplications()
         {
-            var app = _mainViewModel.MyApplications.First(a => a.IsLocalApp);
+            _mainViewModel.MyApplications.Clear();
+            var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
+            _mainViewModel.Install(app);
+
+            Assert.IsTrue(_mainViewModel.MyApplications.Contains(app));
             _mainViewModel.Uninstall(app);
 
             Assert.IsTrue(_mainViewModel.SuggestedApplications.Contains(app));

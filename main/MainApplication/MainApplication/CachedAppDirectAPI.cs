@@ -59,9 +59,9 @@ namespace AppDirect.WindowsClient
             set { _suggestedApps = value; }
         }
 
-        public void Authenticate(string key, string secret)
+        public bool Authenticate(string key, string secret)
         {
-            _appDirectApi.Authenticate(key, secret);
+            return _appDirectApi.Authenticate(key, secret);
         }
 
         public bool IsAuthenticated

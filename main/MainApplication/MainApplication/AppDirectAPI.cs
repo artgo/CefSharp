@@ -84,7 +84,7 @@ namespace AppDirect.WindowsClient
             }
         }
 
-        public void Authenticate(string key, string secret)
+        public bool Authenticate(string key, string secret)
         {
             HttpWebRequest request = BuildHttpWebRequestForUrl(DomainPrefix + @"/login?1434449477-1.IFormSubmitListener-loginpanel-signInForm", true, false);
             var cookies = new CookieContainer();
@@ -104,7 +104,7 @@ namespace AppDirect.WindowsClient
             string result = reader.ReadToEnd();
             if ((response.StatusCode != HttpStatusCode.OK) || String.IsNullOrEmpty(result) || (!result.Contains("myAppsPage")))
             {
-                throw new AuthenticationException("Wrong credentials");
+                return false;
             }
 
             for ( int j = 0; j < response.Cookies.Count; j++ ) 
@@ -125,6 +125,8 @@ namespace AppDirect.WindowsClient
 
             _time = DateTime.Now;
             _context = cookies;
+
+            return true;
         }
     }
 }

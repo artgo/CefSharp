@@ -9,11 +9,20 @@ namespace AppDirect.WindowsClient
 {
     public class ServiceLocator
     {
+        public static IKernel Kernel;
+
         private ServiceLocator() {}
 
         public static ICachedAppDirectApi CachedAppDirectApi
         {
-            get { return App.Kernel.Get<ICachedAppDirectApi>(); }
-        } 
+            get { return Kernel.Get<ICachedAppDirectApi>(); }
+        }
+
+        public static void Initialize()
+        {
+            Kernel = new StandardKernel();
+            Kernel.Bind<IAppDirectApi>().To<AppDirectApi>();
+            Kernel.Bind<ICachedAppDirectApi>().To<CachedAppDirectApi>();
+        }
     }
 }

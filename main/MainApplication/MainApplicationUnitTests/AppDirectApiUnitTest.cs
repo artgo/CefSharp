@@ -8,7 +8,7 @@ namespace AppDirect.WindowsClient.Tests
     public class AppDirectApiUnitTest
     {
         [TestMethod]
-        public void TestDataIsNullForMyAppsNonAuthenticated()
+        public void DataIsNullForMyAppsNonAuthenticated()
         {
             var apps = new AppDirectApi().MyApps;
 
@@ -16,7 +16,7 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         [TestMethod]
-        public void TestDataIsReturnedForSuggestedApps()
+        public void DataIsReturnedForSuggestedApps()
         {
             var apps = new AppDirectApi().SuggestedApps;
 

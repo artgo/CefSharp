@@ -7,6 +7,6 @@ namespace AppDirect.WindowsClient
         MyappsMyapp[] MyApps { get; }
         WebApplicationsListApplication[] SuggestedApps { get; }
         bool IsAuthenticated { get; }
-        void Authenticate(string key, string secret);
+        bool Authenticate(string key, string secret);
     }
 }

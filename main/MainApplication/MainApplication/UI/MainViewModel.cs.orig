@@ -20,8 +20,25 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
+        private LoginObject _loginInfo;
         private const int MyAppDisplayLimit = 10;
-      
+        
+        public bool IsLoggedIn { get; set; }
+       
+        public LoginObject LoginInfo
+        {
+            get
+            {
+                _loginInfo = LocalStorage.Instance.LoginInfo ?? new LoginObject();
+                return _loginInfo;
+            }
+            set
+            {
+                _loginInfo = value;
+                NotifyPropertyChanged("LoginInfo");
+            }
+        }
+
         public ObservableCollection<Application> MyApplications { get; set; }
         public ObservableCollection<Application> SuggestedApplications { get; set; }
         
@@ -55,7 +72,7 @@ namespace AppDirect.WindowsClient.UI
 
             myAppsList.AddRange(LocalStorage.Instance.InstalledLocalApps);
 
-            if (LocalStorage.Instance.LoginInfo != null)
+            if (!ServiceLocator.CachedAppDirectApi.IsAuthenticated)
             {
                 myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList());
             }
@@ -88,7 +105,7 @@ namespace AppDirect.WindowsClient.UI
 
             var myAppIds = MyApplications.Select(a => a.Id).ToList();
 
-            suggestedAppsList.AddRange(ServiceLocator.Kernel.Get<ICachedAppDirectApi>().SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+            suggestedAppsList.AddRange(App.Kernel.Get<ICachedAppDirectApi>().SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
 
             SuggestedApplications.Clear();
 
@@ -105,19 +122,29 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public bool Login(string username, string password)
+        public void Login(LoginObject loginObject)
         {
-            if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
+            try
             {
-                LocalStorage.Instance.LoginInfo = new LoginObject{UserName = username, Password = password};
-                LocalStorage.Instance.SaveAppSettings();
-
-                GetMyApplications();
-                GetSuggestedApplications();
-                return true;
+                ServiceLocator.CachedAppDirectApi.Authenticate(loginObject.Key, loginObject.Secret);
+                try
+                {
+                    LocalStorage.Instance.LoginInfo = loginObject;
+                    LocalStorage.Instance.SaveAppSettings();
+                    LoginInfo = LocalStorage.Instance.LoginInfo;
+                    
+                    GetMyApplications();
+                    GetSuggestedApplications();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Failed to save login info to local storage");
+                }
             }
-
-            return false;
+            catch (Exception e)
+            {
+                MessageBox.Show("Login Failed: " + e.Message);
+            }
         }
 
         public void Uninstall(Application application)
@@ -138,9 +165,10 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                MessageBox.Show("Contact your administrator to uninstall this application");
-                //TODO: Determine if AppDirect apps can be uninstalled by Users
                 //Start asynchronous call to Api to remove application
+
+                ServiceLocator.CachedAppDirectApi.SuggestedApps.Add(application);
+                //ServiceLocator.CachedAppDirectApi.MyApps.RemoveAll(a => a.Id == application.Id);
             }
             
             GetSuggestedApplications();
@@ -158,8 +186,24 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                MessageBox.Show("Contact your administrator to install this application");
-                //TODO: Determine if some AppDirect Apps will be installable by a user
+                if (!ServiceLocator.CachedAppDirectApi.IsAuthenticated)
+                {
+                    return;
+                }
+
+                string localFilename = Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + application.Id + ".ico";
+
+                using (WebClient client = new WebClient())
+                {
+                    client.DownloadFile(application.ImagePath, localFilename);
+                }
+
+                application.ImagePath = Path.GetFullPath(localFilename);
+
+                //Start asynchronous call to Api to add application
+
+                ServiceLocator.CachedAppDirectApi.MyApps.Add(application);
+                ServiceLocator.CachedAppDirectApi.SuggestedApps.Remove(application);
             }
 
             GetMyApplications();
@@ -168,8 +212,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void Logout()
         {
-            LocalStorage.Instance.LoginInfo = null;
-            
+            LocalStorage.Instance.LoginInfo = new LoginObject();
             GetMyApplications();
             GetSuggestedApplications();
         }
