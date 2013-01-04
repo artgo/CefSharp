@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="myapps" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="myapps" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="myapp">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="description" type="xs:string" minOccurs="0" />
+              <xs:element name="developerName" type="xs:string" minOccurs="0" />
+              <xs:element name="imageUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="loginUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="marketplaceUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="name" type="xs:string" minOccurs="0" />
+              <xs:element name="overview" type="xs:string" minOccurs="0" />
+              <xs:element name="productType" type="xs:string" minOccurs="0" />
+              <xs:element name="publishedOn" type="xs:string" minOccurs="0" />
+              <xs:element name="status" type="xs:string" minOccurs="0" />
+              <xs:element name="versions" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="key" type="xs:string" minOccurs="0" />
+                          <xs:element name="values" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element maxOccurs="unbounded" minOccurs="0" name="value" type="xs:string"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
