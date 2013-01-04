@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
+using Ninject;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -104,7 +105,7 @@ namespace AppDirect.WindowsClient.UI
             
             if (!String.IsNullOrEmpty(LoginInfo.AuthToken))
             {
-                myAppsList.AddRange(CachedAppDirectApi.Instance.MyApps.ToList());
+                myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList());
             }
 
             MyApplications.Clear();
@@ -135,7 +136,7 @@ namespace AppDirect.WindowsClient.UI
 
             var myAppIds = MyApplications.Select(a => a.Id).ToList();
 
-            suggestedAppsList.AddRange(CachedAppDirectApi.Instance.SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+            suggestedAppsList.AddRange(App.Kernel.Get<ICachedAppDirectApi>().SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
 
             SuggestedApplications.Clear();
 
@@ -156,7 +157,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                CachedAppDirectApi.Instance.Login(loginObject);
+                ServiceLocator.CachedAppDirectApi.Login(loginObject);
                 try
                 {
                     LocalStorage.Instance.LoginInfo = loginObject;
@@ -197,8 +198,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 //Start asynchronous call to Api to remove application
 
-                CachedAppDirectApi.Instance.SuggestedApps.Add(application);
-                CachedAppDirectApi.Instance.MyApps.RemoveAll(a => a.Id == application.Id);
+                ServiceLocator.CachedAppDirectApi.SuggestedApps.Add(application);
+                //ServiceLocator.CachedAppDirectApi.MyApps.RemoveAll(a => a.Id == application.Id);
             }
             
             GetSuggestedApplications();
@@ -232,8 +233,8 @@ namespace AppDirect.WindowsClient.UI
 
                 //Start asynchronous call to Api to add application
 
-                CachedAppDirectApi.Instance.MyApps.Add(application);
-                CachedAppDirectApi.Instance.SuggestedApps.Remove(application);
+                ServiceLocator.CachedAppDirectApi.MyApps.Add(application);
+                ServiceLocator.CachedAppDirectApi.SuggestedApps.Remove(application);
             }
 
             GetSuggestedApplications();

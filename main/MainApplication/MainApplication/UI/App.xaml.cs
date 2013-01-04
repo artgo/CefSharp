@@ -14,11 +14,13 @@ namespace AppDirect.WindowsClient.UI
     {
         public static IKernel Kernel { get; private set; }
 
-        private void Application_Startup(object sender, StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
             Kernel = new StandardKernel();
             Kernel.Bind<IAppDirectApi>().To<AppDirectApi>();
             Kernel.Bind<ICachedAppDirectApi>().To<CachedAppDirectApi>();
+
+            base.OnStartup(e);
         }
     }
 }

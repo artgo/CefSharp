@@ -9,7 +9,6 @@ using System.Xml.Serialization;
 using AppDirect.WindowsClient.ObjectMapping;
 using System.Web;
 using System.Web.Script.Serialization;
-using Newtonsoft.Json;
 
 namespace AppDirect.WindowsClient
 {

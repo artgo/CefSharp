@@ -3,37 +3,36 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using AppDirect.WindowsClient.ObjectMapping;
+using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.ObjectMapping;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient
 {
-    public class CachedAppDirectApi : ICachedAppDirectApi
+    /// <summary>
     /// Represents a Cached AppDirect Web Api
     /// </summary>
+    public class CachedAppDirectApi : ICachedAppDirectApi
     {
         private readonly IAppDirectApi _appDirectApi;
-        private ObservableCollection<Application> _myApps;
         private const int MaxApps = 10;
-        private List<Application> _suggestedApps;
-        private List<Application> _myApps; 
-
+        private IList<Application> _suggestedApps;
+        private IList<Application> _myApps; 
 
         public CachedAppDirectApi(IAppDirectApi appDirectApi)
         {
             _appDirectApi = appDirectApi;
         }
 
-        public ObservableCollection<Application> MyApps
+        public IList<Application> MyApps
         {
             get
             {
                 MyappsMyapp[] myApps = _appDirectApi.MyApps;
-                {
+                
                 if (_myApps == null)
                 {
-                    _myApps = ConvertList(new ObservableCollection<Application>(), myApps);
+                    _myApps = ConvertList(new List<Application>(), myApps);
                 }
                 else
                 {
@@ -45,7 +44,7 @@ namespace AppDirect.WindowsClient
             }
         }
 
-        public ObservableCollection<Application> SuggestedApps
+        public IList<Application> SuggestedApps
         {
             get
             {
@@ -53,7 +52,7 @@ namespace AppDirect.WindowsClient
                 {
 
                     WebApplicationsListApplication[] suggestedApps = _appDirectApi.SuggestedApps;
-                return ConvertList(new ObservableCollection<Application>(), suggestedApps);
+                return ConvertList(new List<Application>(), suggestedApps);
                 }
                 return _suggestedApps;
             }
@@ -70,7 +69,7 @@ namespace AppDirect.WindowsClient
             get { return _appDirectApi.IsAuthenticated; }
         }
 
-        private static ObservableCollection<Application> ConvertList(ObservableCollection<Application> appList, WebApplicationsListApplication[] myApps)
+        private static IList<Application> ConvertList(IList<Application> appList, WebApplicationsListApplication[] myApps)
         {
             int appN = 0;
 
@@ -86,7 +85,7 @@ namespace AppDirect.WindowsClient
                         Description = applicationsApplication.Description,
                         Id = applicationsApplication.Id,
                         Name = applicationsApplication.Name,
-                        Url = new Uri(applicationsApplication.Href)
+                        UrlString = applicationsApplication.Href,
                         ImagePath = applicationsApplication.IconUrl,
                         IsLocalApp = false,
                     };
@@ -100,7 +99,7 @@ namespace AppDirect.WindowsClient
             return appList;
         }
 
-        private static ObservableCollection<Application> ConvertList(ObservableCollection<Application> appList, MyappsMyapp[] myApps)
+        private static IList<Application> ConvertList(IList<Application> appList, MyappsMyapp[] myApps)
         {
             if (myApps == null)
             {
@@ -115,7 +114,7 @@ namespace AppDirect.WindowsClient
                     Id = applicationsApplication.MarketplaceUrl,
                     ImagePath = applicationsApplication.ImageUrl,
                     Name = applicationsApplication.Name,
-                    Url = new Uri(applicationsApplication.MarketplaceUrl)
+                    UrlString = applicationsApplication.MarketplaceUrl
                 };
                 appList.Add(app);
             }
@@ -133,16 +132,14 @@ namespace AppDirect.WindowsClient
             try
             {
                 //make call to API to login
-
-                //Mock assignment of an authToken
-                loginInfo.AuthToken = "MockAuthToken";
+                Authenticate(loginInfo.UserName, loginInfo.Password);
             }
             catch (Exception)
             {
-                MessageBox.Show("Login was unsuccessful");
+                return false;
             }
             
-            return true;
+            return IsAuthenticated;
         }
     }
 }

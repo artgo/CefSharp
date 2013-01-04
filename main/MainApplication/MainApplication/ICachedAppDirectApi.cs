@@ -1,12 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using AppDirect.WindowsClient.Models;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient
 {
     public interface ICachedAppDirectApi
     {
-        ObservableCollection<Application> MyApps { get; }
-        ObservableCollection<Application> SuggestedApps { get; }
+        IList<Application> MyApps { get; }
+        IList<Application> SuggestedApps { get; }
         bool IsAuthenticated { get; }
         void Authenticate(string key, string secret);
+        bool Login(LoginObject loginInfo);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AppDirect.WindowsClient.ObjectMapping;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient
 {
     public interface IAppDirectApi
     {

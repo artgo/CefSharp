@@ -89,8 +89,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>myapps.xsd</DependentUpon>
-    </Compile>    
+    </Compile>
     <Compile Include="Models\LoginObject.cs" />
+    <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
     <Compile Include="UI\RelayCommand.cs" />
     <Compile Include="UI\TemplateSelector.cs" />
@@ -201,9 +202,6 @@
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
