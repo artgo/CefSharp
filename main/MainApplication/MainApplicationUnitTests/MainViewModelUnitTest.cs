@@ -45,8 +45,6 @@ namespace AppDirect.WindowsClient.Tests
             Assert.AreEqual(loginObject.UserName, _mainViewModel.LoginInfo.UserName);
             Assert.AreEqual(loginObject.Password, _mainViewModel.LoginInfo.Password);
             Assert.IsNotNull(_mainViewModel.LoginInfo.AuthToken);
-
-            Assert.AreEqual("Log Out", _mainViewModel.LoginButtonDisplayText);
         }
 
         [TestMethod]
@@ -59,7 +57,6 @@ namespace AppDirect.WindowsClient.Tests
             _mainViewModel.Logout();
 
             Assert.IsNull(_mainViewModel.LoginInfo.AuthToken);
-            Assert.AreEqual("Log In", _mainViewModel.LoginButtonDisplayText);
         }
 
         [TestMethod]

@@ -38,8 +38,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 ViewModel.Login(loginObject);
                 Close();
-
-                ViewModel.LoginButtonDisplayText = "Log Out";
             }
             catch (Exception ex)
             {
