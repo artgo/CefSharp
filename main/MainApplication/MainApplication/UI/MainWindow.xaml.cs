@@ -1,4 +1,8 @@
+using System;
 using System.Windows;
+using System.Windows.Controls;
+using AppDirect.WindowsClient.Models;
+using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -7,8 +11,6 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private LoginWindow _loginWindow;
-
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -37,12 +39,7 @@ namespace AppDirect.WindowsClient.UI
             //_loginWindow.Top = Top;
             //_loginWindow.ShowDialog();
         }
-
-        private void CollapseLogin(object sender, RoutedEventArgs e)
-        {
-            _loginWindow.Close();
-        }
-
+        
         private void GoToAppStore(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://appcenter.staples.com/home");
