@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MainApplication.Properties
+namespace AppDirect.WindowsClient.Properties
 {
 
 

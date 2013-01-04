@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using MainApplication;
+﻿using System.Collections.Generic;
+using AppDirect.WindowsClient.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MainApplicationUnitTests
+namespace AppDirect.WindowsClient.Tests
 {
     [TestClass]
     public class CachedAppDirectApiUnitTest

@@ -1,8 +1,7 @@
-﻿using MainApplication;
+﻿using AppDirect.WindowsClient.ObjectMapping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using com.appdirect.WindowsClient.DataAccess;
 
-namespace MainApplicationUnitTests
+namespace AppDirect.WindowsClient.Tests
 {
     [TestClass]
     public class AppDirectApiUnitTest

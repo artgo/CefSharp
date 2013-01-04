@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
-namespace MainApplication
-{
+namespace AppDirect.WindowsClient.UI
+{    
+    ///<summary>
+    /// Represents A Command That Can Be Called Directly By The View
+    ///</summary>
     public class RelayCommand<T> : ICommand
     {
         public RelayCommand(Action<T> execute)

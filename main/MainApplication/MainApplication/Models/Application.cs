@@ -1,24 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
-using System.Xml.Serialization;
+using AppDirect.WindowsClient.UI;
 
-namespace MainApplication
+namespace AppDirect.WindowsClient.Models
 {
+    ///<summary>
+    /// Represents an Application of the sort that AppDirect distributes 
+    ///</summary>
     [Serializable]
     public class Application
     {
         private ICommand _launchApp;
-
         public string Id { get; set; } 
         public string Name { get; set; }
         public string ImagePath { get; set; }
         public string Description { get; set; }
-        public Uri URL { get; set; }
         public int AlertCount { get; set; }
-
+        public bool IsLocalApp { get; set; }
+        public string UrlString { get; set; }
+        
         public ICommand LaunchApp
         {
             get
@@ -34,7 +34,7 @@ namespace MainApplication
 
         private void Launch()
         {
-            System.Diagnostics.Process.Start("iexplore.exe", URL.AbsoluteUri);
+            System.Diagnostics.Process.Start("iexplore.exe", UrlString);
         }
     }
 }
