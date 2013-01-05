@@ -58,6 +58,15 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         [TestMethod]
+        public void CachedUnAuthenticateCallsUnAuthenticate()
+        {
+            var appDirectApiMock = Substitute.For<IAppDirectApi>();
+            var api = new CachedAppDirectApi(appDirectApiMock);
+            api.UnAuthenticate();
+            appDirectApiMock.ReceivedWithAnyArgs().UnAuthenticate();
+        }
+
+        [TestMethod]
         public void AuthenticationFailsForWrongCredentials()
         {
             var appDirectApi = BuildCachedAppDirectApi();
@@ -108,7 +117,7 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         [TestMethod]
-        public void SomeMyAppsAerThereAfterAuthentication()
+        public void SomeMyAppsAreThereAfterAuthentication()
         {
             var appDirectApi = BuildCachedAppDirectApiAuthenticated();
             var apps = appDirectApi.MyApps;

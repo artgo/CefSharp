@@ -64,6 +64,11 @@ namespace AppDirect.WindowsClient
             return _appDirectApi.Authenticate(key, secret);
         }
 
+        public void UnAuthenticate()
+        {
+            _appDirectApi.UnAuthenticate();
+        }
+
         public bool IsAuthenticated
         {
             get { return _appDirectApi.IsAuthenticated; }

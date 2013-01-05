@@ -21,8 +21,8 @@ namespace AppDirect.WindowsClient
         public static void Initialize()
         {
             Kernel = new StandardKernel();
-            Kernel.Bind<IAppDirectApi>().To<AppDirectApi>();
-            Kernel.Bind<ICachedAppDirectApi>().To<CachedAppDirectApi>();
+            Kernel.Bind<IAppDirectApi>().ToConstant(new AppDirectApi());
+            Kernel.Bind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
         }
     }
 }

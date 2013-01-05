@@ -8,5 +8,6 @@ namespace AppDirect.WindowsClient
         WebApplicationsListApplication[] SuggestedApps { get; }
         bool IsAuthenticated { get; }
         bool Authenticate(string key, string secret);
+        void UnAuthenticate();
     }
 }

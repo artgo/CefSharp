@@ -78,7 +78,7 @@ namespace AppDirect.WindowsClient
             {
                 if ((_context != null) && (DateTime.Now - _time) > (new TimeSpan(0, 1, 0, 0)))
                 {
-                    _context = null;
+                    UnAuthenticate();
                 }
                 return _context != null;
             }
@@ -127,6 +127,11 @@ namespace AppDirect.WindowsClient
             _context = cookies;
 
             return true;
+        }
+
+        public void UnAuthenticate()
+        {
+            _context = null;
         }
     }
 }

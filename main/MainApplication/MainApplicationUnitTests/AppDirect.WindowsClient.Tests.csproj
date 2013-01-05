@@ -63,6 +63,7 @@
     <Compile Include="MainViewModelUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CachedAppDirectApiUnitTest.cs" />
+    <Compile Include="ServiceLocatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MainApplication\AppDirect.WindowsClient.csproj">
