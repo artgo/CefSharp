@@ -23,6 +23,7 @@ namespace AppDirect.WindowsClient.UI
     {
         private const int MyAppDisplayLimit = 10;
         private string _myAppsLoadError = String.Empty;
+        private string _suggestedAppsLoadError = String.Empty;
 
         public string MyAppsLoadError
         {
@@ -31,6 +32,16 @@ namespace AppDirect.WindowsClient.UI
             {
                 _myAppsLoadError = value;
                 NotifyPropertyChanged("MyAppsLoadError");
+            }
+        }
+
+        public string SuggestedAppsLoadError
+        {
+            get { return _suggestedAppsLoadError; }
+            set
+            {
+                _suggestedAppsLoadError = value;
+                NotifyPropertyChanged("SuggestedAppsLoadError");
             }
         }
 
@@ -111,10 +122,11 @@ namespace AppDirect.WindowsClient.UI
             try
             {
                 suggestedAppsList.AddRange(ServiceLocator.CachedAppDirectApi.SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+                SuggestedAppsLoadError = String.Empty;
             }
             catch (Exception e)
             {
-                MyAppsLoadError = e.Message;
+                SuggestedAppsLoadError = e.Message;
             }
 
             SuggestedApplications.Clear();
