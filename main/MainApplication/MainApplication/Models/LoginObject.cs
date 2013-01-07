@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient.Models
 {
@@ -9,5 +10,6 @@ namespace AppDirect.WindowsClient.Models
     {
         public string UserName { get; set; }
         public string Password { get; set; }
+
     }
 }

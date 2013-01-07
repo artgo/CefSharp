@@ -54,7 +54,7 @@ namespace AppDirect.WindowsClient.Storage
             }
         }
         
-        [XmlIgnore]
+        
         public LoginObject LoginInfo{get;set;}
 
         private static LocalStorage LoadLocalStorage()
