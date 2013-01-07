@@ -22,8 +22,17 @@ namespace AppDirect.WindowsClient.UI
 
         public MainWindow()
         {
-            InitializeComponent();
+            try
+            {
+                DataContext = new MainViewModel();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
 
+            InitializeComponent();
+            
             Left = SystemParameters.WorkArea.Right * .003;
             Top = SystemParameters.WorkArea.Bottom - Height;
         }
@@ -65,25 +74,39 @@ namespace AppDirect.WindowsClient.UI
 
         private void InstallAppClick(object sender, RoutedEventArgs e)
         {
-            Application clickedApp = ((Button)sender).DataContext as Application;
-         
-            if (!clickedApp.IsLocalApp && LocalStorage.Instance.LoginInfo == null)
+            try
             {
-                YouMustBeLoggedInMessage.Text = MustLoginMessage + clickedApp.Name;
-                YouMustBeLoggedInMessage.Visibility = Visibility.Visible;
-                SettingsTab.IsSelected = true;
+                Application clickedApp = ((Button)sender).DataContext as Application;
+
+                if (!clickedApp.IsLocalApp && LocalStorage.Instance.LoginInfo == null)
+                {
+                    YouMustBeLoggedInMessage.Text = MustLoginMessage + clickedApp.Name;
+                    YouMustBeLoggedInMessage.Visibility = Visibility.Visible;
+                    SettingsTab.IsSelected = true;
+                }
+                else
+                {
+                    ViewModel.Install(clickedApp);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ViewModel.Install(clickedApp);
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)
         {
-            Application clickedApp = ((MenuItem)sender).DataContext as Application;
+            try
+            {
+                Application clickedApp = ((MenuItem)sender).DataContext as Application;
 
-            ViewModel.Uninstall(clickedApp);
+                ViewModel.Uninstall(clickedApp);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

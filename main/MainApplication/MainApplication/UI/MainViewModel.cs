@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,10 +22,21 @@ namespace AppDirect.WindowsClient.UI
     public class MainViewModel : INotifyPropertyChanged
     {
         private const int MyAppDisplayLimit = 10;
-      
+        private string _errorMessage = "";
+
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                NotifyPropertyChanged("ErrorMessage");
+            }
+        }
+
         public ObservableCollection<Application> MyApplications { get; set; }
         public ObservableCollection<Application> SuggestedApplications { get; set; }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainViewModel()
@@ -55,9 +67,16 @@ namespace AppDirect.WindowsClient.UI
 
             myAppsList.AddRange(LocalStorage.Instance.InstalledLocalApps);
 
-            if (LocalStorage.Instance.LoginInfo != null)
+            if (LocalStorage.Instance.HasCredentials)
             {
-                myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList());
+                try
+                {
+                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList());
+                }
+                catch (Exception e)
+                {
+                    ErrorMessage = e.Message;
+                }
             }
 
             MyApplications.Clear();
@@ -88,7 +107,14 @@ namespace AppDirect.WindowsClient.UI
 
             var myAppIds = MyApplications.Select(a => a.Id).ToList();
 
-            suggestedAppsList.AddRange(ServiceLocator.Kernel.Get<ICachedAppDirectApi>().SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+            try
+            {
+                suggestedAppsList.AddRange(ServiceLocator.CachedAppDirectApi.SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+            }
 
             SuggestedApplications.Clear();
 
@@ -138,7 +164,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                MessageBox.Show("Contact your administrator to uninstall this application");
+                MessageBox.Show(AppDirect.WindowsClient.Properties.Resources.UninstallAppDirectApp);
                 //TODO: Determine if AppDirect apps can be uninstalled by Users
                 //Start asynchronous call to Api to remove application
             }

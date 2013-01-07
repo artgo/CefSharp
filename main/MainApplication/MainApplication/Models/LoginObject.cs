@@ -8,11 +8,6 @@ namespace AppDirect.WindowsClient.Models
     public class LoginObject
     {
         public string UserName { get; set; }
-
         public string Password { get; set; }
-
-        public string Key { get; set; }
-
-        public string Secret { get; set; }
     }
 }

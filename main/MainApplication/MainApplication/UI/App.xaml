@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:viewmodel="clr-namespace:AppDirect.WindowsClient.UI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <viewmodel:MainViewModel x:Key="MainViewModel"></viewmodel:MainViewModel>
         <LinearGradientBrush x:Key="GrayToBlackGradiant" StartPoint="0,0" EndPoint="0,1" >
             <GradientStop Color="#4c4c4c" Offset="0"/>
             <GradientStop Color="#292929" Offset="0.05"/>

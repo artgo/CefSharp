@@ -6,8 +6,7 @@
         WindowStartupLocation="Manual" 
         Background="Transparent"
         WindowStyle="None"
-        AllowsTransparency="True"
-        DataContext="{DynamicResource MainViewModel}">
+        AllowsTransparency="True">
     <Window.Resources>
         <ContextMenu x:Key="UninstallContextMenu">
             <MenuItem Header="Uninstall" Click="UninstallAppClick" DataContext="{Binding}"/>
@@ -61,7 +60,7 @@
               AppDataTemplate="{StaticResource AppDataTemplate}"
               AppDataWithAlertTemplate="{StaticResource AppDataWithAlertTemplate}"/>
     </Window.Resources>
-    <Grid Name="ContentGrid" DataContext="{Binding Source={StaticResource MainViewModel}}" Margin="0,0,0,0" >
+    <Grid Name="ContentGrid" Margin="0,0,0,0" >
         <Rectangle Fill="#0b1318" HorizontalAlignment="Left" Width="40" Margin="0,0,0,0"/>
         <Rectangle Fill="#181e1f" Opacity="0.92" HorizontalAlignment="Left" Width="600" Margin="40,0,0,0"/>
         <TabControl Background="Transparent" HorizontalAlignment="Left" Width="440" BorderThickness="0" TabStripPlacement="Left">
@@ -124,6 +123,7 @@
         </Button>
         <Label Name="SuggestedAppsLabel" Foreground="White" Content="Popular One-click Installs" HorizontalAlignment="Left" Margin="441,24.04,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.539" Grid.ColumnSpan="2"/>
         <Image Source="Images\Line.png" Margin="421.5,50,0,77" HorizontalAlignment="Left" Width="19.5" Grid.ColumnSpan="2" />
+        <Button Style="{DynamicResource BorderlessButton}" Content="{Binding ErrorMessage}"  HorizontalAlignment="Left" Margin="57,292,0,0" VerticalAlignment="Top" Width="362.993" Height="18.96" Foreground="White"/>
     </Grid>
 </Window>
 
