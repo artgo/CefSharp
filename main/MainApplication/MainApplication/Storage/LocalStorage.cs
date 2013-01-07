@@ -101,5 +101,10 @@ namespace AppDirect.WindowsClient.Storage
                 mySerializer.Serialize(streamWriter, _instance);
             }
         }
+
+        public void ClearLoginCredentials()
+        {
+            Instance.LoginInfo = null;
+        }
     }
 }

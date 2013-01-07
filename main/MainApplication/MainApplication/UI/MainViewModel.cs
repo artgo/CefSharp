@@ -208,7 +208,7 @@ namespace AppDirect.WindowsClient.UI
         public void Logout()
         {
             ServiceLocator.CachedAppDirectApi.UnAuthenticate();
-            LocalStorage.Instance.LoginInfo = null;
+            LocalStorage.Instance.ClearLoginCredentials();
             
             GetMyApplications();
             GetSuggestedApplications();
