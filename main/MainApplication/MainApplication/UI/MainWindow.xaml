@@ -68,8 +68,8 @@
                 <TabItem.Header>
                     <Image Source="Icons/icon.png" Width="28.857" />
                 </TabItem.Header>
-                <Grid Name="YourApps" Margin="10,30" Height="260" Width="360" VerticalAlignment="Top" HorizontalAlignment="Left">
-                    <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" ItemTemplateSelector="{StaticResource TemplateSelector}">
+                <Grid Name="YourApps" Margin="10,30,10,0" Height="260" Width="385" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" ItemTemplateSelector="{StaticResource TemplateSelector}" Margin="0,0,45.993,0">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel IsItemsHost="True"/>
@@ -82,6 +82,10 @@
                             </Style>
                         </ListBox.Resources>
                     </ListBox>
+                    <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal" >
+                        <TextBlock Text="{Binding MyAppsLoadError}"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="345" Height="20" Foreground="White"/>
+                        <Button Name="ReloadMyAppsButton" Visibility="Hidden" Style="{DynamicResource BorderlessButton}" Click="ReloadMyAppsClick" ToolTip="Reload Your Apps" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="20" Height="20" Foreground="White"><Image Source="Images/Reload.png"></Image></Button>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Name="SettingsTab" Background="Transparent" Margin="-2,20,6,-20">
@@ -122,8 +126,6 @@
         <Button Style="{DynamicResource BorderlessButton}" BorderBrush="Transparent" Height="28" Content="Browse Apps" VerticalAlignment="Bottom" Margin="441,0,0,10" Click="GoToAppStore" HorizontalAlignment="Left" Width="133" Grid.ColumnSpan="2">
         </Button>
         <Label Name="SuggestedAppsLabel" Foreground="White" Content="Popular One-click Installs" HorizontalAlignment="Left" Margin="441,24.04,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.539" Grid.ColumnSpan="2"/>
-        <Image Source="Images\Line.png" Margin="421.5,50,0,77" HorizontalAlignment="Left" Width="19.5" Grid.ColumnSpan="2" />
-        <Button Style="{DynamicResource BorderlessButton}" Content="{Binding ErrorMessage}"  HorizontalAlignment="Left" Margin="57,292,0,0" VerticalAlignment="Top" Width="362.993" Height="18.96" Foreground="White"/>
-    </Grid>
+       </Grid>
 </Window>
 

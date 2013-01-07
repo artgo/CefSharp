@@ -42,12 +42,6 @@ namespace AppDirect.WindowsClient.UI
             System.Diagnostics.Process.Start("https://appcenter.staples.com/home");
         }
 
-        private void ViewMyApps(object sender, RoutedEventArgs e)
-        {
-            YourApps.Visibility = Visibility.Visible;
-            SettingsGridView.Visibility = Visibility.Hidden;
-        }
-
          private void ForgotPassword(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://www.appdirect.com/forgotPassword");
@@ -69,6 +63,11 @@ namespace AppDirect.WindowsClient.UI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+
+            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
+            {
+                ReloadMyAppsButton.Visibility = Visibility.Visible;
             }
         }
 
@@ -93,6 +92,11 @@ namespace AppDirect.WindowsClient.UI
             {
                 MessageBox.Show(ex.Message);
             }
+
+            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
+            {
+                ReloadMyAppsButton.Visibility = Visibility.Visible;
+            }
         }
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)
@@ -106,6 +110,22 @@ namespace AppDirect.WindowsClient.UI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+
+            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
+            {
+                ReloadMyAppsButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void ReloadMyAppsClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel.GetMyApplications();
+            ViewModel.GetSuggestedApplications();
+
+            if (String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
+            {
+                ReloadMyAppsButton.Visibility = Visibility.Hidden;
             }
         }
     }

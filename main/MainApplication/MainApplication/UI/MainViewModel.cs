@@ -22,15 +22,15 @@ namespace AppDirect.WindowsClient.UI
     public class MainViewModel : INotifyPropertyChanged
     {
         private const int MyAppDisplayLimit = 10;
-        private string _errorMessage = "";
+        private string _myAppsLoadError = String.Empty;
 
-        public string ErrorMessage
+        public string MyAppsLoadError
         {
-            get { return _errorMessage; }
+            get { return _myAppsLoadError; }
             set
             {
-                _errorMessage = value;
-                NotifyPropertyChanged("ErrorMessage");
+                _myAppsLoadError = value;
+                NotifyPropertyChanged("MyAppsLoadError");
             }
         }
 
@@ -56,7 +56,7 @@ namespace AppDirect.WindowsClient.UI
             GetSuggestedApplications();
         }
 
-        private void GetMyApplications()
+        public void GetMyApplications()
         {
             if (MyApplications == null)
             {
@@ -71,11 +71,12 @@ namespace AppDirect.WindowsClient.UI
             {
                 try
                 {
-                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList());
+                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList()); 
+                    MyAppsLoadError = String.Empty;
                 }
                 catch (Exception e)
                 {
-                    ErrorMessage = e.Message;
+                    MyAppsLoadError = e.Message;
                 }
             }
 
@@ -94,7 +95,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void GetSuggestedApplications()
+        public void GetSuggestedApplications()
         {
             if (SuggestedApplications == null)
             {
@@ -113,7 +114,7 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
-                ErrorMessage = e.Message;
+                MyAppsLoadError = e.Message;
             }
 
             SuggestedApplications.Clear();
