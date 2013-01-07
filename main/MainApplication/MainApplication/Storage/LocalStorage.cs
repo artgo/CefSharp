@@ -16,6 +16,16 @@ namespace AppDirect.WindowsClient.Storage
         private const string AppStoreUrlString = "https://appcenter.staples.com/home";
         private const string FileName = @"\AppDirect\LocalStorage";
         private Uri _appStoreUrl;
+        
+
+        public bool HasCredentials
+        {
+            get
+            {
+                return Instance.LoginInfo != null && Instance.LoginInfo.UserName != null &&
+                       Instance.LoginInfo.Password != null;
+            }
+        }
 
         public static LocalStorage Instance
         {
@@ -90,6 +100,11 @@ namespace AppDirect.WindowsClient.Storage
                 // Serialize this instance of the LocalStorage class to the config file.
                 mySerializer.Serialize(streamWriter, _instance);
             }
+        }
+
+        public void ClearLoginCredentials()
+        {
+            Instance.LoginInfo = null;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,60 +21,34 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
-        private ICommand _uninstallApp;
-        private ICommand _installApp;
-        private LoginObject _loginInfo;
+        private const int MyAppDisplayLimit = 10;
+        private string _myAppsLoadError = String.Empty;
+        private string _suggestedAppsLoadError = String.Empty;
 
-        public bool IsLoggedIn
+        public string MyAppsLoadError
         {
-            get { return LoginInfo.AuthToken != null; }
-        }
-        
-        public LoginObject LoginInfo
-        {
-            get
-            {
-                _loginInfo = LocalStorage.Instance.LoginInfo ?? new LoginObject();
-
-                return _loginInfo;
-            }
+            get { return _myAppsLoadError; }
             set
             {
-                _loginInfo = value;
-                NotifyPropertyChanged("LoginInfo");
+                _myAppsLoadError = value;
+                NotifyPropertyChanged("MyAppsLoadError");
+            }
+        }
+
+        public string SuggestedAppsLoadError
+        {
+            get { return _suggestedAppsLoadError; }
+            set
+            {
+                _suggestedAppsLoadError = value;
+                NotifyPropertyChanged("SuggestedAppsLoadError");
             }
         }
 
         public ObservableCollection<Application> MyApplications { get; set; }
         public ObservableCollection<Application> SuggestedApplications { get; set; }
-        
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        public ICommand UninstallAppCommand
-        {
-            get
-            {
-                if (_uninstallApp == null)
-                {
-                    _uninstallApp = new RelayCommand<Application>(Uninstall,
-                        null);
-                }
-                return _uninstallApp;
-            }
-        }
-       
-        public ICommand InstallAppCommand
-        {
-            get
-            {
-                if (_installApp == null)
-                {
-                    return _installApp = new RelayCommand<Application>(Install,    
-                        null);
-                }
-                return _installApp;
-            }
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public MainViewModel()
         {
@@ -92,7 +67,7 @@ namespace AppDirect.WindowsClient.UI
             GetSuggestedApplications();
         }
 
-        private void GetMyApplications()
+        public void GetMyApplications()
         {
             if (MyApplications == null)
             {
@@ -102,10 +77,18 @@ namespace AppDirect.WindowsClient.UI
             var myAppsList = new List<Application>();
 
             myAppsList.AddRange(LocalStorage.Instance.InstalledLocalApps);
-            
-            if (!String.IsNullOrEmpty(LoginInfo.AuthToken))
+
+            if (LocalStorage.Instance.HasCredentials)
             {
-                myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList());
+                try
+                {
+                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList()); 
+                    MyAppsLoadError = String.Empty;
+                }
+                catch (Exception e)
+                {
+                    MyAppsLoadError = e.Message;
+                }
             }
 
             MyApplications.Clear();
@@ -116,14 +99,14 @@ namespace AppDirect.WindowsClient.UI
                 MyApplications.Add(application);
                 myAppCount++;
 
-                if (myAppCount == 12)
+                if (myAppCount == MyAppDisplayLimit)
                 {
                     break;
                 }
             }
         }
 
-        private void GetSuggestedApplications()
+        public void GetSuggestedApplications()
         {
             if (SuggestedApplications == null)
             {
@@ -136,7 +119,15 @@ namespace AppDirect.WindowsClient.UI
 
             var myAppIds = MyApplications.Select(a => a.Id).ToList();
 
-            suggestedAppsList.AddRange(App.Kernel.Get<ICachedAppDirectApi>().SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+            try
+            {
+                suggestedAppsList.AddRange(ServiceLocator.CachedAppDirectApi.SuggestedApps.Where(application => !myAppIds.Contains(application.Id)));
+                SuggestedAppsLoadError = String.Empty;
+            }
+            catch (Exception e)
+            {
+                SuggestedAppsLoadError = e.Message;
+            }
 
             SuggestedApplications.Clear();
 
@@ -153,29 +144,19 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public void Login(LoginObject loginObject)
+        public bool Login(string username, string password)
         {
-            try
+            if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
             {
-                ServiceLocator.CachedAppDirectApi.Login(loginObject);
-                try
-                {
-                    LocalStorage.Instance.LoginInfo = loginObject;
-                    LocalStorage.Instance.SaveAppSettings();
-                    LoginInfo = LocalStorage.Instance.LoginInfo;
+                LocalStorage.Instance.LoginInfo = new LoginObject{UserName = username, Password = password};
+                LocalStorage.Instance.SaveAppSettings();
 
-                    GetSuggestedApplications();
-                    GetMyApplications();
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Failed to save login info to local storage");
-                }
+                GetMyApplications();
+                GetSuggestedApplications();
+                return true;
             }
-            catch (Exception e)
-            {
-                MessageBox.Show("Login Failed: " + e.Message);
-            }
+
+            return false;
         }
 
         public void Uninstall(Application application)
@@ -196,10 +177,9 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
+                MessageBox.Show(AppDirect.WindowsClient.Properties.Resources.UninstallAppDirectApp);
+                //TODO: Determine if AppDirect apps can be uninstalled by Users
                 //Start asynchronous call to Api to remove application
-
-                ServiceLocator.CachedAppDirectApi.SuggestedApps.Add(application);
-                //ServiceLocator.CachedAppDirectApi.MyApps.RemoveAll(a => a.Id == application.Id);
             }
             
             GetSuggestedApplications();
@@ -217,47 +197,21 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                if (String.IsNullOrEmpty(LoginInfo.AuthToken))
-                {
-                    ClickLoginButton();
-                }
-
-                string localFilename = Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + application.Id + ".ico";
-
-                using (WebClient client = new WebClient())
-                {
-                    client.DownloadFile(application.ImagePath, localFilename);
-                }
-
-                application.ImagePath = Path.GetFullPath(localFilename);
-
-                //Start asynchronous call to Api to add application
-
-                ServiceLocator.CachedAppDirectApi.MyApps.Add(application);
-                ServiceLocator.CachedAppDirectApi.SuggestedApps.Remove(application);
+                MessageBox.Show("Contact your administrator to install this application");
+                //TODO: Determine if some AppDirect Apps will be installable by a user
             }
 
-            GetSuggestedApplications();
             GetMyApplications();
-        }
-
-        private void ClickLoginButton()
-        {
-            if (IsLoggedIn)
-            {
-                Logout();
-            }
-            else
-            {
-                var loginWindow = new LoginWindow();
-                loginWindow.ShowDialog();
-            }
+            GetSuggestedApplications();
         }
 
         public void Logout()
         {
-            LocalStorage.Instance.LoginInfo = new LoginObject();
+            ServiceLocator.CachedAppDirectApi.UnAuthenticate();
+            LocalStorage.Instance.ClearLoginCredentials();
+            
             GetMyApplications();
+            GetSuggestedApplications();
         }
 
         protected void NotifyPropertyChanged(string propertyName)
@@ -267,6 +221,5 @@ namespace AppDirect.WindowsClient.UI
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }

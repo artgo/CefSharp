@@ -1,4 +1,9 @@
+using System;
 using System.Windows;
+using System.Windows.Controls;
+using AppDirect.WindowsClient.Models;
+using AppDirect.WindowsClient.Storage;
+using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -7,7 +12,8 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private LoginWindow _loginWindow;
+        public const string MustLoginMessage = "You must log in to access ";
+
 
         public MainViewModel ViewModel
         {
@@ -16,34 +22,111 @@ namespace AppDirect.WindowsClient.UI
 
         public MainWindow()
         {
-            InitializeComponent();
+            try
+            {
+                DataContext = new MainViewModel();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
 
+            InitializeComponent();
+            
             Left = SystemParameters.WorkArea.Right * .003;
             Top = SystemParameters.WorkArea.Bottom - Height;
         }
-        
-        private void ClickLogin(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.IsLoggedIn)
-            {
-                ViewModel.Logout();
-                return;
-            }
-
-            _loginWindow = new LoginWindow();
-            _loginWindow.Left = Left + Width;
-            _loginWindow.Top = Top;
-            _loginWindow.ShowDialog();
-        }
-
-        private void CollapseLogin(object sender, RoutedEventArgs e)
-        {
-            _loginWindow.Close();
-        }
-
+      
         private void GoToAppStore(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://appcenter.staples.com/home");
+        }
+
+         private void ForgotPassword(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://www.appdirect.com/forgotPassword");
+        }
+
+        private void Login(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (ViewModel.Login(UsernameTextBox.Text, PasswordTextBox.Text))
+                {
+                    YourAppsTab.IsSelected = true;
+                }
+                else
+                {
+                    LoginFailedMessage.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
+            {
+                ReloadMyAppsButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void InstallAppClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Application clickedApp = ((Button)sender).DataContext as Application;
+
+                if (!clickedApp.IsLocalApp && LocalStorage.Instance.LoginInfo == null)
+                {
+                    YouMustBeLoggedInMessage.Text = MustLoginMessage + clickedApp.Name;
+                    YouMustBeLoggedInMessage.Visibility = Visibility.Visible;
+                    SettingsTab.IsSelected = true;
+                }
+                else
+                {
+                    ViewModel.Install(clickedApp);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
+            {
+                ReloadMyAppsButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void UninstallAppClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Application clickedApp = ((MenuItem)sender).DataContext as Application;
+
+                ViewModel.Uninstall(clickedApp);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
+            {
+                ReloadMyAppsButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void ReloadMyAppsClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel.GetMyApplications();
+            ViewModel.GetSuggestedApplications();
+
+            if (String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
+            {
+                ReloadMyAppsButton.Visibility = Visibility.Hidden;
+            }
         }
     }
 }

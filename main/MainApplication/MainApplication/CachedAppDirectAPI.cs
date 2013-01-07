@@ -59,9 +59,14 @@ namespace AppDirect.WindowsClient
             set { _suggestedApps = value; }
         }
 
-        public void Authenticate(string key, string secret)
+        public bool Authenticate(string key, string secret)
         {
-            _appDirectApi.Authenticate(key, secret);
+            return _appDirectApi.Authenticate(key, secret);
+        }
+
+        public void UnAuthenticate()
+        {
+            _appDirectApi.UnAuthenticate();
         }
 
         public bool IsAuthenticated
@@ -119,27 +124,6 @@ namespace AppDirect.WindowsClient
                 appList.Add(app);
             }
             return appList;
-        }
-
-        public bool Login(LoginObject loginInfo)
-        {
-            //Temporary condition to test behavior for failed login
-            if (loginInfo.UserName == "error")
-            {
-                return false;
-            }
-
-            try
-            {
-                //make call to API to login
-                Authenticate(loginInfo.UserName, loginInfo.Password);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            
-            return IsAuthenticated;
         }
     }
 }
