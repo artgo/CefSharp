@@ -26,12 +26,14 @@ namespace AppDirect.WindowsClient.Tests
         {
             var appDirectApiMock = Substitute.For<IAppDirectApi>();
             var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
+            var localStorage = Substitute.For<LocalStorage>();
 
             cachedAppDirectApiMock.Authenticate(UserName, Password).Returns(true);
 
             IKernel Kernel = new StandardKernel();
             Kernel.Bind<IAppDirectApi>().ToConstant(appDirectApiMock);
             Kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
+            Kernel.Bind<LocalStorage>().ToConstant(localStorage);
 
             ServiceLocator.Kernel = Kernel;
             
@@ -59,20 +61,18 @@ namespace AppDirect.WindowsClient.Tests
             
             Assert.IsTrue(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
 
-            Assert.AreEqual(loginObject.UserName, LocalStorage.Instance.LoginInfo.UserName);
-            Assert.AreEqual(loginObject.Password, LocalStorage.Instance.LoginInfo.Password);
+            Assert.AreEqual(loginObject.UserName, ServiceLocator.LocalStorage.LoginInfo.UserName);
+            Assert.AreEqual(loginObject.Password, ServiceLocator.LocalStorage.LoginInfo.Password);
         }
 
         [TestMethod]
         public void IncorrectLoginIsNotStored()
         {
-            LocalStorage.Instance.ForceReloadFromFile();
-
             LoginObject loginObject = new LoginObject { Password = "WrongPassword", UserName = UserName };
 
             Assert.IsFalse(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
 
-            Assert.IsNull(LocalStorage.Instance.LoginInfo);
+            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
         }
 
         [TestMethod]
@@ -82,11 +82,11 @@ namespace AppDirect.WindowsClient.Tests
             LoginObject loginObject = new LoginObject { Password = Password, UserName = UserName };
 
             Assert.IsTrue(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
-            Assert.IsNotNull(LocalStorage.Instance.LoginInfo);
+            Assert.IsNotNull(ServiceLocator.LocalStorage.LoginInfo);
 
             _mainViewModel.Logout();
 
-            Assert.IsNull(LocalStorage.Instance.LoginInfo); ;
+            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo); ;
         }
 
         [TestMethod]
@@ -119,8 +119,7 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void LocalStorageInitializedByConstructor()
         {
-            Assert.IsNotNull(LocalStorage.Instance.InstalledLocalApps);
-            Assert.IsNotNull(LocalStorage.Instance.SuggestedLocalApps);
+            Assert.IsNotNull(ServiceLocator.LocalStorage.InstalledLocalApps);
         }
     }
 }

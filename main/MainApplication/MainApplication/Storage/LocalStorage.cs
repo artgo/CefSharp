@@ -9,55 +9,23 @@ namespace AppDirect.WindowsClient.Storage
     ///<summary>
     /// Represents the Serializable Data that persists locally 
     ///</summary>
-    public sealed class LocalStorage
+    public class LocalStorage
     {
-        [XmlIgnore] private static LocalStorage _instance;
-        
-        private const string AppStoreUrlString = "https://appcenter.staples.com/home";
         private const string FileName = @"\AppDirect\LocalStorage";
-        private Uri _appStoreUrl;
-        
 
         public bool HasCredentials
         {
             get
             {
-                return Instance.LoginInfo != null && Instance.LoginInfo.UserName != null &&
-                       Instance.LoginInfo.Password != null;
+                return LoginInfo != null && LoginInfo.UserName != null &&
+                       LoginInfo.Password != null;
             }
         }
 
-        public static LocalStorage Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = LoadLocalStorage();
-                }
-                return _instance;
-            }
-        }
+        public List<Application> InstalledLocalApps { get; set; }
+        public LoginObject LoginInfo { get; set; }
 
-        public List<Application> InstalledLocalApps { get; set; }          
-        public List<Application> SuggestedLocalApps { get; set; }
-
-        [XmlIgnore]
-        public Uri AppStoreUrl
-        {
-            get
-            {
-                if (_appStoreUrl == null)
-                    _appStoreUrl = new Uri(AppStoreUrlString);
-
-                return _appStoreUrl;
-            }
-        }
-        
-        
-        public LoginObject LoginInfo{get;set;}
-
-        private static LocalStorage LoadLocalStorage()
+        public static LocalStorage LoadLocalStorage()
         {
             // Create an XmlSerializer for the LocalStorage type.
             XmlSerializer mySerializer = new XmlSerializer(typeof(LocalStorage));
@@ -78,11 +46,6 @@ namespace AppDirect.WindowsClient.Storage
             }
         }
 
-        public void ForceReloadFromFile()
-        {
-            _instance = null;
-        }
-
         public void SaveAppSettings()
         {
             //Create the directory if it does not exist
@@ -98,13 +61,13 @@ namespace AppDirect.WindowsClient.Storage
             using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
             {
                 // Serialize this instance of the LocalStorage class to the config file.
-                mySerializer.Serialize(streamWriter, _instance);
+                mySerializer.Serialize(streamWriter, this);
             }
         }
 
         public void ClearLoginCredentials()
         {
-            Instance.LoginInfo = null;
+            LoginInfo = null;
         }
     }
 }

@@ -11,22 +11,68 @@ namespace AppDirect.WindowsClient.Models
     public class LoginObject
     {
         private string _password;
+        private string _userName;
+        private string _unencryptedPassword;
+        private string _unencryptedUserName;
+        private string _salt;
 
+        public DateTime ExpirationDate { get; set; }
+
+        public string Salt
+        {
+            get
+            {
+                if (_salt == null)
+                {
+                    ExpirationDate = DateTime.Now.AddDays(30);
+                    _salt = CipherUtility.GetNewSalt();
+                }
+                return _salt;
+            }
+            set { _salt = value; }
+        }
+        
         public string Password
         {
             get { return _password; }
             set
             {
-                _password = CipherUtility.Encrypt<RijndaelManaged>(value);
+                _password = value;
+                _unencryptedPassword = CipherUtility.Decrypt(value, Salt);
             }
         }
 
-        public string UserName { get; set; }
+        public string UserName
+        {
+            get { return _userName; }
+            set
+            {
+                _userName = value;
+                _unencryptedUserName = CipherUtility.Decrypt(value, Salt);
+            }
+        }
 
         [XmlIgnore]
-        public string UnEncryptedPassword
+        public string UnencryptedPassword
         {
-            get { return CipherUtility.Decrypt<RijndaelManaged>(Password); }
+            get { return _unencryptedPassword; }
+            set
+            {
+                _unencryptedPassword = value;
+                _password = CipherUtility.Encrypt(value, Salt);
+            }
         }
+
+        [XmlIgnore]
+        public string UnencryptedUsername
+        {
+            get { return _unencryptedUserName; }
+            set
+            {
+                _unencryptedUserName = value;
+                _userName = CipherUtility.Encrypt(value, Salt);
+            }
+        }
+
     }
 }

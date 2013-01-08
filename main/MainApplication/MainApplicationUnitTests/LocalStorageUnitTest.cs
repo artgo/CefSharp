@@ -11,18 +11,19 @@ namespace AppDirect.WindowsClient.Tests
         private const string FileName = @"\AppDirect\LocalStorage";
         private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
+        private LocalStorage localStorage;
+
         [TestInitialize]
         public void Setup()
         {
             File.Delete();
-            LocalStorage.Instance.ForceReloadFromFile();
+            localStorage = new LocalStorage();
         }
 
         [TestMethod]
-        public void LocalStorageListsNullWithoutFile()
+        public void InstalledAppsListNullWithoutFile()
         {
-            Assert.IsNull(LocalStorage.Instance.InstalledLocalApps);
-            Assert.IsNull(LocalStorage.Instance.SuggestedLocalApps);
+            Assert.IsNull(localStorage.InstalledLocalApps);
         }
 
         [TestMethod]
@@ -30,25 +31,22 @@ namespace AppDirect.WindowsClient.Tests
         {
             Assert.IsFalse(File.Exists);
 
-            LocalStorage.Instance.InstalledLocalApps = LocalApplications.GetBackUpLocalAppsList();
-            LocalStorage.Instance.SuggestedLocalApps = LocalApplications.GetBackUpLocalAppsList();
-
-            LocalStorage.Instance.SaveAppSettings();
+            localStorage.InstalledLocalApps = LocalApplications.Applications;
+            localStorage.SaveAppSettings();
 
             File.Refresh();
             Assert.IsTrue(File.Exists);
-            
-            LocalStorage.Instance.ForceReloadFromFile();
 
-            Assert.IsNotNull(LocalStorage.Instance.InstalledLocalApps);
-            Assert.IsNotNull(LocalStorage.Instance.SuggestedLocalApps);
+            localStorage = LocalStorage.LoadLocalStorage();
+
+            Assert.IsNotNull(localStorage.InstalledLocalApps);
         }
 
         [TestMethod]
         public void SaveLocalStorageCreatesStorageFile()
         {
             Assert.IsFalse(File.Exists);
-            LocalStorage.Instance.SaveAppSettings();
+            localStorage.SaveAppSettings();
 
             File.Refresh();
             Assert.IsTrue(File.Exists);
