@@ -24,10 +24,10 @@ namespace AppDirect.WindowsClient.Storage
             get
             {
                 return LoginInfo != null &&
-                       !String.IsNullOrEmpty(LoginInfo.String1) &&
-                       !String.IsNullOrEmpty(LoginInfo.String2) &&
-                       !String.IsNullOrEmpty(LoginInfo.String3) &&
-                       LoginInfo.String4.AddDays(DaysBeforePasswordExpires) > DateTime.Now;
+                       !String.IsNullOrEmpty(LoginInfo.EncryptedUsername) &&
+                       !String.IsNullOrEmpty(LoginInfo.EncryptedPassword) &&
+                       !String.IsNullOrEmpty(LoginInfo.Salt) &&
+                       LoginInfo.PasswordSetDate.AddDays(DaysBeforePasswordExpires) > DateTime.Now;
             }                               
         }                                   
                                             
@@ -87,10 +87,10 @@ namespace AppDirect.WindowsClient.Storage
         public void SetCredentials(string username, string password)
         {
             LoginInfo = new LoginObject();
-            LoginInfo.String3 = CipherUtility.GetNewSalt();
-            LoginInfo.String1 = CipherUtility.Encrypt(username, LoginInfo.String3);
-            LoginInfo.String2 = CipherUtility.Encrypt(password, LoginInfo.String3);
-            LoginInfo.String4 = DateTime.Now.Date;
+            LoginInfo.Salt = CipherUtility.GetNewSalt();
+            LoginInfo.EncryptedUsername = CipherUtility.Encrypt(username, LoginInfo.Salt);
+            LoginInfo.EncryptedPassword = CipherUtility.Encrypt(password, LoginInfo.Salt);
+            LoginInfo.PasswordSetDate = DateTime.Now.Date;
         }
     }
 }

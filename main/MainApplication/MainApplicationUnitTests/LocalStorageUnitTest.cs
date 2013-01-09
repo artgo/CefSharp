@@ -89,7 +89,7 @@ namespace AppDirect.WindowsClient.Tests
         private void SaveCredentialsReloadFile(string unencryptedPassword, string unencryptedUserName, DateTime passwordSetDate)
         {
             localStorage.SetCredentials(unencryptedUserName, unencryptedPassword);
-            localStorage.LoginInfo.String4 = passwordSetDate;
+            localStorage.LoginInfo.PasswordSetDate = passwordSetDate;
             localStorage.SaveAppSettings();
 
             File.Refresh();
