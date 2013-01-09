@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AppDirect.WindowsClient.Models;
@@ -18,22 +19,28 @@ namespace AppDirect.WindowsClient.Tests
         private const string FileName = @"\AppDirect\LocalStorage";
         private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
-        private const string UserName = "appdqa+t75adsa@gmail.com";
+        private const string Username = "appdqa+t75adsa@gmail.com";
         private const string Password = "origo2010";
+        LocalStorage _localStorage;
+
+        IAppDirectApi _appDirectApiMock;
+
+        ICachedAppDirectApi _cachedAppDirectApiMock;
 
         [TestInitialize]
         public void Initialize()
         {
-            var appDirectApiMock = Substitute.For<IAppDirectApi>();
-            var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
-            var localStorage = Substitute.For<LocalStorage>();
+            _appDirectApiMock = Substitute.For<IAppDirectApi>();
+            _cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
 
-            cachedAppDirectApiMock.Authenticate(UserName, Password).Returns(true);
+            _localStorage = new LocalStorage();
+
+            _cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
 
             IKernel Kernel = new StandardKernel();
-            Kernel.Bind<IAppDirectApi>().ToConstant(appDirectApiMock);
-            Kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
-            Kernel.Bind<LocalStorage>().ToConstant(localStorage);
+            Kernel.Bind<IAppDirectApi>().ToConstant(_appDirectApiMock);
+            Kernel.Bind<ICachedAppDirectApi>().ToConstant(_cachedAppDirectApiMock);
+            Kernel.Bind<LocalStorage>().ToConstant(_localStorage);
 
             ServiceLocator.Kernel = Kernel;
             
@@ -52,41 +59,39 @@ namespace AppDirect.WindowsClient.Tests
         public void MyApplicationsCollectionIsPopulated()
         {
             Assert.IsNotNull(_mainViewModel.MyApplications);
+            _cachedAppDirectApiMock.MyApps.Received();
         }
 
         [TestMethod]
         public void ValidLoginIsStored()
         {
-            LoginObject loginObject = new LoginObject {Password = Password, UserName = UserName};
-            
-            Assert.IsTrue(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
+            Assert.IsTrue(_mainViewModel.Login(Username, Password));
 
-            Assert.AreEqual(loginObject.UserName, ServiceLocator.LocalStorage.LoginInfo.UserName);
-            Assert.AreEqual(loginObject.Password, ServiceLocator.LocalStorage.LoginInfo.Password);
+            Assert.AreEqual(Username, ServiceLocator.LocalStorage.LoginInfo.Username);
+            Assert.AreEqual(Password, ServiceLocator.LocalStorage.LoginInfo.Password);
+
+            _cachedAppDirectApiMock.Received().Authenticate(Username, Password);
         }
 
         [TestMethod]
         public void IncorrectLoginIsNotStored()
         {
-            LoginObject loginObject = new LoginObject { Password = "WrongPassword", UserName = UserName };
-
-            Assert.IsFalse(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
-
+            Assert.IsFalse(_mainViewModel.Login(Username, "BadPassword"));
             Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
+
+            _cachedAppDirectApiMock.ReceivedWithAnyArgs().Authenticate("", "");
         }
 
         [TestMethod]
         public void LogOutRemovesLoginInfo()
         {
-
-            LoginObject loginObject = new LoginObject { Password = Password, UserName = UserName };
-
-            Assert.IsTrue(_mainViewModel.Login(loginObject.UserName, loginObject.Password));
+            Assert.IsTrue(_mainViewModel.Login(Username, Password));
             Assert.IsNotNull(ServiceLocator.LocalStorage.LoginInfo);
 
             _mainViewModel.Logout();
 
-            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo); ;
+            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
+            _cachedAppDirectApiMock.ReceivedWithAnyArgs().UnAuthenticate();
         }
 
         [TestMethod]

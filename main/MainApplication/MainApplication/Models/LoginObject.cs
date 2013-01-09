@@ -16,15 +16,15 @@ namespace AppDirect.WindowsClient.Models
         private string _unencryptedUserName;
         private string _salt;
 
-        public DateTime ExpirationDate { get; set; }
-
+        public readonly int DaysBeforePasswordExpires = 30;
+        public DateTime PasswordSetDate { get; set; }
         public string Salt
         {
             get
             {
                 if (_salt == null)
                 {
-                    ExpirationDate = DateTime.Now.AddDays(30);
+                    PasswordSetDate = DateTime.Now;
                     _salt = CipherUtility.GetNewSalt();
                 }
                 return _salt;
@@ -32,7 +32,7 @@ namespace AppDirect.WindowsClient.Models
             set { _salt = value; }
         }
         
-        public string Password
+        public string EncryptedPassword
         {
             get { return _password; }
             set
@@ -41,8 +41,8 @@ namespace AppDirect.WindowsClient.Models
                 _unencryptedPassword = CipherUtility.Decrypt(value, Salt);
             }
         }
-
-        public string UserName
+        
+        public string EncryptedUsername
         {
             get { return _userName; }
             set
@@ -53,9 +53,12 @@ namespace AppDirect.WindowsClient.Models
         }
 
         [XmlIgnore]
-        public string UnencryptedPassword
+        public string Password
         {
-            get { return _unencryptedPassword; }
+            get
+            {
+                return _unencryptedPassword;
+            }
             set
             {
                 _unencryptedPassword = value;
@@ -64,7 +67,7 @@ namespace AppDirect.WindowsClient.Models
         }
 
         [XmlIgnore]
-        public string UnencryptedUsername
+        public string Username
         {
             get { return _unencryptedUserName; }
             set
@@ -74,5 +77,14 @@ namespace AppDirect.WindowsClient.Models
             }
         }
 
+        public bool IsCredentialsExpired()
+        {
+            if (PasswordSetDate == DateTime.MinValue || Salt == null)
+            {
+                return false;
+            }
+
+            return DateTime.Now > PasswordSetDate.AddDays(DaysBeforePasswordExpires);
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace AppDirect.WindowsClient.Storage
         {
             get
             {
-                return LoginInfo != null && LoginInfo.UserName != null &&
+                return LoginInfo != null && LoginInfo.Password != null &&
                        LoginInfo.Password != null;
             }
         }
@@ -37,7 +37,13 @@ namespace AppDirect.WindowsClient.Storage
                 using (FileStream fileStream = fi.OpenRead())
                 {
                     // Create a new instance of the LocalStorage by deserializing the file.
-                    return (LocalStorage) mySerializer.Deserialize(fileStream);
+                    var localStorage = (LocalStorage) mySerializer.Deserialize(fileStream);
+
+                    if (localStorage.HasCredentials && localStorage.LoginInfo.IsCredentialsExpired())
+                    {
+                        localStorage.ClearLoginCredentials();
+                    }
+                    return localStorage;
                 }
             }
             else

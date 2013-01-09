@@ -68,12 +68,12 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage. InstalledLocalApps = new List<Application>();
             }
 
-            if (ServiceLocator.LocalStorage.HasCredentials && ServiceLocator.LocalStorage.LoginInfo.ExpirationDate > DateTime.Now)
+            if (ServiceLocator.LocalStorage.HasCredentials)
             {
                 try
                 {
-                    if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.UnencryptedUsername,
-                                                                        ServiceLocator.LocalStorage.LoginInfo.UnencryptedPassword))
+                    if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
+                                                                        ServiceLocator.LocalStorage.LoginInfo.Password))
                     {
                         ServiceLocator.LocalStorage.ClearLoginCredentials();
                     }
@@ -172,7 +172,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
             {
-                ServiceLocator.LocalStorage.LoginInfo = new LoginObject{UnencryptedUsername = username, UnencryptedPassword = password};
+                ServiceLocator.LocalStorage.LoginInfo = new LoginObject{Username = username, Password = password};
                 ServiceLocator.LocalStorage.SaveAppSettings();
 
                 RefreshAppsLists();
