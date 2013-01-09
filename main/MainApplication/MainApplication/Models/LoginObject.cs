@@ -10,28 +10,22 @@ namespace AppDirect.WindowsClient.Models
     ///</summary>
     public class LoginObject
     {
-        private readonly string _encryptedPassword;
-        private readonly string _encryptedUserName;
-
-        public LoginObject(string username, string password, string salt, DateTime passwordSetDate )
-        {
-            _encryptedPassword = password;
-            _encryptedUserName = username;
-            Salt = salt;
-            PasswordSetDate = passwordSetDate;
-        }
-
-        private DateTime PasswordSetDate { get; set; }
-        public string Salt { get; set; }
-
+        public string String1 { get; set; }//Username
+        public string String2 { get; set; }//Password
+        public string String3 { get; set; }//Salt
+        public DateTime String4 { get; set; }//PasswordSetDate
+        
+        [XmlIgnore]
         public string Password
         {
-            get { return CipherUtility.Decrypt(_encryptedPassword, Salt); }
+            get { return CipherUtility.Decrypt(String2, String3); }
         }
 
+
+        [XmlIgnore]
         public string Username
         {
-            get { return CipherUtility.Decrypt(_encryptedUserName, Salt); }
+            get { return CipherUtility.Decrypt(String1, String3); }
         }
     }
 }

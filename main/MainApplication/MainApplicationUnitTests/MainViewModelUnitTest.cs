@@ -98,7 +98,7 @@ namespace AppDirect.WindowsClient.Tests
         public void PasswordSetDateIsStored()
         {
             _mainViewModel.Login(Username, Password);
-            Assert.AreEqual(DateTime.Now.Date, ServiceLocator.LocalStorage.String4.Date);
+            Assert.AreEqual(DateTime.Now.Date, ServiceLocator.LocalStorage.LoginInfo.String4.Date);
 
             _cachedAppDirectApiMock.Received().Authenticate(Username, Password);
         }

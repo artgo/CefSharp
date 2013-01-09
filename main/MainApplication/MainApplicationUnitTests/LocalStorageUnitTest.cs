@@ -51,6 +51,17 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         [TestMethod]
+        public void HasCredentialsTrueForUnexpiredCredentials()
+        {
+            string unencryptedPassword = "IamPassWordValue84";
+            string unencryptedUserName = "emailIsUserName@emailme.com";
+
+            SaveCredentialsReloadFile(unencryptedPassword, unencryptedUserName, DateTime.Now.AddDays(-29));
+            
+            Assert.IsTrue(localStorage.HasCredentials);
+        }
+
+        [TestMethod]
         public void StoredCredentialsRestoredToOriginalValues()
         {
             string unencryptedPassword = "IamPassWordValue84";
@@ -78,7 +89,7 @@ namespace AppDirect.WindowsClient.Tests
         private void SaveCredentialsReloadFile(string unencryptedPassword, string unencryptedUserName, DateTime passwordSetDate)
         {
             localStorage.SetCredentials(unencryptedUserName, unencryptedPassword);
-            localStorage.String4 = passwordSetDate;
+            localStorage.LoginInfo.String4 = passwordSetDate;
             localStorage.SaveAppSettings();
 
             File.Refresh();

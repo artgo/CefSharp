@@ -78,6 +78,11 @@ namespace AppDirect.WindowsClient.UI
                         ServiceLocator.LocalStorage.ClearLoginCredentials();
                     }
                 }
+                catch (System.Security.Cryptography.CryptographicException e)
+                {
+                   ServiceLocator.LocalStorage.ClearLoginCredentials();
+                   MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
+                }
                 catch (Exception e)
                 {
                     LoginFailedMessage = AppDirect.WindowsClient.Properties.Resources.NetworkProblemError;
