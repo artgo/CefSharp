@@ -30,7 +30,7 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void LocalStorageListsNotNullWhenFileContainsApps()
         {
-            localStorage.InstalledLocalApps = LocalApplications.Applications;
+            localStorage.InstalledLocalApps = LocalApplications.GetLocalApplications();
             localStorage.SaveAppSettings();
 
             File.Refresh();
@@ -77,13 +77,8 @@ namespace AppDirect.WindowsClient.Tests
 
         private void SaveCredentialsReloadFile(string unencryptedPassword, string unencryptedUserName, DateTime passwordSetDate)
         {
-            localStorage.LoginInfo = new LoginObject
-                {
-                    Password = unencryptedPassword,
-                    Username = unencryptedUserName,
-                    PasswordSetDate =  passwordSetDate
-                };
-
+            localStorage.SetCredentials(unencryptedUserName, unencryptedPassword);
+            localStorage.String4 = passwordSetDate;
             localStorage.SaveAppSettings();
 
             File.Refresh();

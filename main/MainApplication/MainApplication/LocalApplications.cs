@@ -12,7 +12,13 @@ namespace AppDirect.WindowsClient
     ///</summary>
     public static class LocalApplications
     {
-        public static List<Application> Applications = new List<Application>
+        public static List<Application> GetLocalApplications()
+        {
+            return Applications;
+        }
+
+
+        private static readonly List<Application> Applications = new List<Application>
             {
                 new Application
                     {

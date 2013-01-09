@@ -9,7 +9,8 @@ namespace AppDirect.WindowsClient.Storage
 {
     public static class CipherUtility
     {
-        private const string Password = "anberDool";
+        private const string Password = "1WLgWTe4m8(ObG*qwY(J)J8JubUcrX%JBjdAaNjNu3@$Xze(d#vGyrkV3Po#rws8Uk)Z5q7L$1aAcErsmwW$KfoKL3L0SYartNGDHWZ4yvac)ANMpADS)kno#Fghg4j!DRDEujZ2MpccuSp8r&fCQ&R6JCwEh8k8uIeMr1@sw95&E7Lt*DmD&UomAxJax*r4vKXpv7OW7pKbs@@jF(Xj4vtPxuhyo9zH)GvJts(Ohdl%dxrROQfzj@(FtoU^bzqwzGhzyt7SK)hrVnPUpkK&N0*gjXDJ*lRt78dEyrKNbQm%4MBv510%xbz9$5dz@@xRIsmFlPNGg53cP^5zvTn8EMoeb%jjE9uB(6gTqUfuOJt9%mLd#SCCdu%79jwFA4anIOdhOUbwNmdt0cx@Bs75s3fSdEODhlBox&#fNvKLPRNhMHgglzxAvuSLfUErU4Zm9(ZawbLMD!noD#HwOyQhXxwLfIc3lM^2R%@5wV3zLJxMxsIKXa^*u!o(%y3gcy";
+        private const int SaltLength = 255;
 
         public static string Encrypt(string value, string salt)
         {
@@ -62,11 +63,11 @@ namespace AppDirect.WindowsClient.Storage
         public static string GetNewSalt()
         {
            char[] alphaSet; 
-           alphaSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890#!".ToCharArray(); 
+           alphaSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()".ToCharArray(); 
            var crypto = new RNGCryptoServiceProvider();
-           var bytes = new byte[10];
+           var bytes = new byte[SaltLength];
            crypto.GetBytes(bytes); //get a bucket of very random bytes
-           var tempSB = new StringBuilder(10);
+           var tempSB = new StringBuilder(SaltLength);
            foreach (var b in bytes)
            {   // use b , a random from 0-255 as the index to our source array. Just mod on length set
                tempSB.Append(alphaSet[b % (alphaSet.Length)]);

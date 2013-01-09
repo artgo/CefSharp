@@ -134,8 +134,8 @@ namespace AppDirect.WindowsClient.UI
             }
 
             var suggestedAppsList = new List<Application>();
-                
-            suggestedAppsList.AddRange(LocalApplications.Applications);
+
+            suggestedAppsList.AddRange(LocalApplications.GetLocalApplications());
             
             var myAppIds = MyApplications.Select(a => a.Id).ToList();
 
@@ -172,7 +172,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
             {
-                ServiceLocator.LocalStorage.LoginInfo = new LoginObject{Username = username, Password = password};
+                ServiceLocator.LocalStorage.SetCredentials(username, password);
                 ServiceLocator.LocalStorage.SaveAppSettings();
 
                 RefreshAppsLists();

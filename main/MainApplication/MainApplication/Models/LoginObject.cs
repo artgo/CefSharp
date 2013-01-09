@@ -10,81 +10,28 @@ namespace AppDirect.WindowsClient.Models
     ///</summary>
     public class LoginObject
     {
-        private string _encryptedPassword;
-        private string _encryptedUserName;
-        private string _password;
-        private string _userName;
-        private string _salt;
+        private readonly string _encryptedPassword;
+        private readonly string _encryptedUserName;
 
-        public readonly int DaysBeforePasswordExpires = 30;
-        public DateTime PasswordSetDate { get; set; }
-        public string Salt
+        public LoginObject(string username, string password, string salt, DateTime passwordSetDate )
         {
-            get
-            {
-                if (_salt == null)
-                {
-                    PasswordSetDate = DateTime.Now;
-                    _salt = CipherUtility.GetNewSalt();
-                }
-                return _salt;
-            }
-            set { _salt = value; }
-        }
-        
-        public string EncryptedPassword
-        {
-            get { return _encryptedPassword; }
-            set
-            {
-                _encryptedPassword = value;
-                _password = CipherUtility.Decrypt(value, Salt);
-            }
-        }
-        
-        public string EncryptedUsername
-        {
-            get { return _encryptedUserName; }
-            set
-            {
-                _encryptedUserName = value;
-                _userName = CipherUtility.Decrypt(value, Salt);
-            }
+            _encryptedPassword = password;
+            _encryptedUserName = username;
+            Salt = salt;
+            PasswordSetDate = passwordSetDate;
         }
 
-        [XmlIgnore]
+        private DateTime PasswordSetDate { get; set; }
+        public string Salt { get; set; }
+
         public string Password
         {
-            get
-            {
-                return _password;
-            }
-            set
-            {
-                _password = value;
-                _encryptedPassword = CipherUtility.Encrypt(value, Salt);
-            }
+            get { return CipherUtility.Decrypt(_encryptedPassword, Salt); }
         }
 
-        [XmlIgnore]
         public string Username
         {
-            get { return _userName; }
-            set
-            {
-                _userName = value;
-                _encryptedUserName = CipherUtility.Encrypt(value, Salt);
-            }
-        }
-
-        public bool IsCredentialsExpired()
-        {
-            if (PasswordSetDate == DateTime.MinValue || Salt == null)
-            {
-                return false;
-            }
-
-            return DateTime.Now > PasswordSetDate.AddDays(DaysBeforePasswordExpires);
+            get { return CipherUtility.Decrypt(_encryptedUserName, Salt); }
         }
     }
 }
