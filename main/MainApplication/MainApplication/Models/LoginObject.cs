@@ -10,10 +10,10 @@ namespace AppDirect.WindowsClient.Models
     ///</summary>
     public class LoginObject
     {
+        private string _encryptedPassword;
+        private string _encryptedUserName;
         private string _password;
         private string _userName;
-        private string _unencryptedPassword;
-        private string _unencryptedUserName;
         private string _salt;
 
         public readonly int DaysBeforePasswordExpires = 30;
@@ -34,21 +34,21 @@ namespace AppDirect.WindowsClient.Models
         
         public string EncryptedPassword
         {
-            get { return _password; }
+            get { return _encryptedPassword; }
             set
             {
-                _password = value;
-                _unencryptedPassword = CipherUtility.Decrypt(value, Salt);
+                _encryptedPassword = value;
+                _password = CipherUtility.Decrypt(value, Salt);
             }
         }
         
         public string EncryptedUsername
         {
-            get { return _userName; }
+            get { return _encryptedUserName; }
             set
             {
-                _userName = value;
-                _unencryptedUserName = CipherUtility.Decrypt(value, Salt);
+                _encryptedUserName = value;
+                _userName = CipherUtility.Decrypt(value, Salt);
             }
         }
 
@@ -57,23 +57,23 @@ namespace AppDirect.WindowsClient.Models
         {
             get
             {
-                return _unencryptedPassword;
+                return _password;
             }
             set
             {
-                _unencryptedPassword = value;
-                _password = CipherUtility.Encrypt(value, Salt);
+                _password = value;
+                _encryptedPassword = CipherUtility.Encrypt(value, Salt);
             }
         }
 
         [XmlIgnore]
         public string Username
         {
-            get { return _unencryptedUserName; }
+            get { return _userName; }
             set
             {
-                _unencryptedUserName = value;
-                _userName = CipherUtility.Encrypt(value, Salt);
+                _userName = value;
+                _encryptedUserName = CipherUtility.Encrypt(value, Salt);
             }
         }
 
