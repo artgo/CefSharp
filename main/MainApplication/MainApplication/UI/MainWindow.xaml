@@ -127,6 +127,7 @@
         <Button Style="{DynamicResource BorderlessButton}" BorderBrush="Transparent" Height="28" Content="Browse Apps" VerticalAlignment="Bottom" Margin="441,0,0,10" Click="GoToAppStore" HorizontalAlignment="Left" Width="133" Grid.ColumnSpan="2">
         </Button>
         <Label Name="SuggestedAppsLabel" Foreground="White" Content="Popular One-click Installs" HorizontalAlignment="Left" Margin="441,24.04,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.539" Grid.ColumnSpan="2"/>
-       </Grid>
+    <Label Name="Version" Content="{Binding VersionString }" Margin="40,0,0,0" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Left" Width="60"/>   
+    </Grid>
 </Window>
 
