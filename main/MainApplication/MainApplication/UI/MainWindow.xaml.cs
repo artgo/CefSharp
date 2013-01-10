@@ -39,12 +39,12 @@ namespace AppDirect.WindowsClient.UI
       
         private void GoToAppStore(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://appcenter.staples.com/home");
+            System.Diagnostics.Process.Start(Properties.Resources.AppStoreUrlString);
         }
 
          private void ForgotPassword(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://www.appdirect.com/forgotPassword");
+            System.Diagnostics.Process.Start(Properties.Resources.ForgotPasswordUrlString);
         }
 
         private void Login(object sender, RoutedEventArgs e)
@@ -77,7 +77,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 Application clickedApp = ((Button)sender).DataContext as Application;
 
-                if (!clickedApp.IsLocalApp && LocalStorage.Instance.LoginInfo == null)
+                if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
                     YouMustBeLoggedInMessage.Text = MustLoginMessage + clickedApp.Name;
                     YouMustBeLoggedInMessage.Visibility = Visibility.Visible;
@@ -120,8 +120,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void ReloadMyAppsClick(object sender, RoutedEventArgs e)
         {
-            ViewModel.GetMyApplications();
-            ViewModel.GetSuggestedApplications();
+            ViewModel.RefreshAppsLists();
 
             if (String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
             {

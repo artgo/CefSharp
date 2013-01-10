@@ -61,6 +61,42 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://appcenter.staples.com/home.
+        /// </summary>
+        internal static string AppStoreUrlString {
+            get {
+                return ResourceManager.GetString("AppStoreUrlString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrect Username or Password.
+        /// </summary>
+        internal static string CredentialsProblemError {
+            get {
+                return ResourceManager.GetString("CredentialsProblemError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://www.appdirect.com/forgotPassword.
+        /// </summary>
+        internal static string ForgotPasswordUrlString {
+            get {
+                return ResourceManager.GetString("ForgotPasswordUrlString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network Error. Please check your internet connection..
+        /// </summary>
+        internal static string NetworkProblemError {
+            get {
+                return ResourceManager.GetString("NetworkProblemError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact your administrator to uninstall this application.
         /// </summary>
         internal static string UninstallAppDirectApp {

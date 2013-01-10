@@ -1,4 +1,7 @@
-﻿using System.Xml.Serialization;
+﻿using System;
+using System.Security.Cryptography;
+using System.Xml.Serialization;
+using AppDirect.WindowsClient.Storage;
 
 namespace AppDirect.WindowsClient.Models
 {
@@ -7,7 +10,29 @@ namespace AppDirect.WindowsClient.Models
     ///</summary>
     public class LoginObject
     {
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        [XmlElement("String1")]
+        public string EncryptedUsername { get; set; }
+
+        [XmlElement("String2")]
+        public string EncryptedPassword { get; set; }
+
+        [XmlElement("String3")]
+        public string Salt { get; set; }
+
+        [XmlElement("String4")]
+        public DateTime PasswordSetDate { get; set; }
+        
+        [XmlIgnore]
+        public string Password
+        {
+            get { return CipherUtility.Decrypt(EncryptedPassword, Salt); }
+        }
+
+
+        [XmlIgnore]
+        public string Username
+        {
+            get { return CipherUtility.Decrypt(EncryptedUsername, Salt); }
+        }
     }
 }

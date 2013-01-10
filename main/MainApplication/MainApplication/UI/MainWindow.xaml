@@ -96,7 +96,7 @@
                     <Rectangle Fill="#323131"  HorizontalAlignment="Left" Width="340"/>
                     <Label FontSize="14" Foreground="White" Content="Log in to your account"  HorizontalAlignment="Left" Height="33" Margin="27,10,0,0" VerticalAlignment="Top" Width="176"/>
                     <TextBlock Name="YouMustBeLoggedInMessage" TextTrimming="CharacterEllipsis" Margin="27,29,34,202" Foreground="DarkTurquoise" Text="You must be logged in to install " Visibility="Hidden"/>
-                    <Label Name="LoginFailedMessage" Margin="27,165.77,124,70.23" Foreground="DarkTurquoise" Visibility="Hidden">Incorrect Username or Password</Label>
+                    <Label Name="LoginFailedMessage" Margin="27,165.77,35.75,70.23" Foreground="DarkTurquoise"></Label>
                     <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Left" Margin="239,200,0,0" VerticalAlignment="Top" Width="67" Height="28" Click="Login"/>
                     <TextBox Name="UsernameTextBox" Style="{DynamicResource UserNameTextBox}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="23.5,58,0,0"/>
                     <TextBox Name="PasswordTextBox"  Style="{DynamicResource PasswordTextBox}" Margin="23.5,108.5,37,76.5" TextAlignment="Justify" HorizontalAlignment="Center" />

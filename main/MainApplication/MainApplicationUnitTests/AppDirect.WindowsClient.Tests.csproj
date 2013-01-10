@@ -64,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CachedAppDirectApiUnitTest.cs" />
     <Compile Include="ServiceLocatorTest.cs" />
+    <Compile Include="CipherUtilityUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MainApplication\AppDirect.WindowsClient.csproj">

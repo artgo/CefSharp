@@ -14,7 +14,14 @@ namespace AppDirect.WindowsClient.UI
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            ServiceLocator.Initialize();
+            try
+            {
+                ServiceLocator.Initialize();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
             base.OnStartup(e);
         }

@@ -28,5 +28,16 @@ namespace AppDirect.WindowsClient.Tests
 
             Assert.AreSame(api1, api2);
         }
+
+        [TestMethod]
+        public void LocalStorageIsTheSame()
+        {
+            ServiceLocator.Initialize();
+
+            var localStorage1 = ServiceLocator.LocalStorage;
+            var localStorage2 = ServiceLocator.LocalStorage;
+
+            Assert.AreSame(localStorage1, localStorage2);
+        }
     }
 }

@@ -92,6 +92,7 @@
     </Compile>
     <Compile Include="Models\LoginObject.cs" />
     <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
     <Compile Include="UI\RelayCommand.cs" />
     <Compile Include="UI\TemplateSelector.cs" />

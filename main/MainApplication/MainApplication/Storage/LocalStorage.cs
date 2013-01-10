@@ -9,55 +9,30 @@ namespace AppDirect.WindowsClient.Storage
     ///<summary>
     /// Represents the Serializable Data that persists locally 
     ///</summary>
-    public sealed class LocalStorage
+    public class LocalStorage
     {
-        [XmlIgnore] private static LocalStorage _instance;
-        
-        private const string AppStoreUrlString = "https://appcenter.staples.com/home";
         private const string FileName = @"\AppDirect\LocalStorage";
-        private Uri _appStoreUrl;
+
+        public List<Application> InstalledLocalApps { get; set; }
         
+        private const int DaysBeforePasswordExpires = 30;
+
+        public LoginObject LoginInfo { get; set; }
 
         public bool HasCredentials
         {
             get
             {
-                return Instance.LoginInfo != null && Instance.LoginInfo.UserName != null &&
-                       Instance.LoginInfo.Password != null;
-            }
-        }
+                return LoginInfo != null &&
+                       !String.IsNullOrEmpty(LoginInfo.EncryptedUsername) &&
+                       !String.IsNullOrEmpty(LoginInfo.EncryptedPassword) &&
+                       !String.IsNullOrEmpty(LoginInfo.Salt) &&
+                       LoginInfo.PasswordSetDate.AddDays(DaysBeforePasswordExpires) > DateTime.Now;
+            }                               
+        }                                   
+                                            
 
-        public static LocalStorage Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = LoadLocalStorage();
-                }
-                return _instance;
-            }
-        }
-
-        public List<Application> InstalledLocalApps { get; set; }          
-        public List<Application> SuggestedLocalApps { get; set; }
-
-        [XmlIgnore]
-        public Uri AppStoreUrl
-        {
-            get
-            {
-                if (_appStoreUrl == null)
-                    _appStoreUrl = new Uri(AppStoreUrlString);
-
-                return _appStoreUrl;
-            }
-        }
-        
-        [XmlIgnore]
-        public LoginObject LoginInfo{get;set;}
-
-        private static LocalStorage LoadLocalStorage()
+        public static LocalStorage LoadLocalStorage()
         {
             // Create an XmlSerializer for the LocalStorage type.
             XmlSerializer mySerializer = new XmlSerializer(typeof(LocalStorage));
@@ -69,18 +44,20 @@ namespace AppDirect.WindowsClient.Storage
                 using (FileStream fileStream = fi.OpenRead())
                 {
                     // Create a new instance of the LocalStorage by deserializing the file.
-                    return (LocalStorage) mySerializer.Deserialize(fileStream);
+                    var localStorage = (LocalStorage) mySerializer.Deserialize(fileStream);
+
+                    if (!localStorage.HasCredentials)
+                    {
+                        localStorage.ClearLoginCredentials();
+                    }
+
+                    return localStorage;
                 }
             }
             else
             {
                 return new LocalStorage();
             }
-        }
-
-        public void ForceReloadFromFile()
-        {
-            _instance = null;
         }
 
         public void SaveAppSettings()
@@ -98,13 +75,22 @@ namespace AppDirect.WindowsClient.Storage
             using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
             {
                 // Serialize this instance of the LocalStorage class to the config file.
-                mySerializer.Serialize(streamWriter, _instance);
+                mySerializer.Serialize(streamWriter, this);
             }
         }
 
         public void ClearLoginCredentials()
         {
-            Instance.LoginInfo = null;
+            LoginInfo = null;
+        }
+
+        public void SetCredentials(string username, string password)
+        {
+            LoginInfo = new LoginObject();
+            LoginInfo.Salt = CipherUtility.GetNewSalt();
+            LoginInfo.EncryptedUsername = CipherUtility.Encrypt(username, LoginInfo.Salt);
+            LoginInfo.EncryptedPassword = CipherUtility.Encrypt(password, LoginInfo.Salt);
+            LoginInfo.PasswordSetDate = DateTime.Now.Date;
         }
     }
 }

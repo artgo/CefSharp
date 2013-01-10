@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using Ninject;
 
@@ -18,11 +19,17 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<ICachedAppDirectApi>(); }
         }
 
+        public static LocalStorage LocalStorage
+        {
+            get { return Kernel.Get<LocalStorage>(); }
+        }
+
         public static void Initialize()
         {
             Kernel = new StandardKernel();
             Kernel.Bind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Bind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
+            Kernel.Bind<LocalStorage>().ToConstant(LocalStorage.LoadLocalStorage());
         }
     }
 }
