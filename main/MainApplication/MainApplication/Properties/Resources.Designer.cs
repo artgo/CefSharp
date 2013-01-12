@@ -88,6 +88,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To use {0}, please log in.
+        /// </summary>
+        internal static string LoginHeader {
+            get {
+                return ResourceManager.GetString("LoginHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Network Error. Please check your internet connection..
         /// </summary>
         internal static string NetworkProblemError {

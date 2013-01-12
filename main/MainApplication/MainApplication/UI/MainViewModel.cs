@@ -26,6 +26,7 @@ namespace AppDirect.WindowsClient.UI
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = String.Empty;
+        private string _loginHeaderText = Properties.Resources.LoginHeader;
 
         public string VersionString
         {
@@ -55,6 +56,16 @@ namespace AppDirect.WindowsClient.UI
             }
         }
         
+        public string LoginHeaderText
+        {
+            get { return _loginHeaderText; }
+            set
+            {
+                _loginHeaderText = String.Format(Properties.Resources.LoginHeader, value);
+                NotifyPropertyChanged("LoginHeaderText");
+            }
+        }
+
         public string LoginFailedMessage
         {
             get { return _loginFailedMessage; }

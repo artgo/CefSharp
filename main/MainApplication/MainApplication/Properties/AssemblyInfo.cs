@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("MainApplication")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("App Direct")]
 [assembly: AssemblyProduct("MainApplication")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
