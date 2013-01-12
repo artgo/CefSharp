@@ -127,7 +127,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 try
                 {
-                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList()); 
+                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.Where(a => !ServiceLocator.LocalStorage.HiddenApps.Contains(a.Id))); 
                     MyAppsLoadError = String.Empty;
                 }
                 catch (Exception e)
@@ -224,9 +224,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                MessageBox.Show(AppDirect.WindowsClient.Properties.Resources.UninstallAppDirectApp);
-                //TODO: Determine if AppDirect apps can be uninstalled by Users
-                //Start asynchronous call to Api to remove application
+                ServiceLocator.LocalStorage.HiddenApps.Add(application.Id);
             }
 
             RefreshAppsLists();
@@ -241,8 +239,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                MessageBox.Show("Contact your administrator to install this application");
-                //TODO: Determine if some AppDirect Apps will be installable by a user
+                System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
             
             RefreshAppsLists();

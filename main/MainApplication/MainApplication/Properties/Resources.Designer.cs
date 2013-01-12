@@ -88,6 +88,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://test.appdirect.com/apps/.
+        /// </summary>
+        internal static string InstallAppTarget {
+            get {
+                return ResourceManager.GetString("InstallAppTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To use {0}, please log in.
         /// </summary>
         internal static string LoginHeader {
