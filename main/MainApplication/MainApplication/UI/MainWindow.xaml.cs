@@ -39,7 +39,7 @@ namespace AppDirect.WindowsClient.UI
             System.Diagnostics.Process.Start(Properties.Resources.AppStoreUrlString);
         }
 
-         private void ForgotPassword(object sender, RoutedEventArgs e)
+        private void ForgotPassword(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start(Properties.Resources.ForgotPasswordUrlString);
         }
