@@ -76,7 +76,7 @@ namespace AppDirect.WindowsClient.UI
 
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
-                    ViewModel.LoginHeaderText = clickedApp.Name;
+                    ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
                     SettingsTab.IsSelected = true;
                 }
                 else

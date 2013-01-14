@@ -58,13 +58,14 @@
     <ManifestCertificateThumbprint>352EB08DB2A64B60ECD162D47308DAE22B11B2C2</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>AppDirect.WindowsClient_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>TestKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>AppDirect2013-WindowsClient.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevDefined.OAuth">
@@ -156,6 +157,7 @@
     </EmbeddedResource>
     <None Include="AppDirect.snk" />
     <None Include="AppDirect.WindowsClient_TemporaryKey.pfx" />
+    <None Include="AppDirect2013-WindowsClient.pfx" />
     <None Include="apps_list.xsc">
       <DependentUpon>apps_list.xsd</DependentUpon>
     </None>

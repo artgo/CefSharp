@@ -132,6 +132,9 @@
   <data name="LoginHeader" xml:space="preserve">
     <value>To use {0}, please log in</value>
   </data>
+  <data name="LoginHeaderDefault" xml:space="preserve">
+    <value>Please Log In</value>
+  </data>
   <data name="NetworkProblemError" xml:space="preserve">
     <value>Network Error. Please check your internet connection.</value>
   </data>

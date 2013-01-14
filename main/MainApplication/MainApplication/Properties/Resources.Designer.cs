@@ -106,6 +106,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please Log In.
+        /// </summary>
+        internal static string LoginHeaderDefault {
+            get {
+                return ResourceManager.GetString("LoginHeaderDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Network Error. Please check your internet connection..
         /// </summary>
         internal static string NetworkProblemError {

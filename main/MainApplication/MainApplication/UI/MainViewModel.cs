@@ -26,7 +26,7 @@ namespace AppDirect.WindowsClient.UI
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = String.Empty;
-        private string _loginHeaderText = Properties.Resources.LoginHeader;
+        private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
 
         public string VersionString
         {
@@ -61,7 +61,7 @@ namespace AppDirect.WindowsClient.UI
             get { return _loginHeaderText; }
             set
             {
-                _loginHeaderText = String.Format(Properties.Resources.LoginHeader, value);
+                _loginHeaderText = value;
                 NotifyPropertyChanged("LoginHeaderText");
             }
         }
@@ -111,7 +111,7 @@ namespace AppDirect.WindowsClient.UI
 
             RefreshAppsLists();
         }
-
+        
         private void GetMyApplications()
         {
             if (MyApplications == null)
