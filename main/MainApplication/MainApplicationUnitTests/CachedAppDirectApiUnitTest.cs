@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Security.Authentication;
+using AppDirect.WindowsClient.API;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 

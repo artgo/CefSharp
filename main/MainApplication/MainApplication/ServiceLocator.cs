@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using Ninject;

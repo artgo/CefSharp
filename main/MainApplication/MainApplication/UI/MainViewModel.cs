@@ -103,7 +103,7 @@ namespace AppDirect.WindowsClient.UI
                    ServiceLocator.LocalStorage.ClearLoginCredentials();
                    MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     LoginFailedMessage = AppDirect.WindowsClient.Properties.Resources.NetworkProblemError;
                 }
@@ -130,7 +130,7 @@ namespace AppDirect.WindowsClient.UI
                     myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.Where(a => !ServiceLocator.LocalStorage.HiddenApps.Contains(a.Id))); 
                     MyAppsLoadError = String.Empty;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     LoginFailedMessage = AppDirect.WindowsClient.Properties.Resources.NetworkProblemError;
                 }
