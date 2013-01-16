@@ -26,6 +26,7 @@ namespace AppDirect.WindowsClient.UI
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = String.Empty;
+        private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
 
         public string VersionString
         {
@@ -55,6 +56,16 @@ namespace AppDirect.WindowsClient.UI
             }
         }
         
+        public string LoginHeaderText
+        {
+            get { return _loginHeaderText; }
+            set
+            {
+                _loginHeaderText = value;
+                NotifyPropertyChanged("LoginHeaderText");
+            }
+        }
+
         public string LoginFailedMessage
         {
             get { return _loginFailedMessage; }
@@ -100,7 +111,7 @@ namespace AppDirect.WindowsClient.UI
 
             RefreshAppsLists();
         }
-
+        
         private void GetMyApplications()
         {
             if (MyApplications == null)
@@ -116,7 +127,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 try
                 {
-                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.ToList()); 
+                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.Where(a => !ServiceLocator.LocalStorage.HiddenApps.Contains(a.Id))); 
                     MyAppsLoadError = String.Empty;
                 }
                 catch (Exception e)
@@ -213,9 +224,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                MessageBox.Show(AppDirect.WindowsClient.Properties.Resources.UninstallAppDirectApp);
-                //TODO: Determine if AppDirect apps can be uninstalled by Users
-                //Start asynchronous call to Api to remove application
+                ServiceLocator.LocalStorage.HiddenApps.Add(application.Id);
             }
 
             RefreshAppsLists();
@@ -230,8 +239,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                MessageBox.Show("Contact your administrator to install this application");
-                //TODO: Determine if some AppDirect Apps will be installable by a user
+                System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
             
             RefreshAppsLists();

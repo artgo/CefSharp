@@ -31,11 +31,6 @@ namespace AppDirect.WindowsClient.UI
                 return EmptyDataTemplate;
             }
 
-            if (app.AlertCount > 0)
-            {
-                return AppDataWithAlertTemplate;
-            }
-
             return AppDataTemplate;
         }
     }

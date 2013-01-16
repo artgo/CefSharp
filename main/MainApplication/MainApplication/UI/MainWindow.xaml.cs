@@ -12,9 +12,6 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const string MustLoginMessage = "You must log in to access ";
-
-
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -42,7 +39,7 @@ namespace AppDirect.WindowsClient.UI
             System.Diagnostics.Process.Start(Properties.Resources.AppStoreUrlString);
         }
 
-         private void ForgotPassword(object sender, RoutedEventArgs e)
+        private void ForgotPassword(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start(Properties.Resources.ForgotPasswordUrlString);
         }
@@ -51,7 +48,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                if (ViewModel.Login(UsernameTextBox.Text, PasswordTextBox.Text))
+                if (ViewModel.Login(UsernameTextBox.Text, PasswordBox.Password))
                 {
                     YourAppsTab.IsSelected = true;
                 }
@@ -79,8 +76,7 @@ namespace AppDirect.WindowsClient.UI
 
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
-                    YouMustBeLoggedInMessage.Text = MustLoginMessage + clickedApp.Name;
-                    YouMustBeLoggedInMessage.Visibility = Visibility.Visible;
+                    ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
                     SettingsTab.IsSelected = true;
                 }
                 else
