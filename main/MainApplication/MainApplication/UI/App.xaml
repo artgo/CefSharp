@@ -21,7 +21,7 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
         <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
-        <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />        
+        <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
         <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
         <Style x:Key="LeftMenu" TargetType="TabItem">
@@ -35,7 +35,7 @@
                                     Background="Transparent"
                                     BorderBrush="{StaticResource SolidBorderBrush}" 
                                     BorderThickness="0">
-                            <ContentPresenter x:Name="ContentSite"
+                                <ContentPresenter x:Name="ContentSite"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
                                     ContentSource="Header"
@@ -71,13 +71,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="DimGray" />
                                 <Setter Property="Foreground" Value="#edd4a6" />
-                                <Setter Property="RenderTransform">
-                                            <Setter.Value>
-                                                <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
-                                            </Setter.Value>
-                                        </Setter>
-                                <Setter Property="RenderTransformOrigin" Value="0,0.5"></Setter>
-                                    </Trigger>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -202,7 +196,7 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="TextAlignment" Value="Center"/>
-             <Setter Property="Template">
+            <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="8" BorderThickness="0">
@@ -212,9 +206,9 @@
                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                 </Setter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style x:Key="PasswordBoxWater" TargetType="PasswordBox">
             <Setter Property="Background" Value="#676767"/>

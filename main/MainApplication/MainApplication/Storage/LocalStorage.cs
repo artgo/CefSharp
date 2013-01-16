@@ -11,20 +11,14 @@ namespace AppDirect.WindowsClient.Storage
     ///</summary>
     public class LocalStorage
     {
-        private List<string> _hiddenApps;
+        private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\AppDirect\LocalStorage";
 
         public List<Application> InstalledLocalApps { get; set; }
+
         public List<string> HiddenApps
         {
-            get
-            {
-                if (_hiddenApps == null)
-                {
-                    _hiddenApps = new List<string>();
-                }
-                return _hiddenApps;
-            }
+            get { return _hiddenApps; }
             set { _hiddenApps = value; }
         }
 
