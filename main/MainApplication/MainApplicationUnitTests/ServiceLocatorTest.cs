@@ -1,4 +1,5 @@
 ﻿using System;
+using AppDirect.WindowsClient.API;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Ninject;
 

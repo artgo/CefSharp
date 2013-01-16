@@ -1,8 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using AppDirect.WindowsClient.Models;
-using AppDirect.WindowsClient.Storage;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -65,6 +63,21 @@ namespace AppDirect.WindowsClient.UI
             if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
             {
                 ReloadMyAppsButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void AppButtonClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var clickedApp = ((Button)sender).DataContext as Application;
+
+                var window = new ChromiumWindow() { UrlAddress = clickedApp.UrlString, Session = ServiceLocator.CachedAppDirectApi.Session };
+                window.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 

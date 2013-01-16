@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;

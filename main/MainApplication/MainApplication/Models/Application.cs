@@ -10,7 +10,6 @@ namespace AppDirect.WindowsClient.Models
     [Serializable]
     public class Application
     {
-        private ICommand _launchApp;
         public string Id { get; set; } 
         public string Name { get; set; }
         public string ImagePath { get; set; }
@@ -18,23 +17,5 @@ namespace AppDirect.WindowsClient.Models
         public int AlertCount { get; set; }
         public bool IsLocalApp { get; set; }
         public string UrlString { get; set; }
-        
-        public ICommand LaunchApp
-        {
-            get
-            {
-                if (_launchApp == null)
-                {
-                    _launchApp = new RelayCommand<object>(param => Launch(),
-                        null);
-                }
-                return _launchApp;
-            }
-        } 
-
-        private void Launch()
-        {
-            System.Diagnostics.Process.Start("iexplore.exe", UrlString);
-        }
     }
 }

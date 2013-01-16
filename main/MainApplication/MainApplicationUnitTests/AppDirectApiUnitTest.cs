@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.ObjectMapping;
+﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.ObjectMapping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Ninject;
 
