@@ -6,13 +6,13 @@
     WindowStyle="None">
     <DockPanel>
         <DockPanel VerticalAlignment="Top" DockPanel.Dock="Top" Background="DimGray">
-            <Button Height="23" Name="backButton" Width="75" IsEnabled="False" Click="control_Activated">Back</Button>
-            <Button Height="23" Name="forwardButton" Width="75" IsEnabled="False" Click="control_Activated">Forward</Button>
-            <Button Height="23" Name="goStopButton" Width="75" DockPanel.Dock="Right">Go</Button>
-            <TextBox Height="23" Name="urlTextBox" KeyDown="urlTextBox_KeyDown" />
+            <Button Height="23" Name="backButton" Width="75" Click="control_Activated">Back</Button>
+            <Button Height="23" Visibility="Hidden" Name="forwardButton" Width="75" Click="control_Activated">Forward</Button>
+            <Button Visibility="Hidden" Height="23" Name="goStopButton" Width="75" DockPanel.Dock="Right">Go</Button>
+            <TextBox Visibility="Hidden" Height="23" Name="urlTextBox" KeyDown="urlTextBox_KeyDown" />
         </DockPanel>
         <Label Name="outputLabel" DockPanel.Dock="Bottom" />
-        <!--<cs:WebView x:Name="web_view">
-        </cs:WebView>-->
+        <cs:WebView x:Name="web_view">
+        </cs:WebView>
     </DockPanel>
 </Window>
