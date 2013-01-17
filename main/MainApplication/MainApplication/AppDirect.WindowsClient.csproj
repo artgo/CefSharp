@@ -52,7 +52,7 @@
     <ApplicationIcon>Alarm-Plus-icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>352EB08DB2A64B60ECD162D47308DAE22B11B2C2</ManifestCertificateThumbprint>
