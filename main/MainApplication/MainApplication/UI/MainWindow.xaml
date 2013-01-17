@@ -29,7 +29,7 @@
             </Button>
         </DataTemplate>
         <DataTemplate x:Key="AppDataTemplate">
-            <Button Style="{DynamicResource AppButton}"  Click="AppButtonClick">
+            <Button Style="{DynamicResource AppButton}" Click="AppButtonClick">
                 <Grid Style="{DynamicResource YourAppsButtonGrid}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="44"/>
@@ -41,7 +41,7 @@
             </Button>
         </DataTemplate>
         <DataTemplate x:Key="AppDataWithAlertTemplate">
-            <Button Style="{DynamicResource AppButton}" Command="{Binding LaunchApp}">
+            <Button Style="{DynamicResource AppButton}" Click="AppButtonClick">
                 <Grid Style="{DynamicResource YourAppsButtonGrid}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="44"/>
@@ -82,7 +82,7 @@
                         </ListBox.ItemsPanel>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Button Style="{DynamicResource AppButton}" Command="{Binding LaunchApp}">
+                                <Button Style="{DynamicResource AppButton}" Click="AppButtonClick">
                                     <Grid Style="{DynamicResource YourAppsButtonGrid}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="44"/>
