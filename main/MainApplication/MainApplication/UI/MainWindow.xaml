@@ -29,7 +29,7 @@
             </Button>
         </DataTemplate>
         <DataTemplate x:Key="AppDataTemplate">
-            <Button Style="{DynamicResource AppButton}" Click="AppButtonClick">
+            <Button Style="{DynamicResource AppButton}" Command="{Binding LaunchApp}">
                 <Grid Style="{DynamicResource YourAppsButtonGrid}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="44"/>
@@ -41,7 +41,7 @@
             </Button>
         </DataTemplate>
         <DataTemplate x:Key="AppDataWithAlertTemplate">
-            <Button Style="{DynamicResource AppButton}" Click="AppButtonClick">
+            <Button Style="{DynamicResource AppButton}" Command="{Binding LaunchApp}">
                 <Grid Style="{DynamicResource YourAppsButtonGrid}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="44"/>
@@ -82,7 +82,7 @@
                         </ListBox.ItemsPanel>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Button Style="{DynamicResource AppButton}" Click="AppButtonClick">
+                                <Button Style="{DynamicResource AppButton}" Command="{Binding LaunchApp}">
                                     <Grid Style="{DynamicResource YourAppsButtonGrid}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="44"/>
@@ -151,4 +151,3 @@
     <Label Name="Version" Content="{Binding VersionString }" Margin="40,0,0,0" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Left" Width="60"/>   
     </Grid>
 </Window>
-
