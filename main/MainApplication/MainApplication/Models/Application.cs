@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Windows.Input;
-using AppDirect.WindowsClient.UI;
 
 namespace AppDirect.WindowsClient.Models
 {

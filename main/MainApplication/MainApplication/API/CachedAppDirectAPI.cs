@@ -119,7 +119,7 @@ namespace AppDirect.WindowsClient.API
                     Id = applicationsApplication.MarketplaceUrl,
                     ImagePath = applicationsApplication.ImageUrl,
                     Name = applicationsApplication.Name,
-                    UrlString = applicationsApplication.MarketplaceUrl
+                    UrlString = applicationsApplication.LoginUrl
                 };
                 appList.Add(app);
             }

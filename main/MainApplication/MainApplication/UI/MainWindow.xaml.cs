@@ -66,11 +66,16 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        private static Application GetApplicationFromButtonSender(object sender)
+        {
+            return ((Button)sender).DataContext as Application;
+        }
+
         private void AppButtonClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                var clickedApp = ((Button)sender).DataContext as Application;
+                var clickedApp = GetApplicationFromButtonSender(sender);
 
                 var window = new ChromiumWindow() { UrlAddress = clickedApp.UrlString, Session = ServiceLocator.CachedAppDirectApi.Session };
                 window.Show();
@@ -85,7 +90,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                Application clickedApp = ((Button)sender).DataContext as Application;
+                var clickedApp = GetApplicationFromButtonSender(sender);
 
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
@@ -112,7 +117,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                Application clickedApp = ((MenuItem)sender).DataContext as Application;
+                var clickedApp = ((MenuItem)sender).DataContext as Application;
 
                 ViewModel.Uninstall(clickedApp);
             }
