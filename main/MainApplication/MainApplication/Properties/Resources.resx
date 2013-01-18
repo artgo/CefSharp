@@ -120,6 +120,9 @@
   <data name="AppStoreUrlString" xml:space="preserve">
     <value>https://appcenter.staples.com/home</value>
   </data>
+  <data name="BaseAppStoreUrl" xml:space="preserve">
+    <value>https://test.appdirect.com</value>
+  </data>
   <data name="CredentialsProblemError" xml:space="preserve">
     <value>Incorrect Username or Password</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="NetworkProblemError" xml:space="preserve">
     <value>Network Error. Please check your internet connection.</value>
+  </data>
+  <data name="RegisterEmailUrl" xml:space="preserve">
+    <value>/signupService?email={0}</value>
   </data>
   <data name="UninstallAppDirectApp" xml:space="preserve">
     <value>Contact your administrator to uninstall this application</value>

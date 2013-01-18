@@ -70,6 +70,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://test.appdirect.com.
+        /// </summary>
+        internal static string BaseAppStoreUrl {
+            get {
+                return ResourceManager.GetString("BaseAppStoreUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incorrect Username or Password.
         /// </summary>
         internal static string CredentialsProblemError {
@@ -120,6 +129,15 @@ namespace AppDirect.WindowsClient.Properties {
         internal static string NetworkProblemError {
             get {
                 return ResourceManager.GetString("NetworkProblemError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /signupService?email={0}.
+        /// </summary>
+        internal static string RegisterEmailUrl {
+            get {
+                return ResourceManager.GetString("RegisterEmailUrl", resourceCulture);
             }
         }
         

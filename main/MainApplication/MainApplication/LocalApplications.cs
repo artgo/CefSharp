@@ -22,7 +22,7 @@ namespace AppDirect.WindowsClient
             {
                 new Application
                     {
-                        Description = "Mock Facebook App",
+                        Description = "Facebook App",
                         Id = "1",
                         ImagePath = "Icons/facebook.png",
                         Name = "Facebook",
@@ -33,9 +33,9 @@ namespace AppDirect.WindowsClient
 
                 new Application
                     {
-                        Description = "Mock Gmail App",
+                        Description = "Gmail App",
                         Id = "2",
-                        ImagePath = "Icons/gmail.ico",
+                        ImagePath = "Icons/gmail.png",
                         Name = "Gmail",
                         UrlString = "http://www.gmail.com",
                         AlertCount = 1,
@@ -43,7 +43,7 @@ namespace AppDirect.WindowsClient
                     },
                 new Application
                     {
-                        Description = "Mock Pandora App",
+                        Description = "Pandora App",
                         Id = "3",
                         ImagePath = "Icons/pandora.png",
                         Name = "Pandora",
@@ -53,14 +53,33 @@ namespace AppDirect.WindowsClient
                     },
                 new Application
                     {
-                        Description = "Mock LinkedIn App",
+                        Description = "LinkedIn App",
                         Id = "4",
-                        ImagePath = "Icons/linkedIn.png",
+                        ImagePath = "Icons/linked.png",
                         Name = "LinkedIn",
                         UrlString = "http://www.linkedIn.com",
                         AlertCount = 1,
                         IsLocalApp = true
-
+                    },
+                new Application
+                    {
+                        Description = "TeamChat App",
+                        Id = "5",
+                        ImagePath = "Icons/teamchat.png",
+                        Name = "Team Chat",
+                        UrlString = "http://www.teamchat.com",
+                        AlertCount = 1,
+                        IsLocalApp = true
+                    },
+                    new Application
+                    {
+                        Description = "Freshbooks App",
+                        Id = "6",
+                        ImagePath = "Icons/freshbooks.png",
+                        Name = "Freshbooks",
+                        UrlString = "http://www.freshbooks.com",
+                        AlertCount = 1,
+                        IsLocalApp = true
                     }
             };
     }

@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using Application = AppDirect.WindowsClient.Models.Application;
@@ -90,7 +92,7 @@ namespace AppDirect.WindowsClient.UI
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
                     ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
-                    SettingsTab.IsSelected = true;
+                    LoginTab.IsSelected = true;
                 }
                 else
                 {
@@ -146,13 +148,27 @@ namespace AppDirect.WindowsClient.UI
             else
             {
                 ViewModel.LoginHeaderText = "Please Login to View Your Apps";
-                SettingsTab.IsSelected = true;
+                LoginTab.IsSelected = true;
             }
         }
 
         private void CancelLoginClick(object sender, RoutedEventArgs e)
         {
             YourAppsTab.IsSelected = true;
+        }
+
+        private void RegisterClick(object sender, RoutedEventArgs e)
+        {
+            var emailAddress = NewCustomerEmail.Text;
+
+            var serviceAddress = Properties.Resources.BaseAppStoreUrl + Properties.Resources.RegisterEmailUrl;
+            
+            var request = HttpWebRequest.Create(String.Format(serviceAddress, emailAddress));
+
+            WebResponse webResponse = request.GetResponse();
+
+            MessageArea.Text =
+                "Thanks for registering. Please check your inbox and click the link to activate your account.";
         }
     }
 }

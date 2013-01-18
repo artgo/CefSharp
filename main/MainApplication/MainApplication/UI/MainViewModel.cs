@@ -186,7 +186,7 @@ namespace AppDirect.WindowsClient.UI
                 SuggestedApplications.Add(application);
                 suggestedAppCount++;
 
-                if (suggestedAppCount == 7)
+                if (suggestedAppCount == 5)
                 {
                     break;
                 }
