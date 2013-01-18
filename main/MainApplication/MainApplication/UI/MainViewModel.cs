@@ -85,8 +85,14 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.LocalStorage.InstalledLocalApps == null)
             {
-                ServiceLocator.LocalStorage. InstalledLocalApps = new List<Application>();
+                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>();
             }
+
+            InitializeAppsLists();
+
+            BackgroundWorker updateSuggestedAppsThread = new BackgroundWorker();
+
+
 
             if (ServiceLocator.LocalStorage.HasCredentials)
             {
@@ -110,6 +116,15 @@ namespace AppDirect.WindowsClient.UI
             }
 
             RefreshAppsLists();
+        }
+
+        private void InitializeAppsLists()
+        {
+            List<Application> myAppsList = ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledApiApps).ToList();
+            MyApplications = new ObservableCollection<Application>(myAppsList);
+
+            var suggestedApps = LocalApplications.GetLocalApplications().Where(a => !myAppsList.Contains(a));
+            SuggestedApplications = new ObservableCollection<Application>(suggestedApps);
         }
         
         private void GetMyApplications()
