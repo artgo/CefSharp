@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Xml.Serialization;
 using AppDirect.WindowsClient.Models;
 
@@ -14,8 +15,7 @@ namespace AppDirect.WindowsClient.Storage
         private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\AppDirect\LocalStorage";
 
-        public List<Application> InstalledLocalApps { get; set; }
-        public List<Application> InstalledApiApps { get; set; }
+        public List<Application> InstalledApps { get; set; }
 
         public List<string> HiddenApps
         {
@@ -87,22 +87,34 @@ namespace AppDirect.WindowsClient.Storage
             }
         }
 
-        public void SaveAppIcon()
+        public string SaveAppIcon(string imageUrl, string name)
         {
-            //Create the directory if it does not exist
-            var fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+            if (String.IsNullOrEmpty(imageUrl) || String.IsNullOrEmpty(name))
+            {
+                return imageUrl;
+            }
+
+            SanitizeFileName(name);
+
+            var fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + name);
             if (fileInfo.Directory != null)
             {
                 fileInfo.Directory.Create();
             }
 
-            // Create an XmlSerializer for the LocalStorage type.
-            XmlSerializer mySerializer = new XmlSerializer(typeof(LocalStorage));
-
-            using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
+            using (WebClient client = new WebClient())
             {
-                // Serialize this instance of the LocalStorage class to the config file.
-                mySerializer.Serialize(streamWriter, this);
+                client.DownloadFile(imageUrl, fileInfo.FullName);
+            }
+
+            return fileInfo.FullName;
+        }
+
+        private void SanitizeFileName(string name)
+        {
+            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+            {
+                name = name.Replace(c, '_');
             }
         }
 
