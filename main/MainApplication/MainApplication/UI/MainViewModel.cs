@@ -158,6 +158,11 @@ namespace AppDirect.WindowsClient.UI
 
                 ServiceLocator.LocalStorage.InstalledApps.Remove(application);
             }
+            {
+                if (myAppCount == MyAppDisplayLimit)
+                {
+                    break;
+                }
 
             int myAppCount = MyApplications.Count;
             foreach (Application application in appsToAdd)
