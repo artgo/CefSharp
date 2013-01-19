@@ -24,13 +24,13 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void InstalledAppsListNullWithoutFile()
         {
-            Assert.IsNull(localStorage.InstalledLocalApps);
+            Assert.IsNull(localStorage.InstalledApps);
         }
 
         [TestMethod]
         public void LocalStorageListsNotNullWhenFileContainsApps()
         {
-            localStorage.InstalledLocalApps = LocalApplications.GetLocalApplications();
+            localStorage.InstalledApps = LocalApplications.GetLocalApplications();
             localStorage.SaveAppSettings();
 
             File.Refresh();
@@ -38,7 +38,7 @@ namespace AppDirect.WindowsClient.Tests
 
             localStorage = LocalStorage.LoadLocalStorage();
 
-            Assert.IsNotNull(localStorage.InstalledLocalApps);
+            Assert.IsNotNull(localStorage.InstalledApps);
         }
 
         [TestMethod]
