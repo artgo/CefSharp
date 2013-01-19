@@ -142,8 +142,8 @@
       <DependentUpon>ChromiumWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Chromium\BoundObject.cs" />
-    <Compile Include="UI\Chromium\ExamplePresenter.cs" />
-    <Compile Include="UI\Chromium\IExampleView.cs" />
+    <Compile Include="UI\Chromium\ChromiumPresenter.cs" />
+    <Compile Include="UI\Chromium\IChromiumView.cs" />
     <Compile Include="UI\Chromium\SchemeHandler.cs" />
     <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">

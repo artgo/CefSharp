@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
+using CefSharp;
 using Ninject;
 using Application = AppDirect.WindowsClient.Models.Application;
 

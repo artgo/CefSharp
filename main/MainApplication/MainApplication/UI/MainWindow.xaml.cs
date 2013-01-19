@@ -77,8 +77,19 @@ namespace AppDirect.WindowsClient.UI
             {
                 var clickedApp = GetApplicationFromButtonSender(sender);
 
-                var window = new ChromiumWindow() { UrlAddress = clickedApp.UrlString, Session = ServiceLocator.CachedAppDirectApi.Session };
-                window.Show();
+                if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.UrlString)))
+                {
+                    MessageBox.Show("Application developer didn't set application's URL");
+                }
+                else
+                {
+                    var window = new ChromiumWindow()
+                        {
+                            UrlAddress = clickedApp.UrlString,
+                            Session = ServiceLocator.CachedAppDirectApi.Session
+                        };
+                    window.Show();
+                }
             }
             catch (Exception ex)
             {

@@ -3,7 +3,7 @@ using AppDirect.WindowsClient.API;
 
 namespace AppDirect.WindowsClient.UI.Chromium
 {
-    public interface IExampleView
+    public interface IChromiumView
     {
         // file
         event EventHandler ShowDevToolsActivated;
@@ -19,18 +19,6 @@ namespace AppDirect.WindowsClient.UI.Chromium
         event EventHandler DeleteActivated;
         event EventHandler SelectAllActivated;
 
-        // test
-        event EventHandler TestResourceLoadActivated;
-        event EventHandler TestSchemeLoadActivated;
-        event EventHandler TestExecuteScriptActivated;
-        event EventHandler TestEvaluateScriptActivated;
-        event EventHandler TestBindActivated;
-        event EventHandler TestConsoleMessageActivated;
-        event EventHandler TestTooltipActivated;
-        event EventHandler TestPopupActivated;
-        event EventHandler TestLoadStringActivated;
-        event EventHandler TestCookieVisitorActivated;
-
         // navigation
         event Action<object, string> UrlActivated;
         event EventHandler BackActivated;
@@ -40,9 +28,9 @@ namespace AppDirect.WindowsClient.UI.Chromium
         AppDirectSession Session { get; set; }
 
         void SetTitle(string title);
-        void SetCanGoBack(bool can_go_back);
-        void SetCanGoForward(bool can_go_forward);
-        void SetIsLoading(bool is_loading);
+        void SetCanGoBack(bool canGoBack);
+        void SetCanGoForward(bool canGoForward);
+        void SetIsLoading(bool isLoading);
 
         void ExecuteScript(string script);
         object EvaluateScript(string script);
