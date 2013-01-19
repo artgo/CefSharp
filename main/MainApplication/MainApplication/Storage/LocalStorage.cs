@@ -13,9 +13,9 @@ namespace AppDirect.WindowsClient.Storage
     public sealed class LocalStorage
     {
         private List<string> _hiddenApps = new List<string>();
-        private object _lock;
         private const string FileName = @"\AppDirect\LocalStorage";
-
+        
+        FileInfo fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
         public List<Application> InstalledApps { get; set; }
 
         public List<string> HiddenApps
@@ -72,7 +72,6 @@ namespace AppDirect.WindowsClient.Storage
         public void SaveAppSettings()
         {
             //Create the directory if it does not exist
-            var fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
             if (fileInfo.Directory != null)
             {
                 fileInfo.Directory.Create();
@@ -81,7 +80,7 @@ namespace AppDirect.WindowsClient.Storage
             // Create an XmlSerializer for the LocalStorage type.
             XmlSerializer mySerializer = new XmlSerializer(typeof (LocalStorage));
 
-            lock (_lock)
+            lock (fileInfo)
             {
                 using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
                 {
@@ -89,8 +88,6 @@ namespace AppDirect.WindowsClient.Storage
                     mySerializer.Serialize(streamWriter, this);
                 }
             }
-
-           
         }
 
         public string SaveAppIcon(string imageUrl, string name)
@@ -102,18 +99,19 @@ namespace AppDirect.WindowsClient.Storage
 
             SanitizeFileName(name);
 
-            var fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + name);
-            if (fileInfo.Directory != null)
+            var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + name);
+
+            if (imageFile.Directory != null)
             {
-                fileInfo.Directory.Create();
+                imageFile.Directory.Create();
             }
 
             using (WebClient client = new WebClient())
             {
-                client.DownloadFile(imageUrl, fileInfo.FullName);
+                client.DownloadFile(imageUrl, imageFile.FullName);
             }
 
-            return fileInfo.FullName;
+            return imageFile.FullName;
         }
 
         private void SanitizeFileName(string name)

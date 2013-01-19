@@ -29,10 +29,7 @@ namespace AppDirect.WindowsClient.UI
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = String.Empty;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
-
-        private readonly BackgroundWorker appListBackgroundWorker = new BackgroundWorker();
-        private readonly BackgroundWorker setupBackgroundWorker = new BackgroundWorker();
-
+        
         public string VersionString
         {
             get
@@ -88,17 +85,12 @@ namespace AppDirect.WindowsClient.UI
 
         public MainViewModel()
         {
-            appListBackgroundWorker.DoWork += appList_Worker_DoWork;
+            var setupBackgroundWorker = new BackgroundWorker();
             setupBackgroundWorker.DoWork += setup_Worker_DoWork;
 
             InitializeAppsLists();
 
             setupBackgroundWorker.RunWorkerAsync();
-        }
-
-        private void appList_Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            RefreshAppsLists();
         }
 
         private void setup_Worker_DoWork(object sender, DoWorkEventArgs ea)
@@ -128,7 +120,7 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
-            appListBackgroundWorker.RunWorkerAsync();
+            RefreshAppsLists();
         }
 
         private void InitializeAppsLists()
@@ -274,8 +266,9 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
             {
-                ServiceLocator.LocalStorage.SetCredentials(username, password);
-                appListBackgroundWorker.RunWorkerAsync();
+                ServiceLocator.LocalStorage.SetCredentials(username, password); 
+                
+                RefreshAppsLists();
                 return true;
             }
 
@@ -292,8 +285,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 ServiceLocator.LocalStorage.HiddenApps.Add(application.Id);
             }
-
-            appListBackgroundWorker.RunWorkerAsync();
+            RefreshAppsLists();
         }
 
         public void Install(Application application)
@@ -307,7 +299,7 @@ namespace AppDirect.WindowsClient.UI
                 System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
 
-            appListBackgroundWorker.RunWorkerAsync();
+            RefreshAppsLists();
         }
 
         public void Logout()
@@ -315,7 +307,7 @@ namespace AppDirect.WindowsClient.UI
             ServiceLocator.CachedAppDirectApi.UnAuthenticate();
             ServiceLocator.LocalStorage.ClearLoginCredentials();
 
-            appListBackgroundWorker.RunWorkerAsync();
+            RefreshAppsLists();
         }
 
         public void RefreshAppsLists()
