@@ -24,10 +24,14 @@ namespace AppDirect.WindowsClient.UI
     public class MainViewModel : INotifyPropertyChanged
     {
         private const int MyAppDisplayLimit = 10;
+        private const int SuggestedAppsDisplayLimit = 6;
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = String.Empty;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
+
+        private readonly BackgroundWorker appListBackgroundWorker = new BackgroundWorker();
+        private readonly BackgroundWorker setupBackgroundWorker = new BackgroundWorker();
 
         public string VersionString
         {
@@ -84,42 +88,60 @@ namespace AppDirect.WindowsClient.UI
 
         public MainViewModel()
         {
-            if (ServiceLocator.LocalStorage.InstalledApps == null)
-            {
-                ServiceLocator.LocalStorage.InstalledApps = new List<Application>();
-            }
+            appListBackgroundWorker.DoWork += appList_Worker_DoWork;
+            setupBackgroundWorker.DoWork += setup_Worker_DoWork;
 
             InitializeAppsLists();
-            
+
+            setupBackgroundWorker.RunWorkerAsync();
+        }
+
+        private void appList_Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            RefreshAppsLists();
+        }
+
+        private void setup_Worker_DoWork(object sender, DoWorkEventArgs ea)
+        {
             if (ServiceLocator.LocalStorage.HasCredentials)
             {
                 try
                 {
                     if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
-                                                                        ServiceLocator.LocalStorage.LoginInfo.Password))
+                                                                         ServiceLocator.LocalStorage.LoginInfo.Password))
                     {
                         ServiceLocator.LocalStorage.ClearLoginCredentials();
                     }
                 }
                 catch (System.Security.Cryptography.CryptographicException e)
                 {
-                   ServiceLocator.LocalStorage.ClearLoginCredentials();
-                   MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
+                    ServiceLocator.LocalStorage.ClearLoginCredentials();
+                    MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
                 }
                 catch (Exception)
                 {
-                    LoginFailedMessage = AppDirect.WindowsClient.Properties.Resources.NetworkProblemError;
+                    if (System.Windows.Application.Current != null)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => 
+                    LoginFailedMessage = Properties.Resources.NetworkProblemError));
+                    }
                 }
             }
 
-            RefreshAppsLists();
+            appListBackgroundWorker.RunWorkerAsync();
         }
 
         private void InitializeAppsLists()
         {
-            MyApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.InstalledApps);
+            if (ServiceLocator.LocalStorage.InstalledApps == null)
+            {
+                ServiceLocator.LocalStorage.InstalledApps = new List<Application>();
+            }
 
-            var suggestedApps = LocalApplications.GetLocalApplications().Where(a => !ServiceLocator.LocalStorage.InstalledApps.Contains(a));
+            MyApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.InstalledApps);
+            var installedAppIds = ServiceLocator.LocalStorage.InstalledApps.Select(a => a.Id).ToList();
+
+            var suggestedApps = LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id));
             SuggestedApplications = new ObservableCollection<Application>(suggestedApps);
         }
         
@@ -136,7 +158,12 @@ namespace AppDirect.WindowsClient.UI
 
             foreach (Application application in appsToRemove)
             {
-                MyApplications.Remove(application);
+                if (System.Windows.Application.Current != null)
+                {
+                    Application application1 = application;
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => MyApplications.Remove(application1)));
+                }
+
                 ServiceLocator.LocalStorage.InstalledApps.Remove(application);
             }
 
@@ -148,7 +175,12 @@ namespace AppDirect.WindowsClient.UI
                     break;
                 }
 
-                MyApplications.Add(application);
+                if (System.Windows.Application.Current != null)
+                {
+                    Application application1 = application;
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => MyApplications.Add(application1)));
+                }
+                
                 myAppCount++;
             }
         }
@@ -189,16 +221,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void GetSuggestedApplications()
         {
-            if (SuggestedApplications == null)
-            {
-                SuggestedApplications = new ObservableCollection<Application>();
-            }
-
             var suggestedAppsList = new List<Application>();
-
-            suggestedAppsList.AddRange(LocalApplications.GetLocalApplications());
-            
-            var myAppIds = MyApplications.Select(a => a.Id).ToList();
 
             try
             {
@@ -210,22 +233,40 @@ namespace AppDirect.WindowsClient.UI
                 SuggestedAppsLoadError = e.Message;
             }
 
-            suggestedAppsList.RemoveAll(application => myAppIds.Contains(application.Id));
+            var displayedAppIds = SuggestedApplications.Select(a => a.Id).ToList();
+            var installedAppIds = ServiceLocator.LocalStorage.InstalledApps.Select(a => a.Id).ToList();
 
+            var appsToRemove = suggestedAppsList.Where(a => installedAppIds.Contains(a.Id)).ToList();
+            appsToRemove.AddRange(SuggestedApplications.Where(a => installedAppIds.Contains(a.Id)));
 
-            SuggestedApplications.Clear();
+            var appsToAdd = suggestedAppsList.Where(a => !displayedAppIds.Contains(a.Id)).ToList();
+            appsToAdd.AddRange(LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id)));
 
-            int suggestedAppCount = 0;
-            
-            foreach (Application application in suggestedAppsList)
+            foreach (Application application in appsToRemove)
             {
-                SuggestedApplications.Add(application);
-                suggestedAppCount++;
+                if (System.Windows.Application.Current != null)
+                {
+                    Application application1 = application;
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => SuggestedApplications.Remove(application1)));
+                }
+            }
 
-                if (suggestedAppCount == 7)
+            int myAppCount = SuggestedApplications.Count;
+
+            foreach (Application application in appsToAdd)
+            {
+                if (myAppCount == SuggestedAppsDisplayLimit)
                 {
                     break;
                 }
+
+                if (System.Windows.Application.Current != null)
+                {
+                    Application application1 = application;
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => SuggestedApplications.Add(application1)));
+                }
+
+                myAppCount++;
             }
         }
 
@@ -234,9 +275,7 @@ namespace AppDirect.WindowsClient.UI
             if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
             {
                 ServiceLocator.LocalStorage.SetCredentials(username, password);
-                ServiceLocator.LocalStorage.SaveAppSettings();
-
-                RefreshAppsLists();
+                appListBackgroundWorker.RunWorkerAsync();
                 return true;
             }
 
@@ -248,22 +287,13 @@ namespace AppDirect.WindowsClient.UI
             if (application.IsLocalApp)
             {
                 ServiceLocator.LocalStorage.InstalledApps.Remove(application);
-
-                try
-                {
-                    ServiceLocator.LocalStorage.SaveAppSettings();
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Failed to save uninstall info to local storage");
-                }
             }
             else
             {
                 ServiceLocator.LocalStorage.HiddenApps.Add(application.Id);
             }
 
-            RefreshAppsLists();
+            appListBackgroundWorker.RunWorkerAsync();
         }
 
         public void Install(Application application)
@@ -271,28 +301,28 @@ namespace AppDirect.WindowsClient.UI
             if (application.IsLocalApp)
             {
                 ServiceLocator.LocalStorage.InstalledApps.Add(application);
-                ServiceLocator.LocalStorage.SaveAppSettings();
             }
             else
             {
                 System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
-            
-            RefreshAppsLists();
+
+            appListBackgroundWorker.RunWorkerAsync();
         }
 
         public void Logout()
         {
             ServiceLocator.CachedAppDirectApi.UnAuthenticate();
             ServiceLocator.LocalStorage.ClearLoginCredentials();
-            
-            RefreshAppsLists();
+
+            appListBackgroundWorker.RunWorkerAsync();
         }
 
         public void RefreshAppsLists()
         {
             GetMyApplications();
             GetSuggestedApplications();
+            ServiceLocator.LocalStorage.SaveAppSettings();
         }
 
         protected void NotifyPropertyChanged(string propertyName)

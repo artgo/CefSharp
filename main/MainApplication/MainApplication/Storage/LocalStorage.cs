@@ -10,9 +10,10 @@ namespace AppDirect.WindowsClient.Storage
     ///<summary>
     /// Represents the Serializable Data that persists locally 
     ///</summary>
-    public class LocalStorage
+    public sealed class LocalStorage
     {
         private List<string> _hiddenApps = new List<string>();
+        private object _lock;
         private const string FileName = @"\AppDirect\LocalStorage";
 
         public List<Application> InstalledApps { get; set; }
@@ -80,11 +81,16 @@ namespace AppDirect.WindowsClient.Storage
             // Create an XmlSerializer for the LocalStorage type.
             XmlSerializer mySerializer = new XmlSerializer(typeof (LocalStorage));
 
-            using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
+            lock (_lock)
             {
-                // Serialize this instance of the LocalStorage class to the config file.
-                mySerializer.Serialize(streamWriter, this);
+                using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
+                {
+                    // Serialize this instance of the LocalStorage class to the config file.
+                    mySerializer.Serialize(streamWriter, this);
+                }
             }
+
+           
         }
 
         public string SaveAppIcon(string imageUrl, string name)
