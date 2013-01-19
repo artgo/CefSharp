@@ -136,6 +136,24 @@ namespace AppDirect.WindowsClient.UI
                 ReloadMyAppsButton.Visibility = Visibility.Hidden;
             }
         }
+
+        private void SyncButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            if (ServiceLocator.LocalStorage.HasCredentials)
+            {
+                ViewModel.RefreshAppsLists();
+            }
+            else
+            {
+                ViewModel.LoginHeaderText = "Please Login to View Your Apps";
+                SettingsTab.IsSelected = true;
+            }
+        }
+
+        private void CancelLoginClick(object sender, RoutedEventArgs e)
+        {
+            YourAppsTab.IsSelected = true;
+        }
     }
 }
     

@@ -49,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Alarm-Plus-icon.ico</ApplicationIcon>
+    <ApplicationIcon>UI\Icons\PlusCircle.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -264,9 +264,15 @@
     <Resource Include="UI\Images\Reload.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Alarm-Plus-icon.ico" />
+    <Resource Include="UI\Icons\PlusCircle.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\LaunchAppStore.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -10,7 +10,15 @@
             <GradientStop Color="#171717" Offset="0.4"/>
         </LinearGradientBrush>
         <sys:Double x:Key="ContentHeight">230</sys:Double>
-        <DropShadowEffect x:Key="DefaultShadowEffect" BlurRadius="6" ShadowDepth="3"/>
+        <sys:Double x:Key="HeaderHeight">30</sys:Double>
+        <sys:Double x:Key="WindowHeight">330</sys:Double>
+        <sys:Double x:Key="WindowWidth">680</sys:Double>
+        <GridLength x:Key="RightColumnWidth">245</GridLength>
+        <sys:Double x:Key="RightPanelWidth">245</sys:Double>
+        <GridLength x:Key="LeftColumnWidth">435</GridLength>
+        <sys:Double x:Key="LeftPanelWidth">435</sys:Double>
+        <FontFamily x:Key="DefaultWindowFont">Microsoft Sans Serif</FontFamily>
+            <DropShadowEffect x:Key="DefaultShadowEffect" BlurRadius="6" ShadowDepth="3"/>
         <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>
@@ -24,6 +32,11 @@
         <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
         <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+        <Style x:Key="TextStyle" TargetType="TextBlock">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
+        </Style>
         <Style x:Key="LeftMenu" TargetType="TabItem">
             <Setter Property="Width" Value="40"></Setter>
             <Setter Property="Template">
@@ -57,6 +70,7 @@
         <Style x:Key="InstallAppButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -181,9 +195,8 @@
         <Style x:Key="YourAppsButtonGrid" TargetType="Grid">
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="Width" Value="160"/>
+            <Setter Property="Width" Value="150"/>
             <Setter Property="Height" Value="44"/>
-            <Setter Property="Margin" Value="0"/>
         </Style>
         <Style x:Key="BadgeStyle" TargetType="TextBox">
             <Setter Property="Background" Value="Red"/>
