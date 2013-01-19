@@ -11,13 +11,12 @@ namespace AppDirect.WindowsClient.UI
     /// <summary>
     /// Interaction logic for ChromiumWindow.xaml
     /// </summary>
-    public partial class ChromiumWindow : Window, IExampleView
+    public partial class ChromiumWindow : Window, IChromiumView
     {
         // file
         public event EventHandler ShowDevToolsActivated;
         public event EventHandler CloseDevToolsActivated;
         public event EventHandler ExitActivated;
-
 
         // edit
         public event EventHandler UndoActivated;
@@ -28,27 +27,12 @@ namespace AppDirect.WindowsClient.UI
         public event EventHandler DeleteActivated;
         public event EventHandler SelectAllActivated;
 
-
-        // test
-        public event EventHandler TestResourceLoadActivated;
-        public event EventHandler TestSchemeLoadActivated;
-        public event EventHandler TestExecuteScriptActivated;
-        public event EventHandler TestEvaluateScriptActivated;
-        public event EventHandler TestBindActivated;
-        public event EventHandler TestConsoleMessageActivated;
-        public event EventHandler TestTooltipActivated;
-        public event EventHandler TestPopupActivated;
-        public event EventHandler TestLoadStringActivated;
-        public event EventHandler TestCookieVisitorActivated;
-
-
         // navigation
         public event Action<object, string> UrlActivated;
         public event EventHandler BackActivated;
         public event EventHandler ForwardActivated;
 
         private string _urlAddress;
-        private AppDirectSession _session;
 
         public string UrlAddress
         {
@@ -56,32 +40,26 @@ namespace AppDirect.WindowsClient.UI
             set
             {
                 _urlAddress = value;
-                urlTextBox.Text = _urlAddress;
+                UrlTextBox.Text = _urlAddress;
             }
         }
 
-        public AppDirectSession Session
-        {
-            get { return _session;  }
-            set { _session = value; }
-        }
+        public AppDirectSession Session { get; set; }
 
-        private IDictionary<object, EventHandler> handlers;
+        private readonly IDictionary<object, EventHandler> _handlers;
 
         public ChromiumWindow()
         {
             InitializeComponent();
 
-
-            var presenter = new ExamplePresenter(web_view, this,
+            new ChromiumPresenter(WebViewObject, this,
                 invoke => Dispatcher.BeginInvoke(invoke));
 
-
-            handlers = new Dictionary<object, EventHandler>
+            _handlers = new Dictionary<object, EventHandler>
             {
                 // navigation
-                { backButton, BackActivated },
-                { forwardButton, ForwardActivated },
+                { BackButton, BackActivated },
+                { ForwardButton, ForwardActivated },
             };
         }
 
@@ -92,53 +70,49 @@ namespace AppDirect.WindowsClient.UI
         }
 
 
-        public void SetCanGoBack(bool can_go_back)
+        public void SetCanGoBack(bool canGoBack)
         {
-            backButton.IsEnabled = can_go_back;
+            BackButton.IsEnabled = canGoBack;
         }
 
 
-        public void SetCanGoForward(bool can_go_forward)
+        public void SetCanGoForward(bool canGoForward)
         {
-            forwardButton.IsEnabled = can_go_forward;
+            ForwardButton.IsEnabled = canGoForward;
         }
 
 
-        public void SetIsLoading(bool is_loading)
+        public void SetIsLoading(bool isLoading)
         {
 
-
         }
-
 
         public void ExecuteScript(string script)
         {
-            web_view.ExecuteScript(script);
+            WebViewObject.ExecuteScript(script);
         }
 
 
         public object EvaluateScript(string script)
         {
-            return web_view.EvaluateScript(script);
+            return WebViewObject.EvaluateScript(script);
         }
 
 
         public void DisplayOutput(string output)
         {
-            outputLabel.Content = output;
+            OutputLabel.Content = output;
         }
-
 
         private void control_Activated(object sender, RoutedEventArgs e)
         {
             EventHandler handler;
-            if (handlers.TryGetValue(sender, out handler) &&
+            if (_handlers.TryGetValue(sender, out handler) &&
                 handler != null)
             {
                 handler(this, EventArgs.Empty);
             }
         }
-
 
         private void urlTextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -151,7 +125,7 @@ namespace AppDirect.WindowsClient.UI
             var handler = UrlActivated;
             if (handler != null)
             {
-                handler(this, urlTextBox.Text);
+                handler(this, UrlTextBox.Text);
             }
         }
     }

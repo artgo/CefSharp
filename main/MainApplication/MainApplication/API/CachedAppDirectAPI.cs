@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.ObjectMapping;
 
@@ -12,7 +13,8 @@ namespace AppDirect.WindowsClient.API
         private readonly IAppDirectApi _appDirectApi;
         private const int MaxApps = 10;
         private IList<Application> _suggestedApps;
-        private IList<Application> _myApps; 
+        private IList<Application> _myApps;
+        private static readonly Regex IdFromUrl = new Regex(@"\d+$");
 
         public CachedAppDirectApi(IAppDirectApi appDirectApi)
         {
@@ -90,7 +92,7 @@ namespace AppDirect.WindowsClient.API
                         Description = applicationsApplication.Description,
                         Id = applicationsApplication.Id,
                         Name = applicationsApplication.Name,
-                        UrlString = applicationsApplication.Href,
+                        UrlString = applicationsApplication.Url,
                         ImagePath = applicationsApplication.IconUrl,
                         IsLocalApp = false,
                     };
@@ -116,10 +118,11 @@ namespace AppDirect.WindowsClient.API
                 var app = new Application()
                 {
                     Description = applicationsApplication.Description,
-                    Id = applicationsApplication.MarketplaceUrl,
+                    Id = IdFromUrl.Match(applicationsApplication.MarketplaceUrl).Captures[0].Value,
                     ImagePath = applicationsApplication.ImageUrl,
                     Name = applicationsApplication.Name,
-                    UrlString = applicationsApplication.MarketplaceUrl
+                    UrlString = applicationsApplication.LoginUrl,
+                    IsLocalApp = false
                 };
                 appList.Add(app);
             }
