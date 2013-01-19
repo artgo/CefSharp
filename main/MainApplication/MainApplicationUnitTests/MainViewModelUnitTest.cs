@@ -160,6 +160,17 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         [TestMethod]
+        public void LocalStorageContainsCachedAppDirectMyApps()
+        {
+            SetMyAppsList(_myApplications);
+            _mainViewModel.MyApplications.Clear();
+            _mainViewModel.Login(Username, Password);
+            _mainViewModel.RefreshAppsLists();
+
+            Assert.IsTrue(_localStorage.InstalledApps.Contains(_myApplications[0]));
+        }
+
+        [TestMethod]
         public void MyAppsDoesNotContainHiddenMyApps()
         {
             SetMyAppsList(_myApplications);
@@ -167,7 +178,6 @@ namespace AppDirect.WindowsClient.Tests
             _mainViewModel.Login(Username, Password);
             _mainViewModel.RefreshAppsLists();
 
-            _mainViewModel.Uninstall(_myApplications[0]);
             Assert.IsFalse(_mainViewModel.MyApplications.Contains(_myApplications[0]));
         }
 
