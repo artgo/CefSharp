@@ -1,5 +1,7 @@
 using System;
+using System;
 using System.Net;
+using System.Collections.Generic;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +14,8 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly IDictionary<Application, ChromiumWindow> _chromiumWindows = new Dictionary<Application, ChromiumWindow>();
+
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -68,14 +72,37 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        private static Application GetApplicationFromButtonSender(object sender)
+        {
+            return ((Button)sender).DataContext as Application;
+        }
+
         private void AppButtonClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                var clickedApp = ((Button)sender).DataContext as Application;
+                var clickedApp = GetApplicationFromButtonSender(sender);
 
-                var window = new ChromiumWindow() { UrlAddress = clickedApp.UrlString, Session = ServiceLocator.CachedAppDirectApi.Session };
-                window.Show();
+                if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.UrlString)))
+                {
+                    MessageBox.Show("Application developer didn't set application's URL");
+                }
+                else
+                {
+                    ChromiumWindow window;
+                    if (!_chromiumWindows.TryGetValue(clickedApp, out window))
+                    {
+                        window = new ChromiumWindow()
+                            {
+                                UrlAddress = clickedApp.UrlString,
+                                Session = ServiceLocator.CachedAppDirectApi.Session
+                            };
+                        _chromiumWindows[clickedApp] = window;
+                    }
+
+                    window.Show();
+                    window.Activate();
+                }
             }
             catch (Exception ex)
             {
@@ -87,7 +114,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                Application clickedApp = ((Button)sender).DataContext as Application;
+                var clickedApp = GetApplicationFromButtonSender(sender);
 
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
@@ -114,7 +141,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                Application clickedApp = ((MenuItem)sender).DataContext as Application;
+                var clickedApp = ((MenuItem)sender).DataContext as Application;
 
                 ViewModel.Uninstall(clickedApp);
             }

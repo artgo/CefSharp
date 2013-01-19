@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Xml.Serialization;
 using AppDirect.WindowsClient.Models;
 
@@ -9,12 +10,13 @@ namespace AppDirect.WindowsClient.Storage
     ///<summary>
     /// Represents the Serializable Data that persists locally 
     ///</summary>
-    public class LocalStorage
+    public sealed class LocalStorage
     {
         private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\AppDirect\LocalStorage";
-
-        public List<Application> InstalledLocalApps { get; set; }
+        
+        FileInfo fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        public List<Application> InstalledApps { get; set; }
 
         public List<string> HiddenApps
         {
@@ -70,7 +72,6 @@ namespace AppDirect.WindowsClient.Storage
         public void SaveAppSettings()
         {
             //Create the directory if it does not exist
-            var fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
             if (fileInfo.Directory != null)
             {
                 fileInfo.Directory.Create();
@@ -79,10 +80,45 @@ namespace AppDirect.WindowsClient.Storage
             // Create an XmlSerializer for the LocalStorage type.
             XmlSerializer mySerializer = new XmlSerializer(typeof (LocalStorage));
 
-            using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
+            lock (fileInfo)
             {
-                // Serialize this instance of the LocalStorage class to the config file.
-                mySerializer.Serialize(streamWriter, this);
+                using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
+                {
+                    // Serialize this instance of the LocalStorage class to the config file.
+                    mySerializer.Serialize(streamWriter, this);
+                }
+            }
+        }
+
+        public string SaveAppIcon(string imageUrl, string name)
+        {
+            if (String.IsNullOrEmpty(imageUrl) || String.IsNullOrEmpty(name))
+            {
+                return imageUrl;
+            }
+
+            SanitizeFileName(name);
+
+            var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + name);
+
+            if (imageFile.Directory != null)
+            {
+                imageFile.Directory.Create();
+            }
+
+            using (WebClient client = new WebClient())
+            {
+                client.DownloadFile(imageUrl, imageFile.FullName);
+            }
+
+            return imageFile.FullName;
+        }
+
+        private void SanitizeFileName(string name)
+        {
+            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+            {
+                name = name.Replace(c, '_');
             }
         }
 

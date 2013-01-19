@@ -2,3 +2,9 @@
 *.suo
 bin
 obj
+Debug
+Release
+*.DotSettings.user
+*.DotSettings
+*.user
+TestResults

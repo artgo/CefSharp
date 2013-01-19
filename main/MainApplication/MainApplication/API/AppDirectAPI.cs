@@ -19,6 +19,7 @@ namespace AppDirect.WindowsClient.API
         private const string FormContentType = "application/x-www-form-urlencoded";
         private const string JsonAcceptString = "application/json,text/javascript,*/*;q=0.01";
         private const string HtmlAcceptString = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+        private const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.0 Safari/537.1";
         private static readonly Uri ServiceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FEATURED");
         private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
         private readonly WebClient _serviceRequest = new WebClient();
@@ -34,9 +35,9 @@ namespace AppDirect.WindowsClient.API
                     var request = BuildHttpWebRequestForUrl(MyAppsUrl, false, true);
                     request.CookieContainer = _context;
 
-                    HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+                    var response = (HttpWebResponse) request.GetResponse();
 
-                    StreamReader reader = new StreamReader(response.GetResponseStream());
+                    var reader = new StreamReader(response.GetResponseStream());
                     string result = reader.ReadToEnd();
                     return _serializer.Deserialize<MyappsMyapp[]>(result);
                 }
@@ -50,17 +51,16 @@ namespace AppDirect.WindowsClient.API
             get { return new AppDirectSession(_time, _cookies); }
         }
 
-        private HttpWebRequest BuildHttpWebRequestForUrl(string urlStr, bool isPost, bool isJson)
+        private static HttpWebRequest BuildHttpWebRequestForUrl(string urlStr, bool isPost, bool isJson)
         {
-            HttpWebRequest httpWebRequest = (HttpWebRequest) HttpWebRequest.Create(urlStr);
-            httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0";
+            var httpWebRequest = (HttpWebRequest) WebRequest.Create(urlStr);
+            httpWebRequest.UserAgent = UserAgent;
             httpWebRequest.Method = isPost ? "POST" : "GET";
             httpWebRequest.Accept = isJson ? JsonAcceptString : HtmlAcceptString;
-            httpWebRequest.Headers.Add("Accept-Language: en-US,en;q=0.5");
-            httpWebRequest.Headers.Add("Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+            httpWebRequest.Headers.Add("accept-language: en-us,en");
+            httpWebRequest.Headers.Add("accept-charset: iso-8859-1,*,utf-8");
             httpWebRequest.KeepAlive = true;
             httpWebRequest.AllowAutoRedirect = true;
-            httpWebRequest.Headers.Add("Keep-Alive: 300");
             httpWebRequest.Referer = DomainPrefix + @"/login";
             return httpWebRequest;
         }
@@ -111,20 +111,22 @@ namespace AppDirect.WindowsClient.API
 
             _cookies.Clear();
 
-            for ( int j = 0; j < response.Cookies.Count; j++ ) 
+            var coockiesForDomain = cookies.GetCookies(new Uri(DomainPrefix));
+
+            for (int j = 0; j < coockiesForDomain.Count; j++) 
             {
-                var oCookie = response.Cookies[j];
-                var oC = new Cookie();
+                var oCookie = coockiesForDomain[j];
+                var oC = new Cookie
+                    {
+                        Domain = request.RequestUri.Host,
+                        Expires = oCookie.Expires,
+                        Name = oCookie.Name,
+                        Path = oCookie.Path,
+                        Secure = oCookie.Secure,
+                        Value = oCookie.Value
+                    };
 
-                // Convert between the System.Net.Cookie to a System.Web.HttpCookie...
-                oC.Domain   = request.RequestUri.Host;
-                oC.Expires  = oCookie.Expires;
-                oC.Name     = oCookie.Name;
-                oC.Path     = oCookie.Path;
-                oC.Secure   = oCookie.Secure;
-                oC.Value    = oCookie.Value;
-
-                cookies.Add( oC );
+                //cookies.Add( oC );
                 _cookies.Add( oC );
             }
 

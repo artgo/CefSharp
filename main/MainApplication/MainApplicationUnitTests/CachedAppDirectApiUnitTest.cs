@@ -71,17 +71,8 @@ namespace AppDirect.WindowsClient.Tests
         public void AuthenticationFailsForWrongCredentials()
         {
             var appDirectApi = BuildCachedAppDirectApi();
-            bool hadException = false;
-            try
-            {
-                appDirectApi.Authenticate("appdqa+t75adsa@gmail.com", "wrong_password");
-            }
-            catch (AuthenticationException)
-            {
-                hadException = true;
-            }
 
-            Assert.IsTrue(hadException);
+            Assert.IsFalse(appDirectApi.Authenticate("appdqa+t75adsa@gmail.com", "wrong_password"));
         }
 
         [TestMethod]

@@ -23,7 +23,7 @@ namespace AppDirect.WindowsClient.Tests
         private const string Username = "appdqa+t75adsa@gmail.com";
         private const string Password = "origo2010";
         private const string BadPassword = "BadPassword";
-        private List<Application> _myApplications = new List<Application>(){new Application{IsLocalApp = false, Id = "AppDirectApplicationId"}}; 
+        private List<Application> _myApplications = new List<Application>(){new Application{IsLocalApp = false, Id = "AppDirectApplicationId", Name = "FakeApp"}}; 
 
         private LocalStorage _localStorage;
 
@@ -160,6 +160,17 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         [TestMethod]
+        public void LocalStorageContainsCachedAppDirectMyApps()
+        {
+            SetMyAppsList(_myApplications);
+            _mainViewModel.MyApplications.Clear();
+            _mainViewModel.Login(Username, Password);
+            _mainViewModel.RefreshAppsLists();
+
+            Assert.IsTrue(_localStorage.InstalledApps.Contains(_myApplications[0]));
+        }
+
+        [TestMethod]
         public void MyAppsDoesNotContainHiddenMyApps()
         {
             SetMyAppsList(_myApplications);
@@ -167,7 +178,6 @@ namespace AppDirect.WindowsClient.Tests
             _mainViewModel.Login(Username, Password);
             _mainViewModel.RefreshAppsLists();
 
-            _mainViewModel.Uninstall(_myApplications[0]);
             Assert.IsFalse(_mainViewModel.MyApplications.Contains(_myApplications[0]));
         }
 
@@ -196,7 +206,7 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void LocalStorageInitializedByConstructor()
         {
-            Assert.IsNotNull(ServiceLocator.LocalStorage.InstalledLocalApps);
+            Assert.IsNotNull(ServiceLocator.LocalStorage.InstalledApps);
         }
 
         private void SetMyAppsList(List<Application> myApps)

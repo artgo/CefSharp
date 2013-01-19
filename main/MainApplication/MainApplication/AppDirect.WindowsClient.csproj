@@ -65,7 +65,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>AppDirect2013-WindowsClient.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -142,8 +143,8 @@
       <DependentUpon>ChromiumWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Chromium\BoundObject.cs" />
-    <Compile Include="UI\Chromium\ExamplePresenter.cs" />
-    <Compile Include="UI\Chromium\IExampleView.cs" />
+    <Compile Include="UI\Chromium\ChromiumPresenter.cs" />
+    <Compile Include="UI\Chromium\IChromiumView.cs" />
     <Compile Include="UI\Chromium\SchemeHandler.cs" />
     <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
@@ -190,9 +191,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="AppDirect.snk" />
-    <None Include="AppDirect.WindowsClient_TemporaryKey.pfx" />
-    <None Include="AppDirect2013-WindowsClient.pfx" />
     <None Include="apps_list.xsc">
       <DependentUpon>apps_list.xsd</DependentUpon>
     </None>
