@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Application = AppDirect.WindowsClient.Models.Application;
@@ -10,6 +11,8 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly IDictionary<Application, ChromiumWindow> _chromiumWindows = new Dictionary<Application, ChromiumWindow>();
+
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -83,12 +86,19 @@ namespace AppDirect.WindowsClient.UI
                 }
                 else
                 {
-                    var window = new ChromiumWindow()
-                        {
-                            UrlAddress = clickedApp.UrlString,
-                            Session = ServiceLocator.CachedAppDirectApi.Session
-                        };
+                    ChromiumWindow window;
+                    if (!_chromiumWindows.TryGetValue(clickedApp, out window))
+                    {
+                        window = new ChromiumWindow()
+                            {
+                                UrlAddress = clickedApp.UrlString,
+                                Session = ServiceLocator.CachedAppDirectApi.Session
+                            };
+                        _chromiumWindows[clickedApp] = window;
+                    }
+
                     window.Show();
+                    window.Activate();
                 }
             }
             catch (Exception ex)
