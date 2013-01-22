@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Xml.Serialization;
 using AppDirect.WindowsClient.Models;
@@ -14,17 +15,37 @@ namespace AppDirect.WindowsClient.Storage
     {
         private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\AppDirect\LocalStorage";
-        
+        private const int DaysBeforePasswordExpires = 30;
         FileInfo fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
-        public List<Application> InstalledApps { get; set; }
+
+        public List<Application> InstalledLocalApps { get; set; }
+        public List<Application> InstalledApiApps { get; set; }
+
+        [XmlIgnore]
+        public List<Application> AllApplications
+        {
+            get
+            {
+                if (InstalledLocalApps == null)
+                {
+                    InstalledLocalApps = new List<Application>();
+                }
+
+                if (InstalledApiApps == null)
+                {
+                    InstalledApiApps = new List<Application>();
+                }
+
+                return InstalledLocalApps.Concat(InstalledApiApps).ToList();
+            }
+           
+        }
 
         public List<string> HiddenApps
         {
             get { return _hiddenApps; }
             set { _hiddenApps = value; }
         }
-
-        private const int DaysBeforePasswordExpires = 30;
 
         public LoginObject LoginInfo { get; set; }
 
@@ -38,38 +59,51 @@ namespace AppDirect.WindowsClient.Storage
                        !String.IsNullOrEmpty(LoginInfo.Salt) &&
                        LoginInfo.PasswordSetDate.AddDays(DaysBeforePasswordExpires) > DateTime.Now;
             }                               
-        }                                   
-                                            
-
-        public static LocalStorage LoadLocalStorage()
-        {
-            // Create an XmlSerializer for the LocalStorage type.
-            XmlSerializer mySerializer = new XmlSerializer(typeof(LocalStorage));
-            FileInfo fi = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
-
-            // If the file exists, open it.
-            if (fi.Exists)
-            {
-                using (FileStream fileStream = fi.OpenRead())
-                {
-                    // Create a new instance of the LocalStorage by deserializing the file.
-                    var localStorage = (LocalStorage) mySerializer.Deserialize(fileStream);
-
-                    if (!localStorage.HasCredentials)
-                    {
-                        localStorage.ClearLoginCredentials();
-                    }
-
-                    return localStorage;
-                }
-            }
-            else
-            {
-                return new LocalStorage();
-            }
         }
 
-        public void SaveAppSettings()
+        public LocalStorage(){}
+
+         
+        public LocalStorage(bool loadFromLocalStorage) 
+        {
+            if (loadFromLocalStorage)
+            {
+                XmlSerializer mySerializer = new XmlSerializer(typeof(LocalStorage));
+
+                lock (fileInfo)
+                {
+                    // If the file exists, open it.
+                    if (fileInfo.Exists)
+                    {
+
+                        using (FileStream fileStream = fileInfo.OpenRead())
+                        {
+                            // Create a new instance of the LocalStorage by deserializing the file.
+                            var localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
+
+                            LoginInfo = localStorage.LoginInfo;                         
+                            InstalledLocalApps = localStorage.InstalledLocalApps;
+                            InstalledApiApps = localStorage.InstalledApiApps;
+
+                            HiddenApps = localStorage.HiddenApps;
+
+
+                            if (!localStorage.HasCredentials)
+                            {
+                                localStorage.ClearLoginCredentials();
+                            }
+                        }
+                    }
+                    else
+                    {
+                    }
+                }
+            }   
+        }     
+        
+        
+
+       public void SaveAppSettings()
         {
             //Create the directory if it does not exist
             if (fileInfo.Directory != null)
@@ -82,7 +116,7 @@ namespace AppDirect.WindowsClient.Storage
 
             lock (fileInfo)
             {
-                using (StreamWriter streamWriter = new StreamWriter(Environment.SpecialFolder.ApplicationData + FileName, false))
+                using (StreamWriter streamWriter = new StreamWriter(fileInfo.FullName, false))
                 {
                     // Serialize this instance of the LocalStorage class to the config file.
                     mySerializer.Serialize(streamWriter, this);
@@ -101,15 +135,19 @@ namespace AppDirect.WindowsClient.Storage
 
             var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + name);
 
-            if (imageFile.Directory != null)
+            if (!imageFile.Exists)
             {
-                imageFile.Directory.Create();
-            }
+                if (imageFile.Directory != null)
+                {
+                    imageFile.Directory.Create();
+                }
 
-            using (WebClient client = new WebClient())
-            {
-                client.DownloadFile(imageUrl, imageFile.FullName);
+                using (WebClient client = new WebClient())
+                {
+                    client.DownloadFile(imageUrl, imageFile.FullName);
+                }
             }
+           
 
             return imageFile.FullName;
         }

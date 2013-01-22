@@ -9,6 +9,11 @@
             <GradientStop Color="#292929" Offset="0.05"/>
             <GradientStop Color="#171717" Offset="0.4"/>
         </LinearGradientBrush>
+        <LinearGradientBrush x:Key="WhiteToGrayGradiant" StartPoint="0,0" EndPoint="0,1" >
+            <GradientStop Color="#ffffff" Offset="0"/>
+            <GradientStop Color="#e2e2e2" Offset="0.05"/>
+            <GradientStop Color="#b8b8b8" Offset="0.4"/>
+        </LinearGradientBrush>
         <sys:Double x:Key="ContentHeight">300</sys:Double>
         <sys:Double x:Key="HeaderHeight">30</sys:Double>
         <sys:Double x:Key="WindowHeight">330</sys:Double>

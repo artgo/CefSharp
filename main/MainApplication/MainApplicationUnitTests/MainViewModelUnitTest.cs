@@ -167,7 +167,7 @@ namespace AppDirect.WindowsClient.Tests
             _mainViewModel.Login(Username, Password);
             _mainViewModel.RefreshAppsLists();
 
-            Assert.IsTrue(_localStorage.InstalledApps.Contains(_myApplications[0]));
+            Assert.IsTrue(_localStorage.InstalledApiApps.Contains(_myApplications[0]));
         }
 
         [TestMethod]
@@ -206,7 +206,7 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void LocalStorageInitializedByConstructor()
         {
-            Assert.IsNotNull(ServiceLocator.LocalStorage.InstalledApps);
+            Assert.IsNotNull(ServiceLocator.LocalStorage.InstalledLocalApps);
         }
 
         private void SetMyAppsList(List<Application> myApps)

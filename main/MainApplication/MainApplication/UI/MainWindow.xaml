@@ -28,7 +28,7 @@
         <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource LeftPanelWidth}" Margin="0,30,0,0" Grid.Column="0"/>
         <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0" Grid.Column="1"/>
         <Rectangle Name="BottomRibbon" Grid.Column="1" Fill="{StaticResource RibbonColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="{StaticResource RightPanelWidth}" Height="40" />
-        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="0" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="0" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="{Binding CloudSyncVisibility}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <Image Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="16" Height="16" Source="Images/cloudGray.png" />
                 <TextBlock FontWeight="Bold" FontSize="11" Foreground="DarkGray" VerticalAlignment="Center" Text="Cloud Sync" Margin="4,0,0,0"/>

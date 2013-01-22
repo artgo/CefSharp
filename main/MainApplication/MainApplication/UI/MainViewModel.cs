@@ -24,7 +24,7 @@ namespace AppDirect.WindowsClient.UI
     public class MainViewModel : INotifyPropertyChanged
     {
         private const int MyAppDisplayLimit = 10;
-        private const int SuggestedAppsDisplayLimit = 6;
+        private const int SuggestedAppsDisplayLimit = 5;
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = String.Empty;
@@ -35,6 +35,21 @@ namespace AppDirect.WindowsClient.UI
             get
             {
                 return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            }
+        }
+
+        public Visibility CloudSyncVisibility
+        {
+            get
+            {
+                if (ServiceLocator.LocalStorage.HasCredentials)
+                {
+                    return Visibility.Hidden;
+                }
+                else
+                {
+                    return Visibility.Visible;
+                }
             }
         }
 
@@ -125,49 +140,42 @@ namespace AppDirect.WindowsClient.UI
 
         private void InitializeAppsLists()
         {
-            if (ServiceLocator.LocalStorage.InstalledApps == null)
+            if (ServiceLocator.LocalStorage.InstalledLocalApps == null)
             {
-                ServiceLocator.LocalStorage.InstalledApps = new List<Application>();
+                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>();
             }
 
-            MyApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.InstalledApps);
-            var installedAppIds = ServiceLocator.LocalStorage.InstalledApps.Select(a => a.Id).ToList();
+            if (ServiceLocator.LocalStorage.InstalledApiApps == null)
+            {
+                ServiceLocator.LocalStorage.InstalledApiApps = new List<Application>();
+            }
+
+            var allApps =
+                ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledApiApps);
+            MyApplications = new ObservableCollection<Application>(allApps);
+
+            var installedAppIds = MyApplications.Select(a => a.Id).ToList();
 
             var suggestedApps = LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id));
-            SuggestedApplications = new ObservableCollection<Application>(suggestedApps);
+            SuggestedApplications = new ObservableCollection<Application>(suggestedApps.Take(SuggestedAppsDisplayLimit));
         }
         
         private void GetMyApplications()
         {
             SyncStorageWithApi();
 
-            var displayedAppIds = MyApplications.Select(a => a.Id).ToList();
-            var installedAppIds = ServiceLocator.LocalStorage.InstalledApps.Select(a => a.Id).ToList();
-
-            var appsToAdd = ServiceLocator.LocalStorage.InstalledApps.Where(a => !displayedAppIds.Contains(a.Id)).ToList();
-            var appsToRemove = MyApplications.Where(a => !installedAppIds.Contains(a.Id)).ToList();
-
-
-            foreach (Application application in appsToRemove)
+            if (System.Windows.Application.Current != null)
             {
-                if (System.Windows.Application.Current != null)
-                {
-                    Application application1 = application;
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => MyApplications.Remove(application1)));
-                }
-
-                ServiceLocator.LocalStorage.InstalledApps.Remove(application);
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => MyApplications.Clear()));
             }
-            {
-                if (myAppCount == MyAppDisplayLimit)
-                {
-                    break;
-                }
 
-            int myAppCount = MyApplications.Count;
-            foreach (Application application in appsToAdd)
+
+            var allApps =
+                ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledApiApps);
+
+            foreach (Application application in allApps)
             {
-                if (myAppCount == MyAppDisplayLimit)
+                if (MyApplications.Count == MyAppDisplayLimit)
                 {
                     break;
                 }
@@ -175,22 +183,21 @@ namespace AppDirect.WindowsClient.UI
                 if (System.Windows.Application.Current != null)
                 {
                     Application application1 = application;
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => MyApplications.Add(application1)));
+                    System.Windows.Application.Current.Dispatcher.Invoke(
+                        new Action(() => MyApplications.Add(application1)));
                 }
-                
-                myAppCount++;
             }
         }
 
         private void SyncStorageWithApi()
         {
-            var myAppsList = new List<Application>();
+            List<Application> apiApps = new List<Application>();
 
             if (ServiceLocator.LocalStorage.HasCredentials)
             {
                 try
                 {
-                    myAppsList.AddRange(ServiceLocator.CachedAppDirectApi.MyApps.Where(a => !ServiceLocator.LocalStorage.HiddenApps.Contains(a.Id)));
+                    apiApps = ServiceLocator.CachedAppDirectApi.MyApps.Where(a => !ServiceLocator.LocalStorage.HiddenApps.Contains(a.Id)).ToList();
                     MyAppsLoadError = String.Empty;
                 }
                 catch (Exception)
@@ -199,21 +206,13 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
-            var installedAppIds = ServiceLocator.LocalStorage.InstalledApps.Select(a => a.Id).ToList();
-            var appsToAdd = myAppsList.Where(a => !installedAppIds.Contains(a.Id)).ToList();
-
-            foreach (Application application in appsToAdd)
+            foreach (var application in apiApps)
             {
-                if (!application.IsLocalApp)
-                {
-                    application.ImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath, application.Name);
-                    ServiceLocator.LocalStorage.InstalledApps.Add(application);
-                }
+                application.ImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath,
+                                                                                    application.Name);
             }
 
-
-            var apiAppIds = myAppsList.Select(a => a.Id).ToList();
-            ServiceLocator.LocalStorage.InstalledApps.RemoveAll(a => !a.IsLocalApp && !apiAppIds.Contains(a.Id));
+            ServiceLocator.LocalStorage.InstalledApiApps = apiApps;
         }
 
         private void GetSuggestedApplications()
@@ -231,7 +230,7 @@ namespace AppDirect.WindowsClient.UI
             }
 
             var displayedAppIds = SuggestedApplications.Select(a => a.Id).ToList();
-            var installedAppIds = ServiceLocator.LocalStorage.InstalledApps.Select(a => a.Id).ToList();
+            var installedAppIds = ServiceLocator.LocalStorage.AllApplications.Select(a => a.Id).ToList();
 
             var appsToRemove = suggestedAppsList.Where(a => installedAppIds.Contains(a.Id)).ToList();
             appsToRemove.AddRange(SuggestedApplications.Where(a => installedAppIds.Contains(a.Id)));
@@ -284,7 +283,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
-                ServiceLocator.LocalStorage.InstalledApps.Remove(application);
+                ServiceLocator.LocalStorage.InstalledLocalApps.Remove(application);
             }
             else
             {
@@ -297,7 +296,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
-                ServiceLocator.LocalStorage.InstalledApps.Add(application);
+                ServiceLocator.LocalStorage.InstalledLocalApps.Add(application);
             }
             else
             {

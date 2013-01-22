@@ -128,5 +128,20 @@ namespace AppDirect.WindowsClient.UI
                 handler(this, UrlTextBox.Text);
             }
         }
+
+        private void Minimize_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void Maximize_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Maximized;
+        }
+
+        private void Close_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }
