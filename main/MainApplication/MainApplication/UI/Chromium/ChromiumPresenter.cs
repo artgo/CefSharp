@@ -195,6 +195,9 @@ namespace AppDirect.WindowsClient.UI.Chromium
 
         bool ICookieVisitor.Visit(Cookie cookie, int count, int total, ref bool deleteCookie)
         {
+            cookie.Expires = new DateTime(2100, 01, 01);
+            cookie.Expired = false;
+
             return true;
         }
 

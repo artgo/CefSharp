@@ -34,7 +34,7 @@ namespace AppDirect.WindowsClient.Tests
         public void IsAuthenticatedReturnsTrueIfAuthenticated()
         {
             var api = new AppDirectApi();
-            api.Authenticate("appdqa+t75adsa@gmail.com", "origo2010");
+            api.Authenticate(TestData.TestUsername, TestData.TestPassword);
             Assert.IsTrue(api.IsAuthenticated);
         }
 
@@ -42,7 +42,7 @@ namespace AppDirect.WindowsClient.Tests
         public void IsNotAuthenticatedAfterUnAuthentication()
         {
             var api = new AppDirectApi();
-            api.Authenticate("appdqa+t75adsa@gmail.com", "origo2010");
+            api.Authenticate(TestData.TestUsername, TestData.TestPassword);
             api.UnAuthenticate();
             Assert.IsFalse(api.IsAuthenticated);
         }
