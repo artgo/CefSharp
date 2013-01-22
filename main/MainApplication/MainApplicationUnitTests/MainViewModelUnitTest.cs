@@ -20,8 +20,8 @@ namespace AppDirect.WindowsClient.Tests
         private const string FileName = @"\AppDirect\LocalStorage";
         private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
-        private const string Username = "appdqa+t75adsa@gmail.com";
-        private const string Password = "origo2010";
+        private const string Username = TestData.TestUsername;
+        private const string Password = TestData.TestPassword;
         private const string BadPassword = "BadPassword";
         private List<Application> _myApplications = new List<Application>(){new Application{IsLocalApp = false, Id = "AppDirectApplicationId"}}; 
 

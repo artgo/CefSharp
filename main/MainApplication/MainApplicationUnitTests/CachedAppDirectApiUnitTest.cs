@@ -18,7 +18,7 @@ namespace AppDirect.WindowsClient.Tests
         private static ICachedAppDirectApi BuildCachedAppDirectApiAuthenticated()
         {
             var appDirectApi = BuildCachedAppDirectApi();
-            appDirectApi.Authenticate("appdqa+t75adsa@gmail.com", "origo2010");
+            appDirectApi.Authenticate(TestData.TestUsername, TestData.TestPassword);
             return appDirectApi;
         }
 
@@ -72,7 +72,7 @@ namespace AppDirect.WindowsClient.Tests
         {
             var appDirectApi = BuildCachedAppDirectApi();
 
-            Assert.IsFalse(appDirectApi.Authenticate("appdqa+t75adsa@gmail.com", "wrong_password"));
+            Assert.IsFalse(appDirectApi.Authenticate(TestData.TestUsername, "wrong_password"));
         }
 
         [TestMethod]
