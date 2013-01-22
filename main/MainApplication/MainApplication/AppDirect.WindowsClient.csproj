@@ -223,7 +223,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
-    <Resource Include="UI\Images\cog.png" />
     <Resource Include="UI\Images\LaunchAppStore.png" />
     <Resource Include="UI\Images\Line.png" />
     <Resource Include="UI\Images\NoApp.png" />
@@ -268,8 +267,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\cloudWhite.png" />
-    <Resource Include="UI\Images\deleteWindow.png" />
-    <Resource Include="UI\Images\fullScreen.png" />
     <Resource Include="UI\Images\leftArrow.png" />
     <Resource Include="UI\Images\minimizeWindow.png" />
     <Resource Include="UI\Images\rightArrow.png" />
@@ -284,7 +281,8 @@
     <Resource Include="UI\Images\deleteDefault.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\deleteOnHover.png" />
+    <Resource Include="UI\Images\closeBtn.png" />
+    <Resource Include="UI\Images\fullBtn.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
