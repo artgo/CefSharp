@@ -10,19 +10,19 @@ namespace AppDirect.WindowsClient.Tests
     [TestClass]
     public class ApplicationUnitTest
     {
-        Application app1 = new Application()
+        private readonly Application app1 = new Application()
         {
             Name = "App1",
             Id = "10103"
         };
 
-        Application app2 = new Application()
+        private readonly Application app2 = new Application()
         {
             Name = "App2",
             Id = "10103"
         };
 
-        Application app3 = new Application()
+        private readonly Application app3 = new Application()
         {
             Name = "App3",
             Id = "1010"
