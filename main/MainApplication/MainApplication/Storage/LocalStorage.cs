@@ -127,16 +127,16 @@ namespace AppDirect.WindowsClient.Storage
         {
             if (String.IsNullOrEmpty(imageUrl) || String.IsNullOrEmpty(id))
             {
-                return imageUrl;
+                return DefaultFileLocation; 
             }
 
             SanitizeFileName(id);
 
             var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + id);
 
-            try
+            if (!imageFile.Exists)
             {
-                if (!imageFile.Exists)
+                try
                 {
                     if (imageFile.Directory != null)
                     {
@@ -147,24 +147,24 @@ namespace AppDirect.WindowsClient.Storage
                         client.DownloadFile(imageUrl, imageFile.FullName);
                     }
                 }
+                catch (WebException e)
+                {
+                    imageFile.Delete();
+                    return DefaultFileLocation;
+                }
             }
-            catch (WebException e)
-            {
-                imageFile.Delete();
-                return DefaultFileLocation;
-            }
-           
+
             return imageFile.FullName;
         }
 
-
-
-        private void SanitizeFileName(string name)
+        private string SanitizeFileName(string id)
         {
+            var newId = id;
             foreach (char c in System.IO.Path.GetInvalidFileNameChars())
             {
-                name = name.Replace(c, '_');
+                newId = newId.Replace(c, '_');
             }
+            return newId;
         }
 
         public void ClearLoginCredentials()

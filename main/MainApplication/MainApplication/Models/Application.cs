@@ -11,6 +11,7 @@ namespace AppDirect.WindowsClient.Models
         public string Id { get; set; } 
         public string Name { get; set; }
         public string ImagePath { get; set; }
+        public string LocalImagePath { get; set; }
         public string Description { get; set; }
         public int AlertCount { get; set; }
         public bool IsLocalApp { get; set; }

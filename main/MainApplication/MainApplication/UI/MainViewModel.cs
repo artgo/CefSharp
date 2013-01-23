@@ -183,7 +183,7 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledAppDirectApps);
             MyApplications = new ObservableCollection<Application>(allApps);
 
-            SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps);
+            SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps.Take(SuggestedAppsDisplayLimit));
         }
         
         private void GetMyApplications()
@@ -234,7 +234,7 @@ namespace AppDirect.WindowsClient.UI
 
             foreach (var application in apiApps)
             {
-                application.ImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath,
+                application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath,
                                                                                     application.Id);
             }
 
@@ -259,6 +259,16 @@ namespace AppDirect.WindowsClient.UI
             }
 
             suggestedAppsList.RemoveAll(a => installedAppIds.Contains(a.Id));
+
+            foreach (var application in suggestedAppsList)
+            {
+                if (!application.IsLocalApp)
+                {
+
+                    application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath ,
+                                                                                         application.Id);
+                }
+            }
 
             if (System.Windows.Application.Current != null)
             {
