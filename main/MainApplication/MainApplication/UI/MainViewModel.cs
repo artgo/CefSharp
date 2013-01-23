@@ -251,7 +251,7 @@ namespace AppDirect.WindowsClient.UI
 
             var suggestedAppsList = new List<Application>();
             suggestedAppsList.AddRange(LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id)).ToList());
-           
+
             try
             {
                 suggestedAppsList.AddRange(ServiceLocator.CachedAppDirectApi.SuggestedApps);
