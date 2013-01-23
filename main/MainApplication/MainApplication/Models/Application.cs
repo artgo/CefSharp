@@ -15,6 +15,5 @@ namespace AppDirect.WindowsClient.Models
         public int AlertCount { get; set; }
         public bool IsLocalApp { get; set; }
         public string UrlString { get; set; }
-
     }
 }

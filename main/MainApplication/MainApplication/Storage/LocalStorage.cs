@@ -16,13 +16,14 @@ namespace AppDirect.WindowsClient.Storage
         private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\AppDirect\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
-        FileInfo fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        private static readonly FileInfo fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
         public List<Application> InstalledLocalApps { get; set; }
-        public List<Application> InstalledApiApps { get; set; }
-
+        public List<Application> InstalledAppDirectApps { get; set; }
+        public List<Application> LastSuggestedApps { get; set; }
+          
         [XmlIgnore]
-        public List<Application> AllApplications
+        public List<Application> AllInstalledApplications
         {
             get
             {
@@ -31,12 +32,12 @@ namespace AppDirect.WindowsClient.Storage
                     InstalledLocalApps = new List<Application>();
                 }
 
-                if (InstalledApiApps == null)
+                if (InstalledAppDirectApps == null)
                 {
-                    InstalledApiApps = new List<Application>();
+                    InstalledAppDirectApps = new List<Application>();
                 }
 
-                return InstalledLocalApps.Concat(InstalledApiApps).ToList();
+                return InstalledLocalApps.Concat(InstalledAppDirectApps).ToList();
             }
            
         }
@@ -83,10 +84,9 @@ namespace AppDirect.WindowsClient.Storage
 
                             LoginInfo = localStorage.LoginInfo;                         
                             InstalledLocalApps = localStorage.InstalledLocalApps;
-                            InstalledApiApps = localStorage.InstalledApiApps;
+                            InstalledAppDirectApps = localStorage.InstalledAppDirectApps;
 
                             HiddenApps = localStorage.HiddenApps;
-
 
                             if (!localStorage.HasCredentials)
                             {
@@ -124,16 +124,16 @@ namespace AppDirect.WindowsClient.Storage
             }
         }
 
-        public string SaveAppIcon(string imageUrl, string name)
+        public string SaveAppIcon(string imageUrl, string id)
         {
-            if (String.IsNullOrEmpty(imageUrl) || String.IsNullOrEmpty(name))
+            if (String.IsNullOrEmpty(imageUrl) || String.IsNullOrEmpty(id))
             {
                 return imageUrl;
             }
 
-            SanitizeFileName(name);
+            SanitizeFileName(id);
 
-            var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + name);
+            var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + id);
 
             if (!imageFile.Exists)
             {

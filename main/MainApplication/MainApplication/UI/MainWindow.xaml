@@ -34,6 +34,7 @@
                 <TextBlock FontWeight="Bold" FontSize="11" Foreground="DarkGray" VerticalAlignment="Center" Text="Cloud Sync" Margin="4,0,0,0"/>
             </StackPanel>
         </Button>
+        <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="0" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Content="Log Out"/>
         <TabControl Grid.Column="0" Margin="0,25,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
             <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
                 <Grid Name="YourApps" Margin="25,35,0,0" Height="240" Width="350" VerticalAlignment="Top" HorizontalAlignment="Left">
@@ -66,9 +67,6 @@
                     </ListBox>
                     <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal" >
                         <TextBlock Text="{Binding MyAppsLoadError}"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="345" Height="20" Foreground="White"/>
-                        <Button Name="ReloadMyAppsButton" Visibility="Hidden" Style="{DynamicResource BorderlessButton}" Click="ReloadMyAppsClick" ToolTip="Reload Your Apps" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="20" Height="20" Foreground="White">
-                            <Image Source="Images/Reload.png"></Image>
-                        </Button>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -83,7 +81,7 @@
                                 <Image Source="Images/deleteDefault.png" Width="16" Height="16" ></Image>
                             </Button>
                         </Grid>
-                       <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="24,0,24,8" Foreground="#6c968d" Height="19" Text="{Binding LoginFailedMessage}" />
+                       <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="24,0,24,8" HorizontalAlignment="Right" Foreground="#6c968d" Height="19" Text="{Binding LoginFailedMessage}" Visibility="Hidden" />
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="217"/>

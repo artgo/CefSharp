@@ -27,7 +27,7 @@ namespace AppDirect.WindowsClient.UI
         private const int SuggestedAppsDisplayLimit = 5;
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
-        private string _loginFailedMessage = String.Empty;
+        private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
         
         public string VersionString
@@ -50,6 +50,29 @@ namespace AppDirect.WindowsClient.UI
                 {
                     return Visibility.Visible;
                 }
+            }
+            set
+            {
+                NotifyPropertyChanged("CloudSyncVisibility");
+            }
+        }
+
+        public Visibility LogOutVisibility
+        {
+            get
+            {
+                if (!ServiceLocator.LocalStorage.HasCredentials)
+                {
+                    return Visibility.Hidden;
+                }
+                else
+                {
+                    return Visibility.Visible;
+                }
+            }
+            set
+            {
+                NotifyPropertyChanged("LogOutVisibility");
             }
         }
 
@@ -102,7 +125,6 @@ namespace AppDirect.WindowsClient.UI
         {
             var setupBackgroundWorker = new BackgroundWorker();
             setupBackgroundWorker.DoWork += setup_Worker_DoWork;
-
             InitializeAppsLists();
 
             setupBackgroundWorker.RunWorkerAsync();
@@ -145,19 +167,23 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>();
             }
 
-            if (ServiceLocator.LocalStorage.InstalledApiApps == null)
+            if (ServiceLocator.LocalStorage.InstalledAppDirectApps == null)
             {
-                ServiceLocator.LocalStorage.InstalledApiApps = new List<Application>();
+                ServiceLocator.LocalStorage.InstalledAppDirectApps = new List<Application>();
+            }
+
+            var installedAppIds = ServiceLocator.LocalStorage.AllInstalledApplications.Select(a => a.Id).ToList();
+
+            if (ServiceLocator.LocalStorage.LastSuggestedApps == null)
+            {
+                ServiceLocator.LocalStorage.LastSuggestedApps = LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id)).ToList();
             }
 
             var allApps =
-                ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledApiApps);
+                ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledAppDirectApps);
             MyApplications = new ObservableCollection<Application>(allApps);
 
-            var installedAppIds = MyApplications.Select(a => a.Id).ToList();
-
-            var suggestedApps = LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id));
-            SuggestedApplications = new ObservableCollection<Application>(suggestedApps.Take(SuggestedAppsDisplayLimit));
+            SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps);
         }
         
         private void GetMyApplications()
@@ -171,7 +197,7 @@ namespace AppDirect.WindowsClient.UI
 
 
             var allApps =
-                ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledApiApps);
+                ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledAppDirectApps);
 
             foreach (Application application in allApps)
             {
@@ -209,15 +235,18 @@ namespace AppDirect.WindowsClient.UI
             foreach (var application in apiApps)
             {
                 application.ImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath,
-                                                                                    application.Name);
+                                                                                    application.Id);
             }
 
-            ServiceLocator.LocalStorage.InstalledApiApps = apiApps;
+            ServiceLocator.LocalStorage.InstalledAppDirectApps = apiApps;
         }
 
         private void GetSuggestedApplications()
         {
+            var installedAppIds = ServiceLocator.LocalStorage.AllInstalledApplications.Select(a => a.Id).ToList();
+
             var suggestedAppsList = new List<Application>();
+            suggestedAppsList.AddRange(LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id)).ToList());
 
             try
             {
@@ -229,29 +258,16 @@ namespace AppDirect.WindowsClient.UI
                 SuggestedAppsLoadError = e.Message;
             }
 
-            var displayedAppIds = SuggestedApplications.Select(a => a.Id).ToList();
-            var installedAppIds = ServiceLocator.LocalStorage.AllApplications.Select(a => a.Id).ToList();
+            suggestedAppsList.RemoveAll(a => installedAppIds.Contains(a.Id));
 
-            var appsToRemove = suggestedAppsList.Where(a => installedAppIds.Contains(a.Id)).ToList();
-            appsToRemove.AddRange(SuggestedApplications.Where(a => installedAppIds.Contains(a.Id)));
-
-            var appsToAdd = suggestedAppsList.Where(a => !displayedAppIds.Contains(a.Id)).ToList();
-            appsToAdd.AddRange(LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id)));
-
-            foreach (Application application in appsToRemove)
+            if (System.Windows.Application.Current != null)
             {
-                if (System.Windows.Application.Current != null)
-                {
-                    Application application1 = application;
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => SuggestedApplications.Remove(application1)));
-                }
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => SuggestedApplications.Clear()));
             }
-
-            int myAppCount = SuggestedApplications.Count;
-
-            foreach (Application application in appsToAdd)
+           
+            foreach (Application application in suggestedAppsList)
             {
-                if (myAppCount == SuggestedAppsDisplayLimit)
+                if (SuggestedApplications.Count == SuggestedAppsDisplayLimit)
                 {
                     break;
                 }
@@ -261,9 +277,9 @@ namespace AppDirect.WindowsClient.UI
                     Application application1 = application;
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => SuggestedApplications.Add(application1)));
                 }
-
-                myAppCount++;
             }
+
+            ServiceLocator.LocalStorage.LastSuggestedApps = suggestedAppsList;
         }
 
         public bool Login(string username, string password)

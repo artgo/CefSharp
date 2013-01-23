@@ -177,7 +177,7 @@ namespace AppDirect.WindowsClient.Tests
             lock (this)
             {
                 SetMyAppsAndLogin(_myApplications);
-                Assert.IsTrue(ServiceLocator.LocalStorage.InstalledApiApps.Contains(_myApplications[0]));
+                Assert.IsTrue(ServiceLocator.LocalStorage.InstalledAppDirectApps.Contains(_myApplications[0]));
             }
         }
 
@@ -187,7 +187,7 @@ namespace AppDirect.WindowsClient.Tests
             lock (this)
             {
                 SetMyAppsAndLogin(_myApplications);
-                Assert.IsTrue(_localStorage.InstalledApiApps.Contains(_myApplications[0]));
+                Assert.IsTrue(_localStorage.InstalledAppDirectApps.Contains(_myApplications[0]));
             }
         }
 

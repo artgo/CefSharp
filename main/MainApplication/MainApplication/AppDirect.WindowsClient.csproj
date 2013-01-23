@@ -268,7 +268,6 @@
   <ItemGroup>
     <Resource Include="UI\Images\cloudWhite.png" />
     <Resource Include="UI\Images\leftArrow.png" />
-    <Resource Include="UI\Images\minimizeWindow.png" />
     <Resource Include="UI\Images\rightArrow.png" />
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +282,21 @@
   <ItemGroup>
     <Resource Include="UI\Images\closeBtn.png" />
     <Resource Include="UI\Images\fullBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\leftArrowHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\rightArrowHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\rightArrowClick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\restoreDown.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,5 +1,6 @@
 using System;
 using System;
+using System.Linq;
 using System.Net;
 using System.Collections.Generic;
 using System.Web;
@@ -14,7 +15,7 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IDictionary<Application, ChromiumWindow> _chromiumWindows = new Dictionary<Application, ChromiumWindow>();
+        private readonly IDictionary<String, ChromiumWindow> _chromiumWindows = new Dictionary<String, ChromiumWindow>();
 
         public MainViewModel ViewModel
         {
@@ -55,6 +56,9 @@ namespace AppDirect.WindowsClient.UI
                 if (ViewModel.Login(UsernameTextBox.Text, PasswordBox.Password))
                 {
                     YourAppsTab.IsSelected = true;
+                    SyncButton.Visibility = Visibility.Hidden;
+                    LogoutButton.Visibility = Visibility.Visible; 
+                    LoginFailedMessage.Visibility = Visibility.Hidden;
                 }
                 else
                 {
@@ -64,11 +68,6 @@ namespace AppDirect.WindowsClient.UI
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-
-            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
-            {
-                ReloadMyAppsButton.Visibility = Visibility.Visible;
             }
         }
 
@@ -90,14 +89,18 @@ namespace AppDirect.WindowsClient.UI
                 else
                 {
                     ChromiumWindow window;
-                    if (!_chromiumWindows.TryGetValue(clickedApp, out window))
+                    if (!_chromiumWindows.TryGetValue(clickedApp.Id, out window))
                     {
                         window = new ChromiumWindow()
                             {
                                 UrlAddress = clickedApp.UrlString,
-                                Session = ServiceLocator.CachedAppDirectApi.Session
+                                Session = ServiceLocator.CachedAppDirectApi.Session,
+                                ApplicationId = clickedApp.Id
                             };
-                        _chromiumWindows[clickedApp] = window;
+
+                        window.CloseWindow += new EventHandler(ChromiumWindow_Close);
+                        _chromiumWindows[clickedApp.Id] = window;
+                        
                     }
 
                     window.Show();
@@ -110,6 +113,12 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        private void ChromiumWindow_Close(object sender, EventArgs e)
+        {
+            var chromiumWindow = (ChromiumWindow) sender;
+            _chromiumWindows.Remove(chromiumWindow.ApplicationId);
+        }
+        
         private void InstallAppClick(object sender, RoutedEventArgs e)
         {
             try
@@ -130,11 +139,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 MessageBox.Show(ex.Message);
             }
-
-            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
-            {
-                ReloadMyAppsButton.Visibility = Visibility.Visible;
-            }
         }
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)
@@ -149,21 +153,11 @@ namespace AppDirect.WindowsClient.UI
             {
                 MessageBox.Show(ex.Message);
             }
-
-            if (!String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
-            {
-                ReloadMyAppsButton.Visibility = Visibility.Visible;
-            }
         }
 
         private void ReloadMyAppsClick(object sender, RoutedEventArgs e)
         {
             ViewModel.RefreshAppsLists();
-
-            if (String.IsNullOrEmpty(ViewModel.MyAppsLoadError))
-            {
-                ReloadMyAppsButton.Visibility = Visibility.Hidden;
-            }
         }
 
         private void SyncButtonOnClick(object sender, RoutedEventArgs e)
@@ -196,6 +190,13 @@ namespace AppDirect.WindowsClient.UI
 
             MessageArea.Text =
                 "Thanks for registering. Please check your inbox and click the link to activate your account.";
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Logout();
+            LogoutButton.Visibility = Visibility.Hidden;
+            SyncButton.Visibility = Visibility.Visible;
         }
     }
 }
