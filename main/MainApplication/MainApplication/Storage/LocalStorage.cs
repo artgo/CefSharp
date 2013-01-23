@@ -127,30 +127,33 @@ namespace AppDirect.WindowsClient.Storage
         {
             if (String.IsNullOrEmpty(imageUrl) || String.IsNullOrEmpty(id))
             {
-                return DefaultFileLocation; 
+                return DefaultFileLocation;
             }
 
-            SanitizeFileName(id);
+            id = SanitizeFileName(id);
 
             var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + id);
 
-            if (!imageFile.Exists)
+            lock (this)
             {
-                try
+                if (!imageFile.Exists)
                 {
-                    if (imageFile.Directory != null)
+                    try
                     {
-                        imageFile.Directory.Create();
+                        if (imageFile.Directory != null)
+                        {
+                            imageFile.Directory.Create();
+                        }
+                        using (WebClient client = new WebClient())
+                        {
+                            client.DownloadFile(imageUrl, imageFile.FullName);
+                        }
                     }
-                    using (WebClient client = new WebClient())
+                    catch (WebException e)
                     {
-                        client.DownloadFile(imageUrl, imageFile.FullName);
+                        imageFile.Delete();
+                        return DefaultFileLocation;
                     }
-                }
-                catch (WebException e)
-                {
-                    imageFile.Delete();
-                    return DefaultFileLocation;
                 }
             }
 

@@ -87,6 +87,7 @@
     <Compile Include="ServiceLocatorTest.cs" />
     <Compile Include="CipherUtilityUnitTest.cs" />
     <Compile Include="TestData.cs" />
+    <Compile Include="ApplicationUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MainApplication\AppDirect.WindowsClient.csproj">

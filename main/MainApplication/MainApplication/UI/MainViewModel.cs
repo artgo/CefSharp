@@ -81,6 +81,11 @@ namespace AppDirect.WindowsClient.UI
             get { return _myAppsLoadError; }
             set
             {
+                if (_myAppsLoadError == value)
+                {
+                    return;
+                }
+
                 _myAppsLoadError = value;
                 NotifyPropertyChanged("MyAppsLoadError");
             }
@@ -247,11 +252,13 @@ namespace AppDirect.WindowsClient.UI
 
             var suggestedAppsList = new List<Application>();
             suggestedAppsList.AddRange(LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id)).ToList());
-
+           
             try
             {
                 suggestedAppsList.AddRange(ServiceLocator.CachedAppDirectApi.SuggestedApps);
+
                 SuggestedAppsLoadError = String.Empty;
+
             }
             catch (Exception e)
             {
@@ -327,7 +334,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
-
+            
+            ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
             RefreshAppsLists();
         }
 

@@ -22,7 +22,6 @@ namespace AppDirect.WindowsClient.API
         private const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.0 Safari/537.1";
         private static readonly Uri ServiceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FEATURED");
         private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
-        private readonly WebClient _serviceRequest = new WebClient();
         private DateTime _time = DateTime.Now;
         private CookieContainer _context = null;
         private readonly IList<Cookie> _cookies = new List<Cookie>();
@@ -69,7 +68,7 @@ namespace AppDirect.WindowsClient.API
         {
             get
             {
-                string result = _serviceRequest.DownloadString(ServiceUriSuggested);
+                string result = new WebClient().DownloadString(ServiceUriSuggested);
                 return _serializer.Deserialize<WebApplicationsListApplication[]>(result);
             }
         }
