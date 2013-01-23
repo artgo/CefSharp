@@ -85,48 +85,51 @@ namespace AppDirect.WindowsClient
                     {
                         Description = "Pinterest",
                         Id = "Pinterest",
-                        LocalImagePath = "Icons/Pinterest.png",
+                        LocalImagePath = "Icons/pinterest.png",
                         Name = "Pinterest",
                         UrlString = "http://www.Pinterest.com",
                         AlertCount = 0,
                         IsLocalApp = true
-                    }, new Application
-                    {
-                        Description = "Yelp",
-                        Id = "Yelp",
-                        LocalImagePath = "Icons/Yelp.png",
-                        Name = "Yelp",
-                        UrlString = "http://www.Yelp.com",
-                        AlertCount = 0,
-                        IsLocalApp = true
-                    }, new Application
-                    {
-                        Description = "Groupon",
-                        Id = "Groupon",
-                        LocalImagePath = "Icons/Groupon.png",
-                        Name = "Groupon",
-                        UrlString = "http://www.Groupon.com",
-                        AlertCount = 1,
-                        IsLocalApp = true
-                    }, new Application
-                    {
-                        Description = "LivingSocial",
-                        Id = "LivingSocial",
-                        LocalImagePath = "Icons/LivingSocial.png",
-                        Name = "LivingSocial",
-                        UrlString = "http://www.LivingSocial.com",
-                        AlertCount =0,
-                        IsLocalApp = true
-                    }, new Application
-                    {
-                        Description = "Instagram",
-                        Id = "Instagram",
-                        LocalImagePath = "Icons/Instagram.png",
-                        Name = "Instagram",
-                        UrlString = "http://www.Instagram.com",
-                        AlertCount = 0,
-                        IsLocalApp = true
-                    }, new Application
+                    }, 
+                    //new Application
+                    //{
+                    //    Description = "Yelp",
+                    //    Id = "Yelp",
+                    //    LocalImagePath = "Icons/yelp.png",
+                    //    Name = "Yelp",
+                    //    UrlString = "http://www.Yelp.com",
+                    //    AlertCount = 0,
+                    //    IsLocalApp = true
+                    //}, new Application
+                    //{
+                    //    Description = "Groupon",
+                    //    Id = "Groupon",
+                    //    LocalImagePath = "Icons/Groupon.png",
+                    //    Name = "Groupon",
+                    //    UrlString = "http://www.Groupon.com",
+                    //    AlertCount = 1,
+                    //    IsLocalApp = true
+                    //}, new Application
+                    //{
+                    //    Description = "LivingSocial",
+                    //    Id = "LivingSocial",
+                    //    LocalImagePath = "Icons/LivingSocial.png",
+                    //    Name = "LivingSocial",
+                    //    UrlString = "http://www.LivingSocial.com",
+                    //    AlertCount =0,
+                    //    IsLocalApp = true
+                    //}, 
+                    //new Application
+                    //{
+                    //    Description = "Instagram",
+                    //    Id = "Instagram",
+                    //    LocalImagePath = "Icons/Instagram.png",
+                    //    Name = "Instagram",
+                    //    UrlString = "http://www.Instagram.com",
+                    //    AlertCount = 0,
+                    //    IsLocalApp = true
+                    //}, 
+                    new Application
                     {
                         Description = "Hulu",
                         Id = "Hulu",
@@ -144,16 +147,18 @@ namespace AppDirect.WindowsClient
                         UrlString = "http://www.Rdio.com",
                         AlertCount = 0,
                         IsLocalApp = true
-                    }, new Application
-                    {
-                        Description = "GrubHub",
-                        Id = "GrubHub",
-                        LocalImagePath = "Icons/GrubHub.png",
-                        Name = "GrubHub",
-                        UrlString = "http://www.GrubHub.com",
-                        AlertCount = 1,
-                        IsLocalApp = true
-                    }, new Application
+                    }, 
+                    //new Application
+                    //{
+                    //    Description = "GrubHub",
+                    //    Id = "GrubHub",
+                    //    LocalImagePath = "Icons/GrubHub.png",
+                    //    Name = "GrubHub",
+                    //    UrlString = "http://www.GrubHub.com",
+                    //    AlertCount = 1,
+                    //    IsLocalApp = true
+                    //}, 
+                    new Application
                     {
                         Description = "Grooveshark",
                         Id = "Grooveshark",
@@ -189,16 +194,18 @@ namespace AppDirect.WindowsClient
                         UrlString = "http://mail.yahoo.com",
                         AlertCount = 0,
                         IsLocalApp = true
-                    }, new Application
-                    {
-                        Description = "ESPN",
-                        Id = "ESPN",
-                        LocalImagePath = "Icons/ESPN.png",
-                        Name = "ESPN",
-                        UrlString = "http://www.ESPN.com",
-                        AlertCount = 0,
-                        IsLocalApp = true
-                    }, new Application
+                    }, 
+                    //new Application
+                    //{
+                    //    Description = "ESPN",
+                    //    Id = "ESPN",
+                    //    LocalImagePath = "Icons/ESPN.png",
+                    //    Name = "ESPN",
+                    //    UrlString = "http://www.ESPN.com",
+                    //    AlertCount = 0,
+                    //    IsLocalApp = true
+                    //}, 
+                    new Application
                     {
                         Description = "Flickr",
                         Id = "Flickr",

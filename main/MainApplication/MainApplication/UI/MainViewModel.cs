@@ -81,6 +81,11 @@ namespace AppDirect.WindowsClient.UI
             get { return _myAppsLoadError; }
             set
             {
+                if (_myAppsLoadError == value)
+                {
+                    return;
+                }
+
                 _myAppsLoadError = value;
                 NotifyPropertyChanged("MyAppsLoadError");
             }
@@ -195,7 +200,6 @@ namespace AppDirect.WindowsClient.UI
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => MyApplications.Clear()));
             }
 
-
             var allApps =
                 ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledAppDirectApps);
 
@@ -251,7 +255,9 @@ namespace AppDirect.WindowsClient.UI
             try
             {
                 suggestedAppsList.AddRange(ServiceLocator.CachedAppDirectApi.SuggestedApps);
+
                 SuggestedAppsLoadError = String.Empty;
+
             }
             catch (Exception e)
             {
@@ -264,8 +270,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (!application.IsLocalApp)
                 {
-
-                    application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath ,
+                    application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath,
                                                                                          application.Id);
                 }
             }
@@ -328,7 +333,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
-
+            
+            ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
             RefreshAppsLists();
         }
 

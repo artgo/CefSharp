@@ -297,6 +297,23 @@
   <ItemGroup>
     <Resource Include="UI\Images\restoreDown.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\Flickr.png" />
+    <Resource Include="UI\Icons\Grooveshark.png" />
+    <Resource Include="UI\Icons\Hulu.png" />
+    <Resource Include="UI\Icons\pinterest.png" />
+    <Resource Include="UI\Icons\Rdio.png" />
+    <Resource Include="UI\Icons\Reddi.png" />
+    <Resource Include="UI\Icons\Spotify.png" />
+    <Resource Include="UI\Icons\Amazon.png" />
+    <Resource Include="UI\Icons\Google.png" />
+    <Resource Include="UI\Icons\Netflix.png" />
+    <Resource Include="UI\Icons\YouTube.png" />
+    <Resource Include="UI\Icons\Ymail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\WeatherChannel.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r</PostBuildEvent>

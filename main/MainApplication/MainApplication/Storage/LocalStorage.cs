@@ -18,7 +18,7 @@ namespace AppDirect.WindowsClient.Storage
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
         private static readonly FileInfo fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
-
+        
         public List<Application> InstalledLocalApps { get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
@@ -127,10 +127,10 @@ namespace AppDirect.WindowsClient.Storage
         {
             if (String.IsNullOrEmpty(imageUrl) || String.IsNullOrEmpty(id))
             {
-                return DefaultFileLocation; 
+                return DefaultFileLocation;
             }
 
-            SanitizeFileName(id);
+            id = SanitizeFileName(id);
 
             var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + id);
 
