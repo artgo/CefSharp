@@ -1,7 +1,11 @@
 ﻿﻿using System;
 ﻿using System.Collections.Generic;
+﻿using System.IO;
 ﻿using System.Windows;
+﻿using System.Windows.Controls;
 ﻿using System.Windows.Input;
+﻿using System.Windows.Media;
+﻿using System.Windows.Media.Imaging;
 ﻿using AppDirect.WindowsClient.API;
 ﻿using AppDirect.WindowsClient.UI.Chromium;
 
@@ -17,6 +21,7 @@ namespace AppDirect.WindowsClient.UI
         public event EventHandler ShowDevToolsActivated;
         public event EventHandler CloseDevToolsActivated;
         public event EventHandler ExitActivated;
+        public event EventHandler CloseWindow;
 
         // edit
         public event EventHandler UndoActivated;
@@ -45,6 +50,7 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public AppDirectSession Session { get; set; }
+        public string ApplicationId { get; set; }
 
         private readonly IDictionary<object, EventHandler> _handlers;
 
@@ -121,12 +127,45 @@ namespace AppDirect.WindowsClient.UI
                 return;
             }
 
-
             var handler = UrlActivated;
             if (handler != null)
             {
                 handler(this, UrlTextBox.Text);
             }
         }
+
+        private void Minimize_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void Maximize_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Maximized;
+            Maximize.Visibility = Visibility.Hidden;
+            RestoreDown.Visibility = Visibility.Visible;
+        }
+
+        private void RestoreDown_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Normal;
+            RestoreDown.Visibility = Visibility.Hidden;
+            Maximize.Visibility = Visibility.Visible;
+        }
+
+        public void Close_OnClick(object sender, RoutedEventArgs e)
+        {
+            CloseWindow(this, EventArgs.Empty);
+            Close();
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.DragMove();
+            }
+        }
+
     }
 }

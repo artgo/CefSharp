@@ -9,7 +9,12 @@
             <GradientStop Color="#292929" Offset="0.05"/>
             <GradientStop Color="#171717" Offset="0.4"/>
         </LinearGradientBrush>
-        <sys:Double x:Key="ContentHeight">230</sys:Double>
+        <LinearGradientBrush x:Key="WhiteToGrayGradiant" StartPoint="0,0" EndPoint="0,1" >
+            <GradientStop Color="#ffffff" Offset="0"/>
+            <GradientStop Color="#e2e2e2" Offset="0.05"/>
+            <GradientStop Color="#b8b8b8" Offset="0.4"/>
+        </LinearGradientBrush>
+        <sys:Double x:Key="ContentHeight">300</sys:Double>
         <sys:Double x:Key="HeaderHeight">30</sys:Double>
         <sys:Double x:Key="WindowHeight">330</sys:Double>
         <sys:Double x:Key="WindowWidth">680</sys:Double>
@@ -18,7 +23,7 @@
         <GridLength x:Key="LeftColumnWidth">435</GridLength>
         <sys:Double x:Key="LeftPanelWidth">435</sys:Double>
         <FontFamily x:Key="DefaultWindowFont">Microsoft Sans Serif</FontFamily>
-            <DropShadowEffect x:Key="DefaultShadowEffect" BlurRadius="6" ShadowDepth="3"/>
+        <DropShadowEffect x:Key="DefaultShadowEffect" BlurRadius="6" ShadowDepth="3"/>
         <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>
@@ -27,6 +32,14 @@
                 </GradientStopCollection>
             </GradientBrush.GradientStops>
         </LinearGradientBrush>
+        <SolidColorBrush x:Key="LeftPanelColor" Color="#0b1318" />
+        <SolidColorBrush x:Key="RightPanelColor" Color="#010506" />
+        <SolidColorBrush x:Key="TextFieldFocusColor" Color="#36454d" />
+        <SolidColorBrush x:Key="BorderFocusColor" Color="#a4c8df" />
+        <SolidColorBrush x:Key="RibbonColor" Color="#051c22" />
+        <SolidColorBrush x:Key="LoginPanelColor" Color="#0c2228" />
+        <SolidColorBrush x:Key="DefaultTextColor" Color="#ebebeb" />
+        <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#242d32" />
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
         <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
         <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
@@ -34,11 +47,10 @@
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
         <Style x:Key="TextStyle" TargetType="TextBlock">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
             <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
         </Style>
         <Style x:Key="LeftMenu" TargetType="TabItem">
-            <Setter Property="Width" Value="40"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
@@ -66,6 +78,26 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Selector.Unselected">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
+                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Selector.Selected">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
+                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="-300"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
         </Style>
         <Style x:Key="InstallAppButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -120,6 +152,76 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ChromiumNavButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="RightNavButton" TargetType="Button" BasedOn="{StaticResource ChromiumNavButton}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="Images/rightArrow.png"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Images/rightArrowHover.png" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Images/rightArrowClick.png" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="LeftNavButton" TargetType="Button" BasedOn="{StaticResource ChromiumNavButton}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="Images/leftArrow.png"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Images/leftArrowHover.png" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="BorderlessButtonWithShadow" TargetType="Button">
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
@@ -154,18 +256,9 @@
         <Style x:Key="MainButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="#b7bfc2" />
+            <Setter Property="Foreground" Value="LightGray" />
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Background" >
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#748a96" Offset="0"/>
-                        <GradientStop Color="#587381" Offset="0.05"/>
-                        <GradientStop Color="#46616e" Offset="0.4"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Effect" Value="{StaticResource DefaultShadowEffect}"/>
+            <Setter Property="Background" Value="#292929" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -180,9 +273,10 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                                            <GradientStop Color="#46616e" Offset="0"/>
-                                            <GradientStop Color="#587381" Offset="0.4"/>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#748a96" Offset="0"/>
+                                            <GradientStop Color="#587381" Offset="0.05"/>
+                                            <GradientStop Color="#46616e" Offset="0.4"/>
                                         </LinearGradientBrush>
                                     </Setter.Value>
                                 </Setter>
@@ -224,7 +318,7 @@
             </Setter>
         </Style>
         <Style x:Key="PasswordBoxWater" TargetType="PasswordBox">
-            <Setter Property="Background" Value="#676767"/>
+            <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -234,7 +328,7 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="40"/>
+            <Setter Property="Height" Value="30"/>
             <Setter Property="viewmodel:WaterMarkTextHelper.IsMonitoring" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -256,13 +350,18 @@
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="PASSWORD" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Password" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
                                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
@@ -290,7 +389,7 @@
             </Setter>
         </Style>
         <Style x:Key="TextBoxWater" TargetType="{x:Type TextBox}">
-            <Setter Property="Background" Value="#676767"/>
+            <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -301,7 +400,7 @@
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="TextAlignment" Value="Left"/>
-            <Setter Property="Height" Value="40"/>
+            <Setter Property="Height" Value="30"/>
             <Setter Property="viewmodel:WaterMarkTextHelper.IsMonitoring" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -323,13 +422,77 @@
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="USERNAME" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="User Name" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="viewmodel:WaterMarkTextHelper.HasText" Value="False"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <Trigger Property="viewmodel:WaterMarkTextHelper.HasText" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TextBoxWaterEmail" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxWater}">
+           <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="enterGotFocus" >
+                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+                            </Storyboard>
+                            <Storyboard x:Key="exitGotFocus" >
+                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+                            </Storyboard>
+                            <Storyboard x:Key="enterHasText" >
+                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+                            </Storyboard>
+                            <Storyboard x:Key="exitHasText" >
+                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
+                                <TextBlock Text="Your Email Address" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsEnabled" Value="false">
                                 <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
                                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>

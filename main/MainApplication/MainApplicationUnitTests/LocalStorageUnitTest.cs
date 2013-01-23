@@ -36,8 +36,8 @@ namespace AppDirect.WindowsClient.Tests
             File.Refresh();
             Assert.IsTrue(File.Exists);
 
-            localStorage = LocalStorage.LoadLocalStorage();
-
+            localStorage = new LocalStorage(true);
+            
             Assert.IsNotNull(localStorage.InstalledLocalApps);
         }
 
@@ -76,14 +76,21 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void CredentialsOlderThanLimitAreCleared()
         {
-            Assert.IsFalse(File.Exists);
-
             string unencryptedPassword = "IamPassWordValue84";
             string unencryptedUserName = "emailIsUserName@emailme.com";
 
             SaveCredentialsReloadFile(unencryptedPassword, unencryptedUserName, DateTime.Now.AddDays(-31));
 
             Assert.IsFalse(localStorage.HasCredentials);
+        }
+
+        [TestMethod]
+        public void BadImageFile()
+        {
+            string appId = "BadImageTest";
+            var imagePath = localStorage.SaveAppIcon("http://Not.a.Real.Url", appId);
+
+            Assert.AreEqual(String.Empty, imagePath);
         }
 
         private void SaveCredentialsReloadFile(string unencryptedPassword, string unencryptedUserName, DateTime passwordSetDate)
@@ -95,8 +102,7 @@ namespace AppDirect.WindowsClient.Tests
             File.Refresh();
             Assert.IsTrue(File.Exists);
 
-            localStorage = null;
-            localStorage = LocalStorage.LoadLocalStorage();
+            localStorage = new LocalStorage(true);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace AppDirect.WindowsClient
             Kernel = new StandardKernel();
             Kernel.Bind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Bind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
-            Kernel.Bind<LocalStorage>().ToConstant(LocalStorage.LoadLocalStorage());
+            Kernel.Bind<LocalStorage>().ToConstant(new LocalStorage(true));
         }
     }
 }

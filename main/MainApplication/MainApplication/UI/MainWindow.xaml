@@ -24,17 +24,20 @@
             <ColumnDefinition Width="{StaticResource LeftColumnWidth}"/>
             <ColumnDefinition Width="{StaticResource RightColumnWidth}"/>
         </Grid.ColumnDefinitions>
-        <Rectangle Grid.ColumnSpan="2" Fill="#061216" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{StaticResource WindowWidth}" Height="30" Margin="0,0,0,0" />
-        <Rectangle Fill="#0c2228" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource LeftPanelWidth}" Margin="0,30,0,0" Grid.Column="0"/>
-        <Rectangle Fill="#0c1f25" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0,30,0,0" Grid.Column="1"/>
-        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="1" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Rectangle Name="TopRibbon" Grid.Column="0" Fill="{StaticResource RibbonColor}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{StaticResource WindowWidth}" Height="30" />
+        <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource LeftPanelWidth}" Margin="0,30,0,0" Grid.Column="0"/>
+        <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0" Grid.Column="1"/>
+        <Rectangle Name="BottomRibbon" Grid.Column="1" Fill="{StaticResource RibbonColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="{StaticResource RightPanelWidth}" Height="40" />
+        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="0" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="{Binding CloudSyncVisibility}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock FontWeight="Bold" FontSize="10" Foreground="White" VerticalAlignment="Center" Text="SYNC MY APPS"/>
+                <Image Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="16" Height="16" Source="Images/cloudGray.png" />
+                <TextBlock FontWeight="Bold" FontSize="11" Foreground="DarkGray" VerticalAlignment="Center" Text="Cloud Sync" Margin="4,0,0,0"/>
             </StackPanel>
         </Button>
-        <TabControl Grid.ColumnSpan="2" Margin="0,30,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
-            <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Margin="8,0,0,0" Width="Auto">
-                <Grid Name="YourApps" Margin="25,25,0,0" Height="240" Width="350" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="0" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Content="Log Out"/>
+        <TabControl Grid.Column="0" Margin="0,25,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
+            <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
+                <Grid Name="YourApps" Margin="25,35,0,0" Height="240" Width="350" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -49,7 +52,7 @@
                                             <ColumnDefinition Width="44"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="36" Height="36" Source="{Binding ImagePath}" />
+                                        <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="36" Height="36" Source="{Binding LocalImagePath}" />
                                         <TextBlock FontSize="14" Style="{StaticResource TextStyle}" Grid.Column="1" TextTrimming="CharacterEllipsis" Foreground="White" Padding="8,4,0,0" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
                                     </Grid>
                                 </Button>
@@ -64,32 +67,62 @@
                     </ListBox>
                     <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal" >
                         <TextBlock Text="{Binding MyAppsLoadError}"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="345" Height="20" Foreground="White"/>
-                        <Button Name="ReloadMyAppsButton" Visibility="Hidden" Style="{DynamicResource BorderlessButton}" Click="ReloadMyAppsClick" ToolTip="Reload Your Apps" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="20" Height="20" Foreground="White">
-                            <Image Source="Images/Reload.png"></Image>
-                        </Button>
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Name="SettingsTab" Style ="{StaticResource LeftMenu}" Width="Auto" VerticalAlignment="Center">
-                <Grid Name="SettingsGridView" Margin="42.5,0,0,0" Height="{StaticResource ContentHeight}" Width="340" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <StackPanel Orientation="Vertical" Background="#323131">
-                        <TextBlock Name="LoginLabel" Style="{StaticResource TextStyle}" FontSize="14" Foreground="White" Height="33" Margin="24,16,24,0" VerticalAlignment="Top" Text="{Binding LoginHeaderText}"/>
-                        <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="24,0,24,0" Foreground="#6c968d" Height="19" Text="{Binding LoginFailedMessage}" />
-                        <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWater}" HorizontalAlignment="Stretch" Margin="24,0,24,13" Width="Auto"/>
-                        <PasswordBox Name="PasswordBox"   Style="{DynamicResource PasswordBoxWater}" Margin="24,0,24,0" HorizontalAlignment="Stretch" Width="Auto"/>
-                        <Grid Margin="24,0,24,0" Height="60">
-                            <Button Content="Recover Password" Foreground="#6c968d" HorizontalContentAlignment="Center" Click="ForgotPassword" Style ="{DynamicResource BorderlessButton}" FontSize="11" HorizontalAlignment="Left" Width="100" Height="20" VerticalAlignment="Top" Margin="-4,20.415,0,0"/>
-                            <Button Content="Cancel Login" Foreground="#6c968d" HorizontalContentAlignment="Center" Click="CancelLoginClick" Style ="{DynamicResource BorderlessButton}" FontSize="11" Width="80" Height="20" VerticalAlignment="Top" Margin="140,20.415,72,0"/>
-                            <Button Visibility="Hidden" Content="Register" HorizontalContentAlignment="Center" Click="ForgotPassword" Style ="{DynamicResource BorderlessButton}" Margin="20,0,0,0" FontSize="11"/>
-                            <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" Margin="0,16" HorizontalAlignment="Right" VerticalAlignment="Center" Width="67" Height="28" Click="Login"/>
+            <TabItem Name="LoginTab" Style ="{StaticResource LeftMenu}">
+                <Grid Name="SettingsGridView" Height="{StaticResource ContentHeight}" Width="{StaticResource LeftPanelWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-3,-1,0,0">
+                    <StackPanel Orientation="Vertical" Background="{StaticResource LoginPanelColor}">
+                        <Grid Height="50">
+                        <TextBlock Name="LoginLabel" Style="{StaticResource TextStyle}" FontSize="14" Foreground="White" Height="20" Width="280"  Margin="24,20,24,0" VerticalAlignment="Top" Text="{Binding LoginHeaderText}" HorizontalAlignment="Center"/>
+                            <Button HorizontalContentAlignment="Left" Click="CancelLoginClick" HorizontalAlignment="Right"
+                        	Style="{DynamicResource BorderlessButton}" FontSize="11" Width="16"
+                        	Height="16" VerticalAlignment="Top" Margin="211.5,20.415,40,0" >
+                                <Image Source="Images/deleteDefault.png" Width="16" Height="16" ></Image>
+                            </Button>
                         </Grid>
+                       <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="24,0,24,8" HorizontalAlignment="Right" Foreground="#6c968d" Height="19" Text="{Binding LoginFailedMessage}" Visibility="Hidden" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="217"/>
+                                <ColumnDefinition Width="1"/>
+                                <ColumnDefinition Width="217"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="32,0,18,0">
+                                <TextBlock Name="NewCustomerLabel" Style="{StaticResource TextStyle}" FontSize="12" Foreground="White" Text="New Customer"/>
+                                <TextBox  Name="NewCustomerEmail" Style="{DynamicResource TextBoxWaterEmail}"
+                                         HorizontalAlignment="Stretch" Margin="0,11,0,0" Width="Auto" />
+                                <Button  Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,18"
+                                            HorizontalAlignment="Right" VerticalAlignment="Center" Width="64"
+                                            Height="24" Click="RegisterClick" />
+                            </StackPanel>
+                            <Line Grid.Column="1" X1="0" Y1="-3" X2="0" Y2="155" Stroke="{StaticResource TextFieldFocusColor}" StrokeThickness="1" />
+                            <StackPanel Grid.Column="2" Margin="18,0,32,0" >
+                                <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyle}" FontSize="12" Foreground="White" Text="Returning Customer"/>
+                                <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWater}"
+                                         HorizontalAlignment="Stretch" Width="Auto" Margin="0,11,0,0"/>
+                                <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
+                                             HorizontalAlignment="Stretch" Width="Auto" Margin="0,18,0,0" />
+                                <Grid Margin="0,24,0,0" Height="24">
+                                    <Button HorizontalContentAlignment="Center" Click="ForgotPassword"
+                                            Style="{DynamicResource BorderlessButton}" FontSize="10"
+                                            HorizontalAlignment="Left" Width="82" Height="20" VerticalAlignment="Top"
+                                            >
+                                        <TextBlock  Text="Recover Password" TextDecorations="Underline"></TextBlock>
+                                    </Button>
+                                    <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="64"
+                                            Height="24" Click="Login" />
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock TextWrapping="Wrap" Name="MessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
                     </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>
-        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="20,30,0,0">
-            <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="13" Padding="0" Grid.Column="1" Foreground="White" Text="Popular One-click Installs" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" />
-            <ListBox Height="200" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,4,20,0" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
+        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="20,0,0,0">
+            <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="13" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" />
+            <ListBox Height="220" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,30,20,0" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
                 <ListBox.Resources >
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Focusable" Value="False"></Setter>
@@ -98,16 +131,19 @@
                 </ListBox.Resources>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Button Style="{StaticResource InstallAppButton}" Height="24"  Margin="0,0,0,0" Click="InstallAppClick">
+                        <Button Style="{StaticResource InstallAppButton}" Height="36"  Margin="0,0,0,0" Click="InstallAppClick">
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top" Width="140">
-                                <Image HorizontalAlignment="Left" Width="16" Height="16" Source="{Binding ImagePath}" />
-                                <TextBlock TextTrimming="CharacterEllipsis" FontSize="14" Width="124" Margin="6, 2" VerticalAlignment="Center" Text="{Binding Name}"></TextBlock>
+                                <Image HorizontalAlignment="Left" Width="30" Height="30" Source="{Binding LocalImagePath}" />
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Top" Width="112" Height="30" Margin="6,0,0,0">
+                                    <TextBlock TextTrimming="CharacterEllipsis" FontSize="10" Height="14" Margin="0,0,0,2" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
+                                    <Button Style="{StaticResource MainButtonStyle}" FontSize="10" HorizontalAlignment="Left" Width="36" Height="16" Content="install" />
+                                </StackPanel>
                             </StackPanel>
                         </Button>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Style="{StaticResource BorderlessButton}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Left" BorderBrush="Transparent" Height="28" Margin="0,10,0,10" Click="GoToAppStore" Width="120">
+            <Button Style="{StaticResource BorderlessButton}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Left" BorderBrush="Transparent" Height="28" Margin="0,20,0,10" Click="GoToAppStore" Width="120">
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top">
                         <Image HorizontalAlignment="Left" Width="11" Height="11" Source="Images/LaunchAppStore.png" />
                     <TextBlock Style="{StaticResource TextStyle}" FontSize="12" Width="80" Margin="6" VerticalAlignment="Center" Text="Browse Apps"></TextBlock>

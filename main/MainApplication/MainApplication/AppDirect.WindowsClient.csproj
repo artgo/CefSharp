@@ -65,7 +65,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>AppDirect2013-WindowsClient.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -190,9 +191,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="AppDirect.snk" />
-    <None Include="AppDirect.WindowsClient_TemporaryKey.pfx" />
-    <None Include="AppDirect2013-WindowsClient.pfx" />
     <None Include="apps_list.xsc">
       <DependentUpon>apps_list.xsd</DependentUpon>
     </None>
@@ -225,21 +223,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="UI\Images\LaunchAppStore.png" />
+    <Resource Include="UI\Images\Line.png" />
+    <Resource Include="UI\Images\Reload.png" />
     <Resource Include="UI\Images\titlebar.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\facebook.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Icons\linkedIn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\NoApp.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Line.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\icon.png" />
@@ -260,16 +250,52 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\cog.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\Reload.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Icons\PlusCircle.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\LaunchAppStore.png" />
+    <Resource Include="UI\Icons\freshbooks.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\gmail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\linked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\teamchat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloudWhite.png" />
+    <Resource Include="UI\Images\leftArrow.png" />
+    <Resource Include="UI\Images\rightArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cancelLogin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloudGray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\deleteDefault.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\closeBtn.png" />
+    <Resource Include="UI\Images\fullBtn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\leftArrowHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\rightArrowHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\rightArrowClick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\restoreDown.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
