@@ -10,6 +10,48 @@ namespace AppDirect.WindowsClient.Tests
     [TestClass]
     public class ApplicationUnitTest
     {
+        Application app1 = new Application()
+        {
+            Name = "App1",
+            Id = "10103"
+        };
+
+        Application app2 = new Application()
+        {
+            Name = "App2",
+            Id = "10103"
+        };
+
+        Application app3 = new Application()
+        {
+            Name = "App3",
+            Id = "1010"
+        };
+
+        [TestMethod]
+        public void EqualsReturnsTrueForIdenticalIds()
+        {
+            Assert.AreEqual(app1, app2);
+        }
+
+        [TestMethod]
+        public void EqualsReturnsFalseForDifferentIds()
+        {
+            Assert.AreNotEqual(app1, app3);
+        }
+
+        [TestMethod]
+        public void GetHashReturnsSameForIdenticalIds()
+        {
+            Assert.AreEqual(app1.GetHashCode(), app2.GetHashCode());
+        }
+
+        [TestMethod]
+        public void GetHashReturnsNotSameForDifferentIds()
+        {
+            Assert.AreNotEqual(app1.GetHashCode(), app3.GetHashCode());
+        }
+
         [TestMethod]
         public void CopiedApplicationsAreEqual()
         {

@@ -200,7 +200,6 @@ namespace AppDirect.WindowsClient.UI
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => MyApplications.Clear()));
             }
 
-
             var allApps =
                 ServiceLocator.LocalStorage.InstalledLocalApps.Concat(ServiceLocator.LocalStorage.InstalledAppDirectApps);
 

@@ -9,6 +9,15 @@ namespace AppDirect.WindowsClient.Models
     [Serializable]
     public class Application
     {
+        public string Id { get; set; } 
+        public string Name { get; set; }
+        public string ImagePath { get; set; }
+        public string LocalImagePath { get; set; }
+        public string Description { get; set; }
+        public int AlertCount { get; set; }
+        public bool IsLocalApp { get; set; }
+        public string UrlString { get; set; }
+
         public override bool Equals(System.Object y)
         {
             if (ReferenceEquals(this, y)) return true;
@@ -30,14 +39,5 @@ namespace AppDirect.WindowsClient.Models
         {
             return Id.GetHashCode();
         }
-
-        public string Id { get; set; } 
-        public string Name { get; set; }
-        public string ImagePath { get; set; }
-        public string LocalImagePath { get; set; }
-        public string Description { get; set; }
-        public int AlertCount { get; set; }
-        public bool IsLocalApp { get; set; }
-        public string UrlString { get; set; }
     }
 }

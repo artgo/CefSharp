@@ -305,10 +305,10 @@
     <Resource Include="UI\Icons\Rdio.png" />
     <Resource Include="UI\Icons\Reddi.png" />
     <Resource Include="UI\Icons\Spotify.png" />
-    <Resource Include="UI\Icons\Web-Amazon-alt-Metro-icon.png" />
-    <Resource Include="UI\Icons\Web-Google-plus-alt-Metro-icon.png" />
-    <Resource Include="UI\Icons\Web-Netflix-Metro-icon.png" />
-    <Resource Include="UI\Icons\Web-YouTube-alt-1-Metro-icon.png" />
+    <Resource Include="UI\Icons\Amazon.png" />
+    <Resource Include="UI\Icons\Google.png" />
+    <Resource Include="UI\Icons\Netflix.png" />
+    <Resource Include="UI\Icons\YouTube.png" />
     <Resource Include="UI\Icons\Ymail.png" />
   </ItemGroup>
   <ItemGroup>
