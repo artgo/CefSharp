@@ -264,8 +264,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (!application.IsLocalApp)
                 {
-
-                    application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath ,
+                    application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath,
                                                                                          application.Id);
                 }
             }
