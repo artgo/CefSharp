@@ -16,6 +16,7 @@ namespace AppDirect.WindowsClient.Storage
         private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\AppDirect\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
+        private static readonly string DefaultFileLocation = string.Empty;
         private static readonly FileInfo fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
         public List<Application> InstalledLocalApps { get; set; }
@@ -100,8 +101,6 @@ namespace AppDirect.WindowsClient.Storage
                 }
             }   
         }     
-        
-        
 
        public void SaveAppSettings()
         {
@@ -135,22 +134,30 @@ namespace AppDirect.WindowsClient.Storage
 
             var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + id);
 
-            if (!imageFile.Exists)
+            try
             {
-                if (imageFile.Directory != null)
+                if (!imageFile.Exists)
                 {
-                    imageFile.Directory.Create();
-                }
-
-                using (WebClient client = new WebClient())
-                {
-                    client.DownloadFile(imageUrl, imageFile.FullName);
+                    if (imageFile.Directory != null)
+                    {
+                        imageFile.Directory.Create();
+                    }
+                    using (WebClient client = new WebClient())
+                    {
+                        client.DownloadFile(imageUrl, imageFile.FullName);
+                    }
                 }
             }
+            catch (WebException e)
+            {
+                imageFile.Delete();
+                return DefaultFileLocation;
+            }
            
-
             return imageFile.FullName;
         }
+
+
 
         private void SanitizeFileName(string name)
         {

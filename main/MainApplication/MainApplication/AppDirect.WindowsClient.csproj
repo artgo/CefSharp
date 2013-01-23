@@ -225,7 +225,6 @@
     <Resource Include="UI\Icons\pandora.png" />
     <Resource Include="UI\Images\LaunchAppStore.png" />
     <Resource Include="UI\Images\Line.png" />
-    <Resource Include="UI\Images\NoApp.png" />
     <Resource Include="UI\Images\Reload.png" />
     <Resource Include="UI\Images\titlebar.png" />
   </ItemGroup>
