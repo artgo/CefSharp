@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.Models
 {
@@ -7,7 +7,7 @@ namespace AppDirect.WindowsClient.Models
     /// Represents an Application of the sort that AppDirect distributes 
     ///</summary>
     [Serializable]
-    public class Application
+    public class Application : IApplication
     {
         public string Id { get; set; } 
         public string Name { get; set; }

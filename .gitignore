@@ -1,10 +1,13 @@
 *.~*
 *.suo
 *.orig
+*.cs.orig
 bin
 obj
 Debug
 Release
+main/MainApplication/MainApplication.sln.DotSettings.user
+*.sln.DotSettings.user
 *.DotSettings.user
 *.DotSettings
 *.user

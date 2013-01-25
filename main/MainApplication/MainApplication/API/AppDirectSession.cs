@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.API
 {
-    public class AppDirectSession
+    public class AppDirectSession : IAppDirectSession
     {
         private readonly DateTime _lastAccessed;
         private readonly IEnumerable<Cookie> _cookies;

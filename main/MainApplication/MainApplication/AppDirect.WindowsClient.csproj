@@ -87,12 +87,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp">
-      <HintPath>libs\CefSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="CefSharp.Wpf">
-      <HintPath>libs\CefSharp.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="DevDefined.OAuth">
       <HintPath>..\packages\DevDefined.OAuth.0.1\lib\DevDefined.OAuth.dll</HintPath>
     </Reference>
@@ -139,13 +133,6 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
-    <Compile Include="UI\ChromiumWindow.xaml.cs">
-      <DependentUpon>ChromiumWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Chromium\BoundObject.cs" />
-    <Compile Include="UI\Chromium\ChromiumPresenter.cs" />
-    <Compile Include="UI\Chromium\IChromiumView.cs" />
-    <Compile Include="UI\Chromium\SchemeHandler.cs" />
     <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -167,10 +154,6 @@
     <Page Include="UI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ChromiumWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -263,8 +246,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\cloudWhite.png" />
-    <Resource Include="UI\Images\leftArrow.png" />
-    <Resource Include="UI\Images\rightArrow.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\cancelLogin.png" />
@@ -274,25 +255,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\deleteDefault.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\closeBtn.png" />
-    <Resource Include="UI\Images\fullBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\leftArrowHover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\rightArrowHover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\rightArrowClick.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\minimize.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\restoreDown.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\Flickr.png" />
@@ -321,9 +283,16 @@
     <Resource Include="UI\Images\cloudDefault.png" />
     <Resource Include="UI\Images\cloudHover.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDirect.WindowsClient.Common\AppDirect.WindowsClient.Common.csproj">
+      <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
+      <Name>AppDirect.WindowsClient.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

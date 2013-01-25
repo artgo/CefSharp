@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AppDirect.WindowsClient.UI.Chromium
+namespace AppDirect.WindowsClient.BrowserWindow.UI.Chromium
 {
     class BoundObject
     {

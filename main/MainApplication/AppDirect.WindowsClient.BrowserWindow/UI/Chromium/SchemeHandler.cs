@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using CefSharp;
 
-namespace AppDirect.WindowsClient.UI.Chromium
+namespace AppDirect.WindowsClient.BrowserWindow.UI.Chromium
 {
     class SchemeHandlerFactory : ISchemeHandlerFactory
     {

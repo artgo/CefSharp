@@ -1,7 +1,7 @@
 ﻿using System;
-using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.API;
 
-namespace AppDirect.WindowsClient.UI.Chromium
+namespace AppDirect.WindowsClient.BrowserWindow.UI.Chromium
 {
     public interface IChromiumView
     {
@@ -20,12 +20,12 @@ namespace AppDirect.WindowsClient.UI.Chromium
         event EventHandler SelectAllActivated;
 
         // navigation
-        event Action<object, string> UrlActivated;
+        event Action<string> UrlActivated;
         event EventHandler BackActivated;
         event EventHandler ForwardActivated;
 
         string UrlAddress { get; set; }
-        AppDirectSession Session { get; set; }
+        IAppDirectSession Session { get; set; }
 
         void SetTitle(string title);
         void SetCanGoBack(bool canGoBack);

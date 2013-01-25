@@ -2,18 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Resources;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using AppDirect.WindowsClient.Models;
-using AppDirect.WindowsClient.Storage;
-using CefSharp;
-using Ninject;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI

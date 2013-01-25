@@ -90,6 +90,18 @@
     <Compile Include="ApplicationUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppDirect.WindowsClient.BrowserWindow\AppDirect.WindowsClient.BrowserWindow.csproj">
+      <Project>{bc7ed699-06e7-4175-95b7-40e7494a5e24}</Project>
+      <Name>AppDirect.WindowsClient.BrowserWindow</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AppDirect.WindowsClient.Common\AppDirect.WindowsClient.Common.csproj">
+      <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
+      <Name>AppDirect.WindowsClient.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AppDirect.WindowsClient.Updator\AppDirect.WindowsClient.Updator.csproj">
+      <Project>{385f8b2d-2ad3-430b-841d-26cbac20084a}</Project>
+      <Name>AppDirect.WindowsClient.Updator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MainApplication\AppDirect.WindowsClient.csproj">
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>AppDirect.WindowsClient</Name>

@@ -1,17 +1,12 @@
-﻿﻿using System;
-﻿using System.Collections.Generic;
-﻿using System.ComponentModel;
-﻿using System.IO;
-﻿using System.Windows;
-﻿using System.Windows.Controls;
-﻿using System.Windows.Input;
-﻿using System.Windows.Media;
-﻿using System.Windows.Media.Imaging;
-﻿using AppDirect.WindowsClient.API;
-﻿using AppDirect.WindowsClient.UI.Chromium;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
+using AppDirect.WindowsClient.BrowserWindow.UI.Chromium;
+using AppDirect.WindowsClient.Common.API;
 
-
-namespace AppDirect.WindowsClient.UI
+namespace AppDirect.WindowsClient.BrowserWindow.UI
 {
     /// <summary>
     /// Interaction logic for ChromiumWindow.xaml
@@ -34,7 +29,7 @@ namespace AppDirect.WindowsClient.UI
         public event EventHandler SelectAllActivated;
 
         // navigation
-        public event Action<object, string> UrlActivated;
+        public event Action<string> UrlActivated;
         public event EventHandler BackActivated;
         public event EventHandler ForwardActivated;
 
@@ -50,7 +45,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public AppDirectSession Session { get; set; }
+        public IAppDirectSession Session { get; set; }
         public string ApplicationId { get; set; }
 
         private readonly IDictionary<object, EventHandler> _handlers;
@@ -131,7 +126,7 @@ namespace AppDirect.WindowsClient.UI
             var handler = UrlActivated;
             if (handler != null)
             {
-                handler(this, UrlTextBox.Text);
+                handler(UrlTextBox.Text);
             }
         }
 

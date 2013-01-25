@@ -19,7 +19,7 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IDictionary<String, ChromiumWindow> _chromiumWindows = new Dictionary<String, ChromiumWindow>();
+        private readonly IDictionary<String, IntPtr> _chromiumWindows = new Dictionary<String, IntPtr>();
 
         public MainViewModel ViewModel
         {
@@ -92,23 +92,23 @@ namespace AppDirect.WindowsClient.UI
                 }
                 else
                 {
-                    ChromiumWindow window;
-                    if (!_chromiumWindows.TryGetValue(clickedApp.Id, out window))
-                    {
-                        window = new ChromiumWindow()
-                            {
-                                UrlAddress = clickedApp.UrlString,
-                                Session = ServiceLocator.CachedAppDirectApi.Session,
-                                ApplicationId = clickedApp.Id
-                            };
+                    //ChromiumWindow window;
+                    //if (!_chromiumWindows.TryGetValue(clickedApp.Id, out window))
+                    //{
+                    //    window = new ChromiumWindow()
+                    //        {
+                    //            UrlAddress = clickedApp.UrlString,
+                    //            Session = ServiceLocator.CachedAppDirectApi.Session,
+                    //            ApplicationId = clickedApp.Id
+                    //        };
 
-                        window.CloseWindow += new EventHandler(ChromiumWindow_Close);
-                        _chromiumWindows[clickedApp.Id] = window;
+                    //    window.CloseWindow += new EventHandler(ChromiumWindow_Close);
+                    //    _chromiumWindows[clickedApp.Id] = window;
                         
-                    }
+                    //}
 
-                    window.Show();
-                    window.Activate();
+                    //window.Show();
+                    //window.Activate();
                 }
             }
             catch (Exception ex)
@@ -119,8 +119,8 @@ namespace AppDirect.WindowsClient.UI
 
         private void ChromiumWindow_Close(object sender, EventArgs e)
         {
-            var chromiumWindow = (ChromiumWindow) sender;
-            _chromiumWindows.Remove(chromiumWindow.ApplicationId);
+            //var chromiumWindow = (ChromiumWindow) sender;
+            //_chromiumWindows.Remove(chromiumWindow.ApplicationId);
         }
         
         private void InstallAppClick(object sender, RoutedEventArgs e)

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Net;
-using System.Text;
 using CefSharp;
 
-namespace AppDirect.WindowsClient.UI.Chromium
+namespace AppDirect.WindowsClient.BrowserWindow.UI.Chromium
 {
     public class ChromiumPresenter : IRequestHandler, ICookieVisitor
     {
@@ -19,6 +17,7 @@ namespace AppDirect.WindowsClient.UI.Chromium
             }
         }
 
+        public delegate void Action();
         private readonly IWebBrowser _model;
         private readonly IChromiumView _view;
         private readonly Action<Action> _guiInvoke;
@@ -156,7 +155,7 @@ namespace AppDirect.WindowsClient.UI.Chromium
             _model.SelectAll();
         }
 
-        private void view_UrlActivated(object sender, string url)
+        private void view_UrlActivated(string url)
         {
             _model.Load(url);
         }
