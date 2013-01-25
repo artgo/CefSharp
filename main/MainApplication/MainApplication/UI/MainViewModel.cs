@@ -287,13 +287,18 @@ namespace AppDirect.WindowsClient.UI
             if (application.IsLocalApp)
             {
                 ServiceLocator.LocalStorage.InstalledLocalApps.Remove(application);
-                MyApplications.Remove(application);
+                ServiceLocator.LocalStorage.LastSuggestedApps.Add(application);
             }
             else
             {
                 ServiceLocator.LocalStorage.HiddenApps.Add(application.Id);
             }
-            RefreshAppsLists();
+
+            MyApplications.Remove(application);
+
+            var backgroundWorker = new BackgroundWorker();
+            backgroundWorker.DoWork += setup_Worker_DoWork;
+            backgroundWorker.RunWorkerAsync();
         }
 
         public void Install(Application application)
@@ -310,7 +315,9 @@ namespace AppDirect.WindowsClient.UI
                 System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
 
-            RefreshAppsLists();
+            var backgroundWorker = new BackgroundWorker();
+            backgroundWorker.DoWork += setup_Worker_DoWork;
+            backgroundWorker.RunWorkerAsync();
         }
 
         public void Logout()
