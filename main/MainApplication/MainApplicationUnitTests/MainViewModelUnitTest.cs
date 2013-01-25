@@ -212,7 +212,7 @@ namespace AppDirect.WindowsClient.Tests
                 _mainViewModel.Install(app);
                 _mainViewModel.Uninstall(app);
 
-                Assert.IsTrue(_mainViewModel.SuggestedApplications.Contains(app));
+                Assert.IsTrue(_localStorage.LastSuggestedApps.Contains(app));
             }
         }
 

@@ -52,10 +52,10 @@
     <ApplicationIcon>UI\Icons\PlusCircle.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>352EB08DB2A64B60ECD162D47308DAE22B11B2C2</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>B9A0B12D3637CCE89C73A14325E3F1122C7A4501</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>
@@ -191,6 +191,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="AppDirect--Inc.-Desktop-App.pfx" />
     <None Include="apps_list.xsc">
       <DependentUpon>apps_list.xsd</DependentUpon>
     </None>
@@ -219,7 +220,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="TestKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
@@ -260,9 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\linked.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Icons\teamchat.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\cloudWhite.png" />
@@ -313,6 +310,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\WeatherChannel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\deleteOnHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\yelp.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloudDefault.png" />
+    <Resource Include="UI\Images\cloudHover.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

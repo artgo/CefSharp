@@ -9,11 +9,6 @@
             <GradientStop Color="#292929" Offset="0.05"/>
             <GradientStop Color="#171717" Offset="0.4"/>
         </LinearGradientBrush>
-        <LinearGradientBrush x:Key="WhiteToGrayGradiant" StartPoint="0,0" EndPoint="0,1" >
-            <GradientStop Color="#ffffff" Offset="0"/>
-            <GradientStop Color="#e2e2e2" Offset="0.05"/>
-            <GradientStop Color="#b8b8b8" Offset="0.4"/>
-        </LinearGradientBrush>
         <sys:Double x:Key="ContentHeight">300</sys:Double>
         <sys:Double x:Key="HeaderHeight">30</sys:Double>
         <sys:Double x:Key="WindowHeight">330</sys:Double>
@@ -23,7 +18,6 @@
         <GridLength x:Key="LeftColumnWidth">435</GridLength>
         <sys:Double x:Key="LeftPanelWidth">435</sys:Double>
         <FontFamily x:Key="DefaultWindowFont">Microsoft Sans Serif</FontFamily>
-        <DropShadowEffect x:Key="DefaultShadowEffect" BlurRadius="6" ShadowDepth="3"/>
         <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>
@@ -82,7 +76,7 @@
                 <EventTrigger RoutedEvent="Selector.Unselected">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
                                 <LinearDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
@@ -91,8 +85,8 @@
                 <EventTrigger RoutedEvent="Selector.Selected">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
-                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="-300"/>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                     </BeginStoryboard>
@@ -145,77 +139,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="DimGray"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="ChromiumNavButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
-            <Setter Property="Height" Value="16"/>
-            <Setter Property="Width" Value="16"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-        </Style>
-        <Style x:Key="RightNavButton" TargetType="Button" BasedOn="{StaticResource ChromiumNavButton}">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="Images/rightArrow.png"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="Images/rightArrowHover.png" />
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="Images/rightArrowClick.png" />
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="LeftNavButton" TargetType="Button" BasedOn="{StaticResource ChromiumNavButton}">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="Images/leftArrow.png"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="Images/leftArrowHover.png" />
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter Property="Background" Value="#e0e0e0"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -226,7 +150,6 @@
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Background" Value="{StaticResource GrayToBlackGradiant}" />
-            <Setter Property="Effect" Value="{StaticResource DefaultShadowEffect}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -291,6 +214,66 @@
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Width" Value="150"/>
             <Setter Property="Height" Value="44"/>
+        </Style>
+        <Style x:Key="CloudSyncButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}" >
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="Images/cloudDefault.png"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Images/cloudHover.png" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}">
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CloseLoginButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}" >
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="Images/deleteDefault.png"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Images/deleteOnHover.png" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style x:Key="BadgeStyle" TargetType="TextBox">
             <Setter Property="Background" Value="Red"/>
