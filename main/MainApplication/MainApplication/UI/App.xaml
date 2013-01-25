@@ -23,7 +23,6 @@
         <GridLength x:Key="LeftColumnWidth">435</GridLength>
         <sys:Double x:Key="LeftPanelWidth">435</sys:Double>
         <FontFamily x:Key="DefaultWindowFont">Microsoft Sans Serif</FontFamily>
-        <DropShadowEffect x:Key="DefaultShadowEffect" BlurRadius="6" ShadowDepth="3"/>
         <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>
@@ -82,7 +81,7 @@
                 <EventTrigger RoutedEvent="Selector.Unselected">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
                                 <LinearDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
@@ -91,8 +90,8 @@
                 <EventTrigger RoutedEvent="Selector.Selected">
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
-                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="-300"/>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                     </BeginStoryboard>
@@ -145,7 +144,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="DimGray"/>
+                                <Setter Property="Background" Value="#e0e0e0"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -226,7 +225,6 @@
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Background" Value="{StaticResource GrayToBlackGradiant}" />
-            <Setter Property="Effect" Value="{StaticResource DefaultShadowEffect}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -291,6 +289,66 @@
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Width" Value="150"/>
             <Setter Property="Height" Value="44"/>
+        </Style>
+        <Style x:Key="CloudSyncButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}" >
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="Images/cloudDefault.png"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Images/cloudHover.png" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}">
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CloseLoginButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}" >
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="Images/deleteDefault.png"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="Images/deleteOnHover.png" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style x:Key="BadgeStyle" TargetType="TextBox">
             <Setter Property="Background" Value="Red"/>

@@ -61,16 +61,6 @@ namespace AppDirect.WindowsClient
                         AlertCount = 1,
                         IsLocalApp = true
                     },
-                new Application
-                    {
-                        Description = "TeamChat App",
-                        Id = "TeamChat",
-                        LocalImagePath = "Icons/teamchat.png",
-                        Name = "Team Chat",
-                        UrlString = "http://www.teamchat.com",
-                        AlertCount = 1,
-                        IsLocalApp = true
-                    },
                     new Application
                     {
                         Description = "Freshbooks App",
@@ -91,16 +81,17 @@ namespace AppDirect.WindowsClient
                         AlertCount = 0,
                         IsLocalApp = true
                     }, 
+                    new Application
+                    {
+                        Description = "Yelp",
+                        Id = "Yelp",
+                        LocalImagePath = "Icons/yelp.ico",
+                        Name = "Yelp",
+                        UrlString = "http://www.Yelp.com",
+                        AlertCount = 0,
+                        IsLocalApp = true
+                    }, 
                     //new Application
-                    //{
-                    //    Description = "Yelp",
-                    //    Id = "Yelp",
-                    //    LocalImagePath = "Icons/yelp.png",
-                    //    Name = "Yelp",
-                    //    UrlString = "http://www.Yelp.com",
-                    //    AlertCount = 0,
-                    //    IsLocalApp = true
-                    //}, new Application
                     //{
                     //    Description = "Groupon",
                     //    Id = "Groupon",

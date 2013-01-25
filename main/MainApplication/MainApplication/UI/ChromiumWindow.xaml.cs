@@ -1,5 +1,6 @@
 ﻿﻿using System;
 ﻿using System.Collections.Generic;
+﻿using System.ComponentModel;
 ﻿using System.IO;
 ﻿using System.Windows;
 ﻿using System.Windows.Controls;
@@ -155,7 +156,6 @@ namespace AppDirect.WindowsClient.UI
 
         public void Close_OnClick(object sender, RoutedEventArgs e)
         {
-            CloseWindow(this, EventArgs.Empty);
             Close();
         }
 
@@ -167,5 +167,9 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        private void ChromiumWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            CloseWindow(this, EventArgs.Empty);
+        }
     }
 }

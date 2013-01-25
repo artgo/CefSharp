@@ -28,12 +28,7 @@
         <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource LeftPanelWidth}" Margin="0,30,0,0" Grid.Column="0"/>
         <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0" Grid.Column="1"/>
         <Rectangle Name="BottomRibbon" Grid.Column="1" Fill="{StaticResource RibbonColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="{StaticResource RightPanelWidth}" Height="40" />
-        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="0" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="{Binding CloudSyncVisibility}">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Image Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="16" Height="16" Source="Images/cloudGray.png" />
-                <TextBlock FontWeight="Bold" FontSize="11" Foreground="DarkGray" VerticalAlignment="Center" Text="Cloud Sync" Margin="4,0,0,0"/>
-            </StackPanel>
-        </Button>
+        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="0" Style="{StaticResource CloudSyncButton}" Height="14" Width="85" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="{Binding CloudSyncVisibility}" Margin="0,8,6,0" />
         <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="0" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Content="Log Out"/>
         <TabControl Grid.Column="0" Margin="0,25,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
             <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
@@ -76,7 +71,7 @@
                         <Grid Height="50">
                         <TextBlock Name="LoginLabel" Style="{StaticResource TextStyle}" FontSize="14" Foreground="White" Height="20" Width="280"  Margin="24,20,24,0" VerticalAlignment="Top" Text="{Binding LoginHeaderText}" HorizontalAlignment="Center"/>
                             <Button HorizontalContentAlignment="Left" Click="CancelLoginClick" HorizontalAlignment="Right"
-                        	Style="{DynamicResource BorderlessButton}" FontSize="11" Width="16"
+                        	Style="{StaticResource CloseLoginButton}" FontSize="11" Width="16"
                         	Height="16" VerticalAlignment="Top" Margin="211.5,20.415,40,0" >
                                 <Image Source="Images/deleteDefault.png" Width="16" Height="16" ></Image>
                             </Button>
@@ -91,8 +86,10 @@
                             <StackPanel Grid.Column="0" Margin="32,0,18,0">
                                 <TextBlock Name="NewCustomerLabel" Style="{StaticResource TextStyle}" FontSize="12" Foreground="White" Text="New Customer"/>
                                 <TextBox  Name="NewCustomerEmail" Style="{DynamicResource TextBoxWaterEmail}"
-                                         HorizontalAlignment="Stretch" Margin="0,11,0,0" Width="Auto" />
-                                <Button  Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,18"
+                                         HorizontalAlignment="Stretch" Margin="0,11,0,0" Width="Auto" KeyUp="NewCustomerEmail_OnKeyUp">
+                                    
+                                </TextBox>
+                                <Button Name="RegisterButton" Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,18"
                                             HorizontalAlignment="Right" VerticalAlignment="Center" Width="64"
                                             Height="24" Click="RegisterClick" />
                             </StackPanel>
@@ -102,7 +99,8 @@
                                 <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWater}"
                                          HorizontalAlignment="Stretch" Width="Auto" Margin="0,11,0,0"/>
                                 <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
-                                             HorizontalAlignment="Stretch" Width="Auto" Margin="0,18,0,0" />
+                                             HorizontalAlignment="Stretch" Width="Auto" Margin="0,18,0,0" KeyDown="PasswordBox_OnKeyDown">
+                                </PasswordBox>
                                 <Grid Margin="0,24,0,0" Height="24">
                                     <Button HorizontalContentAlignment="Center" Click="ForgotPassword"
                                             Style="{DynamicResource BorderlessButton}" FontSize="10"
@@ -110,7 +108,7 @@
                                             >
                                         <TextBlock  Text="Recover Password" TextDecorations="Underline"></TextBlock>
                                     </Button>
-                                    <Button Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="64"
+                                    <Button Name="LoginButton" Content="Log In" Style="{DynamicResource MainButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="64"
                                             Height="24" Click="Login" />
                                 </Grid>
                             </StackPanel>
