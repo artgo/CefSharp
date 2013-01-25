@@ -3,9 +3,13 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -197,6 +201,27 @@ namespace AppDirect.WindowsClient.UI
             ViewModel.Logout();
             LogoutButton.Visibility = Visibility.Hidden;
             SyncButton.Visibility = Visibility.Visible;
+        }
+
+        private void NewCustomerEmail_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                RegisterButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            }
+
+            else if (Regex.IsMatch(NewCustomerEmail.Text, @"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$"))
+            {
+                MessageBox.Show("Valid Email Now");
+            }
+        }
+
+        private void PasswordBox_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                LoginButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            }
         }
     }
 }

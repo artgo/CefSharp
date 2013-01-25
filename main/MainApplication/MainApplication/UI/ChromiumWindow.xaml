@@ -4,7 +4,7 @@
     xmlns:cs="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
     Title="AppDirect Browser" Height="550" Width="1000"
     WindowStyle="None" AllowsTransparency="True"
-    ResizeMode="CanResizeWithGrip">
+    ResizeMode="CanResize" Closing="ChromiumWindow_OnClosing">
     <DockPanel>
         <Grid VerticalAlignment="Top" DockPanel.Dock="Top" Background="{StaticResource WhiteToGrayGradiant}" Height="25"  MouseDown="Window_MouseDown">
             <Grid.ColumnDefinitions>
@@ -17,16 +17,16 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Name="BackButton" Style="{StaticResource LeftNavButton}" Click="control_Activated" HorizontalAlignment="Right" />
             <Button Grid.Column="1" HorizontalAlignment="Right" Name="ForwardButton"  Style="{StaticResource RightNavButton}"  Click="control_Activated" />
-            <Button Grid.Column="3" Style="{StaticResource BorderlessButton}" Height="23" Name="Minimize" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Bottom" Click="Minimize_OnClick">
+            <Button Grid.Column="3" Style="{StaticResource BorderlessButton}" Height="23" Name="Minimize" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Bottom" Click="Minimize_OnClick" HorizontalContentAlignment="Center">
                 <Image Margin="0,0,0,6"  Source="Images/minimize.png" Width="10"/>
             </Button>
-            <Button Name="Maximize" Grid.Column="4" Style="{StaticResource BorderlessButton}" Height="23" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="Maximize_OnClick">
+            <Button Name="Maximize" Grid.Column="4" Style="{StaticResource BorderlessButton}" Height="23" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="Maximize_OnClick" HorizontalContentAlignment="Center">
                 <Image Source="Images/fullBtn.png" Width="10"/>
             </Button>
-            <Button Name="RestoreDown"  Grid.Column="4" Style="{StaticResource BorderlessButton}" Height="23" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="RestoreDown_OnClick" Visibility="Hidden" >
+            <Button Name="RestoreDown"  Grid.Column="4" Style="{StaticResource BorderlessButton}" Height="23" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="RestoreDown_OnClick" Visibility="Hidden" HorizontalContentAlignment="Center">
                 <Image Source="Images/restoreDown.png" Width="10"/>
             </Button>
-            <Button Grid.Column="5" Style="{StaticResource BorderlessButton}" Height="23" Name="Close" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="Close_OnClick">
+            <Button Grid.Column="5" Style="{StaticResource BorderlessButton}" Height="23" Name="Close" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="Close_OnClick" HorizontalContentAlignment="Center">
                 <Image Source="Images/closeBtn.png" Width="10"/>
             </Button>
             <TextBox Visibility="Hidden" Height="23" Name="UrlTextBox" KeyDown="urlTextBox_KeyDown" Margin="0,1" Grid.RowSpan="2" />
