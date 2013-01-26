@@ -7,8 +7,8 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AppDirect.WindowsClient.Tests</RootNamespace>
-    <AssemblyName>AppDirect.WindowsClient.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <AssemblyName>Appy.Tests</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,7 +61,7 @@
       <HintPath>..\packages\Ninject.3.0.1.10\lib\net35\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="NSubstitute">
-      <HintPath>..\packages\NSubstitute.1.4.3.0\lib\NET40\NSubstitute.dll</HintPath>
+      <HintPath>..\packages\NSubstitute.1.5.0.0\lib\NET35\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -90,21 +91,21 @@
     <Compile Include="ApplicationUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppDirect.WindowsClient.BrowserWindow\AppDirect.WindowsClient.BrowserWindow.csproj">
+    <ProjectReference Include="..\Appy.Browser\Appy.Browser.csproj">
       <Project>{bc7ed699-06e7-4175-95b7-40e7494a5e24}</Project>
-      <Name>AppDirect.WindowsClient.BrowserWindow</Name>
+      <Name>Appy.Browser</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AppDirect.WindowsClient.Common\AppDirect.WindowsClient.Common.csproj">
+    <ProjectReference Include="..\Appy.Common\Appy.Common.csproj">
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
-      <Name>AppDirect.WindowsClient.Common</Name>
+      <Name>Appy.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AppDirect.WindowsClient.Updator\AppDirect.WindowsClient.Updator.csproj">
+    <ProjectReference Include="..\Appy.Updator\Appy.Updator.csproj">
       <Project>{385f8b2d-2ad3-430b-841d-26cbac20084a}</Project>
-      <Name>AppDirect.WindowsClient.Updator</Name>
+      <Name>Appy.Updator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MainApplication\AppDirect.WindowsClient.csproj">
+    <ProjectReference Include="..\Appy\Appy.csproj">
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
-      <Name>AppDirect.WindowsClient</Name>
+      <Name>Appy</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

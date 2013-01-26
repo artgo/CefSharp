@@ -163,6 +163,14 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="M:NSubstitute.Experimental.Received.InOrder(System.Action)">
+            <summary>
+            *EXPERIMENTAL* Asserts the calls to the substitutes contained in the given Action were
+            received by these substitutes in the same order. Calls to property getters are not included
+            in the assertion.
+            </summary>
+            <param name="calls">Action containing calls to substitutes in the expected order</param>
+        </member>
         <member name="T:NSubstitute.IArgumentMatcher`1">
             <summary>
             Provides a specification for arguments for use with <see ctype="Arg.Matches &lt; T &gt;(IArgumentMatcher)" />.
@@ -177,6 +185,14 @@
             </summary>
             <param name="argument"></param>
             <returns></returns>
+        </member>
+        <member name="T:NSubstitute.Routing.Handlers.ClearLastCallRouterHandler">
+            <summary>
+            Clears last call router on SubstitutionContext for routes that do not require it. 
+            </summary>
+            <remarks>
+            This is to help prevent static state bleeding over into future calls.
+            </remarks>
         </member>
         <member name="M:NSubstitute.Raise.EventWith``1(System.Object,``0)">
             <summary>

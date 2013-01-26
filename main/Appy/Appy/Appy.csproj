@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AppDirect.WindowsClient</RootNamespace>
-    <AssemblyName>AppDirect.WindowsClient</AssemblyName>
+    <AssemblyName>Appy</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -284,9 +284,9 @@
     <Resource Include="UI\Images\cloudHover.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppDirect.WindowsClient.Common\AppDirect.WindowsClient.Common.csproj">
+    <ProjectReference Include="..\Appy.Common\Appy.Common.csproj">
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
-      <Name>AppDirect.WindowsClient.Common</Name>
+      <Name>Appy.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
