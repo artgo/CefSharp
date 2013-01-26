@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using AppDirect.WindowsClient.BrowserWindow.UI.Chromium;
+using AppDirect.WindowsClient.Browser.UI.Chromium;
 using AppDirect.WindowsClient.Common.API;
 
-namespace AppDirect.WindowsClient.BrowserWindow.UI
+namespace AppDirect.WindowsClient.Browser.UI
 {
     /// <summary>
     /// Interaction logic for ChromiumWindow.xaml
@@ -164,7 +164,10 @@ namespace AppDirect.WindowsClient.BrowserWindow.UI
 
         private void ChromiumWindow_OnClosing(object sender, CancelEventArgs e)
         {
-            CloseWindow(this, EventArgs.Empty);
+            if (CloseWindow != null)
+            {
+                CloseWindow(this, EventArgs.Empty);
+            }
         }
     }
 }

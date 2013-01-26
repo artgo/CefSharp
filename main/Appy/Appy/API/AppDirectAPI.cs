@@ -20,10 +20,10 @@ namespace AppDirect.WindowsClient.API
         private const string JsonAcceptString = "application/json,text/javascript,*/*;q=0.01";
         private const string HtmlAcceptString = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
         private const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.0 Safari/537.1";
-        private static readonly Uri ServiceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FEATURED");
+        private readonly Uri ServiceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FEATURED");
         private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
         private DateTime _time = DateTime.Now;
-        private CookieContainer _context = null;
+        private volatile CookieContainer _context = null;
         private readonly IList<Cookie> _cookies = new List<Cookie>();
 
         public MyappsMyapp[] MyApps
@@ -47,7 +47,7 @@ namespace AppDirect.WindowsClient.API
 
         public AppDirectSession Session
         {
-            get { return new AppDirectSession(_time, _cookies); }
+            get { return new AppDirectSession(){Cookies = _cookies, ExpirationDate = _time + new TimeSpan(0, 1, 0, 0)}; }
         }
 
         private static HttpWebRequest BuildHttpWebRequestForUrl(string urlStr, bool isPost, bool isJson)
@@ -87,7 +87,7 @@ namespace AppDirect.WindowsClient.API
 
         public bool Authenticate(string key, string secret)
         {
-            HttpWebRequest request = BuildHttpWebRequestForUrl(DomainPrefix + @"/login?1434449477-1.IFormSubmitListener-loginpanel-signInForm", true, false);
+            var request = BuildHttpWebRequestForUrl(DomainPrefix + @"/login?1434449477-1.IFormSubmitListener-loginpanel-signInForm", true, false);
             var cookies = new CookieContainer();
             cookies.Add(new Cookie(JSessionIdParamName, InitialSessionIdValue, "/", DomainName));
             request.CookieContainer = cookies;
@@ -95,13 +95,15 @@ namespace AppDirect.WindowsClient.API
 
             string encodedKey = HttpUtility.UrlEncode(key);
 
-            StreamWriter sw = new StreamWriter(request.GetRequestStream());
+            var sw = new StreamWriter(request.GetRequestStream());
             sw.Write(String.Format(LoginParams, encodedKey, secret));
             sw.Close();
 
-            HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+            var response = (HttpWebResponse) request.GetResponse();
 
-            StreamReader reader = new StreamReader(response.GetResponseStream());
+            _time = DateTime.Now;
+
+            var reader = new StreamReader(response.GetResponseStream());
             string result = reader.ReadToEnd();
             if ((response.StatusCode != HttpStatusCode.OK) || String.IsNullOrEmpty(result) || (!result.Contains("myAppsPage")))
             {
@@ -125,11 +127,9 @@ namespace AppDirect.WindowsClient.API
                         Value = oCookie.Value
                     };
 
-                //cookies.Add( oC );
                 _cookies.Add( oC );
             }
 
-            _time = DateTime.Now;
             _context = cookies;
 
             return true;

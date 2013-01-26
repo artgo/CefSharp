@@ -1,19 +1,17 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MainApplication")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("AppDirect")]
+[assembly: AssemblyDescription("AppDirect Desktop Client")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("App Direct")]
-[assembly: AssemblyProduct("MainApplication")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("AppDirect")]
+[assembly: AssemblyProduct("AppDirect")]
+[assembly: AssemblyCopyright("Copyright © 2013")]
+[assembly: AssemblyTrademark("AppDirect")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -51,5 +49,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.0.30128.84")]
-[assembly: AssemblyFileVersion("0.0.30128.84")]
+[assembly: AssemblyVersion("0.0.30128.86")]
+[assembly: AssemblyFileVersion("0.0.30128.86")]

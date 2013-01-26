@@ -1,8 +1,8 @@
-﻿<Application x:Class="AppDirect.WindowsClient.UI.App"
+﻿<Application x:Class="AppDirect.WindowsClient.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:viewmodel="clr-namespace:AppDirect.WindowsClient.UI"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             StartupUri="MainWindow.xaml">
+             StartupUri="UI\MainWindow.xaml">
     <Application.Resources>
         <LinearGradientBrush x:Key="GrayToBlackGradiant" StartPoint="0,0" EndPoint="0,1" >
             <GradientStop Color="#4c4c4c" Offset="0"/>
@@ -218,7 +218,7 @@
         <Style x:Key="CloudSyncButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}" >
             <Setter Property="Background">
                 <Setter.Value>
-                    <ImageBrush ImageSource="Images/cloudDefault.png"/>
+                    <ImageBrush ImageSource="UI\Images\cloudDefault.png"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
@@ -235,7 +235,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <ImageBrush ImageSource="Images/cloudHover.png" />
+                                        <ImageBrush ImageSource="UI\Images\cloudHover.png" />
                                     </Setter.Value>
                                 </Setter>
                                 <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}">
@@ -249,7 +249,7 @@
         <Style x:Key="CloseLoginButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}" >
             <Setter Property="Background">
                 <Setter.Value>
-                    <ImageBrush ImageSource="Images/deleteDefault.png"/>
+                    <ImageBrush ImageSource="UI\Images\deleteDefault.png"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
@@ -266,7 +266,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <ImageBrush ImageSource="Images/deleteOnHover.png" />
+                                        <ImageBrush ImageSource="UI\Images\deleteOnHover.png" />
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>

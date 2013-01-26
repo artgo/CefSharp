@@ -17,7 +17,7 @@ namespace AppDirect.WindowsClient.Storage
         private const string FileName = @"\AppDirect\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
-        private static readonly FileInfo fileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        private static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
         
         public List<Application> InstalledLocalApps { get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
@@ -70,15 +70,15 @@ namespace AppDirect.WindowsClient.Storage
         {
             if (loadFromLocalStorage)
             {
-                XmlSerializer mySerializer = new XmlSerializer(typeof(LocalStorage));
+                var mySerializer = new XmlSerializer(typeof(LocalStorage));
 
-                lock (fileInfo)
+                lock (FileInfo)
                 {
                     // If the file exists, open it.
-                    if (fileInfo.Exists)
+                    if (FileInfo.Exists)
                     {
 
-                        using (FileStream fileStream = fileInfo.OpenRead())
+                        using (var fileStream = FileInfo.OpenRead())
                         {
                             // Create a new instance of the LocalStorage by deserializing the file.
                             var localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
@@ -95,9 +95,6 @@ namespace AppDirect.WindowsClient.Storage
                             }
                         }
                     }
-                    else
-                    {
-                    }
                 }
             }   
         }     
@@ -105,17 +102,17 @@ namespace AppDirect.WindowsClient.Storage
        public void SaveAppSettings()
         {
             //Create the directory if it does not exist
-            if (fileInfo.Directory != null)
+            if (FileInfo.Directory != null)
             {
-                fileInfo.Directory.Create();
+                FileInfo.Directory.Create();
             }
 
             // Create an XmlSerializer for the LocalStorage type.
-            XmlSerializer mySerializer = new XmlSerializer(typeof (LocalStorage));
+            var mySerializer = new XmlSerializer(typeof (LocalStorage));
 
-            lock (fileInfo)
+            lock (FileInfo)
             {
-                using (StreamWriter streamWriter = new StreamWriter(fileInfo.FullName, false))
+                using (var streamWriter = new StreamWriter(FileInfo.FullName, false))
                 {
                     // Serialize this instance of the LocalStorage class to the config file.
                     mySerializer.Serialize(streamWriter, this);
@@ -142,12 +139,12 @@ namespace AppDirect.WindowsClient.Storage
                     {
                         imageFile.Directory.Create();
                     }
-                    using (WebClient client = new WebClient())
+                    using (var client = new WebClient())
                     {
                         client.DownloadFile(imageUrl, imageFile.FullName);
                     }
                 }
-                catch (WebException e)
+                catch (WebException)
                 {
                     imageFile.Delete();
                     return DefaultFileLocation;
@@ -174,8 +171,7 @@ namespace AppDirect.WindowsClient.Storage
 
         public void SetCredentials(string username, string password)
         {
-            LoginInfo = new LoginObject();
-            LoginInfo.Salt = CipherUtility.GetNewSalt();
+            LoginInfo = new LoginObject {Salt = CipherUtility.GetNewSalt()};
             LoginInfo.EncryptedUsername = CipherUtility.Encrypt(username, LoginInfo.Salt);
             LoginInfo.EncryptedPassword = CipherUtility.Encrypt(password, LoginInfo.Salt);
             LoginInfo.PasswordSetDate = DateTime.Now.Date;

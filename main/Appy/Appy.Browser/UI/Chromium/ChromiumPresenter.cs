@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Net;
 using CefSharp;
 
-namespace AppDirect.WindowsClient.BrowserWindow.UI.Chromium
+namespace AppDirect.WindowsClient.Browser.UI.Chromium
 {
     public class ChromiumPresenter : IRequestHandler, ICookieVisitor
     {
@@ -67,12 +67,19 @@ namespace AppDirect.WindowsClient.BrowserWindow.UI.Chromium
                 case "IsBrowserInitialized":
                     if (_model.IsBrowserInitialized)
                     {
-                        foreach (Cookie c in _view.Session.Cookies)
+                        if (_view.Session != null)
                         {
-                            CEF.SetCookie(@"https://" + c.Domain + c.Path, c.Domain, c.Name, c.Value, c.Path, c.Secure, c.HttpOnly, c.Expired, c.Expires);
+                            foreach (Cookie c in _view.Session.Cookies)
+                            {
+                                CEF.SetCookie(@"https://" + c.Domain + c.Path, c.Domain, c.Name, c.Value, c.Path,
+                                              c.Secure, c.HttpOnly, c.Expired, c.Expires);
+                            }
                         }
 
-                        _model.Load(_view.UrlAddress);
+                        if (_view.UrlAddress != null)
+                        {
+                            _model.Load(_view.UrlAddress);
+                        }
                     }
                     break;
                 case "Title":

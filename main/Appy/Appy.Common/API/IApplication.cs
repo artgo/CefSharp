@@ -1,14 +1,29 @@
-﻿namespace AppDirect.WindowsClient.Common.API
+﻿using System;
+using System.Runtime.Serialization;
+using AppDirect.WindowsClient.Models;
+
+namespace AppDirect.WindowsClient.Common.API
 {
-    public interface IApplication
+    [DataContract]
+    [KnownType(typeof(Application))]
+    [Serializable]
+    public abstract class IApplication
     {
-        string Id { get; set; }
-        string Name { get; set; }
-        string ImagePath { get; set; }
-        string LocalImagePath { get; set; }
-        string Description { get; set; }
-        int AlertCount { get; set; }
-        bool IsLocalApp { get; set; }
-        string UrlString { get; set; }
+        [DataMember]
+        public abstract string Id { get; set; }
+        [DataMember]
+        public abstract string Name { get; set; }
+        [DataMember]
+        public abstract string ImagePath { get; set; }
+        [DataMember]
+        public abstract string LocalImagePath { get; set; }
+        [DataMember]
+        public abstract string Description { get; set; }
+        [DataMember]
+        public abstract int AlertCount { get; set; }
+        [DataMember]
+        public abstract bool IsLocalApp { get; set; }
+        [DataMember]
+        public abstract string UrlString { get; set; }
     }
 }
