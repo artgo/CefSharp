@@ -1,0 +1,8 @@
+﻿<Application x:Class="AppDirect.WindowsClient.BrowserWindow.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="UI\ChromiumWindow.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>
