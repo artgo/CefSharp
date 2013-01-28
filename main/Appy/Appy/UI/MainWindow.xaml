@@ -97,9 +97,9 @@
                             <StackPanel Grid.Column="2" Margin="18,0,32,0" >
                                 <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyle}" FontSize="12" Foreground="White" Text="Returning Customer"/>
                                 <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWater}"
-                                         HorizontalAlignment="Stretch" Width="Auto" Margin="0,11,0,0"/>
+                                         HorizontalAlignment="Stretch" Width="Auto" Margin="0,11,0,0" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
                                 <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
-                                             HorizontalAlignment="Stretch" Width="Auto" Margin="0,18,0,0" KeyDown="PasswordBox_OnKeyDown">
+                                             HorizontalAlignment="Stretch" Width="Auto" Margin="0,18,0,0" KeyDown="PasswordBox_OnKeyDown" IsKeyboardFocusedChanged="LoginInfo_OnChange">
                                 </PasswordBox>
                                 <Grid Margin="0,24,0,0" Height="24">
                                     <Button HorizontalContentAlignment="Center" Click="ForgotPassword"

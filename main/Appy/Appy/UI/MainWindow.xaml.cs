@@ -194,6 +194,12 @@ namespace AppDirect.WindowsClient.UI
                 LoginButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
         }
+
+        private void LoginInfo_OnChange(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            LoginFailedMessage.Visibility = Visibility.Hidden;
+        }
+
     }
 }
     
