@@ -31,6 +31,12 @@ UninstPage instfiles
 
 ;--------------------------------
 
+Section "Create directory" Permissions 
+   CreateDirectory "$INSTDIR\Appy" 
+   AccessControl::EnableFileInheritance "$INSTDIR\Appy" 
+   AccessControl::GrantOnFile "$INSTDIR\Appy" "(S-1-5-32-545)" "FullAccess" 
+SectionEnd
+
 ; The stuff to install
 Section "Appy (required)"
 
@@ -41,6 +47,7 @@ Section "Appy (required)"
   
   ; Put file there
 File /r "Setup"
+File "AppyIcon.ico"
   
   ; Write the installation path into the registry
   WriteRegStr HKLM SOFTWARE\Appy "Install_Dir" "$INSTDIR"
@@ -59,7 +66,7 @@ Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\Appy"
   CreateShortCut "$SMPROGRAMS\Appy\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Appy\Appy.lnk" "$INSTDIR\Appy\Setup\Appy.exe" "" "$INSTDIR\Appy\Setup\AppyIcon.ico" 0
+  CreateShortCut "$SMPROGRAMS\Appy\Appy.lnk" "$INSTDIR\Appy\Setup\Appy.exe" "" "$INSTDIR\Appy\AppyIcon.ico" 0
   
 SectionEnd
 
@@ -91,9 +98,10 @@ Section "Uninstall"
   ; Remove files and uninstaller
   Delete $INSTDIR\ADWindowsClient.nsi
   Delete $INSTDIR\uninstall.exe
-  Delete "$INSTDIR\Appy\Setup\*.*"
-  Delete "$INSTDIR\Appy\Setup\locales\*.*"
+  Delete "$INSTDIR\Appy\ApplicationData\AppDirect\*.*"
   Delete "$INSTDIR\Appy\Setup\ApplicationData\AppDirect\*.*"
+  Delete "$INSTDIR\Appy\Setup\locales\*.*"
+  Delete "$INSTDIR\Appy\Setup\*.*"
   
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\Appy\*.*"
@@ -101,6 +109,9 @@ Section "Uninstall"
   ; Remove directories used
   
   RMDir "$SMPROGRAMS\Appy"
+  RMDir "$INSTDIR\Appy\ApplicationData\AppDirect"
+  RMDir "$INSTDIR\Appy\ApplicationData"
+  RMDir "$INSTDIR\Appy\Setup\ApplicationData\AppDirect"
   RMDir "$INSTDIR\Appy\Setup\ApplicationData\AppDirect"
   RMDir "$INSTDIR\Appy\Setup\ApplicationData"
   RMDir "$INSTDIR\Appy\Setup\locales"
