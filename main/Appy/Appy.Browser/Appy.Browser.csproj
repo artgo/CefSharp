@@ -185,8 +185,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r
-xcopy "$(ProjectDir)libs" "$(SolutionDir)Setup" /e /y /i /r</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r /c
+xcopy "$(ProjectDir)libs" "$(SolutionDir)Setup" /e /y /i /r /c
+xcopy "$(TargetDir)Appy.Browser.exe" "$(SolutionDir)Setup" /e /y /i /r /c
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
