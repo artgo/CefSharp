@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Storage;
-using AppDirect.WindowsClient.UI;
 using Ninject;
 
 namespace AppDirect.WindowsClient
@@ -25,12 +20,18 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<LocalStorage>(); }
         }
 
+        public static BrowserWindowsCommunicator BrowserWindowsCommunicator
+        {
+            get { return Kernel.Get<BrowserWindowsCommunicator>(); }
+        }
+
         public static void Initialize()
         {
             Kernel = new StandardKernel();
             Kernel.Bind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Bind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
             Kernel.Bind<LocalStorage>().ToConstant(new LocalStorage(true));
+            Kernel.Bind<BrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator());
         }
     }
 }

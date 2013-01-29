@@ -1,4 +1,4 @@
-﻿<Window x:Class="AppDirect.WindowsClient.BrowserWindow.UI.ChromiumWindow"
+﻿<Window x:Class="AppDirect.WindowsClient.Browser.UI.ChromiumWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cs="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
@@ -127,7 +127,7 @@
             <Button Name="RestoreDown"  Grid.Column="4" Style="{StaticResource BorderlessButton}" Height="23" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="RestoreDown_OnClick" Visibility="Hidden" HorizontalContentAlignment="Center">
                 <Image Source="Images/restoreDown.png" Width="10"/>
             </Button>
-            <Button Grid.Column="5" Style="{StaticResource BorderlessButton}" Height="23" Name="Close" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="Close_OnClick" HorizontalContentAlignment="Center">
+            <Button Grid.Column="5" Style="{StaticResource BorderlessButton}" Height="23" Name="CloseGrid" Width="22" HorizontalAlignment="Left" VerticalContentAlignment="Center" Click="Close_OnClick" HorizontalContentAlignment="Center">
                 <Image Source="Images/closeBtn.png" Width="10"/>
             </Button>
             <TextBox Visibility="Hidden" Height="23" Name="UrlTextBox" KeyDown="urlTextBox_KeyDown" Margin="0,1" Grid.RowSpan="2" />

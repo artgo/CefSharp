@@ -1,11 +1,7 @@
 using System;
-using System;
-using System.Linq;
 using System.Net;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -19,8 +15,6 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IDictionary<String, IntPtr> _chromiumWindows = new Dictionary<String, IntPtr>();
-
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -92,35 +86,14 @@ namespace AppDirect.WindowsClient.UI
                 }
                 else
                 {
-                    //ChromiumWindow window;
-                    //if (!_chromiumWindows.TryGetValue(clickedApp.Id, out window))
-                    //{
-                    //    window = new ChromiumWindow()
-                    //        {
-                    //            UrlAddress = clickedApp.UrlString,
-                    //            Session = ServiceLocator.CachedAppDirectApi.Session,
-                    //            ApplicationId = clickedApp.Id
-                    //        };
-
-                    //    window.CloseWindow += new EventHandler(ChromiumWindow_Close);
-                    //    _chromiumWindows[clickedApp.Id] = window;
-                        
-                    //}
-
-                    //window.Show();
-                    //window.Activate();
+                    var browserCommunicator = ServiceLocator.BrowserWindowsCommunicator;
+                    browserCommunicator.OpenApp(clickedApp);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void ChromiumWindow_Close(object sender, EventArgs e)
-        {
-            //var chromiumWindow = (ChromiumWindow) sender;
-            //_chromiumWindows.Remove(chromiumWindow.ApplicationId);
         }
         
         private void InstallAppClick(object sender, RoutedEventArgs e)

@@ -1,7 +1,7 @@
 ﻿using System;
 using AppDirect.WindowsClient.Common.API;
 
-namespace AppDirect.WindowsClient.BrowserWindow.UI.Chromium
+namespace AppDirect.WindowsClient.Browser.UI.Chromium
 {
     public interface IChromiumView
     {

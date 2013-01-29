@@ -1,7 +1,5 @@
 ﻿using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.ObjectMapping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Ninject;
 
 namespace AppDirect.WindowsClient.Tests
 {
@@ -34,6 +32,7 @@ namespace AppDirect.WindowsClient.Tests
         public void IsAuthenticatedReturnsTrueIfAuthenticated()
         {
             var api = new AppDirectApi();
+            Assert.IsFalse(api.IsAuthenticated);
             api.Authenticate(TestData.TestUsername, TestData.TestPassword);
             Assert.IsTrue(api.IsAuthenticated);
         }

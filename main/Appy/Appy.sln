@@ -6,6 +6,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appy.Common", "Appy.Common\Appy.Common.csproj", "{7220CABF-D13D-411E-A5B0-6E63F505BBB5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appy.Browser", "Appy.Browser\Appy.Browser.csproj", "{BC7ED699-06E7-4175-95B7-40E7494A5E24}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2FDC87A4-0C19-473E-A117-30A9C1477D18} = {2FDC87A4-0C19-473E-A117-30A9C1477D18}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appy.Updator", "Appy.Updator\Appy.Updator.csproj", "{385F8B2D-2AD3-430B-841D-26CBAC20084A}"
 EndProject
