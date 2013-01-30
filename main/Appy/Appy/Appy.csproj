@@ -128,6 +128,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
+    <Compile Include="API\IpcCommunicator.cs" />
     <Compile Include="LocalApplications.cs" />
     <Compile Include="API\IAppDirectApi.cs" />
     <Compile Include="API\ICachedAppDirectApi.cs" />
@@ -305,7 +306,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)Appy.exe" "$(SolutionDir)Setup" /e /y /i /r /c
-xcopy "$(TargetDir)Ninject.dll" "$(SolutionDir)Setup" /e /y /i /r /c</PostBuildEvent>
+xcopy "$(TargetDir)Ninject.dll" "$(SolutionDir)Setup" /e /y /i /r /c
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

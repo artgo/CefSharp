@@ -25,6 +25,11 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<BrowserWindowsCommunicator>(); }
         }
 
+        public static IpcCommunicator IpcCommunicator
+        {
+            get { return Kernel.Get<IpcCommunicator>(); }
+        }
+
         public static void Initialize()
         {
             Kernel = new StandardKernel();
@@ -32,6 +37,7 @@ namespace AppDirect.WindowsClient
             Kernel.Bind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
             Kernel.Bind<LocalStorage>().ToConstant(new LocalStorage(true));
             Kernel.Bind<BrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator());
+            Kernel.Bind<IpcCommunicator>().ToConstant(new IpcCommunicator());
         }
     }
 }

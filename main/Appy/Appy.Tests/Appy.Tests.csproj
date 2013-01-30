@@ -107,6 +107,10 @@
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>Appy</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Appy.InstallerHelper\Appy.InstallerHelper.csproj">
+      <Project>{4098b84a-78d1-42bc-a615-dca3b034a4e2}</Project>
+      <Name>Appy.InstallerHelper</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
