@@ -15,8 +15,8 @@ namespace AppDirect.WindowsClient.API
         public void OpenApp(IApplication a)
         {
             var browserWindowProcess = new Process();
-            browserWindowProcess.StartInfo.FileName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name + BrowserPostfix;
-            browserWindowProcess.StartInfo.Arguments = AppIdParameterName + a.Id;
+            browserWindowProcess.StartInfo.FileName = Helper.ApplicationName + BrowserPostfix;
+            browserWindowProcess.StartInfo.Arguments = AppIdParameterName + "\"" + a.Id + "\"";
             browserWindowProcess.Start();
         }
 
