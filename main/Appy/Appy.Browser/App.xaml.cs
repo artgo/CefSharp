@@ -19,22 +19,10 @@ namespace AppDirect.WindowsClient.Browser
             var options = new Options();
 
             if ((e != null) && (e.Args != null) && (e.Args.Length > 0) &&
-                (CommandLineParser.Default.ParseArguments(e.Args, options)))
+                (CommandLineParser.Default.ParseArguments(e.Args, options)) &&
+                !string.IsNullOrEmpty(options.AppId))
             {
-                var appId = options.AppId;
-                var callback = new MainApplicationCallback();
-                var context = new InstanceContext(callback);
-                context.Faulted += ErrorOnServer;
-                var client = new MainApplicationClient(context);
-                var app = (IApplication) client.GetApplicationById(appId);
-
-                var window = new ChromiumWindow()
-                    {
-                        UrlAddress = app.UrlString,
-                        Session = (IAppDirectSession) client.GetCurrentSession()
-                    };
-                MainWindow = window;
-                window.Show();
+                ProcessApplicationId(options);
             }
             else
             {
@@ -42,6 +30,62 @@ namespace AppDirect.WindowsClient.Browser
             }
 
             base.OnStartup(e);
+        }
+
+        private void ProcessApplicationId(Options options)
+        {
+            MainApplicationClient client;
+            try
+            {
+                var callback = new MainApplicationCallback();
+                var context = new InstanceContext(callback);
+                context.Faulted += ErrorOnServer;
+                client = new MainApplicationClient(context);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Communications can't be established");
+                return;
+            }
+
+            IApplication app;
+            IAppDirectSession session;
+            try
+            {
+                app = (IApplication)client.GetApplicationById(options.AppId);
+                session = (IAppDirectSession)client.GetCurrentSession();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error getting data");
+                return;
+            }
+
+            if (app == null)
+            {
+                MessageBox.Show("No app data transfered for application with id " + options.AppId);
+                return;
+            }
+
+            if (session == null)
+            {
+                MessageBox.Show("No session data transfered for application with id " + options.AppId);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(app.UrlString))
+            {
+                MessageBox.Show("Url for the application with id " + options.AppId + " is empty");
+                return;
+            }
+
+            var window = new ChromiumWindow()
+                {
+                    UrlAddress = app.UrlString,
+                    Session = session
+                };
+            MainWindow = window;
+            window.Show();
         }
 
         private void ErrorOnServer(object sender, System.EventArgs e)

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using AppDirect.WindowsClient.Models;
 
 namespace AppDirect.WindowsClient
@@ -16,7 +12,6 @@ namespace AppDirect.WindowsClient
         {
             return Applications;
         }
-
 
         private static readonly List<Application> Applications = new List<Application>
             {
@@ -34,7 +29,7 @@ namespace AppDirect.WindowsClient
                 new Application
                     {
                         Description = "Gmail App",
-                        Id = "Gmail ",
+                        Id = "Gmail",
                         LocalImagePath = "Icons/gmail.png",
                         Name = "Gmail",
                         UrlString = "http://www.gmail.com",

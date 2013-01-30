@@ -128,6 +128,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
+    <Compile Include="API\Helper.cs" />
     <Compile Include="API\IpcCommunicator.cs" />
     <Compile Include="LocalApplications.cs" />
     <Compile Include="API\IAppDirectApi.cs" />

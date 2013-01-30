@@ -22,7 +22,8 @@ namespace AppDirect.WindowsClient
                     return app;
                 }
             }
-            
+
+            apps = ServiceLocator.LocalStorage.InstalledAppDirectApps;
             foreach (var app in apps)
             {
                 if (id.Equals(app.Id))

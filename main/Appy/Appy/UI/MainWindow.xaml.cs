@@ -1,6 +1,5 @@
 using System;
 using System.Net;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -86,8 +85,7 @@ namespace AppDirect.WindowsClient.UI
                 }
                 else
                 {
-                    var browserCommunicator = ServiceLocator.BrowserWindowsCommunicator;
-                    browserCommunicator.OpenApp(clickedApp);
+                    ServiceLocator.BrowserWindowsCommunicator.OpenApp(clickedApp);
                 }
             }
             catch (Exception ex)
