@@ -22,15 +22,14 @@ namespace AppDirect.WindowsClient
                 MessageBox.Show(ex.Message);
             }
 
-            _host = new ServiceHost(typeof(MainApplication));
-            _host.Open();
+            ServiceLocator.IpcCommunicator.Start();
 
             base.OnStartup(e);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _host.Close();
+            ServiceLocator.IpcCommunicator.Exit();
 
             base.OnExit(e);
         }
