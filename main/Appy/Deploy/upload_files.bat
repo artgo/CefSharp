@@ -1,0 +1,1 @@
+C:\apps\s3sync\S3Sync.exe -AWSAccessKeyId AKIAJWRIO3FQWFPAIYQA -AWSSecretAccessKey 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 -SyncDirection upload -LocalFolderPath "C:\UploadData" -BucketName windows-client-dev
