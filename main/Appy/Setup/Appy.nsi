@@ -59,7 +59,7 @@ Section "Appy (required)"
   !searchparse /file version.txt '' VERSION_SHORT
   
   ; Put file there
-File /r "Setup"
+File /r "Appy"
 File "AppyIcon.ico"
   
   ; Write the installation path into the registry
@@ -84,7 +84,7 @@ Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\Appy"
   CreateShortCut "$SMPROGRAMS\Appy\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Appy\Appy.lnk" "$INSTDIR\Appy\Setup\Appy.exe" "" "$INSTDIR\Appy\AppyIcon.ico" 0
+  CreateShortCut "$SMPROGRAMS\Appy\Appy.lnk" "$INSTDIR\Appy\Appy.exe" "" "$INSTDIR\Appy\AppyIcon.ico" 0
   
 SectionEnd
 
@@ -116,10 +116,9 @@ Section "Uninstall"
   ; Remove files and uninstaller
   Delete $INSTDIR\uninstall.exe
   Delete "$INSTDIR\Appy\ApplicationData\AppDirect\*.*"
-  Delete "$INSTDIR\Appy\Setup\ApplicationData\AppDirect\*.*"
-  Delete "$INSTDIR\Appy\Setup\locales\*.*"
-  Delete "$INSTDIR\Appy\Setup\*.*"
+  Delete "$INSTDIR\Appy\locales\*.*"
   Delete "$INSTDIR\Appy\*.*"
+  Delete "$INSTDIR\AppyIcon.ico"
   
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\Appy\*.*"
@@ -129,10 +128,7 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\Appy"
   RMDir "$INSTDIR\Appy\ApplicationData\AppDirect"
   RMDir "$INSTDIR\Appy\ApplicationData"
-  RMDir "$INSTDIR\Appy\Setup\ApplicationData\AppDirect"
-  RMDir "$INSTDIR\Appy\Setup\ApplicationData"
-  RMDir "$INSTDIR\Appy\Setup\locales"
-  RMDir "$INSTDIR\Appy\Setup"
+  RMDir "$INSTDIR\Appy\locales"
   RMDir "$INSTDIR\Appy"
 
 SectionEnd

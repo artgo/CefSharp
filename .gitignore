@@ -8,9 +8,9 @@ Debug
 Release
 main/Appy/Appy.sln.DotSettings.user
 main/Appy/Setup/Appy/
+main/Appy/Setup/Appy.exe
 *.sln.DotSettings.user
 *.DotSettings.user
 *.DotSettings
 *.user
 TestResults
-main/Appy/Setup/Appy.exe
