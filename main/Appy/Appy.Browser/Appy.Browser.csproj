@@ -45,7 +45,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>..\bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -185,9 +185,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r /c
-xcopy "$(ProjectDir)libs" "$(SolutionDir)Setup/Appy" /e /y /i /r /c
-xcopy "$(TargetDir)Appy.Browser.exe" "$(SolutionDir)Setup/Appy" /e /y /i /r /c
+    <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r
+xcopy "$(ProjectDir)libs" "$(SolutionDir)Setup\Appy" /e /y /i /r
+xcopy "$(TargetDir)Appy.Browser.exe" "$(SolutionDir)Setup\Appy" /y /i /r
+xcopy "$(TargetDir)Appy.Browser.exe.config" "$(SolutionDir)Setup\Appy" /y /i /r
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

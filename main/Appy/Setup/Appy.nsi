@@ -10,10 +10,8 @@ Name "Appy"
 !define OUTFILE "Appy.exe"
 OutFile "${OUTFILE}"
 
-;${PostExec5} signtool.exe sign /t http://timestamp.verisign.com/scripts/timstamp.dll ${OUTFILE}
-
 ; The default installation directory
-InstallDir "$WINDIR\Local Application Data"
+InstallDir "$LOCALAPPDATA\Appy"
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
@@ -43,9 +41,9 @@ AutoCloseWindow true
 ;--------------------------------
 
 Section "Create directory" Permissions 
-   CreateDirectory "$INSTDIR\Appy" 
-   AccessControl::EnableFileInheritance "$INSTDIR\Appy" 
-   AccessControl::GrantOnFile "$INSTDIR\Appy" "(S-1-5-32-545)" "FullAccess" 
+   CreateDirectory "$INSTDIR" 
+   AccessControl::EnableFileInheritance "$INSTDIR" 
+   AccessControl::GrantOnFile "$INSTDIR" "(S-1-5-32-545)" "FullAccess" 
 SectionEnd
 
 ; The stuff to install
@@ -54,13 +52,12 @@ Section "Appy (required)"
   SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath $INSTDIR\Appy
+  SetOutPath $INSTDIR
   
   !searchparse /file version.txt '' VERSION_SHORT
   
   ; Put file there
-File /r "Appy"
-File "AppyIcon.ico"
+  File /r Appy\*.*
   
   ; Write the installation path into the registry
   WriteRegStr HKLM SOFTWARE\Appy "Install_Dir" "$INSTDIR"
@@ -84,7 +81,8 @@ Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\Appy"
   CreateShortCut "$SMPROGRAMS\Appy\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Appy\Appy.lnk" "$INSTDIR\Appy\Appy.exe" "" "$INSTDIR\Appy\AppyIcon.ico" 0
+  CreateShortCut "$SMPROGRAMS\Appy\Appy.lnk" "$INSTDIR\Appy.exe" "" "$INSTDIR\AppyIcon.ico" 0
+  CreateShortCut "$SMPROGRAMS\Appy.lnk" "$INSTDIR\Appy.exe" "" "$INSTDIR\AppyIcon.ico" 0
   
 SectionEnd
 
@@ -114,11 +112,10 @@ Section "Uninstall"
   DeleteRegKey HKLM SOFTWARE\Appy
 
   ; Remove files and uninstaller
-  Delete $INSTDIR\uninstall.exe
-  Delete "$INSTDIR\Appy\ApplicationData\AppDirect\*.*"
-  Delete "$INSTDIR\Appy\locales\*.*"
-  Delete "$INSTDIR\Appy\*.*"
-  Delete "$INSTDIR\AppyIcon.ico"
+  Delete "$INSTDIR\ApplicationData\AppDirect\*.*"
+  Delete "$INSTDIR\ApplicationData\*.*"
+  Delete "$INSTDIR\locales\*.*"
+  Delete "$INSTDIR\*.*"
   
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\Appy\*.*"
@@ -126,14 +123,14 @@ Section "Uninstall"
   ; Remove directories used
   
   RMDir "$SMPROGRAMS\Appy"
-  RMDir "$INSTDIR\Appy\ApplicationData\AppDirect"
-  RMDir "$INSTDIR\Appy\ApplicationData"
-  RMDir "$INSTDIR\Appy\locales"
-  RMDir "$INSTDIR\Appy"
+  RMDir "$INSTDIR\ApplicationData\AppDirect"
+  RMDir "$INSTDIR\ApplicationData"
+  RMDir "$INSTDIR\locales"
+  RMDir "$INSTDIR"
 
 SectionEnd
 
 Function .onInstSuccess
-Exec "$INSTDIR\Appy\Appy.exe"
+Exec "$INSTDIR\Appy.exe"
 FunctionEnd
 
