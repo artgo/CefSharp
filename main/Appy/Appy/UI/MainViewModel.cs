@@ -153,6 +153,13 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
+            GetMyApplications();
+            GetSuggestedApplicationsWithApiCall();
+            ServiceLocator.LocalStorage.SaveAppSettings();
+        }
+
+        private void worker_RefreshAppLists(object sender, DoWorkEventArgs ea)
+        {
             RefreshAppsLists();
         }
 
@@ -191,24 +198,36 @@ namespace AppDirect.WindowsClient.UI
         {
             List<Application> storedApps = storedList.Take(displayLimit).ToList();
             
-            var appsToRemove = displayedList.Except(storedApps).ToList();
-            foreach (var application in appsToRemove)
+            for (int index   = 0; index < storedApps.Count; index++)
             {
-                if (System.Windows.Application.Current != null)
+                if (displayedList.Count <= index)
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => displayedList.Remove(application)));
+                    if (System.Windows.Application.Current != null)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(
+                            new Action(() => displayedList.Add(storedApps[index])));
+                    }
+                }
+
+                if (!displayedList[index].Equals(storedApps[index]))
+                {
+                    if (System.Windows.Application.Current != null)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(
+                            new Action(() => displayedList[index] = storedApps[index]));
+                    }
                 }
             }
 
-            var appsToAdd = storedApps.Except(displayedList).ToList();
-            foreach (var application in appsToAdd)
+            for (int index = storedApps.Count; index < displayedList.Count; index++)
             {
                 if (System.Windows.Application.Current != null)
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke(
-                        new Action(() => displayedList.Add(application)));
-                }
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(
+                            new Action(() => displayedList.RemoveAt(index)));
+                    }
             }
+
         }
 
         private void SyncStorageWithApi()
@@ -239,12 +258,25 @@ namespace AppDirect.WindowsClient.UI
 
         private void GetSuggestedApplications()
         {
-            var suggestedAppsList =
-                LocalApplications.GetLocalApplications();
+            var suggestedApps = LocalApplications.GetLocalApplications();
+            var apiSuggestedApps = ServiceLocator.LocalStorage.LastSuggestedApps.Where(a => !a.IsLocalApp);
+
+            suggestedApps.AddRange(apiSuggestedApps);
+
+            ServiceLocator.LocalStorage.LastSuggestedApps =
+                suggestedApps.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
+
+            SyncDisplayWithStoredList(SuggestedAppsDisplayLimit, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
+        }
+
+        private void GetSuggestedApplicationsWithApiCall()
+        {
+            var suggestedApps = LocalApplications.GetLocalApplications();
+            var apiSuggestedApps = new List<Application>();
 
             try
             {
-                suggestedAppsList.AddRange(ServiceLocator.CachedAppDirectApi.SuggestedApps);
+                apiSuggestedApps = ServiceLocator.CachedAppDirectApi.SuggestedApps.ToList();
 
                 SuggestedAppsLoadError = String.Empty;
 
@@ -254,10 +286,17 @@ namespace AppDirect.WindowsClient.UI
                 SuggestedAppsLoadError = e.Message;
             }
 
-            ServiceLocator.LocalStorage.LastSuggestedApps = suggestedAppsList.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
+            foreach (var application in apiSuggestedApps)
+            {
+                application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath, application.Id);
+            }
+
+            suggestedApps.AddRange(apiSuggestedApps);
+
+            ServiceLocator.LocalStorage.LastSuggestedApps =
+                suggestedApps.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
             SyncDisplayWithStoredList(SuggestedAppsDisplayLimit, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
-          
         }
 
         public bool Login(string username, string password)
@@ -288,7 +327,7 @@ namespace AppDirect.WindowsClient.UI
             MyApplications.Remove(application);
 
             var backgroundWorker = new BackgroundWorker();
-            backgroundWorker.DoWork += setup_Worker_DoWork;
+            backgroundWorker.DoWork += worker_RefreshAppLists;
             backgroundWorker.RunWorkerAsync();
         }
 
@@ -297,8 +336,6 @@ namespace AppDirect.WindowsClient.UI
             if (application.IsLocalApp)
             {
                 ServiceLocator.LocalStorage.InstalledLocalApps.Add(application);
-                MyApplications.Add(application);
-                SuggestedApplications.Remove(application);
                 ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
             }
             else
@@ -307,7 +344,7 @@ namespace AppDirect.WindowsClient.UI
             }
 
             var backgroundWorker = new BackgroundWorker();
-            backgroundWorker.DoWork += setup_Worker_DoWork;
+            backgroundWorker.DoWork += worker_RefreshAppLists;
             backgroundWorker.RunWorkerAsync();
         }
 

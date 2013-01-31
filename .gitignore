@@ -7,9 +7,8 @@ obj
 Debug
 Release
 main/Appy/Appy.sln.DotSettings.user
-main/Appy/Setup/locales/*.*
-main/Appy/Setup/*.*
-main/Appy/Appy.exe
+main/Appy/Setup/Appy/
+main/Appy/Setup/Appy.exe
 *.sln.DotSettings.user
 *.DotSettings.user
 *.DotSettings

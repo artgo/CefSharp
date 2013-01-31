@@ -68,7 +68,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)Appy.Common.dll" "$(SolutionDir)Setup" /e /y /i /r /c
+    <PostBuildEvent>xcopy "$(TargetDir)Appy.Common.dll" "$(SolutionDir)Setup/Appy" /e /y /i /r /c
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
