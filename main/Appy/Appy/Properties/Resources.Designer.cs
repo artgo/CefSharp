@@ -61,6 +61,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Appy.exe.
+        /// </summary>
+        internal static string ApplicationExe {
+            get {
+                return ResourceManager.GetString("ApplicationExe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://appcenter.staples.com/home.
         /// </summary>
         internal static string AppStoreUrlString {
@@ -147,6 +156,24 @@ namespace AppDirect.WindowsClient.Properties {
         internal static string UninstallAppDirectApp {
             get {
                 return ResourceManager.GetString("UninstallAppDirectApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://windows-client-dev.s3-website-us-east-1.amazonaws.com/Appy_upd.lump.
+        /// </summary>
+        internal static string UpdateFileUrl {
+            get {
+                return ResourceManager.GetString("UpdateFileUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://windows-client-dev.s3-website-us-east-1.amazonaws.com/version.txt.
+        /// </summary>
+        internal static string VersionFileUrl {
+            get {
+                return ResourceManager.GetString("VersionFileUrl", resourceCulture);
             }
         }
     }

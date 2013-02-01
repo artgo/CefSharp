@@ -99,10 +99,6 @@
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
       <Name>Appy.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Appy.Updator\Appy.Updator.csproj">
-      <Project>{385f8b2d-2ad3-430b-841d-26cbac20084a}</Project>
-      <Name>Appy.Updator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Appy\Appy.csproj">
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>Appy</Name>

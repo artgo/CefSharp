@@ -1,5 +1,6 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Storage;
+using AppDirect.WindowsClient.Updates;
 using Ninject;
 
 namespace AppDirect.WindowsClient
@@ -30,6 +31,11 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<IpcCommunicator>(); }
         }
 
+        public static Updater Updater
+        {
+            get { return Kernel.Get<Updater>(); }
+        }
+
         public static void Initialize()
         {
             Kernel = new StandardKernel();
@@ -37,7 +43,8 @@ namespace AppDirect.WindowsClient
             Kernel.Bind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
             Kernel.Bind<LocalStorage>().ToConstant(new LocalStorage(true));
             Kernel.Bind<BrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator());
-            Kernel.Bind<IpcCommunicator>().ToConstant(new IpcCommunicator());
+            Kernel.Bind<IpcCommunicator>().ToConstant(new IpcCommunicator()); 
+            Kernel.Bind<Updater>().ToConstant(new Updater());
         }
     }
 }
