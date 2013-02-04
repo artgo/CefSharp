@@ -22,7 +22,8 @@ namespace AppDirect.WindowsClient.Storage
         public List<Application> InstalledLocalApps { get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
-          
+        public bool UpdateDownloaded { get; set; }  
+
         [XmlIgnore]
         public List<Application> AllInstalledApplications
         {
@@ -86,6 +87,7 @@ namespace AppDirect.WindowsClient.Storage
                             LoginInfo = localStorage.LoginInfo;                         
                             InstalledLocalApps = localStorage.InstalledLocalApps;
                             InstalledAppDirectApps = localStorage.InstalledAppDirectApps;
+                            UpdateDownloaded = localStorage.UpdateDownloaded;
 
                             HiddenApps = localStorage.HiddenApps;
 

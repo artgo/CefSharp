@@ -1,7 +1,5 @@
-; ADWindowsClient.nsi
 ;--------------------------------
 !include "MUI.nsh"
-;!include "PostExec.nsh"
 
 ; The name of the installer
 Name "Appy"
@@ -11,11 +9,11 @@ Name "Appy"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
-InstallDir "$LOCALAPPDATA\Appy"
+InstallDir "$LOCALAPPDATA\AppDirect"
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
-InstallDirRegKey HKLM "Software\Appy" "Install_Dir"
+InstallDirRegKey HKLM "Software\AppDirect" "Install_Dir"
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
@@ -23,20 +21,18 @@ RequestExecutionLevel admin
 ;SilentInstall silent
 AutoCloseWindow true
 ;--------------------------------
-
 ; Pages
 
 !insertmacro MUI_PAGE_INSTFILES
 
-!insertmacro MUI_UNPAGE_WELCOME
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_UNPAGE_FINISH
-  
+    
 ;--------------------------------
 ;Languages
 
-  !insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
 
@@ -54,14 +50,13 @@ Section "Appy (required)"
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
   
-  !searchparse /file version.txt '' VERSION_SHORT
-  
   ; Put file there
-  File /r Appy\*.*
+  File /r /x Appy\ApplicationData\*.* Appy\*.*
+  
+  !searchparse /file version.txt '' VERSION_SHORT 
   
   ; Write the installation path into the registry
-  WriteRegStr HKLM SOFTWARE\Appy "Install_Dir" "$INSTDIR"
- 
+  WriteRegStr HKLM SOFTWARE\AppDirect "Install_Dir" "$INSTDIR"
   
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "DisplayName" "Appy"
@@ -72,7 +67,7 @@ Section "Appy (required)"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "DisplayVersion" ${VERSION_SHORT} 
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "NoRepair" 1
-  WriteUninstaller "uninstall.exe"
+  ;WriteUninstaller "uninstall.exe"
   
 SectionEnd
 
@@ -119,6 +114,7 @@ Section "Uninstall"
   
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\Appy\*.*"
+  Delete "$SMPROGRAMS\Appy.lnk"
 
   ; Remove directories used
   
@@ -129,6 +125,10 @@ Section "Uninstall"
   RMDir "$INSTDIR"
 
 SectionEnd
+
+Function un.onInit
+Exec "taskkill /f /t /im appy.exe"
+FunctionEnd
 
 Function .onInstSuccess
 Exec "$INSTDIR\Appy.exe"

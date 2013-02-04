@@ -18,7 +18,7 @@ InstallDirRegKey HKLM "Software\Appy" "Install_Dir"
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
 
-;SilentInstall silent
+SilentInstall silent
 ;--------------------------------
 
 ; Pages
@@ -36,24 +36,18 @@ Section "Appy (required)"
   !searchparse /file version.txt '' VERSION_SHORT
   
   ; Put file there
-  File /r Appy\*.*
-  
-  ; Write the installation path into the registry
-  WriteRegStr HKLM SOFTWARE\Appy "Install_Dir" "$INSTDIR"
- 
-  
-  ; Write the uninstall keys for Windows
-  ; WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "DisplayName" "Appy"
-  ; WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  ; WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "QuietUninstallString" '"$INSTDIR\uninstall.exe"'
-  
-  ; WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "Publisher" "AppDirect Inc." 
-  ; WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "DisplayVersion" ${VERSION_SHORT} 
-  ; WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "NoModify" 1
-  ; WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Appy" "NoRepair" 1
-  ; WriteUninstaller "uninstall.exe"
-  
+  File /r /x Appy\ApplicationData\*.* Appy\*.*
+     
 SectionEnd
+
+Function .onInit
+loop:
+	Processes::FindProcess "Appy.Browser"
+	StrCmp $R0 "0" done
+	Sleep 500
+	Goto loop
+done:
+FunctionEnd
 
 Function .onInstSuccess
 Exec "$INSTDIR\Appy.exe"
