@@ -139,7 +139,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)Setup\AppyIcon.ico" "$(SolutionDir)Setup\Appy"
-xcopy "$(SolutionDir)Setup\uninstall.exe" "$(SolutionDir)Setup\Appy" \y
+xcopy "$(SolutionDir)Setup\uninstall.exe" "$(SolutionDir)Setup\Appy"
 "C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\Appy.nsi"
 "C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\Appy.exe"
 </PostBuildEvent>
