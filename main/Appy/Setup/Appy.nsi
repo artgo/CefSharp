@@ -1,3 +1,4 @@
+; Appy.nsi
 ;--------------------------------
 !include "MUI.nsh"
 !include "InstallerShared.nsh"
@@ -10,7 +11,7 @@ Name "${APPNAME}"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
-InstallDir "$LOCALAPPDATA\AppDirect\${APPNAME}"
+InstallDir "${APPDIR}\${APPNAME}"
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
@@ -41,7 +42,7 @@ Section "Appy (required)"
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
   
-  ; Put file there
+  ; Files to copy
   File /r /x ${APPNAME}\ApplicationData\*.* ${APPNAME}\*.*
   
   !searchparse /file version.txt '' VERSION_SHORT 

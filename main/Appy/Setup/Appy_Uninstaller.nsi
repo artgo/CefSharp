@@ -8,8 +8,6 @@ Name "Uninstaller"
 !define OUTFILE "Appy_Uninstaller.exe"
 OutFile "${OUTFILE}"
 
-; The default installation directory
-!define APPDIR "$LOCALAPPDATA\AppDirect"
 ; Pages
 
 !insertmacro MUI_PAGE_INSTFILES

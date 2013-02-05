@@ -9,6 +9,9 @@ Release
 main/Appy/Appy.sln.DotSettings.user
 main/Appy/Setup/Appy/
 main/Appy/Setup/Appy.exe
+main/Appy/Setup/Appy_upd.exe
+main/Appy/Setup/Appy_Uninstaller.exe
+main/Appy/Setup/uninstall.exe
 *.sln.DotSettings.user
 *.DotSettings.user
 *.DotSettings

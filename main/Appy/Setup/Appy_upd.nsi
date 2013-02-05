@@ -45,7 +45,7 @@ loop:
 	${If} $R0 == "0"
 	Processes::FindProcess "${APPNAME}.exe"
 	StrCmp $R0 "0" done
-	StrCmp $0 "50" done
+	StrCmp $0 "100" done
 	${EndIf}	
 	Sleep 200
 	Goto loop
