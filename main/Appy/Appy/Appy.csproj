@@ -314,6 +314,9 @@
   <ItemGroup>
     <Resource Include="UI\Icons\LivingSocial.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\AppyIcon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)Appy.exe" "$(SolutionDir)Setup\Appy" /y /i /r

@@ -12,11 +12,11 @@ Name "${AppName}_upd"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
-InstallDir "${APPDIR}\${APPNAME}"
+InstallDir "${APPDIR}"
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
-InstallDirRegKey HKLM "Software\Appy" "Install_Dir"
+InstallDirRegKey HKCU "${REGISTRYPATH}" "Install_Dir"
 
 SilentInstall silent
 ;--------------------------------
@@ -39,17 +39,7 @@ Section "Appy (required)"
 SectionEnd
 
 Function .onInit
-loop:
-	IntOp $0 $0 + 1
-	Processes::FindProcess "${APPNAME}.Browser.exe"
-	${If} $R0 == "0"
-	Processes::FindProcess "${APPNAME}.exe"
-	StrCmp $R0 "0" done
-	StrCmp $0 "100" done
-	${EndIf}	
-	Sleep 200
-	Goto loop
-done:
+!insertmacro WaitForDead
 FunctionEnd
 
 Function .onInstSuccess

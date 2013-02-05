@@ -19,8 +19,7 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string EmailMatchPattern =
-            @"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$";
+        private static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
         public event EventHandler CloseWindow;
 
         public MainViewModel ViewModel
@@ -211,8 +210,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 RegisterButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-
-            else if (Regex.IsMatch(NewCustomerEmail.Text, EmailMatchPattern))
+            
+            else if (EmailMatchPattern.IsMatch(NewCustomerEmail.Text))
             {
                 MessageBox.Show("Valid Email Now");
             }
@@ -242,36 +241,21 @@ namespace AppDirect.WindowsClient.UI
 
         private void InstallUpdates(object sender, DoWorkEventArgs e)
         {
-            try
-            {
-                ServiceLocator.Updater.InstallUpdates();
+            ServiceLocator.Updater.InstallUpdates();
 
-                if (System.Windows.Application.Current != null)
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => Close()));
-                }
-            }
-            catch (Exception)
+            if (System.Windows.Application.Current != null)
             {
-                
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => Close()));
             }
         }
 
         private void MainWindow_OnClosing(object o, CancelEventArgs e)
         {
-            try
+            Process[] processes = Process.GetProcessesByName(Helper.ApplicationName + Helper.BrowserProjectExt);
+            foreach (Process process in processes)
             {
-                Process[] processes = Process.GetProcessesByName(Helper.ApplicationName + ".Browser");
-
-                foreach (Process process in processes)
-                {
-                    process.Kill();
-                }
+                Helper.RetryAction(() =>process.Kill(), 5, TimeSpan.FromMilliseconds(500));
             }
-            catch (Exception)
-            {
-            }
-           
         }
     }
 }

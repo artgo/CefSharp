@@ -7,26 +7,24 @@
 Name "${APPNAME}"
 
 ; The file to write
-!define OUTFILE "${APPNAME}.exe"
+!define OUTFILE ${APPEXECUTABLENAME}
 OutFile "${OUTFILE}"
 
 ; The default installation directory
-InstallDir "${APPDIR}\${APPNAME}"
+InstallDir "${APPDIR}"
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
-InstallDirRegKey HKLM "Software\AppDirect" "Install_Dir"
+InstallDirRegKey HKCU "Software\AppDirect\Appy" "Install_Dir"
 ;--------------------------------
 ; Pages
-
 !insertmacro MUI_PAGE_INSTFILES
-    
 ;--------------------------------
+
 ;Languages
 
 !insertmacro MUI_LANGUAGE "English"
 
-;--------------------------------
 
 Section "Create directory" Permissions 
    CreateDirectory "$INSTDIR" 
@@ -48,26 +46,26 @@ Section "Appy (required)"
   !searchparse /file version.txt '' VERSION_SHORT 
   
   ; Write the installation path into the registry
-  WriteRegStr HKLM SOFTWARE\AppDirect "Install_Dir" "$INSTDIR"
+  WriteRegStr HKCU ${REGISTRYPATH} "Install_Dir" "$INSTDIR"
   
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${APPNAME}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "QuietUninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegStr HKCU "${REGSTR}" "DisplayName" "${APPNAME}"
+  WriteRegStr HKCU "${REGSTR}" "UninstallString" "$INSTDIR\${UNINSTALLERNAME}"
+  WriteRegStr HKCU "${REGSTR}" "QuietUninstallString"  "$INSTDIR\${UNINSTALLERNAME}"
   
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "Publisher" "AppDirect Inc." 
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayVersion" ${VERSION_SHORT} 
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "NoRepair" 1
+  WriteRegStr HKCU "${REGSTR}" "Publisher" "${COMPANYNAME}" 
+  WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT} 
+  WriteRegDWORD HKCU "${REGSTR}" "NoModify" 1
+  WriteRegDWORD HKCU "${REGSTR}" "NoRepair" 1
   
 SectionEnd
 
 Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
-  CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "$INSTDIR\${APPNAME}.exe" "" "$INSTDIR\AppyIcon.ico" 0
-  CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "$INSTDIR\${APPNAME}.exe" "" "$INSTDIR\AppyIcon.ico" 0
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\${UNINSTALLERNAME}" "" "$INSTDIR\${UNINSTALLERNAME}" 0
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "$INSTDIR\${APPEXECUTABLENAME}" "" "$INSTDIR\${APPICON}" 0
+  CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "$INSTDIR\${APPEXECUTABLENAME}" "" "$INSTDIR\${APPICON}" 0
   
 SectionEnd
 
@@ -87,6 +85,6 @@ Section "MS .NET Framework v${NETVersion}" SecFramework
 SectionEnd
 
 Function .onInstSuccess
-Exec "$INSTDIR\${APPNAME}.exe"
+Exec "$INSTDIR\${APPEXECUTABLENAME}"
 FunctionEnd
 

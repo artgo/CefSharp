@@ -14,7 +14,7 @@ namespace AppDirect.WindowsClient.Storage
     public sealed class LocalStorage
     {
         private List<string> _hiddenApps = new List<string>();
-        private const string FileName = @"\AppDirect\LocalStorage";
+        private const string FileName = @"\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
         private static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
@@ -131,7 +131,7 @@ namespace AppDirect.WindowsClient.Storage
 
             id = SanitizeFileName(id);
 
-            var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\AppDirect\" + id);
+            var imageFile = new FileInfo(Environment.SpecialFolder.ApplicationData + @"\" + id);
 
             if (!imageFile.Exists)
             {

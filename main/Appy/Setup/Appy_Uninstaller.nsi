@@ -5,22 +5,19 @@
 Name "Uninstaller"
 
 ; The file to write
-!define OUTFILE "Appy_Uninstaller.exe"
+!define OUTFILE "build_uninstaller.exe"
 OutFile "${OUTFILE}"
 
 ; Pages
 
 !insertmacro MUI_PAGE_INSTFILES
-
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_UNPAGE_FINISH
 
 ;--------------------------------
 ;Languages
+!insertmacro MUI_LANGUAGE "English"
 
-  !insertmacro MUI_LANGUAGE "English"
-
-;--------------------------------
 
 ; The default installation directory
 InstallDir $EXEDIR
@@ -33,7 +30,7 @@ Section "Appy (required)"
   ; Set output path to the installation directory.
   SetOutPath "$0"
   
-  WriteUninstaller "uninstall.exe"
+  WriteUninstaller "${UNINSTALLERNAME}"
 
 SectionEnd
 
@@ -41,8 +38,8 @@ SectionEnd
 Section "Uninstall"
   
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
-  DeleteRegKey HKLM SOFTWARE\Appy
+  DeleteRegKey HKCU "${REGSTR}"
+  DeleteRegKey HKCU ${REGISTRYPATH}
 
   ; Remove files and uninstaller
   Delete "${APPDIR}\ApplicationData\AppDirect\*.*"
@@ -65,5 +62,6 @@ Section "Uninstall"
 SectionEnd
 
 Function un.onInit
-Exec "taskkill /f /t /im appy.exe"
+Exec "taskkill /f /t /im ${APPEXECUTABLENAME}"
+!insertmacro WaitForDead
 FunctionEnd

@@ -55,34 +55,44 @@ namespace AppDirect.WindowsClient.Updates
             return false;
         }
 
+                /// <summary>
+        /// Attempts to run updater.  If the process can not be started (Process.Start throws an exception) or the process starts successfully, the value of the UpdateDownloaded switch is set to false
+        /// </summary>
+        /// <param name="currentVersion"></param>
+        /// <returns></returns>
         public void InstallUpdates()
         {
-            ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = UpdaterExeFileName;
-
-            start.WindowStyle = ProcessWindowStyle.Hidden;
-            start.CreateNoWindow = true;
-
-            if (System.Environment.OSVersion.Version.Major >= 6)
-            {
-                start.Verb = "runas";
-            }
-
             try
             {
+                ProcessStartInfo start = new ProcessStartInfo();
+                start.FileName = UpdaterExeFileName;
+
+                start.WindowStyle = ProcessWindowStyle.Hidden;
+                start.CreateNoWindow = true;
+
+                if (System.Environment.OSVersion.Version.Major >= 6)
+                {
+                    start.Verb = "runas";
+                }
                 Process.Start(start);
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
                 ServiceLocator.LocalStorage.UpdateDownloaded = false;
                 ServiceLocator.LocalStorage.SaveAppSettings();
             }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
         }
 
+        /// <summary>
+        /// Wrap in try catch. Throws exceptions if there are network problems or if the Version file or the update file fail to download and save
+        /// </summary>
+        /// <param name="currentVersion"></param>
+        /// <returns></returns>
         private bool CheckVersionGetUpdates(string currentVersion)
         {
-
             using (var client = new WebClient())
             {
                 var versionStream = client.OpenRead(Resources.VersionFileUrl);
