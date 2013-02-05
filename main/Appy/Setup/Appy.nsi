@@ -15,7 +15,7 @@ InstallDir "${APPDIR}"
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
-InstallDirRegKey HKCU "Software\AppDirect\Appy" "Install_Dir"
+InstallDirRegKey HKCU "${REGISTRYPATH}" "Install_Dir"
 ;--------------------------------
 ; Pages
 !insertmacro MUI_PAGE_INSTFILES
