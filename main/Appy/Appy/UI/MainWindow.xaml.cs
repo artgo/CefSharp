@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using AppDirect.WindowsClient.API;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -18,6 +19,8 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string EmailMatchPattern =
+            @"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$";
         public event EventHandler CloseWindow;
 
         public MainViewModel ViewModel
@@ -49,7 +52,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void DownloadAvailableUpdates(object sender, DoWorkEventArgs e)
         {
-            string currentVersionString = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string currentVersionString = Helper.ApplicationVersion;
 
             while (true)
             {
@@ -209,8 +212,7 @@ namespace AppDirect.WindowsClient.UI
                 RegisterButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
 
-            else if (Regex.IsMatch(NewCustomerEmail.Text,
-                                   @"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$"))
+            else if (Regex.IsMatch(NewCustomerEmail.Text, EmailMatchPattern))
             {
                 MessageBox.Show("Valid Email Now");
             }
@@ -240,22 +242,36 @@ namespace AppDirect.WindowsClient.UI
 
         private void InstallUpdates(object sender, DoWorkEventArgs e)
         {
-            ServiceLocator.Updater.InstallUpdates();
-
-            if (System.Windows.Application.Current != null)
+            try
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => Close()));
+                ServiceLocator.Updater.InstallUpdates();
+
+                if (System.Windows.Application.Current != null)
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => Close()));
+                }
+            }
+            catch (Exception)
+            {
+                
             }
         }
 
         private void MainWindow_OnClosing(object o, CancelEventArgs e)
         {
-            Process[] processes = Process.GetProcessesByName("Appy.Browser");
-
-            foreach (Process process in processes)
+            try
             {
-                process.Kill();
+                Process[] processes = Process.GetProcessesByName(Helper.ApplicationName + ".Browser");
+
+                foreach (Process process in processes)
+                {
+                    process.Kill();
+                }
             }
+            catch (Exception)
+            {
+            }
+           
         }
     }
 }

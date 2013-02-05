@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Properties;
 using AppDirect.WindowsClient.Storage;
 
@@ -16,21 +17,22 @@ namespace AppDirect.WindowsClient.Updates
 {
     public class Updater
     {
-        public const string UpdaterExe = "Appy_upd.exe";
+        public static readonly string UpdaterExeFileName = Helper.ApplicationName + "_upd.exe";
+        public const double RetryInterval = 15d;
+
 
         public Updater()
         {
             if (ServiceLocator.LocalStorage.UpdateDownloaded)
             {
-                ServiceLocator.LocalStorage.UpdateDownloaded = false;
-                ServiceLocator.LocalStorage.SaveAppSettings();
                 InstallUpdates();
             }
         }
 
         public bool GetUpdates(string currentVersion)
         {
-            while (true)
+            int retryCount = 0;
+            while (retryCount < 3)
             {
                 try
                 {
@@ -45,15 +47,18 @@ namespace AppDirect.WindowsClient.Updates
                 }
                 catch (Exception)
                 {
-                    Thread.Sleep(TimeSpan.FromMinutes(.5d));
+                    retryCount += 1;
+                    Thread.Sleep(TimeSpan.FromMinutes(RetryInterval * retryCount));
                 }
             }
+
+            return false;
         }
 
         public void InstallUpdates()
         {
             ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = UpdaterExe;
+            start.FileName = UpdaterExeFileName;
 
             start.WindowStyle = ProcessWindowStyle.Hidden;
             start.CreateNoWindow = true;
@@ -66,6 +71,8 @@ namespace AppDirect.WindowsClient.Updates
             try
             {
                 Process.Start(start);
+                ServiceLocator.LocalStorage.UpdateDownloaded = false;
+                ServiceLocator.LocalStorage.SaveAppSettings();
             }
             catch (Exception e)
             {
@@ -84,7 +91,7 @@ namespace AppDirect.WindowsClient.Updates
 
                 if (currentVersion != versionString)
                 {
-                    client.DownloadFile(Resources.UpdateFileUrl, UpdaterExe);
+                    client.DownloadFile(Resources.UpdateFileUrl, UpdaterExeFileName);
                     return true;
                 }
             }

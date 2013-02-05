@@ -1,22 +1,22 @@
 ; Appy_upd.nsi
+!include "InstallerShared.nsh"
+!include "LogicLib.nsh"
+
 ;--------------------------------
 
 ; The name of the installer
-Name "Appy_upd"
+Name "${AppName}_upd"
 
 ; The file to write
-!define OUTFILE "Appy_upd.exe"
+!define OUTFILE "${AppName}_upd.exe"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
-InstallDir "$LOCALAPPDATA\Appy"
+InstallDir "${APPDIR}\${APPNAME}"
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
 InstallDirRegKey HKLM "Software\Appy" "Install_Dir"
-
-; Request application privileges for Windows Vista
-RequestExecutionLevel admin
 
 SilentInstall silent
 ;--------------------------------
@@ -32,24 +32,27 @@ Section "Appy (required)"
   
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
-  
-  !searchparse /file version.txt '' VERSION_SHORT
-  
-  ; Put file there
+    
+  ; Files to copy
   File /r /x Appy\ApplicationData\*.* Appy\*.*
      
 SectionEnd
 
 Function .onInit
 loop:
-	Processes::FindProcess "Appy.Browser"
+	IntOp $0 $0 + 1
+	Processes::FindProcess "${APPNAME}.Browser.exe"
+	${If} $R0 == "0"
+	Processes::FindProcess "${APPNAME}.exe"
 	StrCmp $R0 "0" done
-	Sleep 500
+	StrCmp $0 "50" done
+	${EndIf}	
+	Sleep 200
 	Goto loop
 done:
 FunctionEnd
 
 Function .onInstSuccess
-Exec "$INSTDIR\Appy.exe"
+Exec "$INSTDIR\${APPNAME}.exe"
 FunctionEnd
 
