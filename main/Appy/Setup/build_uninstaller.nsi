@@ -23,7 +23,7 @@ OutFile "${OUTFILE}"
 InstallDir $EXEDIR
 
 ; The stuff to install
-Section "Appy (required)"
+Section "Create"
 
   SectionIn RO
   

@@ -19,6 +19,7 @@ namespace AppDirect.WindowsClient.Updates
     {
         public static readonly string UpdaterExeFileName = Helper.ApplicationName + "_upd.exe";
         public const double RetryInterval = 15d;
+        private const int RetryUpdatesLimit = 3;
 
 
         public Updater()
@@ -32,7 +33,7 @@ namespace AppDirect.WindowsClient.Updates
         public bool GetUpdates(string currentVersion)
         {
             int retryCount = 0;
-            while (retryCount < 3)
+            while (retryCount < RetryUpdatesLimit)
             {
                 try
                 {

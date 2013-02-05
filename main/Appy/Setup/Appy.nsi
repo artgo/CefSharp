@@ -33,7 +33,7 @@ Section "Create directory" Permissions
 SectionEnd
 
 ; The stuff to install
-Section "Appy (required)"
+Section "Create"
 
   SectionIn RO
   

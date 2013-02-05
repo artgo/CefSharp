@@ -1,14 +1,13 @@
-; Appy_upd.nsi
 !include "InstallerShared.nsh"
 !include "LogicLib.nsh"
 
 ;--------------------------------
 
 ; The name of the installer
-Name "${AppName}_upd"
+Name "updater"
 
 ; The file to write
-!define OUTFILE "${AppName}_upd.exe"
+!define OUTFILE "updater.exe"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
@@ -26,7 +25,7 @@ SilentInstall silent
 ;--------------------------------
 
 ; The stuff to install
-Section "Appy (required)"
+Section "Create"
 
   SectionIn RO
   
