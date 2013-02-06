@@ -146,33 +146,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\closeBtn.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UI\Images\fullBtn.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UI\Images\leftArrow.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UI\Images\leftArrowHover.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UI\Images\minimize.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UI\Images\restoreDown.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UI\Images\rightArrow.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UI\Images\rightArrowClick.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="UI\Images\rightArrowHover.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="UI\Images\closeBtn.png" />
+    <Resource Include="UI\Images\fullBtn.png" />
+    <Resource Include="UI\Images\leftArrow.png" />
+    <Resource Include="UI\Images\leftArrowHover.png" />
+    <Resource Include="UI\Images\minimize.png" />
+    <Resource Include="UI\Images\restoreDown.png" />
+    <Resource Include="UI\Images\rightArrow.png" />
+    <Resource Include="UI\Images\rightArrowClick.png" />
+    <Resource Include="UI\Images\rightArrowHover.png" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
