@@ -1,5 +1,4 @@
-﻿
-using AppDirect.WindowsClient.Common.API;
+﻿using AppDirect.WindowsClient.Browser.MainApp;
 
 namespace AppDirect.WindowsClient.Browser.API
 {

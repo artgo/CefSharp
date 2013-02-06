@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Appy.Browser\Appy.Browser.csproj">
-      <Project>{bc7ed699-06e7-4175-95b7-40e7494a5e24}</Project>
+      <Project>{4ad87dd0-900b-407d-af3f-f466d8e74aab}</Project>
       <Name>Appy.Browser</Name>
     </ProjectReference>
     <ProjectReference Include="..\Appy.Common\Appy.Common.csproj">
@@ -138,15 +138,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(SolutionDir)Setup\AppIcon.ico" "$(SolutionDir)Setup\Appy"
-"C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\build_uninstaller.nsi"
-"$(SolutionDir)Setup\build_uninstaller.exe"
-"C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\uninstall.exe"
-xcopy "$(SolutionDir)Setup\uninstall.exe" "$(SolutionDir)Setup\Appy" /r /y
-"C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\Appy.nsi"
-"C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\updater.nsi"
-"C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\Appy.exe"
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

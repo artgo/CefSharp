@@ -59,5 +59,50 @@ namespace AppDirect.WindowsClient.Browser.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Communications can&apos;t be established, error: {0}.
+        /// </summary>
+        internal static string Communications_can_t_be_established_error_message {
+            get {
+                return ResourceManager.GetString("Communications_can_t_be_established_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error getting data for application id {0}, error: {1}.
+        /// </summary>
+        internal static string Error_getting_data_error_message {
+            get {
+                return ResourceManager.GetString("Error_getting_data_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No app data transfered for application with id {0}.
+        /// </summary>
+        internal static string No_app_data_transfered_error_message {
+            get {
+                return ResourceManager.GetString("No_app_data_transfered_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No session data transfered for application with id {0}.
+        /// </summary>
+        internal static string No_session_data_transfered_error_message {
+            get {
+                return ResourceManager.GetString("No_session_data_transfered_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Url for the application with id {0} is empty.
+        /// </summary>
+        internal static string Url_for_the_application_is_empty_error_message {
+            get {
+                return ResourceManager.GetString("Url_for_the_application_is_empty_error_message", resourceCulture);
+            }
+        }
     }
 }
