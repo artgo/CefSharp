@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Windows;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Properties;
 using Application = AppDirect.WindowsClient.Models.Application;
 
@@ -162,7 +163,7 @@ namespace AppDirect.WindowsClient.UI
                 GetSuggestedApplicationsWithApiCall();
                 ServiceLocator.LocalStorage.SaveAppSettings();
 
-                Thread.Sleep(TimeSpan.FromMinutes(55));
+                Thread.Sleep(TimeSpan.FromMinutes(Helper.RefreshAppsIntervalMins));
             }
         }
 
