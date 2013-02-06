@@ -4,7 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Threading;
 using System.Windows;
+using AppDirect.WindowsClient.Properties;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -128,34 +131,43 @@ namespace AppDirect.WindowsClient.UI
 
         private void setup_Worker_DoWork(object sender, DoWorkEventArgs ea)
         {
-            if (ServiceLocator.LocalStorage.HasCredentials)
+            while (true)
             {
-                try
+                if (ServiceLocator.LocalStorage.HasCredentials && !ServiceLocator.CachedAppDirectApi.IsAuthenticated)
                 {
-                    if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
-                                                                         ServiceLocator.LocalStorage.LoginInfo.Password))
+                    try
+                    {
+                        if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
+                                                                            ServiceLocator.LocalStorage.LoginInfo.Password))
+                        {
+                            ServiceLocator.LocalStorage.ClearLoginCredentials();
+                        }
+                    }
+                    catch (CryptographicException e)
                     {
                         ServiceLocator.LocalStorage.ClearLoginCredentials();
+                        MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
                     }
-                }
-                catch (System.Security.Cryptography.CryptographicException e)
-                {
-                    ServiceLocator.LocalStorage.ClearLoginCredentials();
-                    MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
-                }
-                catch (Exception)
-                {
-                    if (System.Windows.Application.Current != null)
+                    catch (Exception)
                     {
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => 
-                    LoginFailedMessage = Properties.Resources.NetworkProblemError));
+                        if (System.Windows.Application.Current != null)
+                        {
+                            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => 
+                                                                                            LoginFailedMessage = Resources.NetworkProblemError));
+                        }
                     }
                 }
-            }
 
-            GetMyApplications();
-            GetSuggestedApplicationsWithApiCall();
-            ServiceLocator.LocalStorage.SaveAppSettings();
+                GetMyApplications();
+                GetSuggestedApplicationsWithApiCall();
+                ServiceLocator.LocalStorage.SaveAppSettings();
+
+                Thread.Sleep(TimeSpan.FromMinutes(55));
+            }
+        }
+
+        private void RefreshAppListFromApi()
+        {
         }
 
         private void worker_RefreshAppLists(object sender, DoWorkEventArgs ea)
