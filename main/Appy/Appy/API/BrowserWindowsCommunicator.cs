@@ -9,7 +9,7 @@ namespace AppDirect.WindowsClient.API
     {
         private readonly IDictionary<String, IntPtr> _chromiumWindows = new Dictionary<String, IntPtr>();
 
-        private const string BrowserPostfix = ".Browser.exe";
+        private static readonly string BrowserPostfix = Helper.BrowserProjectExt + Helper.ExeExt;
         private const string AppIdParameterName = "--appid=";
 
         public void OpenApp(IApplication a)

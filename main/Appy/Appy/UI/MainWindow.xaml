@@ -6,7 +6,8 @@
         WindowStartupLocation="Manual" 
         Background="Transparent"
         WindowStyle="None"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        Closing="MainWindow_OnClosing">
     <Window.Resources>
         <ContextMenu x:Key="UninstallContextMenu">
             <MenuItem Header="Uninstall" Click="UninstallAppClick" DataContext="{Binding}"/>
@@ -24,12 +25,11 @@
             <ColumnDefinition Width="{StaticResource LeftColumnWidth}"/>
             <ColumnDefinition Width="{StaticResource RightColumnWidth}"/>
         </Grid.ColumnDefinitions>
-        <Rectangle Name="TopRibbon" Grid.Column="0" Fill="{StaticResource RibbonColor}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{StaticResource WindowWidth}" Height="30" />
-        <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource LeftPanelWidth}" Margin="0,30,0,0" Grid.Column="0"/>
+        <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource LeftPanelWidth}" Margin="0,0,0,0" Grid.Column="0"/>
         <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" Opacity="0.92" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0" Grid.Column="1"/>
-        <Rectangle Name="BottomRibbon" Grid.Column="1" Fill="{StaticResource RibbonColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="{StaticResource RightPanelWidth}" Height="40" />
-        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="0" Style="{StaticResource CloudSyncButton}" Height="14" Width="85" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="{Binding CloudSyncVisibility}" Margin="0,8,6,0" />
-        <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="0" Style="{StaticResource BorderlessButton}" Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Content="Log Out"/>
+        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="0" Style="{StaticResource CloudSyncButton}" Height="14" Width="85" VerticalAlignment="Top" HorizontalAlignment="Left" Visibility="{Binding CloudSyncVisibility}" Margin="12,8,0,0" />
+        <Button Name="UpdateAvailableButton" Click="UpdateButtonOnClick" Grid.Column="0" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left"  Visibility="Hidden" Margin="120,6,0,0" Content="Update Available!" />
+        <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="0" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Margin="120,6,0,0" Content="Log Out"/>
         <TabControl Grid.Column="0" Margin="0,25,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
             <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
                 <Grid Name="YourApps" Margin="25,35,0,0" Height="240" Width="350" VerticalAlignment="Top" HorizontalAlignment="Left">

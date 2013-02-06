@@ -17,7 +17,7 @@
         <sys:Double x:Key="RightPanelWidth">245</sys:Double>
         <GridLength x:Key="LeftColumnWidth">435</GridLength>
         <sys:Double x:Key="LeftPanelWidth">435</sys:Double>
-        <FontFamily x:Key="DefaultWindowFont">Microsoft Sans Serif</FontFamily>
+        <FontFamily x:Key="DefaultWindowFont">Calibri</FontFamily>
         <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientBrush.GradientStops>
                 <GradientStopCollection>

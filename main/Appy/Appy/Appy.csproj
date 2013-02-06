@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>AppyIcon.ico</ApplicationIcon>
+    <ApplicationIcon>UI\Icons\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -160,6 +160,7 @@
     <Compile Include="API\CachedAppDirectApi.cs" />
     <Compile Include="UI\MainViewModel.cs" />
     <Compile Include="UI\WaterMarkTextHelper.cs" />
+    <Compile Include="Updates\Updater.cs" />
     <Page Include="UI\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -182,6 +183,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
@@ -311,6 +313,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\LivingSocial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\AppIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

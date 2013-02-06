@@ -99,10 +99,6 @@
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
       <Name>Appy.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Appy.Updator\Appy.Updator.csproj">
-      <Project>{385f8b2d-2ad3-430b-841d-26cbac20084a}</Project>
-      <Name>Appy.Updator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Appy\Appy.csproj">
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>Appy</Name>
@@ -142,8 +138,13 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(SolutionDir)Setup\AppyIcon.ico" "$(SolutionDir)Setup\Appy"
+    <PostBuildEvent>xcopy "$(SolutionDir)Setup\AppIcon.ico" "$(SolutionDir)Setup\Appy"
+"C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\build_uninstaller.nsi"
+"$(SolutionDir)Setup\build_uninstaller.exe"
+"C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\uninstall.exe"
+xcopy "$(SolutionDir)Setup\uninstall.exe" "$(SolutionDir)Setup\Appy" /r /y
 "C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\Appy.nsi"
+"C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\updater.nsi"
 "C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\Appy.exe"
 </PostBuildEvent>
   </PropertyGroup>

@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appy.Browser", "Appy.Browse
 		{2FDC87A4-0C19-473E-A117-30A9C1477D18} = {2FDC87A4-0C19-473E-A117-30A9C1477D18}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appy.Updator", "Appy.Updator\Appy.Updator.csproj", "{385F8B2D-2AD3-430B-841D-26CBAC20084A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appy.Tests", "Appy.Tests\Appy.Tests.csproj", "{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appy.InstallerHelper", "Appy.InstallerHelper\Appy.InstallerHelper.csproj", "{4098B84A-78D1-42BC-A615-DCA3B034A4E2}"
@@ -62,18 +60,6 @@ Global
 		{BC7ED699-06E7-4175-95B7-40E7494A5E24}.Release|Mixed Platforms.Build.0 = Release|x86
 		{BC7ED699-06E7-4175-95B7-40E7494A5E24}.Release|x86.ActiveCfg = Release|x86
 		{BC7ED699-06E7-4175-95B7-40E7494A5E24}.Release|x86.Build.0 = Release|x86
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Debug|x86.Build.0 = Debug|Any CPU
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Release|Mixed Platforms.Build.0 = Release|x86
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Release|x86.ActiveCfg = Release|x86
-		{385F8B2D-2AD3-430B-841D-26CBAC20084A}.Release|x86.Build.0 = Release|x86
 		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Debug|Any CPU.Build.0 = Debug|x86
 		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Debug|Mixed Platforms.ActiveCfg = Debug|x86

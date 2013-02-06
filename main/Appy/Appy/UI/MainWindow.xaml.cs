@@ -1,10 +1,15 @@
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using AppDirect.WindowsClient.API;
 using Application = AppDirect.WindowsClient.Models.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -14,6 +19,9 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
+        public event EventHandler CloseWindow;
+
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -31,11 +39,38 @@ namespace AppDirect.WindowsClient.UI
             }
 
             InitializeComponent();
-            
-            Left = SystemParameters.WorkArea.Right * .003;
+
+            Left = SystemParameters.WorkArea.Right*.003;
             Top = SystemParameters.WorkArea.Bottom - Height;
+
+            BackgroundWorker getUpdateThread = new BackgroundWorker();
+
+            getUpdateThread.DoWork += DownloadAvailableUpdates;
+            getUpdateThread.RunWorkerAsync();
         }
-      
+
+        private void DownloadAvailableUpdates(object sender, DoWorkEventArgs e)
+        {
+            string currentVersionString = Helper.ApplicationVersion;
+
+            while (true)
+            {
+                bool updateAvailable = ServiceLocator.Updater.GetUpdates(currentVersionString);
+
+                if (updateAvailable)
+                {
+                    if (System.Windows.Application.Current != null)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                                                                                        UpdateAvailableButton.Visibility =
+                                                                                        Visibility.Visible));
+                    }
+                }
+
+                Thread.Sleep(TimeSpan.FromDays(1));
+            }
+        }
+
         private void GoToAppStore(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start(Properties.Resources.AppStoreUrlString);
@@ -54,7 +89,7 @@ namespace AppDirect.WindowsClient.UI
                 {
                     YourAppsTab.IsSelected = true;
                     SyncButton.Visibility = Visibility.Hidden;
-                    LogoutButton.Visibility = Visibility.Visible; 
+                    LogoutButton.Visibility = Visibility.Visible;
                     LoginFailedMessage.Visibility = Visibility.Hidden;
                 }
                 else
@@ -70,7 +105,7 @@ namespace AppDirect.WindowsClient.UI
 
         private static Application GetApplicationFromButtonSender(object sender)
         {
-            return ((Button)sender).DataContext as Application;
+            return ((Button) sender).DataContext as Application;
         }
 
         private void AppButtonClick(object sender, RoutedEventArgs e)
@@ -93,7 +128,7 @@ namespace AppDirect.WindowsClient.UI
                 MessageBox.Show(ex.Message);
             }
         }
-        
+
         private void InstallAppClick(object sender, RoutedEventArgs e)
         {
             try
@@ -120,7 +155,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                var clickedApp = ((MenuItem)sender).DataContext as Application;
+                var clickedApp = ((MenuItem) sender).DataContext as Application;
 
                 ViewModel.Uninstall(clickedApp);
             }
@@ -128,11 +163,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void ReloadMyAppsClick(object sender, RoutedEventArgs e)
-        {
-            ViewModel.RefreshAppsLists();
         }
 
         private void SyncButtonOnClick(object sender, RoutedEventArgs e)
@@ -158,7 +188,7 @@ namespace AppDirect.WindowsClient.UI
             var emailAddress = NewCustomerEmail.Text;
 
             var serviceAddress = Properties.Resources.BaseAppStoreUrl + Properties.Resources.RegisterEmailUrl;
-            
+
             var request = HttpWebRequest.Create(String.Format(serviceAddress, emailAddress));
 
             WebResponse webResponse = request.GetResponse();
@@ -180,8 +210,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 RegisterButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-
-            else if (Regex.IsMatch(NewCustomerEmail.Text, @"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$"))
+            
+            else if (EmailMatchPattern.IsMatch(NewCustomerEmail.Text))
             {
                 MessageBox.Show("Valid Email Now");
             }
@@ -195,11 +225,38 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void LoginInfo_OnChange(object sender, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private void LoginInfo_OnChange(object sender,
+                                        DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             LoginFailedMessage.Visibility = Visibility.Hidden;
         }
 
+        private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
+        {
+            BackgroundWorker getUpdateThread = new BackgroundWorker();
+
+            getUpdateThread.DoWork += InstallUpdates;
+            getUpdateThread.RunWorkerAsync();
+        }
+
+        private void InstallUpdates(object sender, DoWorkEventArgs e)
+        {
+            ServiceLocator.Updater.InstallUpdates();
+
+            if (System.Windows.Application.Current != null)
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => Close()));
+            }
+        }
+
+        private void MainWindow_OnClosing(object o, CancelEventArgs e)
+        {
+            Process[] processes = Process.GetProcessesByName(Helper.ApplicationName + Helper.BrowserProjectExt);
+            foreach (Process process in processes)
+            {
+                Helper.RetryAction(() =>process.Kill(), 5, TimeSpan.FromMilliseconds(500));
+            }
+        }
     }
 }
     
