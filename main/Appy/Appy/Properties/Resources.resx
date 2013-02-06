@@ -151,7 +151,7 @@
     <value>Contact your administrator to uninstall this application</value>
   </data>
   <data name="UpdateFileUrl" xml:space="preserve">
-    <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/Appy_upd.upd</value>
+    <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/updater.upd</value>
   </data>
   <data name="VersionFileUrl" xml:space="preserve">
     <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/version.txt</value>
