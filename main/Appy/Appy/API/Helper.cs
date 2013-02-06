@@ -14,6 +14,7 @@ namespace AppDirect.WindowsClient.API
         public static readonly string ApplicationDirectory = @"\AppDirect\" + ApplicationName;
         public static readonly string BrowserProjectExt = ".Browser";
         public static readonly string ExeExt = ".exe";
+        public static readonly int RefreshAppsIntervalMins = 55;
 
 
         public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
