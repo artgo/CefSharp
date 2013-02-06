@@ -166,10 +166,6 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void RefreshAppListFromApi()
-        {
-        }
-
         private void worker_RefreshAppLists(object sender, DoWorkEventArgs ea)
         {
             RefreshAppsLists();
