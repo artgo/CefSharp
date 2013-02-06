@@ -13,27 +13,44 @@ namespace AppDirect.WindowsClient.API
         public static readonly string ApplicationVersion = AssemblyName.Version.ToString();
         public static readonly string ApplicationDirectory = @"\AppDirect\" + ApplicationName;
         public static readonly string BrowserProjectExt = ".Browser";
+        public static readonly string ExeExt = ".exe";
 
 
-        public static void RetryAction(Action action, int numRetries, TimeSpan retryInterval)
+        public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
         {
+            var tryAttemptsRemaining = numberOfTries;
+            var accumulatingTimeSpan = retryInterval;
+
             if (action == null)
+            {
                 throw new ArgumentNullException("action");
+            }
 
             do
             {
-                try { action(); return; }
+                try
+                {
+                    action(); 
+                    return;
+                }
                 catch
                 {
-                    if (numRetries < 0)
+                    if (catchAction != null)
+                    {
+                        catchAction();
+                    }
+
+                    if (tryAttemptsRemaining <= 1)
                     {
                         throw;
                     }
 
-                    Thread.Sleep(retryInterval);
+                    Thread.Sleep(accumulatingTimeSpan);
+                    accumulatingTimeSpan += retryInterval;
                 }
 
-            } while (numRetries-- > 0);
+                tryAttemptsRemaining--;
+            } while (tryAttemptsRemaining > 0);
         }
     }
 }

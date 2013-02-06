@@ -7,7 +7,7 @@
 Name "${APPNAME}"
 
 ; The file to write
-!define OUTFILE ${APPEXECUTABLENAME}
+!define OUTFILE ${APPEXE}
 OutFile "${OUTFILE}"
 
 ; The default installation directory
@@ -20,9 +20,7 @@ InstallDirRegKey HKCU "${REGISTRYPATH}" "Install_Dir"
 ; Pages
 !insertmacro MUI_PAGE_INSTFILES
 ;--------------------------------
-
 ;Languages
-
 !insertmacro MUI_LANGUAGE "English"
 
 
@@ -41,17 +39,15 @@ Section "Create"
   SetOutPath $INSTDIR
   
   ; Files to copy
-  File /r /x ${APPNAME}\ApplicationData\*.* ${APPNAME}\*.*
-  
-  !searchparse /file version.txt '' VERSION_SHORT 
-  
+  File ${COPYFILES}
+    
   ; Write the installation path into the registry
   WriteRegStr HKCU ${REGISTRYPATH} "Install_Dir" "$INSTDIR"
   
   ; Write the uninstall keys for Windows
   WriteRegStr HKCU "${REGSTR}" "DisplayName" "${APPNAME}"
-  WriteRegStr HKCU "${REGSTR}" "UninstallString" "$INSTDIR\${UNINSTALLERNAME}"
-  WriteRegStr HKCU "${REGSTR}" "QuietUninstallString"  "$INSTDIR\${UNINSTALLERNAME}"
+  WriteRegStr HKCU "${REGSTR}" "UninstallString" "${UNINSTALLEXEPATH}"
+  WriteRegStr HKCU "${REGSTR}" "QuietUninstallString"  "${UNINSTALLEXEPATH}"
   
   WriteRegStr HKCU "${REGSTR}" "Publisher" "${COMPANYNAME}" 
   WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT} 
@@ -63,9 +59,9 @@ SectionEnd
 Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
-  CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\${UNINSTALLERNAME}" "" "$INSTDIR\${UNINSTALLERNAME}" 0
-  CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "$INSTDIR\${APPEXECUTABLENAME}" "" "$INSTDIR\${APPICON}" 0
-  CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "$INSTDIR\${APPEXECUTABLENAME}" "" "$INSTDIR\${APPICON}" 0
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "${UNINSTALLEXEPATH}" "" "${UNINSTALLEXEPATH}" 0
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
+  CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
   
 SectionEnd
 
@@ -85,6 +81,6 @@ Section "MS .NET Framework v${NETVersion}" SecFramework
 SectionEnd
 
 Function .onInstSuccess
-Exec "$INSTDIR\${APPEXECUTABLENAME}"
+Exec "${APPEXEPATH}"
 FunctionEnd
 

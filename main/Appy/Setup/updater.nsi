@@ -13,10 +13,6 @@ OutFile "${OUTFILE}"
 ; The default installation directory
 InstallDir "${APPDIR}"
 
-; Registry key to check for directory (so if you install again, it will 
-; overwrite the old one automatically)
-InstallDirRegKey HKCU "${REGISTRYPATH}" "Install_Dir"
-
 SilentInstall silent
 ;--------------------------------
 
@@ -33,7 +29,9 @@ Section "Create"
   SetOutPath $INSTDIR
     
   ; Files to copy
-  File /r /x Appy\ApplicationData\*.* Appy\*.*
+  File ${COPYFILES}
+    
+  WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT} 
      
 SectionEnd
 
@@ -42,6 +40,6 @@ Function .onInit
 FunctionEnd
 
 Function .onInstSuccess
-Exec "$INSTDIR\${APPNAME}.exe"
+Exec "${APPEXEPATH}"
 FunctionEnd
 

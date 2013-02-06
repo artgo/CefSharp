@@ -42,7 +42,6 @@ Section "Uninstall"
   DeleteRegKey HKCU ${REGISTRYPATH}
 
   ; Remove files and uninstaller
-  Delete "${APPDIR}\ApplicationData\AppDirect\*.*"
   Delete "${APPDIR}\ApplicationData\*.*"
   Delete "${APPDIR}\locales\*.*"
   Delete "${APPDIR}\*.*"
@@ -54,7 +53,6 @@ Section "Uninstall"
   ; Remove directories used
   
   RMDir "$SMPROGRAMS\${APPNAME}"
-  RMDir "${APPDIR}\ApplicationData\AppDirect"
   RMDir "${APPDIR}\ApplicationData"
   RMDir "${APPDIR}\locales"
   RMDir "${APPDIR}"
@@ -62,6 +60,6 @@ Section "Uninstall"
 SectionEnd
 
 Function un.onInit
-Exec "taskkill /f /t /im ${APPEXECUTABLENAME}"
+Exec "taskkill /f /t /im ${APPEXE}"
 !insertmacro WaitForDead
 FunctionEnd

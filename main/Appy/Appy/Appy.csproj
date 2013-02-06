@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>AppyIcon.ico</ApplicationIcon>
+    <ApplicationIcon>UI\Icons\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -315,7 +315,7 @@
     <Resource Include="UI\Icons\LivingSocial.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Icons\AppyIcon.ico" />
+    <Resource Include="UI\Icons\AppIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
