@@ -146,31 +146,31 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\closeBtn.png">
+    <Resource Include="UI\Images\closeBtn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\fullBtn.png">
+    <Resource Include="UI\Images\fullBtn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\leftArrow.png">
+    <Resource Include="UI\Images\leftArrow.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\leftArrowHover.png">
+    <Resource Include="UI\Images\leftArrowHover.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\minimize.png">
+    <Resource Include="UI\Images\minimize.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\restoreDown.png">
+    <Resource Include="UI\Images\restoreDown.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\rightArrow.png">
+    <Resource Include="UI\Images\rightArrow.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\rightArrowClick.png">
+    <Resource Include="UI\Images\rightArrowClick.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\rightArrowHover.png">
+    <Resource Include="UI\Images\rightArrowHover.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
