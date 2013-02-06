@@ -1,17 +1,16 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Browser")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("AppDirect.WindowsClient.BrowserWindow")]
+[assembly: AssemblyDescription("Browser window")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Browser")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany("AppDirect Inc.")]
+[assembly: AssemblyProduct("AppDirect.WindowsClient.BrowserWindow")]
+[assembly: AssemblyCopyright("Copyright © 2013 AppDirect Inc.")]
+[assembly: AssemblyTrademark("AppDirect")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
