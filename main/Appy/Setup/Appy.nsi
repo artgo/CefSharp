@@ -51,6 +51,7 @@ Section "Create"
   
   WriteRegStr HKCU "${REGSTR}" "Publisher" "${COMPANYNAME}" 
   WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT} 
+  WriteRegStr HKCU "${REGSTR}" "DisplayIcon" ${APPICON}
   WriteRegDWORD HKCU "${REGSTR}" "NoModify" 1
   WriteRegDWORD HKCU "${REGSTR}" "NoRepair" 1
   
