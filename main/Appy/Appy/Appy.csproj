@@ -328,6 +328,10 @@
     <Resource Include="UI\Images\myAppGrey.png" />
     <Resource Include="UI\Images\myAppWhite.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AppBtnDefault.png" />
+    <Resource Include="UI\Images\AppBtnHover.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)Appy.exe" "$(SolutionDir)Setup\Appy" /y /i /r
