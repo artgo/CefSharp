@@ -11,6 +11,28 @@
 using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.Browser.MainApp {
+    using System.Runtime.Serialization;
+    
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="CookieVariant", Namespace="http://schemas.datacontract.org/2004/07/System.Net")]
+    public enum CookieVariant : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Unknown = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Plain = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Rfc2109 = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Rfc2965 = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Default = 2,
+    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IMainApplicationChannel : IMainApplication, System.ServiceModel.IClientChannel {
@@ -40,11 +62,11 @@ namespace AppDirect.WindowsClient.Browser.MainApp {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public IApplication GetApplicationById(string id) {
+        public AppDirect.WindowsClient.Common.API.IApplication GetApplicationById(string id) {
             return base.Channel.GetApplicationById(id);
         }
         
-        public IAppDirectSession GetCurrentSession() {
+        public AppDirect.WindowsClient.Common.API.IAppDirectSession GetCurrentSession() {
             return base.Channel.GetCurrentSession();
         }
     }

@@ -37,7 +37,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>..\bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -83,7 +83,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)Appy.InstallerHelper.exe" "$(SolutionDir)Setup\Appy" /y /i /r</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)Appy.InstallerHelper.exe" "$(SolutionDir)Setup\Appy" /y /i /r
+xcopy "$(TargetDir)Appy.InstallerHelper.exe.config" "$(SolutionDir)Setup\Appy" /y /i /r
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

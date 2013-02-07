@@ -4,24 +4,20 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BC7ED699-06E7-4175-95B7-40E7494A5E24}</ProjectGuid>
+    <ProjectGuid>{9D4888F7-6EC2-42DF-A1B3-9779C01CB2F3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AppDirect.WindowsClient.Browser</RootNamespace>
     <AssemblyName>Appy.Browser</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\x86\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,82 +49,93 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp">
-      <HintPath>libs\CefSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="CefSharp.Wpf">
-      <HintPath>libs\CefSharp.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="CommandLine">
       <HintPath>libs\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="geckofx-core-18">
+      <HintPath>libs\geckofx-core-18.dll</HintPath>
+    </Reference>
+    <Reference Include="Geckofx-Winforms-18">
+      <HintPath>libs\Geckofx-Winforms-18.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
     <Compile Include="API\MainApplicationCallback.cs" />
-    <Compile Include="Options.cs" />
     <Compile Include="Service References\MainApp\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="UI\ChromiumWindow.xaml.cs">
-      <DependentUpon>ChromiumWindow.xaml</DependentUpon>
+    <Compile Include="UI\BrowserWindow.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Chromium\BoundObject.cs" />
-    <Compile Include="UI\Chromium\ChromiumPresenter.cs" />
-    <Compile Include="UI\Chromium\IChromiumView.cs" />
-    <Compile Include="UI\Chromium\SchemeHandler.cs" />
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="UI\BrowserWindow.Designer.cs">
+      <DependentUpon>BrowserWindow.cs</DependentUpon>
     </Compile>
-    <Page Include="UI\ChromiumWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Compile Include="Options.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UI\BrowserWindow.resx">
+      <DependentUpon>BrowserWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
+    <None Include="app.manifest" />
+    <None Include="Properties\DataSources\AppDirect.WindowsClient.Common.API.IAppDirectSession.datasource" />
+    <None Include="Properties\DataSources\AppDirect.WindowsClient.Common.API.IApplication.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="app.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    <None Include="Service References\MainApp\AppDirect.WindowsClient.API.xsd">
+      <SubType>Designer</SubType>
     </None>
-    <AppDesigner Include="Properties\" />
+    <None Include="Service References\MainApp\AppDirect.WindowsClient.Common.API.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MainApp\AppDirect.WindowsClient.Models.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MainApp\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\MainApp\service.wsdl" />
     <None Include="Service References\MainApp\service.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\MainApp\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MainApp\System.Net.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -137,36 +144,24 @@
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
       <Name>Appy.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\minimize.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\fullBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\restoreDown.png" />
+    <ProjectReference Include="..\Appy\Appy.csproj">
+      <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
+      <Name>Appy</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\closeBtn.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="UI\Images\fullBtn.png" />
     <Resource Include="UI\Images\leftArrow.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\leftArrowHover.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="UI\Images\minimize.png" />
+    <Resource Include="UI\Images\restoreDown.png" />
     <Resource Include="UI\Images\rightArrow.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\rightArrowClick.png" />
+    <Resource Include="UI\Images\rightArrowHover.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\rightArrowHover.png" />
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\MainApp\" />

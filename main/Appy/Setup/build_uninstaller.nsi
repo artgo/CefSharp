@@ -43,7 +43,8 @@ Section "Uninstall"
 
   ; Remove files and uninstaller
   Delete "${APPDIR}\ApplicationData\*.*"
-  Delete "${APPDIR}\locales\*.*"
+  Delete "${APPDIR}\components\*.*"
+  Delete "${APPDIR}\dictionaries\*.*"
   Delete "${APPDIR}\*.*"
   
   ; Remove shortcuts, if any
@@ -54,7 +55,8 @@ Section "Uninstall"
   
   RMDir "$SMPROGRAMS\${APPNAME}"
   RMDir "${APPDIR}\ApplicationData"
-  RMDir "${APPDIR}\locales"
+  RMDir "${APPDIR}\components"
+  RMDir "${APPDIR}\dictionaries"
   RMDir "${APPDIR}"
 
 SectionEnd

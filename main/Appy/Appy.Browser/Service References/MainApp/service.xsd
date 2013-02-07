@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" />
   <xs:element name="GetApplicationById">
     <xs:complexType>
       <xs:sequence>
@@ -10,7 +11,7 @@
   <xs:element name="GetApplicationByIdResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="GetApplicationByIdResult" nillable="true" type="xs:anyType" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" minOccurs="0" name="GetApplicationByIdResult" nillable="true" type="q1:IApplication" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -22,7 +23,7 @@
   <xs:element name="GetCurrentSessionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="GetCurrentSessionResult" nillable="true" type="xs:anyType" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" minOccurs="0" name="GetCurrentSessionResult" nillable="true" type="q2:IAppDirectSession" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

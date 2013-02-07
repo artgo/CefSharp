@@ -37,6 +37,11 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Models" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/System.Net" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.API" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IMainApplication_GetApplicationById_InputMessage">

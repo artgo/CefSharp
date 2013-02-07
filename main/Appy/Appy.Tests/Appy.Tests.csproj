@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Appy.Browser\Appy.Browser.csproj">
-      <Project>{bc7ed699-06e7-4175-95b7-40e7494a5e24}</Project>
+      <Project>{4ad87dd0-900b-407d-af3f-f466d8e74aab}</Project>
       <Name>Appy.Browser</Name>
     </ProjectReference>
     <ProjectReference Include="..\Appy.Common\Appy.Common.csproj">

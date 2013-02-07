@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="e0a04ea5-829b-456f-bf45-d1f71e58e2f4" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="d565bc30-6e00-4548-943e-32f7b8f2568c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -21,9 +21,14 @@
     <MetadataSource Address="net.pipe://localhost/MainApplication/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="207d297f-a000-48b6-82de-842b0d1bea66" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="1daa7b11-dae2-42fb-9f96-fba6666a1fc5" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="82a8bbab-4223-4c30-9de8-4121d57fdcf4" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="51ad6067-5326-4e62-8898-5772205dbd28" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="92b252bc-f070-42d8-8d3e-daa49ff65bb8" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="efe23d4b-cbd3-45ee-b162-0fd40b9a8959" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
+    <MetadataFile FileName="AppDirect.WindowsClient.Common.API.xsd" MetadataType="Schema" ID="a338256f-964a-4f75-93b0-44d747e0a442" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
+    <MetadataFile FileName="AppDirect.WindowsClient.Models.xsd" MetadataType="Schema" ID="6c8bc78f-c918-4678-91b5-bc4042dd616d" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
+    <MetadataFile FileName="System.Net.xsd" MetadataType="Schema" ID="75b62c9d-87c8-4532-a7b2-8d32b4dae79f" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="5065b65e-41d0-42e3-974d-d289d05197ec" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
+    <MetadataFile FileName="AppDirect.WindowsClient.API.xsd" MetadataType="Schema" ID="8c2b996d-2fc3-4757-a025-65a9fdc8e9fc" SourceId="1" SourceUrl="net.pipe://localhost/MainApplication/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
