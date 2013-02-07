@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine">
       <HintPath>libs\CommandLine.dll</HintPath>
@@ -101,6 +104,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="Properties\DataSources\AppDirect.WindowsClient.Common.API.IAppDirectSession.datasource" />
     <None Include="Properties\DataSources\AppDirect.WindowsClient.Common.API.IApplication.datasource" />
     <None Include="Properties\Settings.settings">

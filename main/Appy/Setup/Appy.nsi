@@ -48,10 +48,10 @@ Section "Create"
   WriteRegStr HKCU "${REGSTR}" "DisplayName" "${APPNAME}"
   WriteRegStr HKCU "${REGSTR}" "UninstallString" "${UNINSTALLEXEPATH}"
   WriteRegStr HKCU "${REGSTR}" "QuietUninstallString"  "${UNINSTALLEXEPATH}"
-  
-  WriteRegStr HKCU "${REGSTR}" "Publisher" "${COMPANYNAME}" 
-  WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT} 
-  WriteRegStr HKCU "${REGSTR}" "DisplayIcon" ${APPICON}
+ 
+  WriteRegStr HKCU "${REGSTR}" "Publisher" "${COMPANYNAME}"
+  WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT}
+  WriteRegStr HKCU "${REGSTR}" "DisplayIcon" "$INSTDIR\${APPICON}"
   WriteRegDWORD HKCU "${REGSTR}" "NoModify" 1
   WriteRegDWORD HKCU "${REGSTR}" "NoRepair" 1
   
