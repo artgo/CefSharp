@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
@@ -21,6 +22,7 @@ namespace AppDirect.WindowsClient.UI
     {
         private static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
         public event EventHandler CloseWindow;
+        public List<Grid> WindowPanels = new List<Grid>();
 
         public MainViewModel ViewModel
         {
@@ -47,6 +49,25 @@ namespace AppDirect.WindowsClient.UI
 
             getUpdateThread.DoWork += DownloadAvailableUpdates;
             getUpdateThread.RunWorkerAsync();
+
+            WindowPanels.Add(MainViewGrid);
+            WindowPanels.Add(LoginViewGrid);
+            WindowPanels.Add(RegistrationViewGrid);
+        }
+
+        private void SetVisibleGrid(Grid visibleGrid)
+        {
+            foreach (var windowPanel in WindowPanels)
+            {
+                if (windowPanel.Equals(visibleGrid))
+                {
+                    windowPanel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    windowPanel.Visibility = Visibility.Hidden;
+                }
+            }
         }
 
         private void DownloadAvailableUpdates(object sender, DoWorkEventArgs e)
@@ -138,7 +159,7 @@ namespace AppDirect.WindowsClient.UI
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
                     ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
-                    LoginTab.IsSelected = true;
+                    SetVisibleGrid(LoginViewGrid);
                 }
                 else
                 {
@@ -174,27 +195,29 @@ namespace AppDirect.WindowsClient.UI
             else
             {
                 ViewModel.LoginHeaderText = "Please Login to View Your Apps";
-                LoginTab.IsSelected = true;
+                SetVisibleGrid(LoginViewGrid);
             }
         }
 
         private void CancelLoginClick(object sender, RoutedEventArgs e)
         {
-            YourAppsTab.IsSelected = true;
+            SetVisibleGrid(MainViewGrid);
         }
 
         private void RegisterClick(object sender, RoutedEventArgs e)
         {
-            var emailAddress = NewCustomerEmail.Text;
+            SetVisibleGrid(RegistrationViewGrid);
 
-            var serviceAddress = Properties.Resources.BaseAppStoreUrl + Properties.Resources.RegisterEmailUrl;
+            //var emailAddress = NewCustomerEmail.Text;
 
-            var request = HttpWebRequest.Create(String.Format(serviceAddress, emailAddress));
+            //var serviceAddress = Properties.Resources.BaseAppStoreUrl + Properties.Resources.RegisterEmailUrl;
 
-            WebResponse webResponse = request.GetResponse();
+            //var request = HttpWebRequest.Create(String.Format(serviceAddress, emailAddress));
 
-            MessageArea.Text =
-                "Thanks for registering. Please check your inbox and click the link to activate your account.";
+            //WebResponse webResponse = request.GetResponse();
+
+            //MessageArea.Text =
+            //    "Thanks for registering. Please check your inbox and click the link to activate your account.";
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
@@ -229,6 +252,7 @@ namespace AppDirect.WindowsClient.UI
                                         DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             LoginFailedMessage.Visibility = Visibility.Hidden;
+            EmailFormatErrorMessage.Visibility = Visibility.Hidden;
         }
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
@@ -257,6 +281,8 @@ namespace AppDirect.WindowsClient.UI
                 Helper.RetryAction(() =>process.Kill(), 5, TimeSpan.FromMilliseconds(500));
             }
         }
+
+
     }
 }
     

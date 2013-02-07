@@ -24,7 +24,7 @@ namespace AppDirect.WindowsClient.UI
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
-        
+
         public string VersionString
         {
             get
@@ -88,7 +88,7 @@ namespace AppDirect.WindowsClient.UI
 
         public string SuggestedAppsLoadError
         {
-            get { return _suggestedAppsLoadError; }
+            get { return _suggestedAppsLoadError;}
             set
             {
                 _suggestedAppsLoadError = value;

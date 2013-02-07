@@ -265,9 +265,6 @@
     <Resource Include="UI\Images\cancelLogin.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\cloudGray.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\deleteDefault.png" />
   </ItemGroup>
   <ItemGroup>
@@ -294,7 +291,6 @@
     <Resource Include="UI\Icons\yelp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\cloudDefault.png" />
     <Resource Include="UI\Images\cloudHover.png" />
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +312,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\AppIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\aboutGrey.png" />
+    <Resource Include="UI\Images\aboutWhite.png" />
+    <Resource Include="UI\Images\alertGrey.png" />
+    <Resource Include="UI\Images\alertWhite.png" />
+    <Resource Include="UI\Images\cloudGrey.png" />
+    <Resource Include="UI\Images\cogGrey.png" />
+    <Resource Include="UI\Images\cogWhite.png" />
+    <Resource Include="UI\Images\dotGrey.png" />
+    <Resource Include="UI\Images\dotWhite.png" />
+    <Resource Include="UI\Images\hiddenAppGrey.png" />
+    <Resource Include="UI\Images\hiddenAppWhite.png" />
+    <Resource Include="UI\Images\myAppGrey.png" />
+    <Resource Include="UI\Images\myAppWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
