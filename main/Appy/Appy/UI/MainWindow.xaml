@@ -23,13 +23,51 @@
         <SolidColorBrush x:Key="BorderFocusColor" Color="#a4c8df" />
         <SolidColorBrush x:Key="LoginPanelColor" Color="#0c2228" />
         <SolidColorBrush x:Key="DefaultTextColor" Color="#dfdfdf" />
+        <SolidColorBrush x:Key="DisabledColor" Color="#909495" />
         <SolidColorBrush x:Key="ErrorTextColor" Color="#f13737" />
         <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#36454d" />
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
+        <Storyboard x:Key="enterGotFocus" >
+            <DoubleAnimation Duration="0:0:0.4" To=".4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+        </Storyboard>
+        <Storyboard x:Key="exitGotFocus" >
+            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+        </Storyboard>
+        <Storyboard x:Key="enterHasText" >
+            <DoubleAnimation Duration="0:0:0.4" From=".4" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+        </Storyboard>
+        <Storyboard x:Key="exitHasText" >
+            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+        </Storyboard>
         <Style x:Key="TextStyle" TargetType="TextBlock">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
             <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
+        </Style>
+        <Style x:Key="TextStyleOnMouseOver" BasedOn="{StaticResource TextStyle}" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource DisabledColor}"/>
+            <Style.Triggers>
+                <Trigger Property ="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="WaterMarkTextBlock" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
+            <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="FontSize" Value="10"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="IsHitTestVisible" Value="False"/>
+        </Style>
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
         <Style x:Key="TextStyleBold" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
             <Setter Property="FontWeight" Value="Bold"/>
@@ -90,27 +128,24 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
+                                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="140">
+                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="34" Height="34">
+                                <Image HorizontalAlignment="Center" VerticalAlignment="Center" Width="28" Height="28" Source="{Binding LocalImagePath}" />
+                                <Image Name="Mask" HorizontalAlignment="Center" VerticalAlignment="Center" Width="34" Height="34" Source="Images/FeaturedMaskDefault.png" />
+                            </Grid>
+                            <StackPanel Margin="50,3,0,0">
+                                        <TextBlock TextTrimming="CharacterEllipsis" FontSize="9" Margin="0,0,0,2" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
+                                        <TextBlock TextTrimming="CharacterEllipsis" FontSize="8" Margin="0,0,0,2" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
+                                    </StackPanel>
+                                </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="DimGray" />
-                                <Setter Property="Foreground" Value="#edd4a6" />
+                                <Setter TargetName="Mask" Property="Source" Value="Images/FeaturedMaskHover.png"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Content" Value="LightYellow" />
-                </Trigger>
-            </Style.Triggers>
         </Style>
         <Style x:Key="BorderlessButton" TargetType="Button">
             <Setter Property="Margin" Value="0,1,1,1"/>
@@ -144,6 +179,11 @@
             <Setter Property="Width" Value="165"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Margin" Value="0,0,30,2"></Setter>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="Images\AppBtnDefault.png"/>
+                </Setter.Value>
+            </Setter>
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -171,14 +211,15 @@
         <Style x:Key="MainButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="LightGray" />
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+            <Setter Property="FontSize" Value="10"/>
             <Setter Property="Background">
                 <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
                         <GradientStop Color="#2e6d90" Offset="0"/>
                         <GradientStop Color="#1a597a" Offset="0.05"/>
-                        <GradientStop Color="#134256" Offset="0.4"/>
+                        <GradientStop Color="#134256" Offset=".6"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
@@ -196,10 +237,10 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#748a96" Offset="0"/>
-                                            <GradientStop Color="#587381" Offset="0.05"/>
-                                            <GradientStop Color="#585381" Offset="0.4"/>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
+                                            <GradientStop Color="#134256" Offset="0"/>
+                                            <GradientStop Color="#1a597a" Offset="0.05"/>
+                                            <GradientStop Color="#2e6d90" Offset="0.6"/>
                                         </LinearGradientBrush>
                                     </Setter.Value>
                                 </Setter>
@@ -245,22 +286,30 @@
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="True">
+                                <Setter Property="Foreground" Value ="{StaticResource DefaultTextColor}"/>
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,3">
+                                            <GradientStop Color="#3a444d" Offset="0"/>
+                                            <GradientStop Color="#2f3942" Offset="0.05"/>
+                                            <GradientStop Color="#1c272d" Offset="0.4"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-        <!--<Style x:Key="YourAppsButtonGrid" TargetType="StackPanel">
+        <Style x:Key="YourAppsButtonGrid" TargetType="Grid">
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="Width" Value="150"/>
-            <Setter Property="Height" Value="44"/>
-                    <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="Images\AppBtnDefault.png"/>
-                </Setter.Value>
-            </Setter>
-        </Style>-->
+            <Setter Property="Width" Value="165"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="2,2,0,0"/>
+        </Style>
         <Style x:Key="TopPanelButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
             <Setter Property="Margin" Value="0,0,0,6"/>
             <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -427,24 +476,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type PasswordBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Password" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Password" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -482,40 +517,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="PasswordBoxWaterConfirm" TargetType="PasswordBox">
-            <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="12,10,12,0"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
-            <Setter Property="Foreground" Value="#bdbdbd" />
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="local:WaterMarkTextHelper.IsMonitoring" Value="True"/>
+        <Style x:Key="PasswordBoxWaterConfirm" TargetType="PasswordBox" BasedOn="{StaticResource PasswordBoxWater}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type PasswordBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Confirm Password" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Confirm Password" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -560,7 +569,7 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Margin" Value="12,10,12,0"/>
             <Setter Property="Padding" Value="10,0,0,0"/>
-            <Setter Property="Foreground" Value="#bdbdbd" />
+            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -570,30 +579,16 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="First Name" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="First Name" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsEnabled" Value="false">
                                 <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
                             </Trigger>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
@@ -642,24 +637,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Last Name" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Last Name" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -701,24 +682,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Email" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Email" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -760,24 +727,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Email Confirm" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Email Confirm" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -819,24 +772,10 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Company ( Optional )" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Company ( Optional )" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -876,7 +815,7 @@
         </Style>
     </Window.Resources>
     <Grid Name="ContentGrid" Margin="0,0,0,0" >
-        <Grid Name="MainViewGrid">
+        <Grid Name="MainViewGrid" Visibility="Visible">
                 <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{StaticResource LeftColumnWidth}"/>
                 <ColumnDefinition Width="{StaticResource RightColumnWidth}"/>
@@ -903,31 +842,20 @@
             <TabControl Grid.ColumnSpan="2" Margin="0,30,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
             <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
                     
-                <Grid Name="YourApps" Margin="30,30,0,0" Height="235" Width="390" VerticalAlignment="Top" HorizontalAlignment="Left">
-
-                            <Button Style="{StaticResource AppButton}"  Click="AppButtonClick">
-                                <Grid>
-                                
-                                <Grid Width="165" Height="45">
-                                        <Border Name="Mask"
-                        BorderBrush="{StaticResource DefaultTextColor}"
-                        BorderThickness="22.5"
-                        CornerRadius=".5">
-                                        </Border>
-                                    <Grid>
-                                        <Grid.OpacityMask>
-                                                <VisualBrush Visual="{Binding ElementName=Mask}" />
-                                            </Grid.OpacityMask>
-                                            <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="Icons\Google.png" />
-                                            <TextBlock FontSize="14" Style="{StaticResource TextStyle}" Grid.Column="1" TextTrimming="CharacterEllipsis" Foreground="White" Padding="8,4,0,0" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
-
-                                        </Grid>
-                                    </Grid>
-                                    <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="165">
-                           </StackPanel>-->
-                                </Grid>
-                        </Button>
-                        <!--<ListBox BorderThickness="0" Background="Transparent"; ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
+                <Grid Name="YourApps" Margin="20,25,0,0" Height="240" Width="430" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <!--<Button Style="{StaticResource AppButton}"  Click="AppButtonClick">
+                            <Grid Style="{StaticResource YourAppsButtonGrid}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="44"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="Icons/facebook.png" />
+                                <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="Images/IconMask.png" />
+                                <TextBlock VerticalAlignment="Center" FontSize="11" Style="{StaticResource TextStyle}" Grid.Column="1" Height="15" Width="110" Padding="6,0,0,0" Margin="0,0,0,7" Text="Facebook"></TextBlock>
+                                               
+                    </Grid>
+                        </Button>-->
+                        <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel IsItemsHost="True"/>
@@ -942,7 +870,8 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="{Binding LocalImagePath}" />
-                                            <TextBlock FontSize="14" Style="{StaticResource TextStyle}" Grid.Column="1" TextTrimming="CharacterEllipsis" Foreground="White" Padding="8,4,0,0" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
+                                            <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="Images/IconMask.png" />
+                                            <TextBlock VerticalAlignment="Center" FontSize="11" Style="{StaticResource TextStyle}" Grid.Column="1" Height="15" Width="110" Padding="6,0,0,0" Margin="0,0,0,7" Text="{Binding Name}" />
                                         </Grid>
                                     </Button>
                                 </DataTemplate>
@@ -953,7 +882,7 @@
                                     <Setter Property="Margin" Value="4,0,0,0"></Setter>
                                 </Style>
                             </ListBox.Resources>
-                        </ListBox>-->
+                        </ListBox>
                         <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal" Grid.ColumnSpan="2" >
                             <TextBlock Text="{Binding MyAppsLoadError}"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="345" Height="20" Foreground="White"/>
                         </StackPanel>
@@ -962,7 +891,8 @@
             </TabControl>
             <Grid Grid.Column="1" Margin="30,0,0,0">
                 <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="12" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="0,30,0,0" VerticalAlignment="Top" />
-                <ListBox Height="230" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,60,30,70" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
+                <!--<Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />-->
+                <ListBox Height="250" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,60,30,20" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
                     <ListBox.Resources >
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Focusable" Value="False"></Setter>
@@ -970,37 +900,28 @@
                     </ListBox.Resources>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Button Style="{StaticResource InstallAppButton}" Height="32"  Margin="0,0,0,10" Click="InstallAppClick">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Width="140">
-                                    <Border BorderBrush="Gray" BorderThickness="3" CornerRadius="3" Width="30" Height="30" >
-                                        <Image HorizontalAlignment="Left" Width="24" Height="24" Source="{Binding LocalImagePath}" />
-                                    </Border>
-                                    <StackPanel Margin="15,3,0,0">
-                                        <TextBlock TextTrimming="CharacterEllipsis" FontSize="9" Margin="0,0,0,2" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
-                                        <TextBlock TextTrimming="CharacterEllipsis" FontSize="8" Margin="0,0,0,2" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Button>
+                            <Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button Style="{StaticResource BorderlessButton}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Left" BorderBrush="Transparent" Height="28" Margin="0,20,0,10" Click="GoToAppStore" Width="120" VerticalAlignment="Bottom">
+                <!--<Button Style="{StaticResource BorderlessButton}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Left" BorderBrush="Transparent" Height="28" Margin="0,20,0,10" Click="GoToAppStore" Width="120" VerticalAlignment="Bottom">
                         <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top">
                             <Image HorizontalAlignment="Left" Width="11" Height="11" Source="Images/LaunchAppStore.png" />
                         <TextBlock Style="{StaticResource TextStyle}" FontSize="12" Width="80" Margin="6" VerticalAlignment="Center" Text="Browse Apps"></TextBlock>
                         </StackPanel>
-                </Button>
+                </Button>-->
             </Grid>
             <TextBlock Text="{Binding SuggestedAppsLoadError}"  HorizontalAlignment="Left" Margin="75,300,0,0" VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2"/>
             <Label Name="Version" Content="{Binding VersionString }" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Left"/>
         </Grid>
-        <Grid Name="LoginViewGrid" Visibility="Hidden" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LoginPanelColor}">
+        <Grid Name="LoginViewGrid" Visibility="Hidden" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
+            <Rectangle Height="320" Width="670" Fill="{StaticResource LoginPanelColor}"></Rectangle>
             <Grid Height="50" VerticalAlignment="Top">
                 <Button HorizontalContentAlignment="Right" Click="CancelLoginClick" HorizontalAlignment="Right"
                                 Style="{StaticResource CloseLoginButton}" Width="16"
                                 Height="16" VerticalAlignment="Top" Margin="0,8,8,0" >
                 </Button>
-                <TextBlock Name="LoginLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Height="20" Width="280"  Margin="0,24,0,0" VerticalAlignment="Top" Text="{Binding LoginHeaderText}" HorizontalAlignment="Center" TextAlignment="Center"/>
+                <TextBlock Name="LoginLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Height="20" Width="280"  Margin="0,24,0,0" VerticalAlignment="Bottom" Text="{Binding LoginHeaderText}" HorizontalAlignment="Center" TextAlignment="Center"/>
             </Grid>
             <Grid Margin="0,100,18,0" >
                 <Grid.ColumnDefinitions>
@@ -1008,29 +929,35 @@
                     <ColumnDefinition Width="340"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Margin="180,0,18,0">
-                    <TextBlock Name="NewCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Foreground="White" Text="New Customer"/>
-                    <Button Name="RegisterButton" FontSize="9" Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,40"
+                    <TextBlock Name="NewCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="New Customer"/>
+                    <Button Name="GoToRegistrationButton" Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,40"
                                                 HorizontalAlignment="Left" VerticalAlignment="Top" Width="140"
-                                                Height="32" Click="RegisterClick" />
+                                                Height="32" Click="GoToRegistrationClick" />
                 </Grid>
                 <Line Grid.Column="1" X1="0" Y1="-3" X2="0" Y2="168" Stroke="{StaticResource MiddleBarColor}" StrokeThickness=".5" />
                 <Grid Grid.Column="1" Margin="20,0,32,0" Width="180" HorizontalAlignment="Left">
-                    <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Foreground="White" Text="Existing Customer"/>
-                    <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,16,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="8" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
-                    <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWater}"
-                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
-                    <TextBlock x:Name="EmailFormatErrorMessage" Style="{StaticResource TextStyle}" Margin="0,76,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="8" Text="Please enter a valid email address" Visibility="Hidden"  />
+                    <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="Existing Customer"/>
+                    <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,16,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
+                    <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWaterEmail}"
+                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" LostKeyboardFocus="UsernameTextBox_OnLostKeyboardFocus" KeyUp="Email_OnKeyUp" GotKeyboardFocus="Email_OnFocus" />
+                    <TextBlock x:Name="EmailFormatErrorMessage" Style="{StaticResource TextStyle}" Margin="0,76,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="Please enter a valid email address" Visibility="Hidden"  />
                     <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
-                                                    HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" IsKeyboardFocusedChanged="LoginInfo_OnChange">
+                                                    HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" GotKeyboardFocus="Password_OnFocus" LostKeyboardFocus="PasswordBox_OnLostKeyboardFocus">
                     </PasswordBox>
-                    <TextBlock Margin="0,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Center" Text="Recover Password" TextDecorations="Underline" MouseLeftButtonDown="ForgotPassword" FontSize="9" Style="{StaticResource TextStyle}" Width="90" Height="20"/>
-                    <Button Name="LoginButton" Margin="0,150,0,0" Content="Log In" Style="{DynamicResource LoginButtonDefault}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="84"
+                    <TextBlock Style="{StaticResource TextStyleOnMouseOver}"  Margin="0,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Center" Text="Recover Password" TextDecorations="Underline" MouseLeftButtonDown="ForgotPassword" FontSize="9" Width="80" Height="10"/>
+                    <Button Name="LoginButton" Margin="0,150,0,0" Content="Log In" Style="{StaticResource LoginButtonDefault}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="84" IsEnabled="False"
                                             Height="24" Click="Login" FontSize="9"/>
                 </Grid>
             </Grid>
-            <TextBlock TextWrapping="Wrap" Name="MessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
+            <TextBlock VerticalAlignment="Bottom" TextWrapping="Wrap" Name="MessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
         </Grid>
         <Grid Name="RegistrationViewGrid" Visibility="Hidden" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LoginPanelColor}">
+            <Grid Height="50" VerticalAlignment="Top">
+                <Button HorizontalContentAlignment="Right" Click="CancelRegistrationClick" HorizontalAlignment="Right"
+                                Style="{StaticResource CloseLoginButton}" Width="16"
+                                Height="16" VerticalAlignment="Top" Margin="0,8,8,0" >
+                </Button>
+             </Grid>
             <Grid Margin="0,70,18,0" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200"/>
@@ -1038,44 +965,32 @@
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Margin="80,0,18,0">
                     <TextBlock Name="RegistrationLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Foreground="White" Text="Registration"/>
-                    <!--<TextBox  Name="NewCustomerEmail" Style="{DynamicResource TextBoxWaterEmail}"
-                                                HorizontalAlignment="Stretch" Margin="0,11,0,0" Width="Auto" KeyUp="NewCustomerEmail_OnKeyUp">
-                                    
-                                    </TextBox>-->
                 </Grid>
                 <UniformGrid Grid.Column="1" Columns="2" Rows="4" Margin="0,-10,0,80">
                     <TextBox Name="FirstNameTextBox" Style="{StaticResource TextBoxWater}"
-                                                HorizontalAlignment="Stretch" Width="Auto" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
+                                                HorizontalAlignment="Stretch" Width="Auto" />
                     <TextBox Name="LastNameTextBox" Style="{StaticResource TextBoxWaterLastName}"
-                                                HorizontalAlignment="Stretch" Width="Auto" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
-                    <TextBox Name="NewCustomerEmail" Style="{StaticResource TextBoxWaterEmail}"  HorizontalAlignment="Stretch" Width="Auto" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
-                    <TextBox Name="ConfirmEmailTextBox" Style="{StaticResource TextBoxWaterConfirmEmail}"  HorizontalAlignment="Stretch" Width="Auto" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
+                                                HorizontalAlignment="Stretch" Width="Auto" />
+                    <TextBox Name="NewCustomerEmail" Style="{StaticResource TextBoxWaterEmail}"  HorizontalAlignment="Stretch" Width="Auto" />
+                    <TextBox Name="ConfirmEmailTextBox" Style="{StaticResource TextBoxWaterConfirmEmail}"  HorizontalAlignment="Stretch" Width="Auto" />
                     <PasswordBox Name="RegisterPasswordBox" Style="{StaticResource PasswordBoxWater}"
-                                                    HorizontalAlignment="Stretch" Width="Auto" KeyDown="PasswordBox_OnKeyDown" IsKeyboardFocusedChanged="LoginInfo_OnChange">
+                                                    HorizontalAlignment="Stretch" Width="Auto" KeyDown="PasswordBox_OnKeyDown" >
                     </PasswordBox>
                     <PasswordBox Name="ConfirmRegisterPasswordBox" Style="{DynamicResource PasswordBoxWaterConfirm}"
-                                                    HorizontalAlignment="Stretch" Width="Auto"  KeyDown="PasswordBox_OnKeyDown" IsKeyboardFocusedChanged="LoginInfo_OnChange">
+                                                    HorizontalAlignment="Stretch" Width="Auto"  KeyDown="PasswordBox_OnKeyDown" >
                     </PasswordBox>
-                    <TextBox Name="CompanyTextBox" Style="{StaticResource TextBoxWaterCompany}"  HorizontalAlignment="Stretch" Width="Auto" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
+                    <TextBox Name="CompanyTextBox" Style="{StaticResource TextBoxWaterCompany}"  HorizontalAlignment="Stretch" Width="Auto" />
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20, 0,0,0">
+                        <TextBox Style="{StaticResource TextBoxStyle}" FontSize="9" Text="Accept"  />
+                        <TextBox Margin="-1,0,4,0" Style="{StaticResource TextBoxStyle}" FontSize="9" Text= "terms and conditions" TextDecorations="Underline" />
+                        <CheckBox></CheckBox>
+                    </StackPanel>
                 </UniformGrid>
-
-                <!--<StackPanel Orientation="Vertical" Grid.Column="1" Margin="50,0,5,0"  >
-                       </StackPanel>
-                    <StackPanel Orientation="Vertical" Grid.Column="2" Margin="0,0,50,0">
-                        <TextBox Name="LastNameTextBox" Style="{DynamicResource TextBoxWater}"
-                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
-                        <TextBox Name="ConfirmEmailTextBox" Style="{DynamicResource TextBoxWater}"  HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" IsKeyboardFocusedChanged="LoginInfo_OnChange"/>
-                        <PasswordBox Name="ConfirmRegisterPasswordBox" Style="{DynamicResource PasswordBoxWater}"
-                                                    HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" IsKeyboardFocusedChanged="LoginInfo_OnChange">
-                        </PasswordBox>
-                        <TextBlock Margin="0,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Center" Text="Recover Password" TextDecorations="Underline" MouseLeftButtonDown="ForgotPassword" FontSize="9" Style="{StaticResource TextStyle}" Width="90" Height="20"/>
-                        <TextBlock Margin="0,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Center" Text="Recover Password" TextDecorations="Underline" MouseLeftButtonDown="ForgotPassword" FontSize="9" Style="{StaticResource TextStyle}" Width="90" Height="20"/>
-                        <Button Name="RegisterViewButton" FontSize="9" Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,40"
-                                                HorizontalAlignment="Left" VerticalAlignment="Top" Width="140"
-                                                Height="32" Click="RegisterClick" />
-                    </StackPanel>-->
+                <Button Name="RegisterButton" Grid.Column="1" FontSize="9" Content="Register" Style="{StaticResource MainButtonStyle}" Margin="0,0,12,30"
+                                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="140"
+                                                Height="32"/>
             </Grid>
-            <TextBlock TextWrapping="Wrap" Name="RvMessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
+            <TextBlock TextWrapping="Wrap" VerticalAlignment="Bottom" Name="RvMessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
         </Grid>
     </Grid>
 </Window>

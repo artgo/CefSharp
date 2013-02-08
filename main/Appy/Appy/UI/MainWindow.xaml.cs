@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using AppDirect.WindowsClient.API;
 using Application = AppDirect.WindowsClient.Models.Application;
 
@@ -20,9 +21,16 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static int minimumPasswordLength = 4;
+        private static int maximumPasswordLength = 18;
         private static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
+        private static readonly Regex PasswordMatchPattern = new Regex(@"^(.{" + minimumPasswordLength + "," + maximumPasswordLength + "})$");
         public event EventHandler CloseWindow;
         public List<Grid> WindowPanels = new List<Grid>();
+        private readonly SolidColorBrush _errorColorBrush = (SolidColorBrush) (new BrushConverter().ConvertFrom("#de2b2b"));
+        private readonly SolidColorBrush _defaultColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#36454d"));
+        private readonly SolidColorBrush _validColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#4aa0ce"));
+        
 
         public MainViewModel ViewModel
         {
@@ -115,13 +123,27 @@ namespace AppDirect.WindowsClient.UI
                 }
                 else
                 {
-                    LoginFailedMessage.Visibility = Visibility.Visible;
+                    LoginFailed();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void LoginFailed()
+        {
+            UsernameTextBox.Background = _errorColorBrush;
+            PasswordBox.Background = _errorColorBrush;
+            LoginFailedMessage.Visibility = Visibility.Visible;
+        }
+
+        private void ClearLoginFailed()
+        {
+            UsernameTextBox.Background = _validColorBrush;
+            PasswordBox.Background = _validColorBrush;
+            LoginFailedMessage.Visibility = Visibility.Hidden;
         }
 
         private static Application GetApplicationFromButtonSender(object sender)
@@ -204,7 +226,12 @@ namespace AppDirect.WindowsClient.UI
             SetVisibleGrid(MainViewGrid);
         }
 
-        private void RegisterClick(object sender, RoutedEventArgs e)
+        private void CancelRegistrationClick(object sender, RoutedEventArgs e)
+        {
+            SetVisibleGrid(MainViewGrid);
+        }
+
+        private void GoToRegistrationClick(object sender, RoutedEventArgs e)
         {
             SetVisibleGrid(RegistrationViewGrid);
 
@@ -227,19 +254,72 @@ namespace AppDirect.WindowsClient.UI
             SyncButton.Visibility = Visibility.Visible;
         }
 
-        private void NewCustomerEmail_OnKeyUp(object sender, KeyEventArgs e)
+        private void Email_OnKeyUp(object sender, KeyEventArgs e)
         {
+            if (LoginFailedMessage.Visibility == Visibility.Visible)
+            {
+                ClearLoginFailed();
+            }
+
+            EmailFormatErrorMessage.Visibility = Visibility.Hidden;
+
             if (e.Key == Key.Return)
             {
                 RegisterButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
-            
-            else if (EmailMatchPattern.IsMatch(NewCustomerEmail.Text))
-            {
-                MessageBox.Show("Valid Email Now");
-            }
         }
 
+        private void UsernameTextBox_OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            var emailBox = (TextBox)sender;
+
+            if (String.IsNullOrEmpty(emailBox.Text))
+            {
+                emailBox.Background = _defaultColorBrush;
+            }
+
+            else if (EmailMatchPattern.IsMatch(emailBox.Text))
+            {
+                emailBox.Background = _validColorBrush;
+            }
+            else
+            {
+                emailBox.Background = _errorColorBrush;
+                EmailFormatErrorMessage.Visibility = Visibility.Visible;
+            }
+
+            SetLoginButtonState();
+        }
+
+        private void PasswordBox_OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            var passwordBox = (PasswordBox)sender;
+
+            if (String.IsNullOrEmpty(passwordBox.Password))
+            {
+                passwordBox.Background = _defaultColorBrush;
+            }
+
+            else if (PasswordMatchPattern.IsMatch(passwordBox.Password))
+            {
+                passwordBox.Background = _validColorBrush;
+            }
+
+            SetLoginButtonState();
+        }
+
+        private void SetLoginButtonState()
+        {
+            if (PasswordBox.Background.Equals(_validColorBrush) && UsernameTextBox.Background.Equals(_validColorBrush))
+            {
+                LoginButton.IsEnabled = true;
+            }
+            else
+            {
+                LoginButton.IsEnabled = false;
+            }
+        }
+        
         private void PasswordBox_OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
@@ -248,11 +328,29 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void LoginInfo_OnChange(object sender,
-                                        DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        private void Email_OnFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            LoginFailedMessage.Visibility = Visibility.Hidden;
-            EmailFormatErrorMessage.Visibility = Visibility.Hidden;
+            if (LoginFailedMessage.Visibility == Visibility.Visible)
+            {
+                ClearLoginFailed();
+            }
+
+            if (EmailFormatErrorMessage.Visibility == Visibility.Visible)
+            {
+                EmailFormatErrorMessage.Visibility = Visibility.Hidden;
+            }
+
+            SetLoginButtonState();
+        }
+
+        private void Password_OnFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (LoginFailedMessage.Visibility == Visibility.Visible)
+            {
+                ClearLoginFailed();
+            }
+
+            SetLoginButtonState();
         }
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
@@ -281,8 +379,6 @@ namespace AppDirect.WindowsClient.UI
                 Helper.RetryAction(() =>process.Kill(), 5, TimeSpan.FromMilliseconds(500));
             }
         }
-
-
     }
 }
     

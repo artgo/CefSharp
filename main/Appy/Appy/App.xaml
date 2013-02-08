@@ -4,16 +4,9 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              StartupUri="UI\MainWindow.xaml">
     <Application.Resources>
-        <LinearGradientBrush x:Key="GrayToBlackGradiant" StartPoint="0,0" EndPoint="0,1" >
-            <GradientStop Color="#4c4c4c" Offset="0"/>
-            <GradientStop Color="#292929" Offset="0.05"/>
-            <GradientStop Color="#171717" Offset="0.4"/>
-        </LinearGradientBrush>
-        <sys:Double x:Key="ContentHeight">300</sys:Double>
-        <sys:Double x:Key="HeaderHeight">30</sys:Double>
         <sys:Double x:Key="WindowHeight">330</sys:Double>
         <sys:Double x:Key="WindowWidth">680</sys:Double>
-        <GridLength x:Key="RightColumnWidth">248</GridLength>
+        <!--<GridLength x:Key="RightColumnWidth">248</GridLength>
         <sys:Double x:Key="RightPanelWidth">248</sys:Double>
         <GridLength x:Key="LeftColumnWidth">432</GridLength>
         <sys:Double x:Key="LeftPanelWidth">432</sys:Double>
@@ -881,6 +874,6 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
     </Application.Resources>
 </Application>
