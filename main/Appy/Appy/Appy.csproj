@@ -143,10 +143,11 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
-    <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -161,10 +162,6 @@
     <Compile Include="UI\MainViewModel.cs" />
     <Compile Include="UI\WaterMarkTextHelper.cs" />
     <Compile Include="Updates\Updater.cs" />
-    <Page Include="UI\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -220,6 +217,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
+    <Resource Include="UI\Images\FeaturedMaskDefault.png" />
     <Resource Include="UI\Images\LaunchAppStore.png" />
     <Resource Include="UI\Images\Line.png" />
     <Resource Include="UI\Images\Reload.png" />
@@ -331,6 +329,21 @@
   <ItemGroup>
     <Resource Include="UI\Images\AppBtnDefault.png" />
     <Resource Include="UI\Images\AppBtnHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\IconMask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\FeaturedMaskHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\FeaturedMaskClick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
