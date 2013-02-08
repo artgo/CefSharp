@@ -9,8 +9,6 @@
         AllowsTransparency="True"
         Closing="MainWindow_OnClosing">
     <Window.Resources>
-        <sys:Double x:Key="WindowHeight">330</sys:Double>
-        <sys:Double x:Key="WindowWidth">680</sys:Double>
         <GridLength x:Key="RightColumnWidth">248</GridLength>
         <sys:Double x:Key="RightPanelWidth">248</sys:Double>
         <GridLength x:Key="LeftColumnWidth">432</GridLength>
