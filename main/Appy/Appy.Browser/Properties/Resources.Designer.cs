@@ -79,6 +79,15 @@ namespace AppDirect.WindowsClient.Browser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to initialize browser, error: {0}.
+        /// </summary>
+        internal static string Failed_to_initialize_browser_error_message {
+            get {
+                return ResourceManager.GetString("Failed_to_initialize_browser_error_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No app data transfered for application with id {0}.
         /// </summary>
         internal static string No_app_data_transfered_error_message {
