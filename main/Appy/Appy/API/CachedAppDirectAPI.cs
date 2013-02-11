@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
-using AppDirect.WindowsClient.ObjectMapping;
 
 namespace AppDirect.WindowsClient.API
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using AppDirect.WindowsClient.Models;
 
 namespace AppDirect.WindowsClient.Common.API
 {

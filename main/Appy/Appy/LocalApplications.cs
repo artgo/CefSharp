@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
 
 namespace AppDirect.WindowsClient

@@ -12,7 +12,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using AppDirect.WindowsClient.API;
-using Application = AppDirect.WindowsClient.Models.Application;
+using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -21,12 +21,9 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-       
         public event EventHandler CloseWindow;
-        public List<Grid> WindowPanels = new List<Grid>();
-
-        public LoginPanel CurrentLoginPanel { get; set; }
-
+        public List<UIElement> WindowPanels = new List<UIElement>();
+        
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -54,15 +51,15 @@ namespace AppDirect.WindowsClient.UI
             getUpdateThread.RunWorkerAsync();
 
             WindowPanels.Add(MainViewGrid);
-            //WindowPanels.Add(LoginViewGrid);
+            WindowPanels.Add(LoginViewControl);
             WindowPanels.Add(RegistrationViewGrid);
         }
 
-        private void SetVisibleGrid(Grid visibleGrid)
+        private void SetVisibleGrid(UIElement visibleControl)
         {
             foreach (var windowPanel in WindowPanels)
             {
-                if (windowPanel.Equals(visibleGrid))
+                if (windowPanel.Equals(visibleControl))
                 {
                     windowPanel.Visibility = Visibility.Visible;
                 }
@@ -136,7 +133,7 @@ namespace AppDirect.WindowsClient.UI
                 {
                     ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
 
-                    CurrentLoginPanel = new LoginPanel(ViewModel);
+                    SetVisibleGrid(LoginViewControl);
                 }
                 else
                 {
@@ -173,8 +170,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 ViewModel.LoginHeaderText = "Please Login to View Your Apps";
 
-                CurrentLoginPanel = new LoginPanel(ViewModel);
-                //SetVisibleGrid(LoginViewGrid);
+                SetVisibleGrid(LoginViewControl);
             }
         }
 

@@ -143,8 +143,8 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
-    <Compile Include="UI\LoginPanel.xaml.cs">
-      <DependentUpon>LoginPanel.xaml</DependentUpon>
+    <Compile Include="UI\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -343,7 +343,7 @@
     <Resource Include="UI\Images\FeaturedMaskClick.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\LoginPanel.xaml">
+    <Page Include="UI\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using AppDirect.WindowsClient.ObjectMapping;
 using System.Web;
 using System.Web.Script.Serialization;
+using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.API
 {

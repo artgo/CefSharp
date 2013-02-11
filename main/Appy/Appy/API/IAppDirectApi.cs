@@ -1,4 +1,4 @@
-﻿using AppDirect.WindowsClient.ObjectMapping;
+﻿using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.API
 {

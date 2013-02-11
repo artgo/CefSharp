@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using AppDirect.WindowsClient.Common.API;
 
-namespace AppDirect.WindowsClient.Models
+namespace AppDirect.WindowsClient.Common.API
 {
     ///<summary>
     /// Represents an Application of the sort that AppDirect distributes 

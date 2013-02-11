@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml.Serialization;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
 
 namespace AppDirect.WindowsClient.Storage

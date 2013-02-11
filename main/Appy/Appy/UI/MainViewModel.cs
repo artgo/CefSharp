@@ -9,7 +9,7 @@ using System.Threading;
 using System.Windows;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Properties;
-using Application = AppDirect.WindowsClient.Models.Application;
+using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
 {

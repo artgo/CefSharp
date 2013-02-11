@@ -17,9 +17,9 @@ using System.Windows.Shapes;
 namespace AppDirect.WindowsClient.UI
 {
     /// <summary>
-    /// Interaction logic for LoginPanel.xaml
+    /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class LoginPanel : Page
+    public partial class LoginView : UserControl
     {
         private static int minimumPasswordLength = 4;
         private static int maximumPasswordLength = 18;
@@ -34,19 +34,9 @@ namespace AppDirect.WindowsClient.UI
             get { return DataContext as MainViewModel; }
         }
 
-
-        public LoginPanel(MainViewModel viewModel )
+        public LoginView()
         {
             InitializeComponent();
-
-            try
-            {
-                DataContext = viewModel;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
         }
 
         private void LoginFailed()

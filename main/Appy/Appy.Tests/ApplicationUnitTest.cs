@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
