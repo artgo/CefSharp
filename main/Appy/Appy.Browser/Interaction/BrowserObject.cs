@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Gecko;
@@ -23,6 +22,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
         private const string CacheDiskParentDirectory = @"browser.cache.disk.parent_directory";
         private const string StartupPage = @"browser.startup.page";
         private const int RestoreSession = 3;
+        private const string SessionStoreRestoreFromCrash = @"browser.sessionstore.resume_from_crash";
 
         private BrowserObject() { }
 
@@ -59,11 +59,14 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             GeckoPreferences.User[CacheDiskEnable] = true;
             GeckoPreferences.User[CacheMemoryEnable] = true;
             GeckoPreferences.User[CacheDiskParentDirectory] = cachePath;
+            GeckoPreferences.User[SessionStoreRestoreFromCrash] = true;
             GeckoPreferences.User[StartupPage] = RestoreSession;
 
             // Uncomment the follow line to enable CustomPrompt's
             // GeckoPreferences.User["browser.xul.error_pages.enabled"] = false;
             GeckoPreferences.User[GfxFontRenderingGraphiteEnabled] = true;
+
+            RestoreBrowserSession();
 
             Application.ApplicationExit += (sender, e) => Xpcom.Shutdown();
 
@@ -86,6 +89,15 @@ namespace AppDirect.WindowsClient.Browser.Interaction
                                       cookie.IsHttpOnly, cookie.IsSession, InfiniteDate);
                 }
             }
+        }
+
+        private void RestoreBrowserSession()
+        {
+//            Guid iid = typeof(nsISessionStore).GUID;
+//            Guid guid = new Guid("59bfaf00-e3d8-4728-b4f0-cc0b9dfb4806");
+//            IntPtr ptr = Xpcom.ServiceManager.GetService(ref iid, ref iid);
+//            nsISessionStore sessionStore = (nsISessionStore)Xpcom.GetObjectForIUnknown(ptr);
+//            sessionStore.RestoreLastSession();
         }
 
         public void SetCookie(Cookie cookie)

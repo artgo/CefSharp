@@ -5,6 +5,7 @@ using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.MainApp;
 using AppDirect.WindowsClient.Browser.Properties;
+using AppDirect.WindowsClient.Browser.Session;
 using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using CommandLine;
@@ -33,7 +34,20 @@ namespace AppDirect.WindowsClient.Browser
 
             var browser = BuildBrowserWindow(appId);
 
+            var url = browser.BrowserUrl;
+            SessionKeeper sessionKeeper = null;
+            if (!string.IsNullOrEmpty(url))
+            {
+                sessionKeeper = new SessionKeeper(url);
+                sessionKeeper.Start();
+            }
+
             Application.Run(browser);
+
+            if (sessionKeeper != null)
+            {
+                sessionKeeper.Stop();
+            }
         }
 
         private static string ExtractAppId(string[] args)
@@ -112,6 +126,7 @@ namespace AppDirect.WindowsClient.Browser
             SetCookies(session);
 
             var browser = new BrowserWindow(app.UrlString, session);
+
             return browser;
         }
 

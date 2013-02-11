@@ -8,7 +8,7 @@ namespace AppDirect.WindowsClient.Browser.UI
     {
         private GeckoWebBrowser _browser;
 
-        private string BrowserUrl { get; set; }
+        public string BrowserUrl { get; set; }
         private IAppDirectSession AppDirectSession { get; set; }
 
         public BrowserWindow(string url, IAppDirectSession session)
