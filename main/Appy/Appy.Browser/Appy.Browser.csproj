@@ -76,11 +76,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\MainApplicationCallback.cs" />
+    <Compile Include="Interaction\BrowserCookie.cs" />
+    <Compile Include="Interaction\BrowserObject.cs" />
     <Compile Include="Service References\MainApp\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Session\SessionKeeper.cs" />
     <Compile Include="UI\BrowserWindow.cs">
       <SubType>Form</SubType>
     </Compile>

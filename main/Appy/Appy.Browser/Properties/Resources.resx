@@ -132,4 +132,7 @@
   <data name="Url_for_the_application_is_empty_error_message" xml:space="preserve">
     <value>Url for the application with id {0} is empty</value>
   </data>
+  <data name="Failed_to_initialize_browser_error_message" xml:space="preserve">
+    <value>Failed to initialize browser, error: {0}</value>
+  </data>
 </root>

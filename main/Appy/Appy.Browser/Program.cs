@@ -2,19 +2,19 @@
 using System.ServiceModel;
 using System.Windows.Forms;
 using AppDirect.WindowsClient.Browser.API;
+using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.MainApp;
 using AppDirect.WindowsClient.Browser.Properties;
+using AppDirect.WindowsClient.Browser.Session;
 using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using CommandLine;
-using Gecko;
 
 namespace AppDirect.WindowsClient.Browser
 {
     static class Program
     {
         private const string DefaultUrl = @"http://localhost";
-        private const string GfxFontRenderingGraphiteEnabled = "gfx.font_rendering.graphite.enabled";
 
         /// <summary>
         /// The main entry point for the application.
@@ -22,23 +22,35 @@ namespace AppDirect.WindowsClient.Browser
         [STAThread]
         static void Main(string[] args)
         {
-            Xpcom.Initialize(XULRunnerLocator.GetXULRunnerLocation());
+            var appId = ExtractAppId(args);
+            try
+            {
+                BrowserObject.Instance.Initialize(appId);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(String.Format(Resources.Failed_to_initialize_browser_error_message, e.Message));
+            }
 
-            // Uncomment the follow line to enable CustomPrompt's
-            // GeckoPreferences.User["browser.xul.error_pages.enabled"] = false;
-            GeckoPreferences.User[GfxFontRenderingGraphiteEnabled] = true;
+            var browser = BuildBrowserWindow(appId);
 
-            Application.ApplicationExit += (sender, e) => Xpcom.Shutdown();
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            var browser = BuildBrowserWindow(args);
+            var url = browser.BrowserUrl;
+            SessionKeeper sessionKeeper = null;
+            if (!string.IsNullOrEmpty(url))
+            {
+                sessionKeeper = new SessionKeeper(url);
+                sessionKeeper.Start();
+            }
 
             Application.Run(browser);
+
+            if (sessionKeeper != null)
+            {
+                sessionKeeper.Stop();
+            }
         }
 
-        private static BrowserWindow BuildBrowserWindow(string[] args)
+        private static string ExtractAppId(string[] args)
         {
             var options = new Options();
 
@@ -46,17 +58,25 @@ namespace AppDirect.WindowsClient.Browser
                 (CommandLineParser.Default.ParseArguments(args, options)) &&
                 !string.IsNullOrEmpty(options.AppId))
             {
-                var browser = ProcessApplicationId(options);
-                if (browser != null)
-                {
-                    return browser;
-                }
+                return options.AppId;
+            }
+
+            return null;
+        }
+
+
+        private static BrowserWindow BuildBrowserWindow(string appId)
+        {
+            var browser = ProcessApplicationId(appId);
+            if (browser != null)
+            {
+                return browser;
             }
 
             return new BrowserWindow(DefaultUrl, null);
         }
 
-        private static BrowserWindow ProcessApplicationId(Options options)
+        private static BrowserWindow ProcessApplicationId(string appId)
         {
             MainApplicationClient client;
             try
@@ -76,36 +96,37 @@ namespace AppDirect.WindowsClient.Browser
             IAppDirectSession session;
             try
             {
-                app = (IApplication)client.GetApplicationById(options.AppId);
+                app = (IApplication)client.GetApplicationById(appId);
                 session = (IAppDirectSession)client.GetCurrentSession();
             }
             catch (Exception e)
             {
-                MessageBox.Show(String.Format(Resources.Error_getting_data_error_message, options.AppId, e.Message));
+                MessageBox.Show(String.Format(Resources.Error_getting_data_error_message, appId, e.Message));
                 return null;
             }
 
             if (app == null)
             {
-                MessageBox.Show(String.Format(Resources.No_app_data_transfered_error_message, options.AppId));
+                MessageBox.Show(String.Format(Resources.No_app_data_transfered_error_message, appId));
                 return null;
             }
 
             if (session == null)
             {
-                MessageBox.Show(String.Format(Resources.No_session_data_transfered_error_message, options.AppId));
+                MessageBox.Show(String.Format(Resources.No_session_data_transfered_error_message, appId));
                 return null;
             }
 
             if (string.IsNullOrEmpty(app.UrlString))
             {
-                MessageBox.Show(String.Format(Resources.Url_for_the_application_is_empty_error_message, options.AppId));
+                MessageBox.Show(String.Format(Resources.Url_for_the_application_is_empty_error_message, appId));
                 return null;
             }
 
             SetCookies(session);
 
             var browser = new BrowserWindow(app.UrlString, session);
+
             return browser;
         }
 
@@ -115,7 +136,7 @@ namespace AppDirect.WindowsClient.Browser
             {
                 foreach (var cookie in session.Cookies)
                 {
-                    CookieManager.Add(cookie.Domain, cookie.Path, cookie.Name, cookie.Value, cookie.Secure, cookie.HttpOnly, false, new DateTime(2100, 1, 1).ToBinary());
+                    BrowserObject.Instance.SetCookie(cookie);
                 }
             }
         }
