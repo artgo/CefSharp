@@ -18,6 +18,7 @@ namespace AppDirect.WindowsClient.Models
         public override int AlertCount { get; set; }
         public override bool IsLocalApp { get; set; }
         public override string UrlString { get; set; }
+        public override string Price { get; set; }
 
         public override bool Equals(Object obj)
         {

@@ -4,173 +4,15 @@
         xmlns:local="clr-namespace:AppDirect.WindowsClient.UI" xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="MyApps" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" 
         WindowStartupLocation="Manual" 
-        Background="Transparent"
+        Background="Black"
         WindowStyle="None"
         AllowsTransparency="True"
         Closing="MainWindow_OnClosing">
     <Window.Resources>
-        <GridLength x:Key="RightColumnWidth">248</GridLength>
-        <sys:Double x:Key="RightPanelWidth">248</sys:Double>
-        <GridLength x:Key="LeftColumnWidth">432</GridLength>
-        <sys:Double x:Key="LeftPanelWidth">432</sys:Double>
-        <FontFamily x:Key="DefaultWindowFont">Arial</FontFamily>
-        <SolidColorBrush x:Key="LeftPanelColor" Color="#000000" />
-        <SolidColorBrush x:Key="RightPanelColor" Color="#000708" />
-        <SolidColorBrush x:Key="TextFieldFocusColor" Color="#4aa0ce" />
-        <SolidColorBrush x:Key="MiddleBarColor" Color="#20393e" />
-        <SolidColorBrush x:Key="BorderFocusColor" Color="#a4c8df" />
-        <SolidColorBrush x:Key="LoginPanelColor" Color="#0c2228" />
-        <SolidColorBrush x:Key="DefaultTextColor" Color="#dfdfdf" />
-        <SolidColorBrush x:Key="DisabledColor" Color="#909495" />
-        <SolidColorBrush x:Key="ErrorTextColor" Color="#f13737" />
-        <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#36454d" />
-        <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
-        <Storyboard x:Key="enterGotFocus" >
-            <DoubleAnimation Duration="0:0:0.4" To=".4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-        </Storyboard>
-        <Storyboard x:Key="exitGotFocus" >
-            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-        </Storyboard>
-        <Storyboard x:Key="enterHasText" >
-            <DoubleAnimation Duration="0:0:0.4" From=".4" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-        </Storyboard>
-        <Storyboard x:Key="exitHasText" >
-            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-        </Storyboard>
-        <Style x:Key="TextStyle" TargetType="TextBlock">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
-            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
-        </Style>
-        <Style x:Key="TextStyleOnMouseOver" BasedOn="{StaticResource TextStyle}" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{StaticResource DisabledColor}"/>
-            <Style.Triggers>
-                <Trigger Property ="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="WaterMarkTextBlock" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
-            <Setter Property="Opacity" Value="0.7" />
-            <Setter Property="FontSize" Value="10"></Setter>
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="10,0,0,0" />
-            <Setter Property="IsHitTestVisible" Value="False"/>
-        </Style>
-        <Style x:Key="TextBoxStyle" TargetType="TextBox">
-            <Setter Property="BorderThickness" Value="0"></Setter>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-        </Style>
-        <Style x:Key="TextStyleBold" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
-            <Setter Property="FontWeight" Value="Bold"/>
-        </Style>
-        <Style x:Key="LeftMenu" TargetType="TabItem">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Grid>
-                            <Border Name="Border" 
-                                    Margin="0" 
-                                    Background="Transparent"
-                                    BorderBrush="{StaticResource SolidBorderBrush}" 
-                                    BorderThickness="0">
-                                <ContentPresenter x:Name="ContentSite"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    ContentSource="Header"
-                                    Margin="0"
-                                    RecognizesAccessKey="True"/>
-                            </Border>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Panel.ZIndex" Value="100" />
-                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
-                                <Setter TargetName="Border" Property="BorderThickness" Value="0" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="Selector.Unselected">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
-                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Selector.Selected">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
-                                <LinearDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="InstallAppButton" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="140">
-                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="34" Height="34">
-                                <Image HorizontalAlignment="Center" VerticalAlignment="Center" Width="28" Height="28" Source="{Binding LocalImagePath}" />
-                                <Image Name="Mask" HorizontalAlignment="Center" VerticalAlignment="Center" Width="34" Height="34" Source="Images/FeaturedMaskDefault.png" />
-                            </Grid>
-                            <StackPanel Margin="50,3,0,0">
-                                        <TextBlock TextTrimming="CharacterEllipsis" FontSize="9" Margin="0,0,0,2" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
-                                        <TextBlock TextTrimming="CharacterEllipsis" FontSize="8" Margin="0,0,0,2" VerticalAlignment="Top" Text="{Binding Name}"></TextBlock>
-                                    </StackPanel>
-                                </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Mask" Property="Source" Value="Images/FeaturedMaskHover.png"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="BorderlessButton" TargetType="Button">
-            <Setter Property="Margin" Value="0,1,1,1"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#e0e0e0"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <ContextMenu x:Key="UninstallContextMenu">
-            <MenuItem Header="Uninstall" Click="UninstallAppClick" DataContext="{Binding}"/>
+        <ContextMenu x:Key="UninstallContextMenu" Width="130"  Background="#595959" >
+            <MenuItem Header="Uninstall" Click="UninstallAppClick" DataContext="{Binding}" Background="#595959" Foreground="{StaticResource DefaultTextColor}"/>
+            <!--<Line Stroke="#656565" StrokeThickness="1"></Line>-->
+            <MenuItem Header="Pin to task bar" Click="UninstallAppClick" DataContext="{Binding}" Background="#595959" Foreground="{StaticResource DefaultTextColor}"/>
         </ContextMenu>
         <Style x:Key="AppButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
             <Setter Property="Height" Value="45"/>
@@ -206,611 +48,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="MainButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="0,1,1,1"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
-            <Setter Property="FontWeight" Value="Bold"></Setter>
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
-                        <GradientStop Color="#2e6d90" Offset="0"/>
-                        <GradientStop Color="#1a597a" Offset="0.05"/>
-                        <GradientStop Color="#134256" Offset=".6"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="3">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
-                                            <GradientStop Color="#134256" Offset="0"/>
-                                            <GradientStop Color="#1a597a" Offset="0.05"/>
-                                            <GradientStop Color="#2e6d90" Offset="0.6"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="LoginButtonDefault" TargetType="Button" BasedOn="{StaticResource MainButtonStyle}">
-            <Setter Property="Margin" Value="0,1,1,1"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="DimGray" />
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#3a444d" Offset="0"/>
-                        <GradientStop Color="#2f3942" Offset="0.05"/>
-                        <GradientStop Color="#1c272d" Offset="0.4"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="2">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#748a96" Offset="0"/>
-                                            <GradientStop Color="#587381" Offset="0.05"/>
-                                            <GradientStop Color="#46616e" Offset="0.4"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="True">
-                                <Setter Property="Foreground" Value ="{StaticResource DefaultTextColor}"/>
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,3">
-                                            <GradientStop Color="#3a444d" Offset="0"/>
-                                            <GradientStop Color="#2f3942" Offset="0.05"/>
-                                            <GradientStop Color="#1c272d" Offset="0.4"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="YourAppsButtonGrid" TargetType="Grid">
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="Width" Value="165"/>
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="Margin" Value="2,2,0,0"/>
-        </Style>
-        <Style x:Key="TopPanelButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
-            <Setter Property="Margin" Value="0,0,0,6"/>
-            <Setter Property="VerticalAlignment" Value="Bottom"/>
-            <Setter Property="HorizontalAlignment" Value="Center" />
-        </Style>
-        <Style x:Key="AlertsButton" TargetType="Button" BasedOn="{StaticResource TopPanelButton}" >
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="Images\alertGrey.png"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="Images\alertWhite.png" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}">
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="CloudSyncButton" TargetType="Button" BasedOn="{StaticResource TopPanelButton}" >
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="Images\cloudGrey.png"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="Images\cloudWhite.png" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}">
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="MyAppsButton" TargetType="Button" BasedOn="{StaticResource TopPanelButton}" >
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="Images\myAppWhite.png"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="Images\myAppWhite.png"/>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="CloseLoginButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}" >
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="Images\deleteDefault.png"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="Images\deleteOnHover.png" />
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="BadgeStyle" TargetType="TextBox">
-            <Setter Property="Background" Value="Red"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="10,10,0,13"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="TextAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="8" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="PasswordBoxWater" TargetType="PasswordBox">
-            <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="12,10,12,0"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
-            <Setter Property="Foreground" Value="#bdbdbd" />
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="local:WaterMarkTextHelper.IsMonitoring" Value="True"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type PasswordBox}">
-                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Password" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="local:WaterMarkTextHelper.HasText" Value="False"/>
-                                    <Condition Property="IsFocused" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                            <Trigger Property="local:WaterMarkTextHelper.HasText" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="PasswordBoxWaterConfirm" TargetType="PasswordBox" BasedOn="{StaticResource PasswordBoxWater}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type PasswordBox}">
-                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Confirm Password" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="local:WaterMarkTextHelper.HasText" Value="False"/>
-                                    <Condition Property="IsFocused" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                            <Trigger Property="local:WaterMarkTextHelper.HasText" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="TextBoxWater" TargetType="{x:Type TextBox}">
-            <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="12,10,12,0"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
-            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="TextAlignment" Value="Left"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="local:WaterMarkTextHelper.IsMonitoring" Value="True"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="First Name" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}"/>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="local:WaterMarkTextHelper.HasText" Value="False"/>
-                                    <Condition Property="IsFocused" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                            <Trigger Property="local:WaterMarkTextHelper.HasText" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="TextBoxWaterLastName" TargetType="TextBox" BasedOn="{StaticResource TextBoxWater}">
-            <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="12,10,12,0"/>
-            <Setter Property="Padding" Value="10,0,0,0"/>
-            <Setter Property="Foreground" Value="#bdbdbd" />
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="TextAlignment" Value="Left"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="local:WaterMarkTextHelper.IsMonitoring" Value="True"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Last Name" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="local:WaterMarkTextHelper.HasText" Value="False"/>
-                                    <Condition Property="IsFocused" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                            <Trigger Property="local:WaterMarkTextHelper.HasText" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="TextBoxWaterEmail" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxWater}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Email" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="local:WaterMarkTextHelper.HasText" Value="False"/>
-                                    <Condition Property="IsFocused" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                            <Trigger Property="local:WaterMarkTextHelper.HasText" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="TextBoxWaterConfirmEmail" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxWater}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Email Confirm" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="local:WaterMarkTextHelper.HasText" Value="False"/>
-                                    <Condition Property="IsFocused" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                            <Trigger Property="local:WaterMarkTextHelper.HasText" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="TextBoxWaterCompany" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxWater}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Company ( Optional )" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="local:WaterMarkTextHelper.HasText" Value="False"/>
-                                    <Condition Property="IsFocused" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                            <Trigger Property="local:WaterMarkTextHelper.HasText" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Window.Resources>
     <Grid Name="ContentGrid" Margin="0,0,0,0" >
         <Grid Name="MainViewGrid" Visibility="Visible">
@@ -818,24 +55,43 @@
                 <ColumnDefinition Width="{StaticResource LeftColumnWidth}"/>
                 <ColumnDefinition Width="{StaticResource RightColumnWidth}"/>
                 </Grid.ColumnDefinitions>
-            <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.98" HorizontalAlignment="Left" Width="{StaticResource LeftPanelWidth}" Margin="0,0,0,0" Grid.Column="0">
+            <Grid>
+                <Border>
+                    <Border.Effect>
+                        <BlurEffect Radius="5" KernelType="Gaussian"/>
+                    </Border.Effect>
+                </Border>
+            </Grid>
+            <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="670" Height="320" Margin="5,5,0,0" Grid.Column="0">
+           <Rectangle.Effect><BlurEffect Radius="10"></BlurEffect> </Rectangle.Effect>
             </Rectangle>
-            <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0" Grid.Column="1"/>
-            <Grid Name="TopMenuGrid" Height="30" VerticalAlignment="Top">
-                <Grid.ColumnDefinitions>
+                        <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0" Grid.Column="1"/>
+            <Grid Name="TopMenuGrid" Height="30" VerticalAlignment="Top" Margin="5,0,0,0">
+               <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Name="MyAppsButton" Grid.Column="0" Style="{StaticResource MyAppsButton}" Height="16" Width="66" />
-                <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="1" Style="{StaticResource CloudSyncButton}" Height="12" Width="81" Visibility="{Binding CloudSyncVisibility}"/>
-                <Button Name="AlertsButton" Grid.Column="2" Style="{StaticResource AlertsButton}" Height="14" Width="52"/>
+                <Button Name="MyAppsButton" Grid.Column="0" Style="{StaticResource MyAppsButton}"/>
+                <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="1" Style="{StaticResource CloudSyncButton}" Visibility="{Binding CloudSyncVisibility}"/>
+                <Button Name="AlertsButton" Grid.Column="2" Style="{StaticResource AlertsButton}" Visibility="{Binding VerifyEmailVisibility}"/>
                 <Button Name="UpdateAvailableButton" Click="UpdateButtonOnClick" Grid.Column="3" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left"  Visibility="Hidden" Margin="120,6,0,0" Content="Update Available!" />
                 <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="1" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Margin="120,6,0,0" Content="Log Out"/>
-                <Line Grid.ColumnSpan="5" X1="5" Y1="30" X2="425" Y2="30" Stroke="#656565" StrokeThickness="1" />
-                <Line Grid.Column="0" X1="5" Y1="30" X2="425" Y2="30" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" />
+                <Line Grid.ColumnSpan="5" X1="0" Y1="30" X2="425" Y2="30" Stroke="#656565" StrokeThickness="1" />
+                </Grid>
+            <Grid Name="VerifyEmailGrid" Visibility="Hidden" Background="#000708" Width="380" Height ="200" Opacity=".80" VerticalAlignment="Top" Margin="0,38,0,0" >
+                <Border BorderBrush="{StaticResource DisabledColor}" BorderThickness="1">
+                <StackPanel  HorizontalAlignment="Center">
+                    <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" Foreground="{StaticResource AlertTextColor}" FontSize="14">Please confirm your email address</TextBlock>
+                    <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" Foreground="#969696" FontSize="12">A confirmation email has been sent to:</TextBlock>
+                    <TextBlock Margin="0,12,0,0"  HorizontalAlignment="Center" Foreground="#969696" FontSize="12" Text="{Binding UserName}" />
+                    <TextBlock Margin="0,12,0,0"  HorizontalAlignment="Center" Foreground="#383434" FontSize="12">Click on the confirmation link in the email to</TextBlock>
+                    <TextBlock Margin="0,0,0,0"  HorizontalAlignment="Center" Foreground="#383434" FontSize="12">activate your account</TextBlock>
+                    <Button Margin="0,24,0,0" Style="{StaticResource LoginButtonDefault}" Height="24" Width="90" >OK</Button>
+                </StackPanel>
+                </Border>
             </Grid>
             <TabControl Grid.ColumnSpan="2" Margin="0,30,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
             <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
@@ -853,10 +109,10 @@
                                                
                     </Grid>
                         </Button>-->
-                        <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
+                        <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel IsItemsHost="True"/>
+                                    <WrapPanel  IsItemsHost="True"/>
                                 </ItemsPanelTemplate>
                             </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
@@ -890,65 +146,30 @@
             <Grid Grid.Column="1" Margin="30,0,0,0">
                 <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="12" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="0,30,0,0" VerticalAlignment="Top" />
                 <!--<Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />-->
-                <ListBox Height="250" BorderThickness="0" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,60,30,20" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
-                    <ListBox.Resources >
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Focusable" Value="False"></Setter>
-                        </Style>
-                    </ListBox.Resources>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <!--<Button Style="{StaticResource BorderlessButton}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Left" BorderBrush="Transparent" Height="28" Margin="0,20,0,10" Click="GoToAppStore" Width="120" VerticalAlignment="Bottom">
-                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" VerticalAlignment="Top">
-                            <Image HorizontalAlignment="Left" Width="11" Height="11" Source="Images/LaunchAppStore.png" />
-                        <TextBlock Style="{StaticResource TextStyle}" FontSize="12" Width="80" Margin="6" VerticalAlignment="Center" Text="Browse Apps"></TextBlock>
-                        </StackPanel>
-                </Button>-->
+                <Line  Stroke="#383c44" StrokeThickness="1" X1="185" Y1="50" X2="185" Y2="300" ></Line>
+                <ListBox Style="{StaticResource ListBoxStyle}" Height="240" VerticalAlignment="Top" Margin="0,60,30,20" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
+
+                        <ListBox.Resources >
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Focusable" Value="False"></Setter>
+                            </Style>
+                        </ListBox.Resources>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                <Rectangle Name="SuggestedAppsBottom" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="160" Height="30" Margin="-10,5,0,10" Grid.Column="0">
+                    <Rectangle.Effect>
+                        <BlurEffect Radius="8"></BlurEffect>
+                    </Rectangle.Effect>
+                </Rectangle>
             </Grid>
             <TextBlock Text="{Binding SuggestedAppsLoadError}"  HorizontalAlignment="Left" Margin="75,300,0,0" VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2"/>
             <Label Name="Version" Content="{Binding VersionString }" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Left"/>
         </Grid>
-        <Grid Name="LoginViewGrid" Visibility="Hidden" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
-            <Rectangle Height="320" Width="670" Fill="{StaticResource LoginPanelColor}"></Rectangle>
-            <Grid Height="50" VerticalAlignment="Top">
-                <Button HorizontalContentAlignment="Right" Click="CancelLoginClick" HorizontalAlignment="Right"
-                                Style="{StaticResource CloseLoginButton}" Width="16"
-                                Height="16" VerticalAlignment="Top" Margin="0,8,8,0" >
-                </Button>
-                <TextBlock Name="LoginLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Height="20" Width="280"  Margin="0,24,0,0" VerticalAlignment="Bottom" Text="{Binding LoginHeaderText}" HorizontalAlignment="Center" TextAlignment="Center"/>
-            </Grid>
-            <Grid Margin="0,100,18,0" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="340"/>
-                    <ColumnDefinition Width="340"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Margin="180,0,18,0">
-                    <TextBlock Name="NewCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="New Customer"/>
-                    <Button Name="GoToRegistrationButton" Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,40"
-                                                HorizontalAlignment="Left" VerticalAlignment="Top" Width="140"
-                                                Height="32" Click="GoToRegistrationClick" />
-                </Grid>
-                <Line Grid.Column="1" X1="0" Y1="-3" X2="0" Y2="168" Stroke="{StaticResource MiddleBarColor}" StrokeThickness=".5" />
-                <Grid Grid.Column="1" Margin="20,0,32,0" Width="180" HorizontalAlignment="Left">
-                    <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="Existing Customer"/>
-                    <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,16,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
-                    <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWaterEmail}"
-                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" LostKeyboardFocus="UsernameTextBox_OnLostKeyboardFocus" KeyUp="Email_OnKeyUp" GotKeyboardFocus="Email_OnFocus" />
-                    <TextBlock x:Name="EmailFormatErrorMessage" Style="{StaticResource TextStyle}" Margin="0,76,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="Please enter a valid email address" Visibility="Hidden"  />
-                    <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
-                                                    HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" GotKeyboardFocus="Password_OnFocus" LostKeyboardFocus="PasswordBox_OnLostKeyboardFocus">
-                    </PasswordBox>
-                    <TextBlock Style="{StaticResource TextStyleOnMouseOver}"  Margin="0,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Center" Text="Recover Password" TextDecorations="Underline" MouseLeftButtonDown="ForgotPassword" FontSize="9" Width="80" Height="10"/>
-                    <Button Name="LoginButton" Margin="0,150,0,0" Content="Log In" Style="{StaticResource LoginButtonDefault}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="84" IsEnabled="False"
-                                            Height="24" Click="Login" FontSize="9"/>
-                </Grid>
-            </Grid>
-            <TextBlock VerticalAlignment="Bottom" TextWrapping="Wrap" Name="MessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
-        </Grid>
+       
         <Grid Name="RegistrationViewGrid" Visibility="Hidden" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LoginPanelColor}">
             <Grid Height="50" VerticalAlignment="Top">
                 <Button HorizontalContentAlignment="Right" Click="CancelRegistrationClick" HorizontalAlignment="Right"
@@ -972,10 +193,10 @@
                     <TextBox Name="NewCustomerEmail" Style="{StaticResource TextBoxWaterEmail}"  HorizontalAlignment="Stretch" Width="Auto" />
                     <TextBox Name="ConfirmEmailTextBox" Style="{StaticResource TextBoxWaterConfirmEmail}"  HorizontalAlignment="Stretch" Width="Auto" />
                     <PasswordBox Name="RegisterPasswordBox" Style="{StaticResource PasswordBoxWater}"
-                                                    HorizontalAlignment="Stretch" Width="Auto" KeyDown="PasswordBox_OnKeyDown" >
+                                                    HorizontalAlignment="Stretch" Width="Auto" >
                     </PasswordBox>
                     <PasswordBox Name="ConfirmRegisterPasswordBox" Style="{DynamicResource PasswordBoxWaterConfirm}"
-                                                    HorizontalAlignment="Stretch" Width="Auto"  KeyDown="PasswordBox_OnKeyDown" >
+                                                    HorizontalAlignment="Stretch" Width="Auto" >
                     </PasswordBox>
                     <TextBox Name="CompanyTextBox" Style="{StaticResource TextBoxWaterCompany}"  HorizontalAlignment="Stretch" Width="Auto" />
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20, 0,0,0">

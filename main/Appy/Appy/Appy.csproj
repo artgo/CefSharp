@@ -143,6 +143,9 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
+    <Compile Include="UI\LoginPanel.xaml.cs">
+      <DependentUpon>LoginPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -217,6 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
+    <Resource Include="UI\Images\cloudGrey.png" />
     <Resource Include="UI\Images\FeaturedMaskDefault.png" />
     <Resource Include="UI\Images\LaunchAppStore.png" />
     <Resource Include="UI\Images\Line.png" />
@@ -316,7 +320,6 @@
     <Resource Include="UI\Images\aboutWhite.png" />
     <Resource Include="UI\Images\alertGrey.png" />
     <Resource Include="UI\Images\alertWhite.png" />
-    <Resource Include="UI\Images\cloudGrey.png" />
     <Resource Include="UI\Images\cogGrey.png" />
     <Resource Include="UI\Images\cogWhite.png" />
     <Resource Include="UI\Images\dotGrey.png" />
@@ -340,6 +343,10 @@
     <Resource Include="UI\Images\FeaturedMaskClick.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\LoginPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

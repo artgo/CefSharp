@@ -19,11 +19,11 @@ namespace AppDirect.WindowsClient.UI
     public class MainViewModel : INotifyPropertyChanged
     {
         private const int MyAppDisplayLimit = 10;
-        private const int SuggestedAppsDisplayLimit = 5;
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
+        private bool _registrationInProgress = false;
 
         public string VersionString
         {
@@ -49,6 +49,25 @@ namespace AppDirect.WindowsClient.UI
             set
             {
                 NotifyPropertyChanged("CloudSyncVisibility");
+            }
+        }
+
+        public Visibility VerifyEmailVisibility
+        {
+            get
+            {
+                if (_registrationInProgress)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Hidden;
+                }
+            }
+            set
+            {
+                NotifyPropertyChanged("VerifyEmailVisibility");
             }
         }
 
@@ -193,7 +212,7 @@ namespace AppDirect.WindowsClient.UI
 
             MyApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.AllInstalledApplications.Take(MyAppDisplayLimit));
 
-            SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps.Take(SuggestedAppsDisplayLimit));
+            SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps);
         }
         
         private void GetMyApplications()
@@ -205,7 +224,16 @@ namespace AppDirect.WindowsClient.UI
 
         private void SyncDisplayWithStoredList(int displayLimit, ObservableCollection<Application> displayedList, List<Application> storedList  )
         {
-            List<Application> storedApps = storedList.Take(displayLimit).ToList();
+            List<Application> storedApps;
+
+            if (displayLimit == 0)
+            {
+                storedApps = storedList;
+            }
+            else
+            {
+                storedApps = storedList.Take(displayLimit).ToList();
+            }
             
             for (int index   = 0; index < storedApps.Count; index++)
             {
@@ -275,7 +303,7 @@ namespace AppDirect.WindowsClient.UI
             ServiceLocator.LocalStorage.LastSuggestedApps =
                 suggestedApps.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
-            SyncDisplayWithStoredList(SuggestedAppsDisplayLimit, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
+            SyncDisplayWithStoredList(0, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
         }
 
         private void GetSuggestedApplicationsWithApiCall()
@@ -305,7 +333,7 @@ namespace AppDirect.WindowsClient.UI
             ServiceLocator.LocalStorage.LastSuggestedApps =
                 suggestedApps.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
-            SyncDisplayWithStoredList(SuggestedAppsDisplayLimit, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
+            SyncDisplayWithStoredList(0, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
         }
 
         public bool Login(string username, string password)

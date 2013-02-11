@@ -95,6 +95,7 @@ namespace AppDirect.WindowsClient.API
                         UrlString = applicationsApplication.Url,
                         ImagePath = applicationsApplication.IconUrl,
                         IsLocalApp = false,
+                        Price = applicationsApplication.StartingPrice
                     };
                    
                 appList.Add(app);
@@ -122,7 +123,8 @@ namespace AppDirect.WindowsClient.API
                     ImagePath = applicationsApplication.ImageUrl,
                     Name = applicationsApplication.Name,
                     UrlString = applicationsApplication.LoginUrl,
-                    IsLocalApp = false
+                    IsLocalApp = false,
+                    Price = applicationsApplication.StartingPrice
                 };
                 appList.Add(app);
             }

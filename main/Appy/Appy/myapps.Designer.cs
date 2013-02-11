@@ -48,9 +48,12 @@ namespace AppDirect.WindowsClient.ObjectMapping
         public string PublishedOn { get; set; }
         [System.Xml.Serialization.XmlElementAttribute("status")]
         public string Status { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("startingPrice")]
+        public string StartingPrice { get; set; }
         [System.Xml.Serialization.XmlArrayAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("entry", typeof(MyappsMyappVersionsEntry), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public List<MyappsMyappVersionsEntry> Versions { get; set; }
+
 
         public MyappsMyapp()
         {

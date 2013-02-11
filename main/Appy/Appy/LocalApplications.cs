@@ -26,7 +26,8 @@ namespace AppDirect.WindowsClient
                         Name = "Facebook",
                         UrlString = "http://www.facebook.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true,
+                        Price = "Free"
                     },
 
                 new Application
@@ -38,7 +39,8 @@ namespace AppDirect.WindowsClient
                         Name = "Gmail",
                         UrlString = "http://www.gmail.com",
                         AlertCount = 1,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     },
                 new Application
                     {
@@ -60,7 +62,8 @@ namespace AppDirect.WindowsClient
                         Name = "LinkedIn",
                         UrlString = "http://www.linkedIn.com",
                         AlertCount = 1,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     },
                     new Application
                     {
@@ -71,7 +74,8 @@ namespace AppDirect.WindowsClient
                         Name = "Freshbooks",
                         UrlString = "http://www.freshbooks.com",
                         AlertCount = 1,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     },
                      new Application
                     {
@@ -82,7 +86,8 @@ namespace AppDirect.WindowsClient
                         Name = "Pinterest",
                         UrlString = "http://www.Pinterest.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, 
                     new Application
                     {
@@ -93,7 +98,8 @@ namespace AppDirect.WindowsClient
                         Name = "Yelp",
                         UrlString = "http://www.Yelp.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, 
                     new Application
                     {
@@ -104,7 +110,8 @@ namespace AppDirect.WindowsClient
                         Name = "Groupon",
                         UrlString = "http://www.Groupon.com",
                         AlertCount = 1,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, new Application
                     {
                         Description = "LivingSocial",
@@ -114,7 +121,8 @@ namespace AppDirect.WindowsClient
                         Name = "LivingSocial",
                         UrlString = "http://www.LivingSocial.com",
                         AlertCount =0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, 
                     new Application
                     {
@@ -125,7 +133,8 @@ namespace AppDirect.WindowsClient
                         Name = "Instagram",
                         UrlString = "http://www.Instagram.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, 
                     new Application
                     {
@@ -136,7 +145,8 @@ namespace AppDirect.WindowsClient
                         Name = "Hulu",
                         UrlString = "http://www.Hulu.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, new Application
                     {
                         Description = "Rdio",
@@ -146,7 +156,8 @@ namespace AppDirect.WindowsClient
                         Name = "Rdio",
                         UrlString = "http://www.Rdio.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, 
                     new Application
                     {
@@ -157,7 +168,8 @@ namespace AppDirect.WindowsClient
                         Name = "GrubHub",
                         UrlString = "http://www.GrubHub.com",
                         AlertCount = 1,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, 
                     new Application
                     {
@@ -168,7 +180,8 @@ namespace AppDirect.WindowsClient
                         Name = "Grooveshark",
                         UrlString = "http://www.Grooveshark.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, new Application
                     {
                         Description = "Reddit",
@@ -178,7 +191,8 @@ namespace AppDirect.WindowsClient
                         Name = "Reddit",
                         UrlString = "http://www.Reddit.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, new Application
                     {
                         Description = "Weather Channel",
@@ -188,7 +202,8 @@ namespace AppDirect.WindowsClient
                         Name = "Weather Channel",
                         UrlString = "http://www.WeatherChannel.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, new Application
                     {
                         Description = "Yahoo Mail",
@@ -198,7 +213,8 @@ namespace AppDirect.WindowsClient
                         Name = "Y!Mail",
                         UrlString = "http://mail.yahoo.com",
                         AlertCount = 0,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }, 
                     new Application
                     {
@@ -209,7 +225,8 @@ namespace AppDirect.WindowsClient
                         Name = "Flickr",
                         UrlString = "http://www.Flickr.com",
                         AlertCount = 1,
-                        IsLocalApp = true
+                        IsLocalApp = true, 
+                        Price= "Free"
                     }
             };
     }
