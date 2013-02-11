@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\MainApplicationCallback.cs" />
+    <Compile Include="Interaction\BrowserCookie.cs" />
     <Compile Include="Interaction\BrowserObject.cs" />
     <Compile Include="Service References\MainApp\Reference.cs">
       <AutoGen>True</AutoGen>

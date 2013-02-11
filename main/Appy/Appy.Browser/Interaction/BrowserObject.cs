@@ -21,6 +21,8 @@ namespace AppDirect.WindowsClient.Browser.Interaction
         private const string CacheDiskEnable = @"browser.cache.disk.enable";
         private const string CacheMemoryEnable = @"browser.cache.memory.enable";
         private const string CacheDiskParentDirectory = @"browser.cache.disk.parent_directory";
+        private const string StartupPage = @"browser.startup.page";
+        private const int RestoreSession = 3;
 
         private BrowserObject() { }
 
@@ -57,6 +59,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             GeckoPreferences.User[CacheDiskEnable] = true;
             GeckoPreferences.User[CacheMemoryEnable] = true;
             GeckoPreferences.User[CacheDiskParentDirectory] = cachePath;
+            GeckoPreferences.User[StartupPage] = RestoreSession;
 
             // Uncomment the follow line to enable CustomPrompt's
             // GeckoPreferences.User["browser.xul.error_pages.enabled"] = false;
@@ -72,7 +75,8 @@ namespace AppDirect.WindowsClient.Browser.Interaction
 
         private void ResurrectCookies()
         {
-            IEnumerator<Gecko.Cookie> cookiesEnumerator = CookieManager.GetEnumerator();
+            var cookiesEnumerator = CookieManager.GetEnumerator();
+
             while (cookiesEnumerator.MoveNext())
             {
                 var cookie = cookiesEnumerator.Current;
@@ -81,7 +85,6 @@ namespace AppDirect.WindowsClient.Browser.Interaction
                     CookieManager.Add(cookie.Host, cookie.Path, cookie.Name, cookie.Value, cookie.IsSecure,
                                       cookie.IsHttpOnly, cookie.IsSession, InfiniteDate);
                 }
-
             }
         }
 
