@@ -20,6 +20,7 @@ namespace AppDirect.WindowsClient.API
         private const string JsonAcceptString = "application/json,text/javascript,*/*;q=0.01";
         private const string HtmlAcceptString = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
         private const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.0 Safari/537.1";
+        private const string LoggedInText = "<a id=\"account\"";
         private readonly Uri ServiceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FEATURED");
         private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
         private DateTime _time = DateTime.Now;
@@ -105,7 +106,7 @@ namespace AppDirect.WindowsClient.API
 
             var reader = new StreamReader(response.GetResponseStream());
             string result = reader.ReadToEnd();
-            if ((response.StatusCode != HttpStatusCode.OK) || String.IsNullOrEmpty(result) || (!result.Contains("myAppsPage")))
+            if ((response.StatusCode != HttpStatusCode.OK) || String.IsNullOrEmpty(result) || (!result.Contains(LoggedInText)))
             {
                 return false;
             }

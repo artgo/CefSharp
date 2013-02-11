@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Security.Authentication;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 
@@ -103,6 +100,16 @@ namespace AppDirect.WindowsClient.Tests
         public void IsAuthenticatedAfterAuthentication()
         {
             var appDirectApi = BuildCachedAppDirectApiAuthenticated();
+            var authenticated = appDirectApi.IsAuthenticated;
+
+            Assert.IsTrue(authenticated);
+        }
+
+        [TestMethod]
+        public void IsAuthenticatedAfterAuthenticationWithNoApps()
+        {
+            var appDirectApi = BuildCachedAppDirectApi();
+            appDirectApi.Authenticate(TestData.NoAppsUsername, TestData.TestPassword);
             var authenticated = appDirectApi.IsAuthenticated;
 
             Assert.IsTrue(authenticated);
