@@ -25,7 +25,7 @@
         <SolidColorBrush x:Key="DefaultTextColor" Color="#dfdfdf" />
         <SolidColorBrush x:Key="DisabledColor" Color="#656565" />
         <SolidColorBrush x:Key="ErrorTextColor" Color="#f13737" />
-        <SolidColorBrush x:Key="AlertTextColor" Color="#de2b2b" />
+        <SolidColorBrush x:Key="AlertTextColor" Color="#ffad38" />
         <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#36454d" />
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
         <Storyboard x:Key="enterGotFocus" >
@@ -549,7 +549,7 @@
                     <ControlTemplate TargetType="Button">
                         <Grid Style="{StaticResource TopPanelGridStyle}">
                             <StackPanel Style="{StaticResource TopPanelStackPanelStyle}">
-                                <Image Name="VerifyEmailImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="UI\Images/cloudGrey.png" Width="20"/>
+                                <Image Name="VerifyEmailImage" VerticalAlignment="Bottom" Margin="0,0,0,1" HorizontalAlignment="Left" Source="UI\Images/email.png" Width="16"/>
                                 <TextBlock Name="VerifyEmailTextBlock" Margin="4,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" VerticalAlignment="Bottom">Verify Email</TextBlock>
                             </StackPanel>
                             <Line Name="VerifyEmailUnderline"  X1="2" Y1="28" X2="108" Y2="28" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
@@ -557,12 +557,12 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="VerifyEmailTextBlock" Property="Foreground" Value="{StaticResource DefaultTextColor}" />
-                                <Setter TargetName="VerifyEmailImage" Property="Source" Value="UI\Images/cloudWhite.png" />
+                                <Setter TargetName="VerifyEmailImage" Property="Source" Value="UI\Images/email.png" />
                                 <Setter TargetName="VerifyEmailUnderline" Property="Visibility" Value="Visible"/>
                             </Trigger>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="VerifyEmailTextBlock" Property="Foreground" Value="{StaticResource AlertTextColor}" />
-                                <Setter TargetName="VerifyEmailImage" Property="Source" Value="UI\Images/cloudWhite.png" />
+                                <Setter TargetName="VerifyEmailImage" Property="Source" Value="UI\Images/email.png" />
                                 <Setter TargetName="VerifyEmailUnderline" Property="Visibility" Value="Visible"/>
                             </Trigger>
                         </ControlTemplate.Triggers>

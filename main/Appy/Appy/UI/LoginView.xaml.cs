@@ -185,9 +185,8 @@ namespace AppDirect.WindowsClient.UI
             this.Visibility= Visibility.Hidden;
         }
 
-        private void GoToRegistrationClick(object sender, RoutedEventArgs e)
+        public void GoToRegistrationClick(object sender, EventArgs eventArgs)
         {
-            //SetVisibleGrid(RegistrationViewGrid);
 
             //var emailAddress = NewCustomerEmail.Text;
 
