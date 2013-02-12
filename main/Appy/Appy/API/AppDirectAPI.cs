@@ -140,5 +140,21 @@ namespace AppDirect.WindowsClient.API
         {
             _context = null;
         }
+
+
+        public bool RegisterUser(string email, string firstName, string lastName, string password, string confirmPassword, string companyName, string industryId, string companySize, string phone)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ConfirmUserEmail(string email, string confirmationCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsEmailConfirmed(string email)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
