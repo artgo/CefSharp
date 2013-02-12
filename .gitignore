@@ -17,3 +17,4 @@ main/Appy/Setup/uninstall.exe
 *.DotSettings
 *.user
 TestResults
+main/Appy/Setup/version.txt
