@@ -355,6 +355,11 @@
   <ItemGroup>
     <Resource Include="UI\Images\email.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\crossBtn_click.png" />
+    <Resource Include="UI\Images\crossBtn_default.png" />
+    <Resource Include="UI\Images\crossBtn_hover.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)Appy.exe" "$(SolutionDir)Setup\Appy" /y /i /r

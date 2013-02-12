@@ -21,9 +21,6 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        private EventHandler GoToRegistration;
-
         public List<UIElement> WindowPanels = new List<UIElement>();
         
         public MainViewModel ViewModel
@@ -55,9 +52,7 @@ namespace AppDirect.WindowsClient.UI
             WindowPanels.Add(LoginViewControl);
             WindowPanels.Add(RegistrationViewGrid);
 
-            Login_OnRegistrationClick += LoginViewControl.GoToRegistrationClick;
-
-            GoToRegistration += LoginViewControl.GoToRegistrationClick;
+            LoginViewControl.RegistrationClick += Login_OnRegistrationClick;
         }
 
         private void SetVisibleGrid(UIElement visibleControl)
@@ -223,11 +218,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void Login_OnRegistrationClick(object o, EventArgs e)
         {
-            Process[] processes = Process.GetProcessesByName(Helper.ApplicationName + Helper.BrowserProjectExt);
-            foreach (Process process in processes)
-            {
-                Helper.RetryAction(() => process.Kill(), 5, TimeSpan.FromMilliseconds(500));
-            }
+            SetVisibleGrid(RegistrationViewGrid);
         }
     }
 }

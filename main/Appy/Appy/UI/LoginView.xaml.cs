@@ -21,6 +21,8 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class LoginView : UserControl
     {
+        public EventHandler RegistrationClick;
+
         private static int minimumPasswordLength = 4;
         private static int maximumPasswordLength = 18;
         private static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
@@ -187,6 +189,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void GoToRegistrationClick(object sender, EventArgs eventArgs)
         {
+            RegistrationClick.Invoke(sender, eventArgs);
 
             //var emailAddress = NewCustomerEmail.Text;
 
