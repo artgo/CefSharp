@@ -223,7 +223,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
-    <Resource Include="UI\Images\cloudGrey.png" />
     <Resource Include="UI\Images\FeaturedMaskDefault.png" />
     <Resource Include="UI\Images\LaunchAppStore.png" />
     <Resource Include="UI\Images\Line.png" />
@@ -262,9 +261,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\linked.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\cloudWhite.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\cancelLogin.png" />
@@ -382,6 +378,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\ScrollBarBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloudGrey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloudWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
