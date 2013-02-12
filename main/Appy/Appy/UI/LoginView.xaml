@@ -6,15 +6,15 @@
              mc:Ignorable="d" 
              Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" >
     <UserControl.Resources>
-        
+    
     </UserControl.Resources>
     <Grid Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
-        <Rectangle Height="320" Width="670" Fill="{StaticResource LoginPanelColor}"></Rectangle>
+        <Rectangle Height="320" Width="670" Fill="{StaticResource LoginPanelColor}" Opacity=".80">
+            <Rectangle.Effect>
+                <BlurEffect Radius="10"></BlurEffect>
+            </Rectangle.Effect>
+        </Rectangle>
         <Grid Height="50" VerticalAlignment="Top">
-            <Button HorizontalContentAlignment="Right" Click="CancelLoginClick" HorizontalAlignment="Right"
-                                Style="{StaticResource CloseLoginButton}" Width="16"
-                                Height="16" VerticalAlignment="Top" Margin="0,8,8,0" >
-            </Button>
             <TextBlock Name="LoginLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Height="20" Width="280"  Margin="0,24,0,0" VerticalAlignment="Bottom" Text="{Binding LoginHeaderText}" HorizontalAlignment="Center" TextAlignment="Center"/>
         </Grid>
         <Grid Margin="0,100,18,0" >
@@ -22,6 +22,7 @@
                 <ColumnDefinition Width="340"/>
                 <ColumnDefinition Width="340"/>
             </Grid.ColumnDefinitions>
+            <Button Margin="30,0,0,30" Click="CancelLoginClick" Width="120" Height="30" Style="{StaticResource BackToAppsButton}" HorizontalAlignment="Left" VerticalAlignment="Bottom"> </Button>
             <Grid Grid.Column="0" Margin="180,0,18,0">
                 <TextBlock Name="NewCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="New Customer"/>
                 <Button Name="GoToRegistrationButton" Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,40"

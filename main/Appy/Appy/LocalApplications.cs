@@ -230,5 +230,21 @@ namespace AppDirect.WindowsClient
                         Price= "Free"
                     }
             };
+
+        public static Application GetAppStoreApp()
+        {
+            return new Application
+                {
+                    Description = "App Store",
+                    Id = "App Store",
+                    LocalImagePath = "Icons/appStore-Icon.png",
+                    ImagePath = "Icons/appStore-Icon.png",
+                    Name = "Browse Apps",
+                    UrlString = Properties.Resources.AppStoreUrlString,
+                    AlertCount = 0,
+                    IsLocalApp = true,
+                    Price = "Free"
+                };
+        }
     }
 }

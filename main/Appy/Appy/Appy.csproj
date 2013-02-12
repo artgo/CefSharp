@@ -150,6 +150,9 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\RegistrationView.xaml.cs">
+      <DependentUpon>RegistrationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -351,6 +354,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\RegistrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\email.png" />
@@ -359,6 +366,22 @@
     <Resource Include="UI\Images\crossBtn_click.png" />
     <Resource Include="UI\Images\crossBtn_default.png" />
     <Resource Include="UI\Images\crossBtn_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AppOnHoverMask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\appStore-Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back_hover.png" />
+    <Resource Include="UI\Images\creditCard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\ScrollBarBackground.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

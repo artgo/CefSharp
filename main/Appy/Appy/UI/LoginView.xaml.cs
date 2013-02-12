@@ -22,6 +22,7 @@ namespace AppDirect.WindowsClient.UI
     public partial class LoginView : UserControl
     {
         public EventHandler RegistrationClick;
+        public EventHandler CloseLogin;
 
         private static int minimumPasswordLength = 4;
         private static int maximumPasswordLength = 18;
@@ -165,10 +166,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (ViewModel.Login(UsernameTextBox.Text, PasswordBox.Password))
                 {
-                //    YourAppsTab.IsSelected = true;
-                //    SyncButton.Visibility = Visibility.Hidden;
-                //    LogoutButton.Visibility = Visibility.Visible;
                     LoginFailedMessage.Visibility = Visibility.Hidden;
+                    CloseLogin.Invoke(sender, e);
                 }
                 else
                 {

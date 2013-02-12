@@ -157,6 +157,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="BackToAppsButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" >
+                                <Image Name="BackImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="UI\Images\back.png" Width="30" />
+                                <TextBlock Name="BackText" Margin="8,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Center" FontSize="10">Back to My Apps</TextBlock>
+                            </StackPanel>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BackText" Property="Foreground" Value="{StaticResource DefaultTextColor}" />
+                                <Setter TargetName="BackImage" Property="Source" Value="UI\Images\back_hover.png"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="MainButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>

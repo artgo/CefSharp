@@ -50,9 +50,18 @@ namespace AppDirect.WindowsClient.UI
             getUpdateThread.RunWorkerAsync();
 
             WindowPanels.Add(LoginViewControl);
-            WindowPanels.Add(RegistrationViewGrid);
+            WindowPanels.Add(RegistrationViewControl);
 
             LoginViewControl.RegistrationClick += Login_OnRegistrationClick;
+            LoginViewControl.CloseLogin += Login_Close;
+
+            RegistrationViewControl.ClosePanel += Login_Close;
+
+        }
+
+        private void Login_Close(object sender, EventArgs e)
+        {
+            SetVisibleGrid(MainViewGrid);
         }
 
         private void SetVisibleGrid(UIElement visibleControl)
@@ -218,7 +227,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void Login_OnRegistrationClick(object o, EventArgs e)
         {
-            SetVisibleGrid(RegistrationViewGrid);
+            SetVisibleGrid(RegistrationViewControl);
         }
     }
 }

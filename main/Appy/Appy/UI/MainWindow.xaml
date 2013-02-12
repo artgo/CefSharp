@@ -9,6 +9,9 @@
         AllowsTransparency="True"
         Closing="MainWindow_OnClosing">
     <Window.Resources>
+        <Storyboard x:Key="ListBoxGotFocus" >
+            <DoubleAnimation Duration="0:0:0.4" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="ScrollBar"/>
+        </Storyboard>
         <ContextMenu x:Key="UninstallContextMenu" Width="130"  Background="#595959" >
             <MenuItem Header="Uninstall" Click="UninstallAppClick" DataContext="{Binding}" Background="#595959" Foreground="{StaticResource DefaultTextColor}"/>
             <!--<Line Stroke="#656565" StrokeThickness="1"></Line>-->
@@ -40,11 +43,10 @@
             </Setter>
         </Style>
         <Style x:Key="YourAppsButtonGrid" TargetType="Grid">
-            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Width" Value="165"/>
             <Setter Property="Height" Value="45"/>
-            <Setter Property="Margin" Value="2,2,0,0"/>
         </Style>
         <Style x:Key="TopPanelGridStyle" TargetType="Grid">
             <Setter Property="Margin" Value="0,2,0,0"/>
@@ -94,11 +96,11 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button" >
                         <Grid Style="{StaticResource TopPanelGridStyle}">
-                            <StackPanel Style="{StaticResource TopPanelStackPanelStyle}">
+                            <StackPanel Style="{StaticResource TopPanelStackPanelStyle}" Margin="6,2,0,0">
                                 <Image Name="CloudSyncImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="Images/cloudGrey.png" Width="20"/>
                                 <TextBlock Name="CloudSyncTextBlock" Margin="4,0,0,0" HorizontalAlignment="Left" Style="{StaticResource TextStyle}" Foreground="{StaticResource DisabledColor}" VerticalAlignment="Bottom">Cloud Sync</TextBlock>
                             </StackPanel>
-                            <Line Name="CloudSyncUnderline"  X1="0" Y1="28" X2="100" Y2="28" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
+                            <Line Name="CloudSyncUnderline" X1="0" Y1="28" X2="100" Y2="28" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -116,11 +118,11 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid Style="{StaticResource TopPanelGridStyle}">
-                            <StackPanel Style="{StaticResource TopPanelStackPanelStyle}"  >
+                            <StackPanel Style="{StaticResource TopPanelStackPanelStyle}" Margin="14,0,0,0" >
                                 <Image Name="MyAppsImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="Images/myAppGrey.png" Width="16" />
-                                <TextBlock Name="MyAppsTextBlock" Margin="8,0,0,1" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Bottom">My Apps</TextBlock>
+                                <TextBlock Name="MyAppsTextBlock" Margin="8,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Bottom">My Apps</TextBlock>
                             </StackPanel>
-                            <Line Name="MyAppsUnderline"  X1="-5" Y1="28" X2="95" Y2="28" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
+                            <Line Name="MyAppsUnderline"  X1="3" Y1="28" X2="94" Y2="28" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -143,29 +145,26 @@
             <Setter Property="Width" Value="165"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="Margin" Value="0,0,30,2"></Setter>
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="Images\AppBtnDefault.png"/>
-                </Setter.Value>
-            </Setter>
+           
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
+                        <Grid Name="App"  Style="{StaticResource YourAppsButtonGrid}">
+                           <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="55"/>
+                                <ColumnDefinition Width="100*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Name="BackgroundImage" Grid.ColumnSpan="2"  VerticalAlignment="Top" HorizontalAlignment="Left" Source="Images\AppBtnDefault.png" />
+                            <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0" Width="37" Height="37" Source="{Binding LocalImagePath}" />
+                            <Image Grid.Column="0" VerticalAlignment="Top"  HorizontalAlignment="Left" Margin="2,2,0,0" Width="37" Height="37" Source="Images/IconMask.png" />
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="11" Style="{StaticResource TextStyle}" Height="15" Width="125" Text="{Binding Name}" />
+                            <Image Name="OnHoverMask" Grid.ColumnSpan="2" Margin="-2,2,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Source="Images\AppOnHoverMask.png" Visibility="Hidden" />
+                        </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <ImageBrush ImageSource="Images\AppBtnHover.png" />
-                                    </Setter.Value>
-                                </Setter>
+                                <!--<Setter Property="Source" TargetName="BackgroundImage" Value="Images\AppBtnHover.png" />-->
+                                <Setter Property="Visibility" TargetName="OnHoverMask" Value="Visible" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -220,12 +219,16 @@
         </Style>
         <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
             <Grid Height="230" VerticalAlignment="Top">
-                <Border Background="Transparent" BorderThickness="1" />
+                <Border BorderThickness="1">
+                    <Border.Background>
+                        <ImageBrush ImageSource="Images/ScrollBarBackground.png"/>
+                    </Border.Background>
+                </Border>
                 <Track Name="PART_Track" Grid.Row="0" IsDirectionReversed="true">
                     <Track.Thumb>
                         <Thumb 
           Style="{StaticResource ScrollBarThumb}" 
-          Width="6" Background="#383c44" />
+          Width="5" Background="#383c44" />
                     </Track.Thumb>
                 </Track>
             </Grid>
@@ -235,7 +238,7 @@
             <Setter Property="OverridesDefaultStyle" Value="true"/>
             <Style.Triggers>
                 <Trigger Property="Orientation" Value="Vertical">
-                    <Setter Property="Width" Value="6"/>
+                    <Setter Property="Width" Value="9"/>
                     <Setter Property="Height" Value="Auto" />
                     <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
                 </Trigger>
@@ -247,10 +250,29 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" />
-                <ScrollBar x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource ScrollBar}"/>
+                <ScrollBar x:Name="PART_VerticalScrollBar" Opacity="0" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource ScrollBar}"/>
             </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard TargetName="PART_VerticalScrollBar">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                  To="1" Duration="0:0:1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard TargetName="PART_VerticalScrollBar">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                  To="0.0" Duration="0:0:1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </ControlTemplate.Triggers>
         </ControlTemplate>
         <Style x:Key="ListBoxStyle" TargetType="{x:Type ListBox}">
             <Setter Property="Background" Value="Transparent"/>
@@ -264,7 +286,7 @@
                     <ControlTemplate TargetType="{x:Type ListBox}">
                         <Grid>
                             <Border CornerRadius="0" x:Name="Bd" BorderThickness="0" SnapsToDevicePixels="true">
-                                <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Template="{StaticResource ScrollViewerControlTemplate1}">
+                                <ScrollViewer Name="ScrollBar" Focusable="false" Padding="{TemplateBinding Padding}" Template="{StaticResource ScrollViewerControlTemplate1}">
                                     <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                 </ScrollViewer>
                             </Border>
@@ -298,10 +320,10 @@
                         <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0" Grid.Column="1"/>
             <Grid Name="TopMenuGrid" Height="30" VerticalAlignment="Top" Margin="5,0,0,0">
                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="88"/>
+                    <ColumnDefinition Width="95"/>
+                    <ColumnDefinition Width="95"/>
+                    <ColumnDefinition Width="95"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Button Name="MyAppsButton" Grid.Column="0" Style="{StaticResource MyAppsButton}"/>
@@ -309,7 +331,7 @@
                 <Button Name="AlertsButton" Grid.Column="2" Style="{StaticResource AlertsButton}" Visibility="{Binding VerifyEmailVisibility}"/>
                 <Button Name="UpdateAvailableButton" Click="UpdateButtonOnClick" Grid.Column="3" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left"  Visibility="Hidden" Margin="120,6,0,0" Content="Update Available!" />
                 <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="1" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Margin="120,6,0,0" Content="Log Out"/>
-                <Line Grid.ColumnSpan="5" X1="0" Y1="30" X2="425" Y2="30" Stroke="#656565" StrokeThickness="1" />
+                <Line Grid.ColumnSpan="5" X1="5" Y1="30" X2="420" Y2="30" Stroke="#656565" StrokeThickness="1" />
                 </Grid>
             <Grid Name="VerifyEmailGrid" Visibility="Hidden" Background="#000708" Width="380" Height ="200" Opacity=".80" VerticalAlignment="Top" Margin="0,38,0,0" >
                 <Border BorderBrush="{StaticResource DisabledColor}" BorderThickness="1">
@@ -325,20 +347,11 @@
             </Grid>
             <TabControl Grid.ColumnSpan="2" Margin="0,30,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
             <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
-                    
                 <Grid Name="YourApps" Margin="20,25,0,0" Height="240" Width="410" VerticalAlignment="Top" HorizontalAlignment="Left">
-                        <!--<Button Style="{StaticResource AppButton}"  Click="AppButtonClick">
-                            <Grid Style="{StaticResource YourAppsButtonGrid}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="44"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="Icons/facebook.png" />
-                                <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="Images/IconMask.png" />
-                                <TextBlock VerticalAlignment="Center" FontSize="11" Style="{StaticResource TextStyle}" Grid.Column="1" Height="15" Width="110" Padding="6,0,0,0" Margin="0,0,0,7" Text="Facebook"></TextBlock>
-                                               
-                    </Grid>
-                        </Button>-->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="331*"/>
+                            <ColumnDefinition Width="79*"/>
+                        </Grid.ColumnDefinitions>
                         <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -347,17 +360,7 @@
                             </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Style="{StaticResource AppButton}"  Click="AppButtonClick">
-                                        <Grid Style="{StaticResource YourAppsButtonGrid}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="44"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="{Binding LocalImagePath}" />
-                                            <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="37" Height="37" Source="Images/IconMask.png" />
-                                            <TextBlock VerticalAlignment="Center" FontSize="11" Style="{StaticResource TextStyle}" Grid.Column="1" Height="15" Width="110" Padding="6,0,0,0" Margin="0,0,0,7" Text="{Binding Name}" />
-                                        </Grid>
-                                    </Button>
+                                    <Button Style="{StaticResource AppButton}"  Click="AppButtonClick" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                             <ListBox.Resources>
@@ -367,7 +370,7 @@
                                 </Style>
                             </ListBox.Resources>
                         </ListBox>
-                        <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal" Grid.ColumnSpan="2" >
+                       <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal" Grid.ColumnSpan="2" >
                             <TextBlock Text="{Binding MyAppsLoadError}"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="345" Height="20" Foreground="White"/>
                         </StackPanel>
                     </Grid>
@@ -376,7 +379,6 @@
             <Grid Grid.Column="1" Margin="30,0,0,0">
                 <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="12" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="0,30,0,0" VerticalAlignment="Top" />
                 <!--<Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />-->
-                <Line  Stroke="#383c44" StrokeThickness="1" X1="185" Y1="50" X2="185" Y2="300" ></Line>
                 <ListBox Style="{StaticResource ListBoxStyle}" Height="240" VerticalAlignment="Top" Margin="0,60,30,20" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
 
                         <ListBox.Resources >
@@ -400,46 +402,6 @@
             <Label Name="Version" Content="{Binding VersionString }" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Left"/>
         </Grid>
         <controls:LoginView x:Name="LoginViewControl" Visibility="Hidden"/>
-        <Grid Name="RegistrationViewGrid" Visibility="Hidden" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LoginPanelColor}">
-            <Grid Height="50" VerticalAlignment="Top">
-                <Button HorizontalContentAlignment="Right" Click="CancelRegistrationClick" HorizontalAlignment="Right"
-                                Style="{StaticResource CloseLoginButton}" Width="16"
-                                Height="16" VerticalAlignment="Top" Margin="0,8,8,0" >
-                </Button>
-             </Grid>
-            <Grid Margin="0,70,18,0" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition Width="{StaticResource LeftColumnWidth}"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Margin="80,0,18,0">
-                    <TextBlock Name="RegistrationLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Foreground="White" Text="Registration"/>
-                </Grid>
-                <UniformGrid Grid.Column="1" Columns="2" Rows="4" Margin="0,-10,0,80">
-                    <TextBox Name="FirstNameTextBox" Style="{StaticResource TextBoxWater}"
-                                                HorizontalAlignment="Stretch" Width="Auto" />
-                    <TextBox Name="LastNameTextBox" Style="{StaticResource TextBoxWaterLastName}"
-                                                HorizontalAlignment="Stretch" Width="Auto" />
-                    <TextBox Name="NewCustomerEmail" Style="{StaticResource TextBoxWaterEmail}"  HorizontalAlignment="Stretch" Width="Auto" />
-                    <TextBox Name="ConfirmEmailTextBox" Style="{StaticResource TextBoxWaterConfirmEmail}"  HorizontalAlignment="Stretch" Width="Auto" />
-                    <PasswordBox Name="RegisterPasswordBox" Style="{StaticResource PasswordBoxWater}"
-                                                    HorizontalAlignment="Stretch" Width="Auto" >
-                    </PasswordBox>
-                    <PasswordBox Name="ConfirmRegisterPasswordBox" Style="{DynamicResource PasswordBoxWaterConfirm}"
-                                                    HorizontalAlignment="Stretch" Width="Auto" >
-                    </PasswordBox>
-                    <TextBox Name="CompanyTextBox" Style="{StaticResource TextBoxWaterCompany}"  HorizontalAlignment="Stretch" Width="Auto" />
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20, 0,0,0">
-                        <TextBox Style="{StaticResource TextBoxStyle}" FontSize="9" Text="Accept"  />
-                        <TextBox Margin="-1,0,4,0" Style="{StaticResource TextBoxStyle}" FontSize="9" Text= "terms and conditions" TextDecorations="Underline" />
-                        <CheckBox></CheckBox>
-                    </StackPanel>
-                </UniformGrid>
-                <Button Name="RegisterButton" Grid.Column="1" FontSize="9" Content="Register" Style="{StaticResource MainButtonStyle}" Margin="0,0,12,30"
-                                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="140"
-                                                Height="32"/>
-            </Grid>
-            <TextBlock TextWrapping="Wrap" VerticalAlignment="Bottom" Name="RvMessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
-        </Grid>
+        <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden"/>
     </Grid>
 </Window>

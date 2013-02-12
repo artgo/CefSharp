@@ -193,12 +193,12 @@ namespace AppDirect.WindowsClient.UI
 
         private void InitializeAppsLists()
         {
-            if (ServiceLocator.LocalStorage.InstalledLocalApps == null)
+            if (ServiceLocator.LocalStorage.InstalledLocalApps == null || ServiceLocator.LocalStorage.InstalledLocalApps.Count == 0)
             {
-                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>();
+                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>{LocalApplications.GetAppStoreApp()}; 
             }
 
-            if (ServiceLocator.LocalStorage.InstalledAppDirectApps == null)
+            if (ServiceLocator.LocalStorage.InstalledAppDirectApps == null )
             {
                 ServiceLocator.LocalStorage.InstalledAppDirectApps = new List<Application>();
             }
