@@ -70,15 +70,6 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://appcenter.staples.com/home.
-        /// </summary>
-        internal static string AppStoreUrlString {
-            get {
-                return ResourceManager.GetString("AppStoreUrlString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to https://test.appdirect.com.
         /// </summary>
         internal static string BaseAppStoreUrl {

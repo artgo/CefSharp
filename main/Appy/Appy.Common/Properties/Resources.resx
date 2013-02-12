@@ -117,40 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ApplicationExe" xml:space="preserve">
-    <value>Appy.exe</value>
-  </data>
-  <data name="BaseAppStoreUrl" xml:space="preserve">
-    <value>https://test.appdirect.com</value>
-  </data>
-  <data name="CredentialsProblemError" xml:space="preserve">
-    <value>Incorrect Username or Password</value>
-  </data>
-  <data name="ForgotPasswordUrlString" xml:space="preserve">
-    <value>https://www.appdirect.com/forgotPassword</value>
-  </data>
-  <data name="InstallAppTarget" xml:space="preserve">
-    <value>https://test.appdirect.com/apps/</value>
-  </data>
-  <data name="LoginHeader" xml:space="preserve">
-    <value>To use {0}, please log in</value>
-  </data>
-  <data name="LoginHeaderDefault" xml:space="preserve">
-    <value>Please Log In</value>
-  </data>
-  <data name="NetworkProblemError" xml:space="preserve">
-    <value>Network Error. Please check your internet connection.</value>
-  </data>
-  <data name="RegisterEmailUrl" xml:space="preserve">
-    <value>/signupService?email={0}</value>
-  </data>
-  <data name="UninstallAppDirectApp" xml:space="preserve">
-    <value>Contact your administrator to uninstall this application</value>
-  </data>
-  <data name="UpdateFileUrl" xml:space="preserve">
-    <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/updater.upd</value>
-  </data>
-  <data name="VersionFileUrl" xml:space="preserve">
-    <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/version.txt</value>
-  </data>
 </root>

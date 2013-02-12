@@ -15,7 +15,7 @@
         <ContextMenu x:Key="UninstallContextMenu" Width="130"  Background="#595959" >
             <MenuItem Header="Uninstall" Click="UninstallAppClick" DataContext="{Binding}" Background="#595959" Foreground="{StaticResource DefaultTextColor}"/>
             <!--<Line Stroke="#656565" StrokeThickness="1"></Line>-->
-            <MenuItem Header="Pin to task bar" Click="UninstallAppClick" DataContext="{Binding}" Background="#595959" Foreground="{StaticResource DefaultTextColor}"/>
+            <MenuItem Header="Pin to task bar" Click="PinToTaskBarClick" DataContext="{Binding}" Background="#595959" Foreground="{StaticResource DefaultTextColor}"/>
         </ContextMenu>
         <Style x:Key="ContextMenuStyle" TargetType="ContextMenu">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -70,7 +70,7 @@
                     <ControlTemplate TargetType="Button">
                         <Grid Style="{StaticResource TopPanelGridStyle}">
                             <StackPanel Style="{StaticResource TopPanelStackPanelStyle}">
-                                <Image Name="VerifyEmailImage" VerticalAlignment="Bottom" Margin="0,0,0,1" HorizontalAlignment="Left" Source="Images/email.png" Width="16"/>
+                                <Image Name="VerifyEmailImage" VerticalAlignment="Bottom" Margin="0,0,0,1.5" HorizontalAlignment="Left" Source="Images/email.png" Width="16"/>
                                 <TextBlock Name="VerifyEmailTextBlock" Margin="4,0,0,0" Style="{StaticResource TextStyle}" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" VerticalAlignment="Bottom">Verify Email</TextBlock>
                             </StackPanel>
                             <Line Name="VerifyEmailUnderline"  X1="2" Y1="28" X2="108" Y2="28" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
@@ -97,8 +97,8 @@
                     <ControlTemplate TargetType="Button" >
                         <Grid Style="{StaticResource TopPanelGridStyle}">
                             <StackPanel Style="{StaticResource TopPanelStackPanelStyle}" Margin="6,2,0,0">
-                                <Image Name="CloudSyncImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="Images/cloudGrey.png" Width="20"/>
-                                <TextBlock Name="CloudSyncTextBlock" Margin="4,0,0,0" HorizontalAlignment="Left" Style="{StaticResource TextStyle}" Foreground="{StaticResource DisabledColor}" VerticalAlignment="Bottom">Cloud Sync</TextBlock>
+                                <Image Name="CloudSyncImage" VerticalAlignment="Bottom" Margin="0,0,0,.5" HorizontalAlignment="Left" Source="Images/cloudGrey.png" Width="20"/>
+                                <TextBlock Name="CloudSyncTextBlock" HorizontalAlignment="Left" Style="{StaticResource TextStyle}" Foreground="{StaticResource DisabledColor}" VerticalAlignment="Bottom">Cloud Sync</TextBlock>
                             </StackPanel>
                             <Line Name="CloudSyncUnderline" X1="0" Y1="28" X2="100" Y2="28" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
                         </Grid>
@@ -119,7 +119,7 @@
                     <ControlTemplate TargetType="Button">
                         <Grid Style="{StaticResource TopPanelGridStyle}">
                             <StackPanel Style="{StaticResource TopPanelStackPanelStyle}" Margin="14,0,0,0" >
-                                <Image Name="MyAppsImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="Images/myAppGrey.png" Width="16" />
+                                <Image Name="MyAppsImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="Images/myAppGrey.png" Width="14" />
                                 <TextBlock Name="MyAppsTextBlock" Margin="8,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Bottom">My Apps</TextBlock>
                             </StackPanel>
                             <Line Name="MyAppsUnderline"  X1="3" Y1="28" X2="94" Y2="28" Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
@@ -170,8 +170,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
-        
+        </Style> 
         <Style x:Key="InstallAppButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
@@ -236,6 +235,7 @@
         <Style x:Key="ScrollBar" TargetType="{x:Type ScrollBar}">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Margin" Value="0,60,30,0"/>
             <Style.Triggers>
                 <Trigger Property="Orientation" Value="Vertical">
                     <Setter Property="Width" Value="9"/>
@@ -376,11 +376,10 @@
                     </Grid>
                 </TabItem>
             </TabControl>
-            <Grid Grid.Column="1" Margin="30,0,0,0">
-                <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="12" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="0,30,0,0" VerticalAlignment="Top" />
+            <Grid Grid.Column="1" Margin="0,0,0,0">
+                <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="12" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="30,30,0,0" VerticalAlignment="Top" />
                 <!--<Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />-->
-                <ListBox Style="{StaticResource ListBoxStyle}" Height="240" VerticalAlignment="Top" Margin="0,60,30,20" Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
-
+                <ListBox Style="{StaticResource ListBoxStyle}" Height="{StaticResource WindowHeight}" VerticalAlignment="Top" Padding="30,60,30,20"  Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
                         <ListBox.Resources >
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="Focusable" Value="False"></Setter>
@@ -392,7 +391,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                <Rectangle Name="SuggestedAppsBottom" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="160" Height="30" Margin="-10,5,0,10" Grid.Column="0">
+                <Rectangle Name="SuggestedAppsBottom" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="160" Height="30" Margin="10,5,0,10" Grid.Column="0">
                     <Rectangle.Effect>
                         <BlurEffect Radius="8"></BlurEffect>
                     </Rectangle.Effect>

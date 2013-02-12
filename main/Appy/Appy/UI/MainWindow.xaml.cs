@@ -101,11 +101,6 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void GoToAppStore(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(Properties.Resources.AppStoreUrlString);
-        }
-
         private static Application GetApplicationFromButtonSender(object sender)
         {
             return ((Button) sender).DataContext as Application;
@@ -228,6 +223,11 @@ namespace AppDirect.WindowsClient.UI
         private void Login_OnRegistrationClick(object o, EventArgs e)
         {
             SetVisibleGrid(RegistrationViewControl);
+        }
+
+        private void PinToTaskBarClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Feature coming soon!");
         }
     }
 }

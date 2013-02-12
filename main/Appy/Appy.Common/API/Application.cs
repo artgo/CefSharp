@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient.Common.API
 {
@@ -6,6 +7,7 @@ namespace AppDirect.WindowsClient.Common.API
     /// Represents an Application of the sort that AppDirect distributes 
     ///</summary>
     [Serializable]
+    [XmlInclude(typeof(Application)), XmlInclude(typeof(LocalApplication))]
     public class Application : IApplication
     {
         public override string Id { get; set; }

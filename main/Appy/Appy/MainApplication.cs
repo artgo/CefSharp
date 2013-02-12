@@ -14,7 +14,7 @@ namespace AppDirect.WindowsClient
                 return null;
             }
 
-            var apps = LocalApplications.GetLocalApplications();
+            var apps = LocalApplications.LocalApplicationsList;
             foreach (var app in apps)
             {
                 if (id.Equals(app.Id))

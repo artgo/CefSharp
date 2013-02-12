@@ -56,7 +56,7 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void CopiedApplicationsAreEqual()
         {
-            List<Application> localApplications = LocalApplications.GetLocalApplications();
+            List<Application> localApplications = LocalApplications.LocalApplicationsList;
 
             var copyOfLocal = new ObservableCollection<Application>(localApplications);
 
@@ -69,7 +69,7 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void CopiedApplicationsHashAreEqual()
         {
-            List<Application> localApplications = LocalApplications.GetLocalApplications();
+            List<Application> localApplications = LocalApplications.LocalApplicationsList;
 
             var copyOfLocal = new ObservableCollection<Application>(localApplications);
 

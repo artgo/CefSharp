@@ -195,7 +195,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.LocalStorage.InstalledLocalApps == null || ServiceLocator.LocalStorage.InstalledLocalApps.Count == 0)
             {
-                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>{LocalApplications.GetAppStoreApp()}; 
+                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>{LocalApplications.AppStoreApp}; 
             }
 
             if (ServiceLocator.LocalStorage.InstalledAppDirectApps == null )
@@ -207,7 +207,7 @@ namespace AppDirect.WindowsClient.UI
 
             if (ServiceLocator.LocalStorage.LastSuggestedApps == null)
             {
-                ServiceLocator.LocalStorage.LastSuggestedApps = LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id)).ToList();
+                ServiceLocator.LocalStorage.LastSuggestedApps = LocalApplications.LocalApplicationsList.Where(a => !installedAppIds.Contains(a.Id)).ToList();
             }
 
             MyApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.AllInstalledApplications.Take(MyAppDisplayLimit));
@@ -295,7 +295,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void GetSuggestedApplications()
         {
-            var suggestedApps = LocalApplications.GetLocalApplications();
+            var suggestedApps = LocalApplications.LocalApplicationsList;
             var apiSuggestedApps = ServiceLocator.LocalStorage.LastSuggestedApps.Where(a => !a.IsLocalApp);
 
             suggestedApps.AddRange(apiSuggestedApps);
@@ -308,7 +308,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void GetSuggestedApplicationsWithApiCall()
         {
-            var suggestedApps = LocalApplications.GetLocalApplications();
+            var suggestedApps = LocalApplications.LocalApplicationsList;
             var apiSuggestedApps = new List<Application>();
 
             try

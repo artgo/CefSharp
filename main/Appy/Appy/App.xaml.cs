@@ -9,8 +9,6 @@ namespace AppDirect.WindowsClient
     /// </summary>
     public partial class App : System.Windows.Application
     {
-        private volatile ServiceHost _host;
-
         protected override void OnStartup(StartupEventArgs e)
         {
             try

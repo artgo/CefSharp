@@ -24,10 +24,10 @@ namespace AppDirect.WindowsClient.UI
         public EventHandler RegistrationClick;
         public EventHandler CloseLogin;
 
-        private static int minimumPasswordLength = 4;
-        private static int maximumPasswordLength = 18;
-        private static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
-        private static readonly Regex PasswordMatchPattern = new Regex(@"^(.{" + minimumPasswordLength + "," + maximumPasswordLength + "})$");
+        private const int MinimumPasswordLength = 4;
+        private const int MaximumPasswordLength = 18;
+        private static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w\+]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
+        private static readonly Regex PasswordMatchPattern = new Regex(@"^(.{" + MinimumPasswordLength + "," + MaximumPasswordLength + "})$");
         private readonly SolidColorBrush _errorColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#de2b2b"));
         private readonly SolidColorBrush _defaultColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#36454d"));
         private readonly SolidColorBrush _validColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#4aa0ce"));
@@ -189,17 +189,6 @@ namespace AppDirect.WindowsClient.UI
         public void GoToRegistrationClick(object sender, EventArgs eventArgs)
         {
             RegistrationClick.Invoke(sender, eventArgs);
-
-            //var emailAddress = NewCustomerEmail.Text;
-
-            //var serviceAddress = Properties.Resources.BaseAppStoreUrl + Properties.Resources.RegisterEmailUrl;
-
-            //var request = HttpWebRequest.Create(String.Format(serviceAddress, emailAddress));
-
-            //WebResponse webResponse = request.GetResponse();
-
-            //MessageArea.Text =
-            //    "Thanks for registering. Please check your inbox and click the link to activate your account.";
         }
     }
 }

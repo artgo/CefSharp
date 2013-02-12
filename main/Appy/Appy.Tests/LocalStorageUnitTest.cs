@@ -30,7 +30,7 @@ namespace AppDirect.WindowsClient.Tests
         [TestMethod]
         public void LocalStorageListsNotNullWhenFileContainsApps()
         {
-            localStorage.InstalledLocalApps = LocalApplications.GetLocalApplications();
+            localStorage.InstalledLocalApps = LocalApplications.LocalApplicationsList;
             localStorage.SaveAppSettings();
 
             File.Refresh();

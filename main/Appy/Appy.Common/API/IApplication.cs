@@ -4,7 +4,8 @@ using System.Runtime.Serialization;
 namespace AppDirect.WindowsClient.Common.API
 {
     [DataContract]
-    [KnownType(typeof (Application))]
+    [KnownType(typeof(Application))]
+    [KnownType(typeof(LocalApplication))]
     [Serializable]
     public abstract class IApplication
     {
