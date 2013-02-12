@@ -349,12 +349,7 @@
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
                                 <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
                                 <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
                             </Trigger>
@@ -452,12 +447,7 @@
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
-                            </Trigger>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
                                 <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
                                 <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
                             </Trigger>
@@ -555,12 +545,7 @@
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
                                 <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
                                 <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
                             </Trigger>

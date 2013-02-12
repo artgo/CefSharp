@@ -34,14 +34,13 @@
                 <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="Existing Customer"/>
                 <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,16,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
                 <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWaterEmail}"
-                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" LostKeyboardFocus="UsernameTextBox_OnLostKeyboardFocus" KeyUp="Email_OnKeyUp" GotKeyboardFocus="Email_OnFocus" />
+                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" LostKeyboardFocus="UsernameTextBox_OnLostKeyboardFocus" KeyUp="Email_OnKeyUp" GotKeyboardFocus="Email_OnFocus" TextChanged="UsernameTextBox_OnTextChanged" />
                 <TextBlock x:Name="EmailFormatErrorMessage" Style="{StaticResource TextStyle}" Margin="0,76,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="Please enter a valid email address" Visibility="Hidden"  />
                 <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
-                                                    HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" GotKeyboardFocus="Password_OnFocus" LostKeyboardFocus="PasswordBox_OnLostKeyboardFocus">
+                                                    HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" GotKeyboardFocus="Password_OnFocus" LostKeyboardFocus="Password_OnLostKeyboardFocus" PasswordChanged="PasswordBox_OnPasswordChanged">
                 </PasswordBox>
                 <TextBlock Style="{StaticResource TextStyleOnMouseOver}"  Margin="0,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Center" Text="Recover Password" TextDecorations="Underline" MouseLeftButtonDown="ForgotPassword" FontSize="9" Width="80" Height="10"/>
-                <Button Name="LoginButton" Margin="0,150,0,0" Content="Log In" Style="{StaticResource LoginButtonDefault}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="84" IsEnabled="False"
-                                            Height="24" Click="Login" FontSize="9"/>
+                <Button Name="LoginButton" Margin="0,150,0,0" Content="Log In" Style="{StaticResource LoginButtonDefault}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="84" Height="24" Click="Login" FontSize="9"/>
             </Grid>
         </Grid>
         <TextBlock VerticalAlignment="Bottom" TextWrapping="Wrap" Name="MessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
