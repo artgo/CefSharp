@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" >
+             Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}">
     <UserControl.Resources>
     
     </UserControl.Resources>
@@ -34,7 +34,7 @@
                 <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="Existing Customer"/>
                 <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,16,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
                 <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWaterEmail}"
-                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" LostKeyboardFocus="UsernameTextBox_OnLostKeyboardFocus" KeyUp="Email_OnKeyUp" GotKeyboardFocus="Email_OnFocus" TextChanged="UsernameTextBox_OnTextChanged" />
+                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" LostKeyboardFocus="UsernameTextBox_OnLostKeyboardFocus" KeyUp="UsernameTextBox_OnKeyUp" GotKeyboardFocus="UsernameTextBox_OnFocus" TextChanged="UsernameTextBox_OnTextChanged" />
                 <TextBlock x:Name="EmailFormatErrorMessage" Style="{StaticResource TextStyle}" Margin="0,76,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="Please enter a valid email address" Visibility="Hidden"  />
                 <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
                                                     HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" GotKeyboardFocus="Password_OnFocus" LostKeyboardFocus="Password_OnLostKeyboardFocus" PasswordChanged="PasswordBox_OnPasswordChanged">

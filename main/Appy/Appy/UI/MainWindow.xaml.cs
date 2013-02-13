@@ -138,6 +138,7 @@ namespace AppDirect.WindowsClient.UI
                     ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
 
                     SetVisibleGrid(LoginViewControl);
+                    LoginViewControl.UsernameTextBox.Focus();
                 }
                 else
                 {
@@ -175,16 +176,14 @@ namespace AppDirect.WindowsClient.UI
                 ViewModel.LoginHeaderText = "Please Login to View Your Apps";
 
                 SetVisibleGrid(LoginViewControl);
+                LoginViewControl.UsernameTextBox.Focus();
             }
         }
-
 
         private void CancelRegistrationClick(object sender, RoutedEventArgs e)
         {
             SetVisibleGrid(MainViewGrid);
         }
-
-       
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
