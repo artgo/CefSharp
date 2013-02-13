@@ -2,6 +2,9 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -58,6 +61,32 @@ namespace AppDirect.WindowsClient.API
 
                 tryAttemptsRemaining--;
             } while (tryAttemptsRemaining > 0);
+        }
+
+        public static Application GetApplicationFromButtonSender(object sender)
+        {
+            return ((Button)sender).DataContext as Application;
+        }
+
+        public static void AppButtonClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var clickedApp = GetApplicationFromButtonSender(sender);
+
+                if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.UrlString)))
+                {
+                    MessageBox.Show("Application developer didn't set application's URL");
+                }
+                else
+                {
+                    ServiceLocator.BrowserWindowsCommunicator.OpenApp(clickedApp);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -23,6 +23,9 @@ namespace AppDirect.WindowsClient.UI
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
         
+        public EventHandler NotifyAppInstalled;
+        public EventHandler NotifyAppUninstalled;
+        
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -98,38 +101,18 @@ namespace AppDirect.WindowsClient.UI
                 Thread.Sleep(TimeSpan.FromDays(1));
             }
         }
-
-        private static Application GetApplicationFromButtonSender(object sender)
-        {
-            return ((Button) sender).DataContext as Application;
-        }
+       
 
         private void AppButtonClick(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var clickedApp = GetApplicationFromButtonSender(sender);
-
-                if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.UrlString)))
-                {
-                    MessageBox.Show("Application developer didn't set application's URL");
-                }
-                else
-                {
-                    ServiceLocator.BrowserWindowsCommunicator.OpenApp(clickedApp);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            Helper.AppButtonClick(sender, e);
         }
 
         private void InstallAppClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                var clickedApp = GetApplicationFromButtonSender(sender);
+                var clickedApp = Helper.GetApplicationFromButtonSender(sender);
 
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
@@ -147,20 +130,24 @@ namespace AppDirect.WindowsClient.UI
             {
                 MessageBox.Show(ex.Message);
             }
+
+            NotifyAppInstalled(sender, e);
         }
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)
         {
+            var clickedApp = ((MenuItem)sender).DataContext as Application;
+            
             try
             {
-                var clickedApp = ((MenuItem) sender).DataContext as Application;
-
                 ViewModel.Uninstall(clickedApp);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+
+            NotifyAppUninstalled(clickedApp, e);
         }
 
         private void SyncButtonOnClick(object sender, RoutedEventArgs e)

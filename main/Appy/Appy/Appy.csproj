@@ -150,6 +150,9 @@
     <Compile Include="UI\AllButtons.xaml.cs">
       <DependentUpon>AllButtons.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\AllButtonsGuide.xaml.cs">
+      <DependentUpon>AllButtonsGuide.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
@@ -159,6 +162,9 @@
     </Compile>
     <Compile Include="UI\RegistrationView.xaml.cs">
       <DependentUpon>RegistrationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TaskbarButton.xaml.cs">
+      <DependentUpon>TaskbarButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="App.xaml.cs">
@@ -350,6 +356,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\AllButtons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\AllButtonsGuide.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -362,6 +372,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\RegistrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\TaskbarButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -395,6 +409,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\cloudWhite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\deskIcon-Hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\deskIcon-Default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\TaskBarHoverMask.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

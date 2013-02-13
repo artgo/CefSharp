@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="AppDirect.WindowsClient.UI.AllButtonsGuide"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="54"  MouseLeave="UserControl_MouseLeave_1" MouseUp="UserControl_MouseUp_1" MouseEnter="UserControl_MouseEnter_1" MouseRightButtonDown="UserControl_MouseRightButtonDown_1">
+    <Grid>
+		<Image x:Name="_TheImg" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="54" ContextMenuService.Placement="Top" Stretch="Fill">
+			<Image.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="About"/>
+					<Separator/>
+					<MenuItem Header="E_xit" Click="MenuItem_Click_1"/>
+				</ContextMenu>
+			</Image.ContextMenu>
+
+		</Image>
+	</Grid>
+</UserControl>

@@ -259,7 +259,7 @@
                         <BeginStoryboard>
                             <Storyboard TargetName="PART_VerticalScrollBar">
                                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                  To="1" Duration="0:0:1" />
+                  To="1" Duration="0:0:.4" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -267,7 +267,7 @@
                         <BeginStoryboard>
                             <Storyboard TargetName="PART_VerticalScrollBar">
                                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                  To="0.0" Duration="0:0:1" />
+                  To="0.0" Duration="0:0:.3" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.ExitActions>
@@ -301,106 +301,112 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid Name="ContentGrid" Margin="0,0,0,0" >
-        <Grid Name="MainViewGrid" Visibility="Visible">
-                <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{StaticResource LeftColumnWidth}"/>
-                <ColumnDefinition Width="{StaticResource RightColumnWidth}"/>
-                </Grid.ColumnDefinitions>
-            <Grid>
-                <Border>
-                    <Border.Effect>
-                        <BlurEffect Radius="5" KernelType="Gaussian"/>
-                    </Border.Effect>
-                </Border>
-            </Grid>
-            <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="670" Height="320" Margin="5,5,0,0" Grid.Column="0">
-           <Rectangle.Effect><BlurEffect Radius="10"></BlurEffect> </Rectangle.Effect>
-            </Rectangle>
-                        <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0" Grid.Column="1"/>
-            <Grid Name="TopMenuGrid" Height="30" VerticalAlignment="Top" Margin="5,0,0,0">
-               <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="88"/>
-                    <ColumnDefinition Width="95"/>
-                    <ColumnDefinition Width="95"/>
-                    <ColumnDefinition Width="95"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Button Name="MyAppsButton" Grid.Column="0" Style="{StaticResource MyAppsButton}"/>
-                <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="1" Style="{StaticResource CloudSyncButton}" Visibility="{Binding CloudSyncVisibility}"/>
-                <Button Name="AlertsButton" Grid.Column="2" Style="{StaticResource AlertsButton}" Visibility="{Binding VerifyEmailVisibility}"/>
-                <Button Name="UpdateAvailableButton" Click="UpdateButtonOnClick" Grid.Column="3" Style="{StaticResource TopPanelButton}" Visibility="Hidden" Content="Update Available!" />
-                <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="1" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Margin="120,6,0,0" Content="Log Out"/>
-                <Line Grid.ColumnSpan="5" X1="5" Y1="30" X2="420" Y2="30" Stroke="#656565" StrokeThickness="1" />
-                </Grid>
-            <Grid Name="VerifyEmailGrid" Visibility="Hidden" Background="#000708" Width="380" Height ="200" Opacity=".80" VerticalAlignment="Top" Margin="0,38,0,0" >
-                <Border BorderBrush="{StaticResource DisabledColor}" BorderThickness="1">
-                <StackPanel  HorizontalAlignment="Center">
-                    <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" Foreground="{StaticResource AlertTextColor}" FontSize="14">Please confirm your email address</TextBlock>
-                    <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" Foreground="#969696" FontSize="12">A confirmation email has been sent to:</TextBlock>
-                    <TextBlock Margin="0,12,0,0"  HorizontalAlignment="Center" Foreground="#969696" FontSize="12" Text="{Binding UserName}" />
-                    <TextBlock Margin="0,12,0,0"  HorizontalAlignment="Center" Foreground="#383434" FontSize="12">Click on the confirmation link in the email to</TextBlock>
-                    <TextBlock Margin="0,0,0,0"  HorizontalAlignment="Center" Foreground="#383434" FontSize="12">activate your account</TextBlock>
-                    <Button Margin="0,24,0,0" Style="{StaticResource LoginButtonDefault}" Height="24" Width="90" >OK</Button>
-                </StackPanel>
-                </Border>
-            </Grid>
-            <TabControl Grid.ColumnSpan="2" Margin="0,30,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
-            <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
-                <Grid Name="YourApps" Margin="20,25,0,0" Height="240" Width="410" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <!--<Border BorderThickness="1" BorderBrush="Black">
+            <Border BorderThickness="1" BorderBrush="LightGray">-->
+            <Grid Name="ContentGrid" Margin="0,0,0,0" >
+                <Grid Name="MainViewGrid" Visibility="Visible">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="{StaticResource LeftColumnWidth}"/>
+                        <ColumnDefinition Width="{StaticResource RightColumnWidth}"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Border>
+                            <Border.Effect>
+                                <BlurEffect Radius="5" KernelType="Gaussian"/>
+                            </Border.Effect>
+                        </Border>
+                    </Grid>
+                    <Rectangle Name="LeftPanel" Fill="{StaticResource LeftPanelColor}" Opacity="0.30" HorizontalAlignment="Left" VerticalAlignment="Top" Width="670" Height="320" Margin="5,5,0,0" Grid.Column="0">
+                        <Rectangle.Effect>
+                            <BlurEffect Radius="10"></BlurEffect>
+                        </Rectangle.Effect>
+                    </Rectangle>
+                    <Rectangle Name="RightPanel" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" Width="{StaticResource RightPanelWidth}" Margin="0,2,2,2" Grid.Column="1"/>
+                    <Grid Name="TopMenuGrid" Height="30" VerticalAlignment="Top" Margin="5,0,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="331*"/>
-                            <ColumnDefinition Width="79*"/>
+                            <ColumnDefinition Width="88"/>
+                            <ColumnDefinition Width="95"/>
+                            <ColumnDefinition Width="95"/>
+                            <ColumnDefinition Width="95"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel  IsItemsHost="True"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Style="{StaticResource AppButton}"  Click="AppButtonClick" />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                            <ListBox.Resources>
+                        <Button Name="MyAppsButton" Grid.Column="0" Style="{StaticResource MyAppsButton}"/>
+                        <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="1" Style="{StaticResource CloudSyncButton}" Visibility="{Binding CloudSyncVisibility}"/>
+                        <Button Name="AlertsButton" Grid.Column="2" Style="{StaticResource AlertsButton}" Visibility="{Binding VerifyEmailVisibility}"/>
+                        <Button Name="UpdateAvailableButton" Click="UpdateButtonOnClick" Grid.Column="3" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left"  Visibility="Hidden" Margin="120,6,0,0" Content="Update Available!" />
+                        <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="1" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Margin="120,6,0,0" Content="Log Out"/>
+                        <Line Grid.ColumnSpan="5" X1="5" Y1="30" X2="420" Y2="30" Stroke="#656565" StrokeThickness="1" />
+                    </Grid>
+                    <Grid Name="VerifyEmailGrid" Visibility="Hidden" Background="#000708" Width="380" Height ="200" Opacity=".80" VerticalAlignment="Top" Margin="0,38,0,0" >
+                        <Border BorderBrush="{StaticResource DisabledColor}" BorderThickness="1">
+                            <StackPanel  HorizontalAlignment="Center">
+                                <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" Foreground="{StaticResource AlertTextColor}" FontSize="14">Please confirm your email address</TextBlock>
+                                <TextBlock Margin="0,12,0,0" HorizontalAlignment="Center" Foreground="#969696" FontSize="12">A confirmation email has been sent to:</TextBlock>
+                                <TextBlock Margin="0,12,0,0"  HorizontalAlignment="Center" Foreground="#969696" FontSize="12" Text="{Binding UserName}" />
+                                <TextBlock Margin="0,12,0,0"  HorizontalAlignment="Center" Foreground="#383434" FontSize="12">Click on the confirmation link in the email to</TextBlock>
+                                <TextBlock Margin="0,0,0,0"  HorizontalAlignment="Center" Foreground="#383434" FontSize="12">activate your account</TextBlock>
+                                <Button Margin="0,24,0,0" Style="{StaticResource LoginButtonDefault}" Height="24" Width="90" >OK</Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <TabControl Grid.ColumnSpan="2" Margin="0,30,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
+                        <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
+                            <Grid Name="YourApps" Margin="20,25,0,0" Height="240" Width="410" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="331*"/>
+                                    <ColumnDefinition Width="79*"/>
+                                </Grid.ColumnDefinitions>
+                                <ListBox BorderThickness="0" Background="Transparent" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox" ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel  IsItemsHost="True"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource AppButton}"  Click="AppButtonClick" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.Resources>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Focusable" Value="False"></Setter>
+                                            <Setter Property="Margin" Value="4,0,0,0"></Setter>
+                                        </Style>
+                                    </ListBox.Resources>
+                                </ListBox>
+                                <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal" Grid.ColumnSpan="2" >
+                                    <TextBlock Text="{Binding MyAppsLoadError}"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="345" Height="20" Foreground="White"/>
+                                </StackPanel>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                    <Grid Grid.Column="1" Margin="0,0,0,0">
+                        <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="12" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="30,30,0,0" VerticalAlignment="Top" />
+                        <!--<Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />-->
+                        <ListBox Style="{StaticResource ListBoxStyle}" Height="{StaticResource WindowHeight}" VerticalAlignment="Top" Padding="30,60,30,20"  Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
+                            <ListBox.Resources >
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="Focusable" Value="False"></Setter>
-                                    <Setter Property="Margin" Value="4,0,0,0"></Setter>
                                 </Style>
                             </ListBox.Resources>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
                         </ListBox>
-                       <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal" Grid.ColumnSpan="2" >
-                            <TextBlock Text="{Binding MyAppsLoadError}"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="345" Height="20" Foreground="White"/>
-                        </StackPanel>
+                        <Rectangle Name="SuggestedAppsBottom" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="160" Height="30" Margin="10,5,0,10" Grid.Column="0">
+                            <Rectangle.Effect>
+                                <BlurEffect Radius="8"></BlurEffect>
+                            </Rectangle.Effect>
+                        </Rectangle>
                     </Grid>
-                </TabItem>
-            </TabControl>
-            <Grid Grid.Column="1" Margin="0,0,0,0">
-                <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="12" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="30,30,0,0" VerticalAlignment="Top" />
-                <!--<Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />-->
-                <ListBox Style="{StaticResource ListBoxStyle}" Height="{StaticResource WindowHeight}" VerticalAlignment="Top" Padding="30,60,30,20"  Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
-                        <ListBox.Resources >
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Focusable" Value="False"></Setter>
-                            </Style>
-                        </ListBox.Resources>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                <Rectangle Name="SuggestedAppsBottom" Fill="{StaticResource RightPanelColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="160" Height="30" Margin="10,5,0,10" Grid.Column="0">
-                    <Rectangle.Effect>
-                        <BlurEffect Radius="8"></BlurEffect>
-                    </Rectangle.Effect>
-                </Rectangle>
-            </Grid>
-            <TextBlock Text="{Binding SuggestedAppsLoadError}"  HorizontalAlignment="Left" Margin="75,300,0,0" VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2"/>
-            <Label Name="Version" Content="{Binding VersionString }" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Left"/>
-        </Grid>
-        <controls:LoginView x:Name="LoginViewControl" Visibility="Hidden"/>
-        <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden"/>
+                    <TextBlock Text="{Binding SuggestedAppsLoadError}"  HorizontalAlignment="Left" Margin="75,300,0,0" VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2"/>
+                    <Label Name="Version" Content="{Binding VersionString }" Margin="10,0,0,10" VerticalAlignment="Bottom" Height="30" HorizontalAlignment="Left"/>
+                </Grid>
+                <controls:LoginView x:Name="LoginViewControl" Visibility="Hidden"/>
+                <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden"/>
     </Grid>
+    <!--</Border>
+        </Border>-->
 </Window>
