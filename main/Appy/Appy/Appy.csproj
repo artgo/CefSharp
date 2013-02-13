@@ -143,10 +143,17 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
-    <Compile Include="UI\TemplateSelector.cs" />
+    <Compile Include="UI\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\RegistrationView.xaml.cs">
+      <DependentUpon>RegistrationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -161,10 +168,6 @@
     <Compile Include="UI\MainViewModel.cs" />
     <Compile Include="UI\WaterMarkTextHelper.cs" />
     <Compile Include="Updates\Updater.cs" />
-    <Page Include="UI\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -220,6 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
+    <Resource Include="UI\Images\FeaturedMaskDefault.png" />
     <Resource Include="UI\Images\LaunchAppStore.png" />
     <Resource Include="UI\Images\Line.png" />
     <Resource Include="UI\Images\Reload.png" />
@@ -259,13 +263,7 @@
     <Resource Include="UI\Icons\linked.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\cloudWhite.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\cancelLogin.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\cloudGray.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\deleteDefault.png" />
@@ -294,7 +292,6 @@
     <Resource Include="UI\Icons\yelp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\cloudDefault.png" />
     <Resource Include="UI\Images\cloudHover.png" />
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +313,77 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\AppIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\aboutGrey.png" />
+    <Resource Include="UI\Images\aboutWhite.png" />
+    <Resource Include="UI\Images\alertGrey.png" />
+    <Resource Include="UI\Images\alertWhite.png" />
+    <Resource Include="UI\Images\cogGrey.png" />
+    <Resource Include="UI\Images\cogWhite.png" />
+    <Resource Include="UI\Images\dotGrey.png" />
+    <Resource Include="UI\Images\dotWhite.png" />
+    <Resource Include="UI\Images\hiddenAppGrey.png" />
+    <Resource Include="UI\Images\hiddenAppWhite.png" />
+    <Resource Include="UI\Images\myAppGrey.png" />
+    <Resource Include="UI\Images\myAppWhite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AppBtnDefault.png" />
+    <Resource Include="UI\Images\AppBtnHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\IconMask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\FeaturedMaskHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\FeaturedMaskClick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\RegistrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\email.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\crossBtn_click.png" />
+    <Resource Include="UI\Images\crossBtn_default.png" />
+    <Resource Include="UI\Images\crossBtn_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\AppOnHoverMask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\appStore-Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back_hover.png" />
+    <Resource Include="UI\Images\creditCard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\ScrollBarBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloudGrey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\cloudWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using AppDirect.WindowsClient.Common.API;
+using System.Xml.Serialization;
 
-namespace AppDirect.WindowsClient.Models
+namespace AppDirect.WindowsClient.Common.API
 {
     ///<summary>
     /// Represents an Application of the sort that AppDirect distributes 
     ///</summary>
     [Serializable]
+    [XmlInclude(typeof(Application)), XmlInclude(typeof(LocalApplication))]
     public class Application : IApplication
     {
         public override string Id { get; set; }
@@ -18,6 +18,7 @@ namespace AppDirect.WindowsClient.Models
         public override int AlertCount { get; set; }
         public override bool IsLocalApp { get; set; }
         public override string UrlString { get; set; }
+        public override string Price { get; set; }
 
         public override bool Equals(Object obj)
         {

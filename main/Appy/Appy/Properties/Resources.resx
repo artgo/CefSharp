@@ -120,9 +120,6 @@
   <data name="ApplicationExe" xml:space="preserve">
     <value>Appy.exe</value>
   </data>
-  <data name="AppStoreUrlString" xml:space="preserve">
-    <value>https://appcenter.staples.com/home</value>
-  </data>
   <data name="BaseAppStoreUrl" xml:space="preserve">
     <value>https://test.appdirect.com</value>
   </data>

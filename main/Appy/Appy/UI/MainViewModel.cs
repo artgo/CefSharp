@@ -9,7 +9,7 @@ using System.Threading;
 using System.Windows;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Properties;
-using Application = AppDirect.WindowsClient.Models.Application;
+using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -19,12 +19,12 @@ namespace AppDirect.WindowsClient.UI
     public class MainViewModel : INotifyPropertyChanged
     {
         private const int MyAppDisplayLimit = 10;
-        private const int SuggestedAppsDisplayLimit = 5;
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
-        
+        private bool _registrationInProgress = false;
+
         public string VersionString
         {
             get
@@ -49,6 +49,25 @@ namespace AppDirect.WindowsClient.UI
             set
             {
                 NotifyPropertyChanged("CloudSyncVisibility");
+            }
+        }
+
+        public Visibility VerifyEmailVisibility
+        {
+            get
+            {
+                if (_registrationInProgress)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Hidden;
+                }
+            }
+            set
+            {
+                NotifyPropertyChanged("VerifyEmailVisibility");
             }
         }
 
@@ -88,7 +107,7 @@ namespace AppDirect.WindowsClient.UI
 
         public string SuggestedAppsLoadError
         {
-            get { return _suggestedAppsLoadError; }
+            get { return _suggestedAppsLoadError;}
             set
             {
                 _suggestedAppsLoadError = value;
@@ -176,10 +195,15 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.LocalStorage.InstalledLocalApps == null)
             {
-                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>();
+                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>(); 
             }
 
-            if (ServiceLocator.LocalStorage.InstalledAppDirectApps == null)
+            if (!ServiceLocator.LocalStorage.InstalledLocalApps.Contains(LocalApplications.AppStoreApp))
+            {
+                ServiceLocator.LocalStorage.InstalledLocalApps.Insert(0, LocalApplications.AppStoreApp);
+            }
+
+            if (ServiceLocator.LocalStorage.InstalledAppDirectApps == null )
             {
                 ServiceLocator.LocalStorage.InstalledAppDirectApps = new List<Application>();
             }
@@ -188,12 +212,12 @@ namespace AppDirect.WindowsClient.UI
 
             if (ServiceLocator.LocalStorage.LastSuggestedApps == null)
             {
-                ServiceLocator.LocalStorage.LastSuggestedApps = LocalApplications.GetLocalApplications().Where(a => !installedAppIds.Contains(a.Id)).ToList();
+                ServiceLocator.LocalStorage.LastSuggestedApps = LocalApplications.LocalApplicationsList.Where(a => !installedAppIds.Contains(a.Id)).ToList();
             }
 
             MyApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.AllInstalledApplications.Take(MyAppDisplayLimit));
 
-            SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps.Take(SuggestedAppsDisplayLimit));
+            SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps);
         }
         
         private void GetMyApplications()
@@ -205,7 +229,16 @@ namespace AppDirect.WindowsClient.UI
 
         private void SyncDisplayWithStoredList(int displayLimit, ObservableCollection<Application> displayedList, List<Application> storedList  )
         {
-            List<Application> storedApps = storedList.Take(displayLimit).ToList();
+            List<Application> storedApps;
+
+            if (displayLimit == 0)
+            {
+                storedApps = storedList;
+            }
+            else
+            {
+                storedApps = storedList.Take(displayLimit).ToList();
+            }
             
             for (int index   = 0; index < storedApps.Count; index++)
             {
@@ -267,7 +300,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void GetSuggestedApplications()
         {
-            var suggestedApps = LocalApplications.GetLocalApplications();
+            var suggestedApps = LocalApplications.LocalApplicationsList;
             var apiSuggestedApps = ServiceLocator.LocalStorage.LastSuggestedApps.Where(a => !a.IsLocalApp);
 
             suggestedApps.AddRange(apiSuggestedApps);
@@ -275,12 +308,12 @@ namespace AppDirect.WindowsClient.UI
             ServiceLocator.LocalStorage.LastSuggestedApps =
                 suggestedApps.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
-            SyncDisplayWithStoredList(SuggestedAppsDisplayLimit, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
+            SyncDisplayWithStoredList(0, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
         }
 
         private void GetSuggestedApplicationsWithApiCall()
         {
-            var suggestedApps = LocalApplications.GetLocalApplications();
+            var suggestedApps = LocalApplications.LocalApplicationsList;
             var apiSuggestedApps = new List<Application>();
 
             try
@@ -305,7 +338,7 @@ namespace AppDirect.WindowsClient.UI
             ServiceLocator.LocalStorage.LastSuggestedApps =
                 suggestedApps.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
-            SyncDisplayWithStoredList(SuggestedAppsDisplayLimit, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
+            SyncDisplayWithStoredList(0, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
         }
 
         public bool Login(string username, string password)

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using AppDirect.WindowsClient.Common.API;
 
-namespace AppDirect.WindowsClient.API
+namespace AppDirect.WindowsClient.Common.API
 {
     [Serializable]
     public class AppDirectSession : IAppDirectSession

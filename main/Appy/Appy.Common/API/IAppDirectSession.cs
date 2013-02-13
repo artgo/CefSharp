@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Serialization;
-using AppDirect.WindowsClient.API;
 
 namespace AppDirect.WindowsClient.Common.API
 {

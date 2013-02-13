@@ -9,6 +9,7 @@ using AppDirect.WindowsClient.Browser.Session;
 using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using CommandLine;
+using Application = System.Windows.Forms.Application;
 
 namespace AppDirect.WindowsClient.Browser
 {

@@ -1,49 +1,89 @@
 ﻿<Application x:Class="AppDirect.WindowsClient.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:viewmodel="clr-namespace:AppDirect.WindowsClient.UI"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:ui="clr-namespace:AppDirect.WindowsClient.UI"
              StartupUri="UI\MainWindow.xaml">
     <Application.Resources>
-        <LinearGradientBrush x:Key="GrayToBlackGradiant" StartPoint="0,0" EndPoint="0,1" >
-            <GradientStop Color="#4c4c4c" Offset="0"/>
-            <GradientStop Color="#292929" Offset="0.05"/>
-            <GradientStop Color="#171717" Offset="0.4"/>
-        </LinearGradientBrush>
-        <sys:Double x:Key="ContentHeight">300</sys:Double>
-        <sys:Double x:Key="HeaderHeight">30</sys:Double>
         <sys:Double x:Key="WindowHeight">330</sys:Double>
         <sys:Double x:Key="WindowWidth">680</sys:Double>
-        <GridLength x:Key="RightColumnWidth">245</GridLength>
-        <sys:Double x:Key="RightPanelWidth">245</sys:Double>
-        <GridLength x:Key="LeftColumnWidth">435</GridLength>
-        <sys:Double x:Key="LeftPanelWidth">435</sys:Double>
-        <FontFamily x:Key="DefaultWindowFont">Calibri</FontFamily>
-        <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
-            <GradientBrush.GradientStops>
-                <GradientStopCollection>
-                    <GradientStop Color="#FFF" Offset="0.0"/>
-                    <GradientStop Color="#EEE" Offset="1.0"/>
-                </GradientStopCollection>
-            </GradientBrush.GradientStops>
+        <GridLength x:Key="RightColumnWidth">248</GridLength>
+        <sys:Double x:Key="RightPanelWidth">248</sys:Double>
+        <GridLength x:Key="LeftColumnWidth">432</GridLength>
+        <sys:Double x:Key="LeftPanelWidth">432</sys:Double>
+        <LinearGradientBrush x:Key="TooltipGradient" StartPoint="0,0" EndPoint="0,2">
+            <GradientStop Color="#3e5954" Offset="0"/>
+            <GradientStop Color="#0f2b23" Offset="0.3"/>
+            <GradientStop Color="#091e19" Offset=".6"/>
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="LeftPanelColor" Color="#0b1318" />
-        <SolidColorBrush x:Key="RightPanelColor" Color="#010506" />
-        <SolidColorBrush x:Key="TextFieldFocusColor" Color="#36454d" />
+        <FontFamily x:Key="DefaultWindowFont">Arial</FontFamily>
+        <SolidColorBrush x:Key="LeftPanelColor" Color="#36454d" />
+        <SolidColorBrush x:Key="RightPanelColor" Color="#000708" />
+        <SolidColorBrush x:Key="TextFieldFocusColor" Color="#4aa0ce" />
+        <SolidColorBrush x:Key="MiddleBarColor" Color="#20393e" />
         <SolidColorBrush x:Key="BorderFocusColor" Color="#a4c8df" />
-        <SolidColorBrush x:Key="RibbonColor" Color="#051c22" />
         <SolidColorBrush x:Key="LoginPanelColor" Color="#0c2228" />
-        <SolidColorBrush x:Key="DefaultTextColor" Color="#ebebeb" />
-        <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#242d32" />
+        <SolidColorBrush x:Key="DefaultTextColor" Color="#dfdfdf" />
+        <SolidColorBrush x:Key="DisabledColor" Color="#656565" />
+        <SolidColorBrush x:Key="ErrorTextColor" Color="#f13737" />
+        <SolidColorBrush x:Key="AlertTextColor" Color="#ffad38" />
+        <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#36454d" />
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
-        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
-        <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
-        <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
-        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+        <Storyboard x:Key="enterGotFocus" >
+            <DoubleAnimation Duration="0:0:0.4" To=".4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+        </Storyboard>
+        <Storyboard x:Key="exitGotFocus" >
+            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+        </Storyboard>
+        <Storyboard x:Key="enterHasText" >
+            <DoubleAnimation Duration="0:0:0.4" From=".4" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+        </Storyboard>
+        <Storyboard x:Key="exitHasText" >
+            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+        </Storyboard>
         <Style x:Key="TextStyle" TargetType="TextBlock">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
             <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
         </Style>
+        <Style x:Key="TextStyleOnMouseOver" BasedOn="{StaticResource TextStyle}" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource DisabledColor}"/>
+            <Style.Triggers>
+                <Trigger Property ="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TooltipStyle" TargetType="{x:Type ToolTip}">
+            <Setter Property = "Background" Value="{StaticResource TooltipGradient}"/>
+            <Setter Property = "Foreground" Value="{StaticResource DefaultTextColor}"/>
+            <Setter Property = "FontSize" Value="9"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+        </Style>
+        <ToolTip x:Key="ToolTip" Style="{StaticResource TooltipStyle}" MinWidth="20">
+            <TextBlock  Margin="5,8,5,5" DataContext="{Binding}" Text="{Binding Description}" Style="{StaticResource TextStyle}"/>
+        </ToolTip>
+        <Style x:Key="WaterMarkTextBlock" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
+            <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="FontSize" Value="10"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="IsHitTestVisible" Value="False"/>
+        </Style>
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+        <Style x:Key="TextStyleBold" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+       
         <Style x:Key="LeftMenu" TargetType="TabItem">
             <Setter Property="Template">
                 <Setter.Value>
@@ -93,35 +133,6 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="InstallAppButton" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="DimGray" />
-                                <Setter Property="Foreground" Value="#edd4a6" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Content" Value="LightYellow" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
         <Style x:Key="BorderlessButton" TargetType="Button">
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
@@ -146,14 +157,45 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="BorderlessButtonWithShadow" TargetType="Button">
-            <Setter Property="Margin" Value="0,1,1,1"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Background" Value="{StaticResource GrayToBlackGradiant}" />
+        <Style x:Key="BackToAppsButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" >
+                                <Image Name="BackImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="UI\Images\back.png" Width="30" />
+                                <TextBlock Name="BackText" Margin="8,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Center" FontSize="10">Back to My Apps</TextBlock>
+                            </StackPanel>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BackText" Property="Foreground" Value="{StaticResource DefaultTextColor}" />
+                                <Setter TargetName="BackImage" Property="Source" Value="UI\Images\back_hover.png"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MainButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0,1,1,1"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
+                        <GradientStop Color="#2e6d90" Offset="0"/>
+                        <GradientStop Color="#1a597a" Offset="0.05"/>
+                        <GradientStop Color="#134256" Offset=".6"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="3">
                             <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       Margin="{TemplateBinding Padding}"
                                       RecognizesAccessKey="True"
@@ -164,9 +206,10 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                                            <GradientStop Color="#424242" Offset="0"/>
-                                            <GradientStop Color="#2f2f2f" Offset="0.3"/>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
+                                            <GradientStop Color="#134256" Offset="0"/>
+                                            <GradientStop Color="#1a597a" Offset="0.05"/>
+                                            <GradientStop Color="#2e6d90" Offset="0.6"/>
                                         </LinearGradientBrush>
                                     </Setter.Value>
                                 </Setter>
@@ -176,16 +219,24 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="MainButtonStyle" TargetType="Button">
+        <Style x:Key="LoginButtonDefault" TargetType="Button" BasedOn="{StaticResource MainButtonStyle}">
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="LightGray" />
+            <Setter Property="Foreground" Value="DimGray" />
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Background" Value="#292929" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#3a444d" Offset="0"/>
+                        <GradientStop Color="#2f3942" Offset="0.05"/>
+                        <GradientStop Color="#1c272d" Offset="0.4"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="2">
                             <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       Margin="{TemplateBinding Padding}"
                                       RecognizesAccessKey="True"
@@ -204,41 +255,16 @@
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="YourAppsButtonGrid" TargetType="Grid">
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="Width" Value="150"/>
-            <Setter Property="Height" Value="44"/>
-        </Style>
-        <Style x:Key="CloudSyncButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}" >
-            <Setter Property="Background">
-                <Setter.Value>
-                    <ImageBrush ImageSource="UI\Images\cloudDefault.png"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="0">
-                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger Property="IsEnabled" Value="True">
+                                <Setter Property="Foreground" Value ="{StaticResource DefaultTextColor}"/>
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <ImageBrush ImageSource="UI\Images\cloudHover.png" />
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,3">
+                                            <GradientStop Color="#3a444d" Offset="0"/>
+                                            <GradientStop Color="#2f3942" Offset="0.05"/>
+                                            <GradientStop Color="#1c272d" Offset="0.4"/>
+                                        </LinearGradientBrush>
                                     </Setter.Value>
-                                </Setter>
-                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}">
                                 </Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -305,35 +331,61 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="24,10,24,0"/>
+            <Setter Property="Margin" Value="12,10,12,0"/>
             <Setter Property="Padding" Value="10,0,0,0"/>
             <Setter Property="Foreground" Value="#bdbdbd" />
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Height" Value="30"/>
-            <Setter Property="viewmodel:WaterMarkTextHelper.IsMonitoring" Value="True"/>
+            <Setter Property="ui:WaterMarkTextHelper.IsMonitoring" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type PasswordBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Password" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Password" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="ui:WaterMarkTextHelper.HasText" Value="False"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PasswordBoxWaterConfirm" TargetType="PasswordBox" BasedOn="{StaticResource PasswordBoxWater}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type PasswordBox}">
+                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
+                                <TextBlock Text="Confirm Password" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -348,7 +400,7 @@
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
-                                    <Condition Property="viewmodel:WaterMarkTextHelper.HasText" Value="False"/>
+                                    <Condition Property="ui:WaterMarkTextHelper.HasText" Value="False"/>
                                     <Condition Property="IsFocused" Value="True"/>
                                 </MultiTrigger.Conditions>
                                 <MultiTrigger.EnterActions>
@@ -358,7 +410,7 @@
                                     <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
                                 </MultiTrigger.ExitActions>
                             </MultiTrigger>
-                            <Trigger Property="viewmodel:WaterMarkTextHelper.HasText" Value="True">
+                            <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
                                 <Trigger.EnterActions>
                                     <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
                                 </Trigger.EnterActions>
@@ -376,7 +428,60 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="24,10,24,0"/>
+            <Setter Property="Margin" Value="12,10,12,0"/>
+            <Setter Property="Padding" Value="10,0,0,0"/>
+            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="ui:WaterMarkTextHelper.IsMonitoring" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
+                                <TextBlock Text="First Name" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="ui:WaterMarkTextHelper.HasText" Value="False"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TextBoxWaterLastName" TargetType="TextBox" BasedOn="{StaticResource TextBoxWater}">
+            <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="12,10,12,0"/>
             <Setter Property="Padding" Value="10,0,0,0"/>
             <Setter Property="Foreground" Value="#bdbdbd" />
             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -384,28 +489,14 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="Height" Value="30"/>
-            <Setter Property="viewmodel:WaterMarkTextHelper.IsMonitoring" Value="True"/>
+            <Setter Property="ui:WaterMarkTextHelper.IsMonitoring" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="User Name" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Last Name" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -420,7 +511,7 @@
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
-                                    <Condition Property="viewmodel:WaterMarkTextHelper.HasText" Value="False"/>
+                                    <Condition Property="ui:WaterMarkTextHelper.HasText" Value="False"/>
                                     <Condition Property="IsFocused" Value="True"/>
                                 </MultiTrigger.Conditions>
                                 <MultiTrigger.EnterActions>
@@ -430,7 +521,7 @@
                                     <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
                                 </MultiTrigger.ExitActions>
                             </MultiTrigger>
-                            <Trigger Property="viewmodel:WaterMarkTextHelper.HasText" Value="True">
+                            <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
                                 <Trigger.EnterActions>
                                     <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
                                 </Trigger.EnterActions>
@@ -444,27 +535,53 @@
             </Setter>
         </Style>
         <Style x:Key="TextBoxWaterEmail" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxWater}">
-           <Setter Property="Template">
+            <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TextBox}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="enterGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" To=".2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitGotFocus" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="enterHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" From=".2" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                            <Storyboard x:Key="exitHasText" >
-                                <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
-                            </Storyboard>
-                        </ControlTemplate.Resources>
                         <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
-                                <TextBlock Text="Your Email Address" x:Name="Message" Foreground="#bdbdbd" IsHitTestVisible="False" FontFamily="Calibri" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBlock Text="Email" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="ui:WaterMarkTextHelper.HasText" Value="False"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TextBoxWaterConfirmEmail" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxWater}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
+                                <TextBlock Text="Email Confirm" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -479,7 +596,7 @@
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
-                                    <Condition Property="viewmodel:WaterMarkTextHelper.HasText" Value="False"/>
+                                    <Condition Property="ui:WaterMarkTextHelper.HasText" Value="False"/>
                                     <Condition Property="IsFocused" Value="True"/>
                                 </MultiTrigger.Conditions>
                                 <MultiTrigger.EnterActions>
@@ -489,7 +606,52 @@
                                     <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
                                 </MultiTrigger.ExitActions>
                             </MultiTrigger>
-                            <Trigger Property="viewmodel:WaterMarkTextHelper.HasText" Value="True">
+                            <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitHasText}"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TextBoxWaterCompany" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxWater}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Margin="-3,0,0,0" />
+                                <TextBlock Text="Company ( Optional )" x:Name="Message" Style="{StaticResource WaterMarkTextBlock}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderFocusColor}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="ui:WaterMarkTextHelper.HasText" Value="False"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource enterGotFocus}"/>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
                                 <Trigger.EnterActions>
                                     <BeginStoryboard Storyboard="{StaticResource enterHasText}"/>
                                 </Trigger.EnterActions>

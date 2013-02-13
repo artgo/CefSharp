@@ -4,20 +4,15 @@
 //    <NameSpace>AppDirect.WindowsClient.ObjectMapping</NameSpace><Collection>List</Collection><codeType>CSharp</codeType><EnableDataBinding>False</EnableDataBinding><EnableLazyLoading>False</EnableLazyLoading><TrackingChangesEnable>False</TrackingChangesEnable><GenTrackingClasses>False</GenTrackingClasses><HidePrivateFieldInIDE>False</HidePrivateFieldInIDE><EnableSummaryComment>False</EnableSummaryComment><VirtualProp>False</VirtualProp><PascalCase>True</PascalCase><BaseClassName>EntityBase</BaseClassName><IncludeSerializeMethod>False</IncludeSerializeMethod><UseBaseClass>False</UseBaseClass><GenBaseClass>False</GenBaseClass><GenerateCloneMethod>False</GenerateCloneMethod><GenerateDataContracts>False</GenerateDataContracts><CodeBaseTag>Net35</CodeBaseTag><SerializeMethodName>Serialize</SerializeMethodName><DeserializeMethodName>Deserialize</DeserializeMethodName><SaveToFileMethodName>SaveToFile</SaveToFileMethodName><LoadFromFileMethodName>LoadFromFile</LoadFromFileMethodName><GenerateXMLAttributes>False</GenerateXMLAttributes><OrderXMLAttrib>False</OrderXMLAttrib><EnableEncoding>False</EnableEncoding><AutomaticProperties>True</AutomaticProperties><GenerateShouldSerialize>False</GenerateShouldSerialize><DisableDebug>False</DisableDebug><PropNameSpecified>Default</PropNameSpecified><Encoder>ASCII</Encoder><CustomUsings></CustomUsings><ExcludeIncludedTypes>False</ExcludeIncludedTypes><InitializeFields>Collections</InitializeFields><GenerateAllTypes>True</GenerateAllTypes>
 //  </auto-generated>
 // ------------------------------------------------------------------------------
-namespace AppDirect.WindowsClient.ObjectMapping
+
+using System.Xml.Serialization;
+using System.Collections.Generic;
+
+namespace AppDirect.WindowsClient
 {
-    using System;
-    using System.Diagnostics;
-    using System.Xml.Serialization;
-    using System.Collections;
-    using System.Xml.Schema;
-    using System.ComponentModel;
-    using System.Collections.Generic;
-
-
     public partial class Myapps
     {
-        [System.Xml.Serialization.XmlElementAttribute("Items")]
+        [XmlElement("Items")]
         public List<MyappsMyapp> Items { get; set; }
 
         public Myapps()
@@ -28,29 +23,32 @@ namespace AppDirect.WindowsClient.ObjectMapping
 
     public partial class MyappsMyapp
     {
-        [System.Xml.Serialization.XmlElementAttribute("description")]
+        [XmlElement("description")]
         public string Description { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("developerName")]
+        [XmlElement("developerName")]
         public string DeveloperName { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("imageUrl")]
+        [XmlElement("imageUrl")]
         public string ImageUrl { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("loginUrl")]
+        [XmlElement("loginUrl")]
         public string LoginUrl { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("marketplaceUrl")]
+        [XmlElement("marketplaceUrl")]
         public string MarketplaceUrl { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("name")]
+        [XmlElement("name")]
         public string Name { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("overview")]
+        [XmlElement("overview")]
         public string Overview { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("productType")]
+        [XmlElement("productType")]
         public string ProductType { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("publishedOn")]
+        [XmlElement("publishedOn")]
         public string PublishedOn { get; set; }
-        [System.Xml.Serialization.XmlElementAttribute("status")]
+        [XmlElement("status")]
         public string Status { get; set; }
-        [System.Xml.Serialization.XmlArrayAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("entry", typeof(MyappsMyappVersionsEntry), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
+        [XmlElement("startingPrice")]
+        public string StartingPrice { get; set; }
+        [XmlArray(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlArrayItem("entry", typeof(MyappsMyappVersionsEntry), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public List<MyappsMyappVersionsEntry> Versions { get; set; }
+
 
         public MyappsMyapp()
         {
@@ -61,10 +59,10 @@ namespace AppDirect.WindowsClient.ObjectMapping
     public partial class MyappsMyappVersionsEntry
     {
 
-        [System.Xml.Serialization.XmlElementAttribute("key")]
+        [XmlElement("key")]
         public string Key { get; set; }
-        [System.Xml.Serialization.XmlArrayAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("value", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
+        [XmlArray(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlArrayItem("value", typeof(string), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public List<string> Values { get; set; }
     }
 }

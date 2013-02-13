@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml.Serialization;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
 
 namespace AppDirect.WindowsClient.Storage
@@ -18,8 +19,8 @@ namespace AppDirect.WindowsClient.Storage
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
         private static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
-        
-        public List<Application> InstalledLocalApps { get; set; }
+
+        public List<Application> InstalledLocalApps{ get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
         public bool UpdateDownloaded { get; set; }  

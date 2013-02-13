@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="AppDirect.WindowsClient.UI.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}">
+    <UserControl.Resources>
+    
+    </UserControl.Resources>
+    <Grid Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
+        <Rectangle Height="320" Width="670" Fill="{StaticResource LoginPanelColor}" Opacity=".80">
+            <Rectangle.Effect>
+                <BlurEffect Radius="10"></BlurEffect>
+            </Rectangle.Effect>
+        </Rectangle>
+        <Grid Height="50" VerticalAlignment="Top">
+            <TextBlock Name="LoginLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Height="20" Width="280"  Margin="0,24,0,0" VerticalAlignment="Bottom" Text="{Binding LoginHeaderText}" HorizontalAlignment="Center" TextAlignment="Center"/>
+        </Grid>
+        <Grid Margin="0,100,18,0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="340"/>
+                <ColumnDefinition Width="340"/>
+            </Grid.ColumnDefinitions>
+            <Button Margin="30,0,0,30" Click="CancelLoginClick" Width="120" Height="30" Style="{StaticResource BackToAppsButton}" HorizontalAlignment="Left" VerticalAlignment="Bottom"> </Button>
+            <Grid Grid.Column="0" Margin="180,0,18,0">
+                <TextBlock Name="NewCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="New Customer"/>
+                <Button Name="GoToRegistrationButton" Content="Register" Style="{DynamicResource MainButtonStyle}" Margin="0,40"
+                                                HorizontalAlignment="Left" VerticalAlignment="Top" Width="140"
+                                                Height="32" Click="GoToRegistrationClick" />
+            </Grid>
+            <Line Grid.Column="1" X1="0" Y1="-3" X2="0" Y2="168" Stroke="{StaticResource MiddleBarColor}" StrokeThickness=".5" />
+            <Grid Grid.Column="1" Margin="20,0,32,0" Width="180" HorizontalAlignment="Left">
+                <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="11" Text="Existing Customer"/>
+                <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,16,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
+                <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWaterEmail}"
+                                                HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" LostKeyboardFocus="UsernameTextBox_OnLostKeyboardFocus" KeyUp="UsernameTextBox_OnKeyUp" GotKeyboardFocus="UsernameTextBox_OnFocus" TextChanged="UsernameTextBox_OnTextChanged" />
+                <TextBlock x:Name="EmailFormatErrorMessage" Style="{StaticResource TextStyle}" Margin="0,76,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="Please enter a valid email address" Visibility="Hidden"  />
+                <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
+                                                    HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" GotKeyboardFocus="Password_OnFocus" LostKeyboardFocus="Password_OnLostKeyboardFocus" PasswordChanged="PasswordBox_OnPasswordChanged">
+                </PasswordBox>
+                <TextBlock Style="{StaticResource TextStyleOnMouseOver}"  Margin="0,155,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" TextAlignment="Center" Text="Recover Password" TextDecorations="Underline" MouseLeftButtonDown="ForgotPassword" FontSize="9" Width="80" Height="10"/>
+                <Button Name="LoginButton" Margin="0,150,0,0" Content="Log In" Style="{StaticResource LoginButtonDefault}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="84" Height="24" Click="Login" FontSize="9"/>
+            </Grid>
+        </Grid>
+        <TextBlock VerticalAlignment="Bottom" TextWrapping="Wrap" Name="MessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
+    </Grid>
+
+</UserControl>

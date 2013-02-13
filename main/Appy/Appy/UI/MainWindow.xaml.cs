@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
@@ -9,8 +10,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using AppDirect.WindowsClient.API;
-using Application = AppDirect.WindowsClient.Models.Application;
+using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -19,9 +21,8 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
-        public event EventHandler CloseWindow;
-
+        public List<UIElement> WindowPanels = new List<UIElement>();
+        
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -47,6 +48,35 @@ namespace AppDirect.WindowsClient.UI
 
             getUpdateThread.DoWork += DownloadAvailableUpdates;
             getUpdateThread.RunWorkerAsync();
+
+            WindowPanels.Add(LoginViewControl);
+            WindowPanels.Add(RegistrationViewControl);
+
+            LoginViewControl.RegistrationClick += Login_OnRegistrationClick;
+            LoginViewControl.CloseLogin += Login_Close;
+
+            RegistrationViewControl.ClosePanel += Login_Close;
+
+        }
+
+        private void Login_Close(object sender, EventArgs e)
+        {
+            SetVisibleGrid(MainViewGrid);
+        }
+
+        private void SetVisibleGrid(UIElement visibleControl)
+        {
+            foreach (var windowPanel in WindowPanels)
+            {
+                if (windowPanel.Equals(visibleControl))
+                {
+                    windowPanel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    windowPanel.Visibility = Visibility.Hidden;
+                }
+            }
         }
 
         private void DownloadAvailableUpdates(object sender, DoWorkEventArgs e)
@@ -68,38 +98,6 @@ namespace AppDirect.WindowsClient.UI
                 }
 
                 Thread.Sleep(TimeSpan.FromDays(1));
-            }
-        }
-
-        private void GoToAppStore(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(Properties.Resources.AppStoreUrlString);
-        }
-
-        private void ForgotPassword(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(Properties.Resources.ForgotPasswordUrlString);
-        }
-
-        private void Login(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (ViewModel.Login(UsernameTextBox.Text, PasswordBox.Password))
-                {
-                    YourAppsTab.IsSelected = true;
-                    SyncButton.Visibility = Visibility.Hidden;
-                    LogoutButton.Visibility = Visibility.Visible;
-                    LoginFailedMessage.Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                    LoginFailedMessage.Visibility = Visibility.Visible;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
             }
         }
 
@@ -138,7 +136,9 @@ namespace AppDirect.WindowsClient.UI
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
                     ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
-                    LoginTab.IsSelected = true;
+
+                    SetVisibleGrid(LoginViewControl);
+                    LoginViewControl.UsernameTextBox.Focus();
                 }
                 else
                 {
@@ -174,27 +174,15 @@ namespace AppDirect.WindowsClient.UI
             else
             {
                 ViewModel.LoginHeaderText = "Please Login to View Your Apps";
-                LoginTab.IsSelected = true;
+
+                SetVisibleGrid(LoginViewControl);
+                LoginViewControl.UsernameTextBox.Focus();
             }
         }
 
-        private void CancelLoginClick(object sender, RoutedEventArgs e)
+        private void CancelRegistrationClick(object sender, RoutedEventArgs e)
         {
-            YourAppsTab.IsSelected = true;
-        }
-
-        private void RegisterClick(object sender, RoutedEventArgs e)
-        {
-            var emailAddress = NewCustomerEmail.Text;
-
-            var serviceAddress = Properties.Resources.BaseAppStoreUrl + Properties.Resources.RegisterEmailUrl;
-
-            var request = HttpWebRequest.Create(String.Format(serviceAddress, emailAddress));
-
-            WebResponse webResponse = request.GetResponse();
-
-            MessageArea.Text =
-                "Thanks for registering. Please check your inbox and click the link to activate your account.";
+            SetVisibleGrid(MainViewGrid);
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
@@ -203,34 +191,7 @@ namespace AppDirect.WindowsClient.UI
             LogoutButton.Visibility = Visibility.Hidden;
             SyncButton.Visibility = Visibility.Visible;
         }
-
-        private void NewCustomerEmail_OnKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                RegisterButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-            }
-            
-            else if (EmailMatchPattern.IsMatch(NewCustomerEmail.Text))
-            {
-                MessageBox.Show("Valid Email Now");
-            }
-        }
-
-        private void PasswordBox_OnKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Return)
-            {
-                LoginButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-            }
-        }
-
-        private void LoginInfo_OnChange(object sender,
-                                        DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
-        {
-            LoginFailedMessage.Visibility = Visibility.Hidden;
-        }
-
+        
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
             BackgroundWorker getUpdateThread = new BackgroundWorker();
@@ -256,6 +217,16 @@ namespace AppDirect.WindowsClient.UI
             {
                 Helper.RetryAction(() =>process.Kill(), 5, TimeSpan.FromMilliseconds(500));
             }
+        }
+
+        private void Login_OnRegistrationClick(object o, EventArgs e)
+        {
+            SetVisibleGrid(RegistrationViewControl);
+        }
+
+        private void PinToTaskBarClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Feature coming soon!");
         }
     }
 }
