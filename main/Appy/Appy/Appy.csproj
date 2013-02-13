@@ -130,6 +130,10 @@
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
     <Compile Include="API\Helper.cs" />
     <Compile Include="API\IpcCommunicator.cs" />
+    <Compile Include="InteropAPI\ITaskbarInterop.cs" />
+    <Compile Include="InteropAPI\ITaskbarInteropCallback.cs" />
+    <Compile Include="InteropAPI\TaskbarAPI.cs" />
+    <Compile Include="InteropAPI\TaskbarPosition.cs" />
     <Compile Include="LocalApplications.cs" />
     <Compile Include="API\IAppDirectApi.cs" />
     <Compile Include="API\ICachedAppDirectApi.cs" />
@@ -143,6 +147,9 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
+    <Compile Include="UI\AllButtons.xaml.cs">
+      <DependentUpon>AllButtons.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
@@ -342,6 +349,10 @@
     <Resource Include="UI\Images\FeaturedMaskClick.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\AllButtons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
