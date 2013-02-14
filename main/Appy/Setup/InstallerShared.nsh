@@ -19,15 +19,19 @@ AutoCloseWindow true
 ;--------------------------------
 
 !macro WaitForDead
+;Processes::FindProcess sets $R0 to "1" if the process is found 
 loop:
 	IntOp $0 $0 + 1
 	Processes::FindProcess "${APPNAME}.Browser.exe"
 	${If} $R0 == "0"
 	Processes::FindProcess "${APPEXE}"
-	StrCmp $R0 "0" 0 done
-	StrCmp $0 "100" done
+	StrCmp $R0 "0" done
+	StrCmp $0 "100" message	
 	${EndIf}	
 	Sleep 200
 	Goto loop
+	message:
+	MessageBox MB_OK "${APPNAME} can't install because there is another version of the application running."
+    Abort
 done:
 !macroend

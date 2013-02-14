@@ -36,10 +36,10 @@ Section "Create"
 SectionEnd
 
 Function .onInit
-!insertmacro WaitForDead
+  !insertmacro WaitForDead
 FunctionEnd
 
 Function .onInstSuccess
-Exec "${APPEXEPATH}"
+  Exec "${APPEXEPATH}"
 FunctionEnd
 

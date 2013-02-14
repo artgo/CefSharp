@@ -81,11 +81,9 @@ namespace AppDirect.WindowsClient.UI
 
         private void DownloadAvailableUpdates(object sender, DoWorkEventArgs e)
         {
-            string currentVersionString = Helper.ApplicationVersion;
-
             while (true)
             {
-                bool updateAvailable = ServiceLocator.Updater.GetUpdates(currentVersionString);
+                bool updateAvailable = ServiceLocator.Updater.GetUpdates();
 
                 if (updateAvailable)
                 {

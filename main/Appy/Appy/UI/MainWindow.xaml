@@ -329,7 +329,7 @@
                 <Button Name="MyAppsButton" Grid.Column="0" Style="{StaticResource MyAppsButton}"/>
                 <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="1" Style="{StaticResource CloudSyncButton}" Visibility="{Binding CloudSyncVisibility}"/>
                 <Button Name="AlertsButton" Grid.Column="2" Style="{StaticResource AlertsButton}" Visibility="{Binding VerifyEmailVisibility}"/>
-                <Button Name="UpdateAvailableButton" Click="UpdateButtonOnClick" Grid.Column="3" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left"  Visibility="Hidden" Margin="120,6,0,0" Content="Update Available!" />
+                <Button Name="UpdateAvailableButton" Click="UpdateButtonOnClick" Grid.Column="3" Style="{StaticResource TopPanelButton}" Visibility="Hidden" Content="Update Available!" />
                 <Button Name="LogoutButton" Click="Logout_Click" Grid.Column="1" Style="{StaticResource BorderlessButton}" Width="100" VerticalAlignment="Top" HorizontalAlignment="Right"  Visibility="{Binding LogOutVisibility}" Margin="120,6,0,0" Content="Log Out"/>
                 <Line Grid.ColumnSpan="5" X1="5" Y1="30" X2="420" Y2="30" Stroke="#656565" StrokeThickness="1" />
                 </Grid>

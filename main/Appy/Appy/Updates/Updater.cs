@@ -27,17 +27,18 @@ namespace AppDirect.WindowsClient.Updates
             if (ServiceLocator.LocalStorage.UpdateDownloaded)
             {
                 InstallUpdates();
+                System.Environment.Exit(0);
             }
         }
 
-        public bool GetUpdates(string currentVersion)
+        public bool GetUpdates()
         {
             int retryCount = 0;
             while (retryCount < RetryUpdatesLimit)
             {
                 try
                 {
-                    if (CheckVersionGetUpdates(currentVersion))
+                    if (CheckVersionGetUpdates(Helper.ApplicationVersion))
                     {
                         ServiceLocator.LocalStorage.UpdateDownloaded = true;
                         ServiceLocator.LocalStorage.SaveAppSettings();
@@ -77,8 +78,9 @@ namespace AppDirect.WindowsClient.Updates
                 }
                 Process.Start(start);
             }
-            catch (Exception)
+            catch (Exception e )
             {
+                MessageBox.Show(e.Message);
             }
             finally
             {

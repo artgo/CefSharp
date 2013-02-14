@@ -93,6 +93,5 @@ MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?
   gogogo:
 Exec "taskkill /f /t /im ${APPEXE}"
 !insertmacro WaitForDead
-MessageBox MB_OK "Finally Done" 
 ${EndIf}
 FunctionEnd
