@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Models;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -76,7 +75,7 @@ namespace AppDirect.WindowsClient.API
             get { return _appDirectApi.IsAuthenticated; }
         }
 
-        private static IList<Application> ConvertList(IList<Application> appList, WebApplicationsListApplication[] myApps)
+        private static IList<Application> ConvertList(IList<Application> appList, IEnumerable<WebApplicationsListApplication> myApps)
         {
             int appN = 0;
 
@@ -129,6 +128,23 @@ namespace AppDirect.WindowsClient.API
                 appList.Add(app);
             }
             return appList;
+        }
+
+        public bool RegisterUser(string firstName, string lastName, string password, string confirmPassword, string email,
+                                 string confirmEmail, string companyName)
+        {
+            return _appDirectApi.RegisterUser(firstName, lastName, password, confirmPassword, email, confirmEmail, companyName,
+                                       null, null, null);
+        }
+
+        public bool ConfirmUserEmail(string email, string confirmationCode)
+        {
+            return _appDirectApi.ConfirmUserEmail(email, confirmationCode);
+        }
+
+        public bool IsEmailConfirmed(string email)
+        {
+            return _appDirectApi.IsEmailConfirmed(email);
         }
     }
 }
