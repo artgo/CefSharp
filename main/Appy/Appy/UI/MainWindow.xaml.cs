@@ -110,10 +110,10 @@ namespace AppDirect.WindowsClient.UI
 
         private void InstallAppClick(object sender, RoutedEventArgs e)
         {
+            var clickedApp = Helper.GetApplicationFromButtonSender(sender);
+
             try
             {
-                var clickedApp = Helper.GetApplicationFromButtonSender(sender);
-
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
                     ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
@@ -131,7 +131,7 @@ namespace AppDirect.WindowsClient.UI
                 MessageBox.Show(ex.Message);
             }
 
-            NotifyAppInstalled(sender, e);
+            NotifyAppInstalled(clickedApp, e);
         }
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)

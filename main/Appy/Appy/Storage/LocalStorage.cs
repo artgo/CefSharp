@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,15 +15,24 @@ namespace AppDirect.WindowsClient.Storage
     ///</summary>
     public sealed class LocalStorage
     {
-        private List<string> _hiddenApps = new List<string>();
+        public EventHandler NotifyPinnedAppAdded;
+        public EventHandler NotifyPinnedAppRemoved;
+
+        private List<string> _hiddenApps = new List<string>(); 
         private const string FileName = @"\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
         private static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        private List<Application> _pinnedApps;
 
         public List<Application> InstalledLocalApps{ get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
+        public ReadOnlyCollection<Application> PinnedApps
+        {
+            get { return _pinnedApps.AsReadOnly(); }
+        }
+
         public bool UpdateDownloaded { get; set; }  
 
         [XmlIgnore]
@@ -43,6 +53,20 @@ namespace AppDirect.WindowsClient.Storage
                 return InstalledLocalApps.Concat(InstalledAppDirectApps).ToList();
             }
            
+        }
+
+        public void AddToPinnedApps(Application application)
+        {
+            _pinnedApps.Add(application);
+
+            NotifyPinnedAppAdded(application, null);
+        }
+
+        public void RemoveFromPinnedApps(Application application)
+        {
+            _pinnedApps.Remove(application);
+            
+            NotifyPinnedAppRemoved(application, null);
         }
 
         public List<string> HiddenApps

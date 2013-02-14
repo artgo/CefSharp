@@ -43,7 +43,7 @@ namespace AppDirect.WindowsClient.UI
             Left = SystemParameters.WorkArea.Right * .5;
             Top = SystemParameters.WorkArea.Bottom - Height;
 
-            foreach (var application in ServiceLocator.LocalStorage.AllInstalledApplications)
+            foreach (var application in ServiceLocator.LocalStorage.PinnedApps)
             {
                 AddButton(application);
             }
@@ -52,9 +52,9 @@ namespace AppDirect.WindowsClient.UI
             {
                 ApplicationWindow = new MainWindow();
             }
-
-            ApplicationWindow.NotifyAppInstalled += AddAppButton;
-            ApplicationWindow.NotifyAppUninstalled += RemoveAppButton;
+            
+            ServiceLocator.LocalStorage.NotifyPinnedAppAdded += AddAppButton;
+            ServiceLocator.LocalStorage.NotifyPinnedAppRemoved += RemoveAppButton;
         }
 
         private void AddButton(Application application)
@@ -80,9 +80,9 @@ namespace AppDirect.WindowsClient.UI
 
         private void AddAppButton(object sender, EventArgs e)
         {
-            var clickedApp = Helper.GetApplicationFromButtonSender(sender);
+            var application = sender as Application;
 
-            AddButton(clickedApp);
+            AddButton(application);
         }
 
         private void AppButton_Click(object sender, RoutedEventArgs e)
