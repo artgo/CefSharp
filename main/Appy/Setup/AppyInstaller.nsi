@@ -7,7 +7,7 @@
 Name "${APPNAME}"
 
 ; The file to write
-!define OUTFILE ${APPEXE}
+!define OUTFILE "${APPNAME}Installer.exe"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
@@ -85,3 +85,14 @@ Function .onInstSuccess
 Exec "${APPEXEPATH}"
 FunctionEnd
 
+Function .onInit
+Processes::FindProcess "${APPEXE}"
+${If} $R0 == "1"
+MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
+    Abort
+  gogogo:
+Exec "taskkill /f /t /im ${APPEXE}"
+!insertmacro WaitForDead
+MessageBox MB_OK "Finally Done" 
+${EndIf}
+FunctionEnd
