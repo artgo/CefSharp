@@ -31,14 +31,14 @@ namespace AppDirect.WindowsClient.Updates
             }
         }
 
-        public bool GetUpdates()
+        public bool GetUpdates(string currentVersion)
         {
             int retryCount = 0;
             while (retryCount < RetryUpdatesLimit)
             {
                 try
                 {
-                    if (CheckVersionGetUpdates(Helper.ApplicationVersion))
+                    if (CheckVersionGetUpdates(currentVersion))
                     {
                         ServiceLocator.LocalStorage.UpdateDownloaded = true;
                         ServiceLocator.LocalStorage.SaveAppSettings();

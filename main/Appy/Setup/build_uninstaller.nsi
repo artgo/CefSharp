@@ -62,6 +62,6 @@ Section "Uninstall"
 SectionEnd
 
 Function un.onInit
-Exec "taskkill /f /t /im ${APPEXE}"
-!insertmacro WaitForDead
+  Exec "taskkill /f /t /im ${APPEXE}"
+  !insertmacro WaitForDead
 FunctionEnd

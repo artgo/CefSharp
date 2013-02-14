@@ -83,7 +83,7 @@ namespace AppDirect.WindowsClient.UI
         {
             while (true)
             {
-                bool updateAvailable = ServiceLocator.Updater.GetUpdates();
+                bool updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
 
                 if (updateAvailable)
                 {
