@@ -24,7 +24,7 @@ loop:
 	Processes::FindProcess "${APPNAME}.Browser.exe"
 	${If} $R0 == "0"
 	Processes::FindProcess "${APPEXE}"
-	strCmp $R0 "0" 0 done
+	StrCmp $R0 "0" 0 done
 	StrCmp $0 "100" done
 	${EndIf}	
 	Sleep 200
