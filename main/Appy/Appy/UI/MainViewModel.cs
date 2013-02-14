@@ -415,6 +415,5 @@ namespace AppDirect.WindowsClient.UI
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }

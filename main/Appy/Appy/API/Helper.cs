@@ -12,7 +12,7 @@ namespace AppDirect.WindowsClient.API
     {
         private Helper() {}
 
-        public static readonly AssemblyName AssemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
+        public static readonly AssemblyName AssemblyName = Assembly.GetExecutingAssembly().GetName();
         public static readonly string ApplicationName = AssemblyName.Name;
         public static readonly string ApplicationVersion = AssemblyName.Version.ToString();
         public static readonly string ApplicationDirectory = @"\AppDirect\" + ApplicationName;
@@ -87,6 +87,12 @@ namespace AppDirect.WindowsClient.API
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        public static Application GetClickedAppFromContextMenuClick(object sender)
+        {
+            var clickedApp = ((MenuItem) sender).DataContext as Application;
+            return clickedApp;
         }
     }
 }

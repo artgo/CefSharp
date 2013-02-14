@@ -43,7 +43,7 @@ namespace AppDirect.WindowsClient.UI
             Left = SystemParameters.WorkArea.Right * .5;
             Top = SystemParameters.WorkArea.Bottom - Height;
 
-            foreach (var application in ServiceLocator.LocalStorage.PinnedApps)
+            foreach (var application in ServiceLocator.LocalStorage.GetPinnedApps())
             {
                 AddButton(application);
             }

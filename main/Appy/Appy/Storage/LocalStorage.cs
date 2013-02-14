@@ -15,7 +15,10 @@ namespace AppDirect.WindowsClient.Storage
     ///</summary>
     public sealed class LocalStorage
     {
+        [XmlIgnore]
         public EventHandler NotifyPinnedAppAdded;
+
+        [XmlIgnore]
         public EventHandler NotifyPinnedAppRemoved;
 
         private List<string> _hiddenApps = new List<string>(); 
@@ -23,15 +26,11 @@ namespace AppDirect.WindowsClient.Storage
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
         private static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
-        private List<Application> _pinnedApps;
 
         public List<Application> InstalledLocalApps{ get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
-        public ReadOnlyCollection<Application> PinnedApps
-        {
-            get { return _pinnedApps.AsReadOnly(); }
-        }
+        public List<Application> PinnedApps = new List<Application>();
 
         public bool UpdateDownloaded { get; set; }  
 
@@ -57,16 +56,21 @@ namespace AppDirect.WindowsClient.Storage
 
         public void AddToPinnedApps(Application application)
         {
-            _pinnedApps.Add(application);
+            PinnedApps.Add(application);
 
             NotifyPinnedAppAdded(application, null);
         }
 
         public void RemoveFromPinnedApps(Application application)
         {
-            _pinnedApps.Remove(application);
+            PinnedApps.Remove(application);
             
             NotifyPinnedAppRemoved(application, null);
+        }
+
+        public List<Application> GetPinnedApps()
+        {
+            return PinnedApps;
         }
 
         public List<string> HiddenApps
@@ -109,12 +113,14 @@ namespace AppDirect.WindowsClient.Storage
                             // Create a new instance of the LocalStorage by deserializing the file.
                             var localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
 
-                            LoginInfo = localStorage.LoginInfo;                         
+                            LoginInfo = localStorage.LoginInfo;
                             InstalledLocalApps = localStorage.InstalledLocalApps;
                             InstalledAppDirectApps = localStorage.InstalledAppDirectApps;
+                            LastSuggestedApps = localStorage.LastSuggestedApps;
                             UpdateDownloaded = localStorage.UpdateDownloaded;
 
                             HiddenApps = localStorage.HiddenApps;
+                            PinnedApps = localStorage.PinnedApps; 
 
                             if (!localStorage.HasCredentials)
                             {

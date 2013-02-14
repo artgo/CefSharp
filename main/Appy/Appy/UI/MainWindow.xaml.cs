@@ -23,9 +23,6 @@ namespace AppDirect.WindowsClient.UI
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
         
-        public EventHandler NotifyAppInstalled;
-        public EventHandler NotifyAppUninstalled;
-        
         public MainViewModel ViewModel
         {
             get { return DataContext as MainViewModel; }
@@ -130,14 +127,12 @@ namespace AppDirect.WindowsClient.UI
             {
                 MessageBox.Show(ex.Message);
             }
-
-            NotifyAppInstalled(clickedApp, e);
         }
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)
         {
-            var clickedApp = ((MenuItem)sender).DataContext as Application;
-            
+            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
+
             try
             {
                 ViewModel.Uninstall(clickedApp);
@@ -146,8 +141,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 MessageBox.Show(ex.Message);
             }
-
-            NotifyAppUninstalled(clickedApp, e);
         }
 
         private void SyncButtonOnClick(object sender, RoutedEventArgs e)
@@ -211,7 +204,8 @@ namespace AppDirect.WindowsClient.UI
 
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Feature coming soon!");
+            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
+            ServiceLocator.LocalStorage.AddToPinnedApps(clickedApp);
         }
     }
 }
