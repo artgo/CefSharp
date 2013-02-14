@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ServiceModel;
 using System.Windows;
 
 namespace AppDirect.WindowsClient

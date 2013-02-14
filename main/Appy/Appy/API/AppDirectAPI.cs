@@ -141,20 +141,20 @@ namespace AppDirect.WindowsClient.API
             _context = null;
         }
 
-
-        public bool RegisterUser(string email, string firstName, string lastName, string password, string confirmPassword, string companyName, string industryId, string companySize, string phone)
+        public bool RegisterUser(string firstName, string lastName, string password, string confirmPassword, 
+            string email, string confirmEmail, string companyName, string phone, string industryId, string companySize)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool ConfirmUserEmail(string email, string confirmationCode)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool IsEmailConfirmed(string email)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }
