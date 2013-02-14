@@ -7,7 +7,7 @@ namespace AppDirect.WindowsClient
 {
     public class ServiceLocator
     {
-        public static IKernel Kernel;
+        public static readonly IKernel Kernel = new StandardKernel();
 
         private ServiceLocator() {}
 
@@ -38,7 +38,6 @@ namespace AppDirect.WindowsClient
 
         public static void Initialize()
         {
-            Kernel = new StandardKernel();
             Kernel.Bind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Bind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
             Kernel.Bind<LocalStorage>().ToConstant(new LocalStorage(true));

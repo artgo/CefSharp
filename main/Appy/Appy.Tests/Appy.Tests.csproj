@@ -64,6 +64,7 @@
       <HintPath>..\packages\NSubstitute.1.5.0.0\lib\NET35\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -89,6 +90,7 @@
     <Compile Include="CipherUtilityUnitTest.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="ApplicationUnitTest.cs" />
+    <Compile Include="UI\RegistrationViewTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Appy.Browser\Appy.Browser.csproj">

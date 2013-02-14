@@ -4,12 +4,10 @@ using System.IO;
 using System.Linq;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
-using Ninject;
 
 namespace AppDirect.WindowsClient.Tests
 {
@@ -18,18 +16,15 @@ namespace AppDirect.WindowsClient.Tests
     {
         private volatile MainViewModel _mainViewModel;
 
-        private const string FileName = @"\AppDirect\LocalStorage";
-        private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        private readonly FileInfo File = new FileInfo(TestData.FileName);
 
         private const string Username = TestData.TestUsername;
         private const string Password = TestData.TestPassword;
         private const string BadPassword = "BadPassword";
-        private readonly List<Application> _myApplications = new List<Application>(){new Application{IsLocalApp = false, Id = "AppDirectApplicationId", Name = "FakeApp"}}; 
+        private readonly List<Application> _myApplications = new List<Application>() { new Application { IsLocalApp = false, Id = "AppDirectApplicationId", Name = "FakeApp" } };
 
         private volatile LocalStorage _localStorage;
-
         private volatile IAppDirectApi _appDirectApiMock;
-
         private volatile ICachedAppDirectApi _cachedAppDirectApiMock;
 
         [TestInitialize]
@@ -37,24 +32,20 @@ namespace AppDirect.WindowsClient.Tests
         {
             lock (this)
             {
-                
-            _appDirectApiMock = Substitute.For<IAppDirectApi>();
-            _cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
 
-            _localStorage = new LocalStorage();
+                _appDirectApiMock = Substitute.For<IAppDirectApi>();
+                _cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
 
-            _cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
+                _localStorage = new LocalStorage();
 
-            IKernel Kernel = new StandardKernel();
-            Kernel.Bind<IAppDirectApi>().ToConstant(_appDirectApiMock);
-            Kernel.Bind<ICachedAppDirectApi>().ToConstant(_cachedAppDirectApiMock);
-            Kernel.Bind<LocalStorage>().ToConstant(_localStorage);
+                _cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
 
-            ServiceLocator.Kernel = Kernel;
-            
-            File.Delete();
-            _mainViewModel = new MainViewModel();
+                var kernel = ServiceLocator.Kernel;
+                kernel.Bind<IAppDirectApi>().ToConstant(_appDirectApiMock);
+                kernel.Bind<ICachedAppDirectApi>().ToConstant(_cachedAppDirectApiMock);
+                kernel.Bind<LocalStorage>().ToConstant(_localStorage);
 
+                _mainViewModel = new MainViewModel();
             }
         }
 
@@ -230,7 +221,7 @@ namespace AppDirect.WindowsClient.Tests
                 Assert.IsFalse(_mainViewModel.MyApplications.Contains(app));
             }
         }
-        
+
         [TestMethod]
         public void LocalStorageInitializedByConstructor()
         {

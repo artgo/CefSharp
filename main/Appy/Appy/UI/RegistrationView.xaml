@@ -37,7 +37,7 @@
             </UniformGrid>
             <Button Name="RegisterButton" Grid.Column="1" FontSize="9" Content="Register" Style="{StaticResource MainButtonStyle}" Margin="0,0,12,30"
                                                 HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="140"
-                                                Height="32"/>
+                                                Height="32" Click="RegisterButton_Click"/>
         </Grid>
         <TextBlock TextWrapping="Wrap" VerticalAlignment="Bottom" Name="RvMessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
     </Grid>
