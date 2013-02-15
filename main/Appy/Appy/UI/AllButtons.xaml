@@ -6,7 +6,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:controls="clr-namespace:AppDirect.WindowsClient.UI"
         mc:Ignorable="d" 
-             Height="40" Width="60"
+             Height="40" Width="40"
              WindowStyle="None"
              AllowsTransparency="True"
         Background="Transparent">
@@ -33,9 +33,9 @@
     </Window.Resources>
     <Grid Background="Transparent">
         <StackPanel Name="ButtonContainer" Orientation="Horizontal" Background="Transparent" >
-            <Button Style="{StaticResource BorderlessButton}" Click="Cog_click">
+            <!--<Button Style="{StaticResource BorderlessButton}" Click="Cog_click">
                 <Image Source="Images/cogGrey.png" Height="16"/>
-            </Button>
+            </Button>-->
             <Button Style="{StaticResource MainButtonStyle}" Click="AppButton_Click"/>
         </StackPanel>
     </Grid>
