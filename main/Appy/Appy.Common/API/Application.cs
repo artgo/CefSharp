@@ -19,6 +19,7 @@ namespace AppDirect.WindowsClient.Common.API
         public override bool IsLocalApp { get; set; }
         public override string UrlString { get; set; }
         public override string Price { get; set; }
+        public bool PinnedToTaskbar { get; set; }
 
         public override bool Equals(Object obj)
         {

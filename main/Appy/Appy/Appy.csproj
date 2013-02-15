@@ -166,6 +166,7 @@
     <Compile Include="UI\TaskbarButton.xaml.cs">
       <DependentUpon>TaskbarButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\TaskbarViewModel.cs" />
     <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

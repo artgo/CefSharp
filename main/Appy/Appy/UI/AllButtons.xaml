@@ -6,7 +6,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:controls="clr-namespace:AppDirect.WindowsClient.UI"
         mc:Ignorable="d" 
-             Height="{StaticResource DeskbandHeight}" Width="{StaticResource InitialDeskbandWidth}"
+             Height="30" Width="40"
              WindowStyle="None"
              AllowsTransparency="True"
         Background="Transparent">

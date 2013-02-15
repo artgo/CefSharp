@@ -22,6 +22,10 @@ namespace AppDirect.WindowsClient.UI
     public partial class MainWindow : Window
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
+
+        public EventHandler PinToTaskbarClickNotifier;
+        public EventHandler ApplicationAddedNotifier;
+        public EventHandler ApplicationRemovedNotifier;
         
         public MainViewModel ViewModel
         {
@@ -121,6 +125,7 @@ namespace AppDirect.WindowsClient.UI
                 else
                 {
                     ViewModel.Install(clickedApp);
+                    ApplicationAddedNotifier.Invoke(clickedApp, e);
                 }
             }
             catch (Exception ex)
@@ -135,7 +140,9 @@ namespace AppDirect.WindowsClient.UI
 
             try
             {
+                clickedApp.PinnedToTaskbar = false;
                 ViewModel.Uninstall(clickedApp);
+                ApplicationRemovedNotifier.Invoke(clickedApp, e);
             }
             catch (Exception ex)
             {
@@ -204,8 +211,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)
         {
-            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
-            ServiceLocator.LocalStorage.AddToPinnedApps(clickedApp);
+            PinToTaskbarClickNotifier.Invoke(sender,e);
         }
     }
 }

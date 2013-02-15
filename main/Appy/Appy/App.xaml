@@ -7,7 +7,6 @@
         <sys:Double x:Key="WindowHeight">330</sys:Double>
         <sys:Double x:Key="WindowWidth">680</sys:Double>
         <sys:Double x:Key="DeskbandHeight">40</sys:Double>
-        <sys:Double x:Key="InitialDeskbandWidth">40</sys:Double>
         <GridLength x:Key="RightColumnWidth">248</GridLength>
         <sys:Double x:Key="RightPanelWidth">248</sys:Double>
         <GridLength x:Key="LeftColumnWidth">432</GridLength>
@@ -29,6 +28,7 @@
         <SolidColorBrush x:Key="ErrorTextColor" Color="#f13737" />
         <SolidColorBrush x:Key="AlertTextColor" Color="#ffad38" />
         <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#36454d" />
+        <SolidColorBrush x:Key="MenuItemColor" Color="#595959" />
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
         <Storyboard x:Key="enterGotFocus" >
             <DoubleAnimation Duration="0:0:0.4" To=".4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
@@ -391,10 +391,6 @@
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="Bd" Property="Background" Value="{StaticResource TextFieldFocusColor}"/>
                                 <Setter TargetName="Bd" Property="BorderThickness" Value="1"/>

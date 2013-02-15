@@ -15,12 +15,6 @@ namespace AppDirect.WindowsClient.Storage
     ///</summary>
     public sealed class LocalStorage
     {
-        [XmlIgnore]
-        public EventHandler NotifyPinnedAppAdded;
-
-        [XmlIgnore]
-        public EventHandler NotifyPinnedAppRemoved;
-
         private List<string> _hiddenApps = new List<string>(); 
         private const string FileName = @"\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
@@ -30,7 +24,7 @@ namespace AppDirect.WindowsClient.Storage
         public List<Application> InstalledLocalApps{ get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
-        public List<Application> PinnedApps = new List<Application>();
+        public List<Application> PinnedApps { get; set;}
 
         public bool UpdateDownloaded { get; set; }  
 
@@ -52,25 +46,6 @@ namespace AppDirect.WindowsClient.Storage
                 return InstalledLocalApps.Concat(InstalledAppDirectApps).ToList();
             }
            
-        }
-
-        public void AddToPinnedApps(Application application)
-        {
-            PinnedApps.Add(application);
-
-            NotifyPinnedAppAdded(application, null);
-        }
-
-        public void RemoveFromPinnedApps(Application application)
-        {
-            PinnedApps.Remove(application);
-            
-            NotifyPinnedAppRemoved(application, null);
-        }
-
-        public List<Application> GetPinnedApps()
-        {
-            return PinnedApps;
         }
 
         public List<string> HiddenApps

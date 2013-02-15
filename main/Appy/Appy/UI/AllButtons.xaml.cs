@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.InteropAPI;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -19,9 +20,10 @@ namespace AppDirect.WindowsClient.UI
     /// <summary>
     /// Interaction logic for AllButtons.xaml
     /// </summary>
-    public partial class AllButtons : Window
+    public partial class AllButtons : ITaskbarInterop   
     {
         private MainWindow _applicationWindow;
+        public TaskbarViewModel ViewModel { get; set; }
 
         private MainWindow ApplicationWindow
         {
@@ -39,22 +41,39 @@ namespace AppDirect.WindowsClient.UI
         public AllButtons()
         {
             InitializeComponent();
+            ViewModel = new TaskbarViewModel();
 
             Left = SystemParameters.WorkArea.Right * .5;
             Top = SystemParameters.WorkArea.Bottom - Height;
 
-            foreach (var application in ServiceLocator.LocalStorage.GetPinnedApps())
+            foreach (var application in ViewModel.PinnedApps)
             {
                 AddButton(application);
             }
 
-            if (ApplicationWindow == null)
+            ApplicationWindow.ApplicationAddedNotifier += AddAppButton;
+            ApplicationWindow.ApplicationRemovedNotifier += RemoveAppButton;
+
+            ApplicationWindow.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
+        }
+
+        private void PinToTaskbarClickHandler(object sender, EventArgs eventArgs)
+        {
+            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
+
+            var clickedItem = (MenuItem)sender;
+
+            //Item is checked at this point if when it was clicked it was NOT checked
+            if (clickedItem.IsChecked)
             {
-                ApplicationWindow = new MainWindow();
+                ViewModel.AddPinnedApp(clickedApp);
+                AddButton(clickedApp);
             }
-            
-            ServiceLocator.LocalStorage.NotifyPinnedAppAdded += AddAppButton;
-            ServiceLocator.LocalStorage.NotifyPinnedAppRemoved += RemoveAppButton;
+            else
+            {
+                ViewModel.RemovePinnedApp(clickedApp);
+                RemoveButton(clickedApp);
+            }
         }
 
         private void AddButton(Application application)
@@ -65,23 +84,26 @@ namespace AppDirect.WindowsClient.UI
 
         private void RemoveButton(Application application)
         {
-            var btn = ButtonContainer.Children.OfType<TaskbarButton>().First(b => b.Name == application.Id);
+            var btn = ButtonContainer.Children.OfType<TaskbarButton>().FirstOrDefault(b => b.Name == application.Id);
 
-            ButtonContainer.Children.Remove(btn);
-            Width -= 40;
+            if (btn != null)
+            {
+                ButtonContainer.Children.Remove(btn);
+                Width -= 40;
+            }
         }
 
         private void RemoveAppButton(object sender, EventArgs e)
         {
             var application = sender as Application;
-
+            ViewModel.RemovePinnedApp(application);
             RemoveButton(application);
         }
 
         private void AddAppButton(object sender, EventArgs e)
         {
             var application = sender as Application;
-
+            ViewModel.AddPinnedApp(application);
             AddButton(application);
         }
 
@@ -96,5 +118,24 @@ namespace AppDirect.WindowsClient.UI
                 ApplicationWindow.Show();
             }
         }
+
+        public void HeightChanged(int newHeight)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PositionChanged(TaskbarPosition newPosition)
+        {
+            if (newPosition == TaskbarPosition.Bottom || newPosition == TaskbarPosition.Top)
+            {
+                ButtonContainer.Orientation = Orientation.Horizontal;
+            }
+            else
+            {
+                ButtonContainer.Orientation = Orientation.Vertical;
+            }
+        }
+
+        public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }
     }
 }

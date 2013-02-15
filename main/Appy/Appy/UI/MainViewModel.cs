@@ -358,6 +358,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
+                application.PinnedToTaskbar = false;
                 ServiceLocator.LocalStorage.InstalledLocalApps.Remove(application);
                 ServiceLocator.LocalStorage.LastSuggestedApps.Add(application);
             }
@@ -365,9 +366,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 ServiceLocator.LocalStorage.HiddenApps.Add(application.Id);
             }
-
-
-            ServiceLocator.LocalStorage.RemoveFromPinnedApps(application);
+            
             MyApplications.Remove(application);
 
             var backgroundWorker = new BackgroundWorker();
@@ -379,8 +378,8 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
+                application.PinnedToTaskbar = true;
                 ServiceLocator.LocalStorage.InstalledLocalApps.Add(application);
-                ServiceLocator.LocalStorage.AddToPinnedApps(application);
                 ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
             }
             else
