@@ -1,156 +1,198 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.InteropAPI;
+using Application = AppDirect.WindowsClient.Common.API.Application;
 
-// A user control is technically a normal content control which you can extend in some parts in the code but usually it is extended by placing other controls inside it. So as Kent mentioned a UserControl is an aggregation of other controls. This limits what you can do with a user control considerably. It's easier to use but more limited than a full custom control.
 namespace AppDirect.WindowsClient.UI
 {
-    public delegate void DoExitEventHandler(object sender, EventArgs e);
-
     /// <summary>
     /// Interaction logic for AllButtons.xaml
     /// </summary>
-    public partial class AllButtons : UserControl
+    public partial class AllButtons : ITaskbarInterop   
     {
+        private MainWindow _applicationWindow;
+        public TaskbarViewModel ViewModel { get; set; }
+
+        private MainWindow ApplicationWindow
+        {
+            get
+            {
+                if (_applicationWindow == null)
+                {
+                    _applicationWindow = new MainWindow();
+                }
+                return _applicationWindow;
+            }
+            set { _applicationWindow = value; }
+        }
+
         public AllButtons()
         {
             InitializeComponent();
-            _IsPressed = false;
-            _IsHover = false;
-            InitImg();
-        }
+            ViewModel = new TaskbarViewModel();
 
-        private void InitImg()
-        {
-            BmpNormal = new BitmapImage(new Uri(@"Images\back.png", UriKind.Relative));
-            BmpPressed = new BitmapImage(new Uri(@"Images\back.png", UriKind.Relative));
-            BmpHover = new BitmapImage(new Uri(@"Images\back.png", UriKind.Relative));
-            BmpPressedHover = new BitmapImage(new Uri(@"Images\back.png", UriKind.Relative));
-            _TheImg.Source = BmpNormal;
-        }
+            Left = 0;
+            Top = 0;
 
-        #region events-commands to native C++ part
-        public event DoExitEventHandler DoExit;
-        protected virtual void OnDoExit(EventArgs e)
-        {
-            if (DoExit != null) DoExit(this, e);
-        }
-        #endregion	// events-commands to native C++ part
-
-
-        private bool _MenuVisible = false;
-
-        private Image TheImg { get { return _TheImg; } set { _TheImg = value; } }
-        private BitmapImage BmpNormal { get; set; }
-        private BitmapImage BmpPressed { get; set; }
-        private BitmapImage BmpHover { get; set; }
-        private BitmapImage BmpPressedHover { get; set; }
-
-        #region properties
-        private bool _IsPressed;
-        private bool IsPressed
-        {
-            get { return _IsPressed; }
-            set
+            foreach (var application in ViewModel.PinnedApps)
             {
-                if (value != _IsPressed)
-                {
-                    _IsPressed = value;
-                    SetBmp();
-                    ToggleMenu();
-                }
+                AddButton(application);
             }
-        }
-        private bool _IsHover;
-        private bool IsHover
-        {
-            get { return _IsHover; }
-            set
-            {
-                if (value != _IsHover)
-                {
-                    _IsHover = value;
-                    SetBmp();
-                }
-            }
-        }
-        #endregion // properties
 
-        #region Main Button Menu
-        private MainWindow _menu = null;
-        private void ToggleMenu()
+            ApplicationWindow.ApplicationAddedNotifier += AddAppButton;
+            ApplicationWindow.ApplicationRemovedNotifier += RemoveAppButton;
+
+            ApplicationWindow.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
+        }
+
+        private void PinToTaskbarClickHandler(object sender, EventArgs eventArgs)
         {
-            if (_IsPressed)
+            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
+
+            var clickedItem = (MenuItem)sender;
+
+            //Item is checked at this point if when it was clicked it was NOT checked
+            if (clickedItem.IsChecked)
             {
-                if (_menu == null) { _menu = new MainWindow(); }
-                _menu.Show();
+                ViewModel.AddPinnedApp(clickedApp);
+                AddButton(clickedApp);
             }
             else
             {
-                if (_menu != null) { _menu.Hide(); }
+                ViewModel.RemovePinnedApp(clickedApp);
+                RemoveButton(clickedApp);
             }
         }
-        #endregion //Main Button Menu
 
-        private void SetBmp()
+        private void AddButton(Application application)
         {
-            if (IsHover)
+            ButtonContainer.Children.Add(new TaskbarButton(application));
+
+            if (ButtonContainer.Orientation == Orientation.Horizontal)
             {
-                _TheImg.Source = IsPressed ? BmpPressedHover : BmpHover;
+                Width += 40;
             }
             else
             {
-                _TheImg.Source = IsPressed ? BmpPressed : BmpNormal;
+                Height += 40;
             }
-        }
 
-        #region win message event handlers
 
-        private void UserControl_MouseLeave_1(object sender, MouseEventArgs e)
-        {
-            IsHover = false;
-        }
-
-        private void UserControl_MouseUp_1(object sender, MouseButtonEventArgs e)
-        {
-            // change state of the Main Button with onle left mouse button
-            if (e.ChangedButton == MouseButton.Left
-                && e.MiddleButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed
-                && e.XButton1 != MouseButtonState.Pressed && e.XButton2 != MouseButtonState.Pressed)
+            if (TaskbarCallbackEvents != null)
             {
-                IsPressed = !IsPressed;
-                return;
+                if (ButtonContainer.Orientation == Orientation.Horizontal)
+                {
+                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Width);
+                }
+                else
+                {
+                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Height);
+                }
             }
         }
 
-        private void UserControl_MouseEnter_1(object sender, MouseEventArgs e)
+        private void RemoveButton(Application application)
         {
-            IsHover = true;
-        }
+            var btn = ButtonContainer.Children.OfType<TaskbarButton>().FirstOrDefault(b => b.Name == application.Id);
 
-        private void UserControl_MouseRightButtonDown_1(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed)
+            if (btn != null)
             {
-                ShowPopupMenu();
+                ButtonContainer.Children.Remove(btn);
+                if (ButtonContainer.Orientation == Orientation.Horizontal)
+                {
+                    Width -= 40;
+                }
+                else
+                {
+                    Height -= 40;
+                }
+                
+                if (TaskbarCallbackEvents != null)
+                {
+                    if (ButtonContainer.Orientation == Orientation.Horizontal)
+                    {
+                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Width);
+                    }
+                    else
+                    {
+                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Height);
+                    }
+                }
             }
         }
-        #endregion // win message event handlers
 
-        private void ShowPopupMenu()
+        private void RemoveAppButton(object sender, EventArgs e)
         {
-            if (!_MenuVisible)
+            var application = sender as Application;
+            ViewModel.RemovePinnedApp(application);
+            RemoveButton(application);
+        }
+
+        private void AddAppButton(object sender, EventArgs e)
+        {
+            var application = sender as Application;
+            ViewModel.AddPinnedApp(application);
+            AddButton(application);
+        }
+
+        private void AppButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ApplicationWindow.Visibility == Visibility.Visible)
             {
-                IsPressed = false;
-                _MenuVisible = true;
+                ApplicationWindow.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ApplicationWindow.Show();
             }
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e)	// exit of context menu
+        public void HeightChanged(int newHeight)
         {
-            OnDoExit(EventArgs.Empty);
+            throw new NotImplementedException();
+        }
+
+        public void PositionChanged(TaskbarPosition newPosition)
+        {
+            var widthTemp = Width;
+            Width = Height;
+            Height = widthTemp;
+
+            if (newPosition == TaskbarPosition.Bottom || newPosition == TaskbarPosition.Top)
+            {
+                ButtonContainer.Orientation = Orientation.Horizontal;
+
+            }
+            else
+            {
+                ButtonContainer.Orientation = Orientation.Vertical;
+            }
+        }
+
+        public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }
+
+        private void Cog_click(object sender, RoutedEventArgs e)
+        {
+            if (ButtonContainer.Orientation == Orientation.Horizontal)
+            {
+                PositionChanged(TaskbarPosition.Left);
+            }
+            else
+            {
+                PositionChanged(TaskbarPosition.Top);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,6 +24,8 @@ namespace AppDirect.WindowsClient.Storage
         public List<Application> InstalledLocalApps{ get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
+        public List<Application> PinnedApps { get; set;}
+
         public bool UpdateDownloaded { get; set; }  
 
         [XmlIgnore]
@@ -85,12 +88,14 @@ namespace AppDirect.WindowsClient.Storage
                             // Create a new instance of the LocalStorage by deserializing the file.
                             var localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
 
-                            LoginInfo = localStorage.LoginInfo;                         
+                            LoginInfo = localStorage.LoginInfo;
                             InstalledLocalApps = localStorage.InstalledLocalApps;
                             InstalledAppDirectApps = localStorage.InstalledAppDirectApps;
+                            LastSuggestedApps = localStorage.LastSuggestedApps;
                             UpdateDownloaded = localStorage.UpdateDownloaded;
 
                             HiddenApps = localStorage.HiddenApps;
+                            PinnedApps = localStorage.PinnedApps; 
 
                             if (!localStorage.HasCredentials)
                             {

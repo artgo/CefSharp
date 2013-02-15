@@ -24,7 +24,7 @@ namespace AppDirect.WindowsClient.UI
         private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
         private bool _registrationInProgress = false;
-
+        
         public string VersionString
         {
             get
@@ -358,6 +358,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
+                application.PinnedToTaskbar = false;
                 ServiceLocator.LocalStorage.InstalledLocalApps.Remove(application);
                 ServiceLocator.LocalStorage.LastSuggestedApps.Add(application);
             }
@@ -365,7 +366,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 ServiceLocator.LocalStorage.HiddenApps.Add(application.Id);
             }
-
+            
             MyApplications.Remove(application);
 
             var backgroundWorker = new BackgroundWorker();
@@ -377,6 +378,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
+                application.PinnedToTaskbar = true;
                 ServiceLocator.LocalStorage.InstalledLocalApps.Add(application);
                 ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
             }
@@ -412,6 +414,5 @@ namespace AppDirect.WindowsClient.UI
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }

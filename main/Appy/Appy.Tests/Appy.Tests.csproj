@@ -91,6 +91,7 @@
     <Compile Include="TestData.cs" />
     <Compile Include="ApplicationUnitTest.cs" />
     <Compile Include="UI\RegistrationViewTest.cs" />
+    <Compile Include="UI\UnitTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Appy.Browser\Appy.Browser.csproj">

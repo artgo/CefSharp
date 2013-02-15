@@ -22,6 +22,10 @@ namespace AppDirect.WindowsClient.UI
     public partial class MainWindow : Window
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
+
+        public EventHandler PinToTaskbarClickNotifier;
+        public EventHandler ApplicationAddedNotifier;
+        public EventHandler ApplicationRemovedNotifier;
         
         public MainViewModel ViewModel
         {
@@ -98,39 +102,19 @@ namespace AppDirect.WindowsClient.UI
                 Thread.Sleep(TimeSpan.FromDays(1));
             }
         }
-
-        private static Application GetApplicationFromButtonSender(object sender)
-        {
-            return ((Button) sender).DataContext as Application;
-        }
+       
 
         private void AppButtonClick(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var clickedApp = GetApplicationFromButtonSender(sender);
-
-                if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.UrlString)))
-                {
-                    MessageBox.Show("Application developer didn't set application's URL");
-                }
-                else
-                {
-                    ServiceLocator.BrowserWindowsCommunicator.OpenApp(clickedApp);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            Helper.AppButtonClick(sender, e);
         }
 
         private void InstallAppClick(object sender, RoutedEventArgs e)
         {
+            var clickedApp = Helper.GetApplicationFromButtonSender(sender);
+
             try
             {
-                var clickedApp = GetApplicationFromButtonSender(sender);
-
                 if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
                     ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
@@ -141,6 +125,7 @@ namespace AppDirect.WindowsClient.UI
                 else
                 {
                     ViewModel.Install(clickedApp);
+                    ApplicationAddedNotifier.Invoke(clickedApp, e);
                 }
             }
             catch (Exception ex)
@@ -151,11 +136,13 @@ namespace AppDirect.WindowsClient.UI
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)
         {
+            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
+
             try
             {
-                var clickedApp = ((MenuItem) sender).DataContext as Application;
-
+                clickedApp.PinnedToTaskbar = false;
                 ViewModel.Uninstall(clickedApp);
+                ApplicationRemovedNotifier.Invoke(clickedApp, e);
             }
             catch (Exception ex)
             {
@@ -224,7 +211,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Feature coming soon!");
+            PinToTaskbarClickNotifier.Invoke(sender,e);
         }
     }
 }
