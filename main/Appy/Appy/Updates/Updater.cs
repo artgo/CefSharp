@@ -27,6 +27,7 @@ namespace AppDirect.WindowsClient.Updates
             if (ServiceLocator.LocalStorage.UpdateDownloaded)
             {
                 InstallUpdates();
+                System.Environment.Exit(0);
             }
         }
 
@@ -77,8 +78,9 @@ namespace AppDirect.WindowsClient.Updates
                 }
                 Process.Start(start);
             }
-            catch (Exception)
+            catch (Exception e )
             {
+                MessageBox.Show(e.Message);
             }
             finally
             {

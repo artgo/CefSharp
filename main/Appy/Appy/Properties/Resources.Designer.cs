@@ -151,7 +151,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://windows-client-dev.s3-website-us-east-1.amazonaws.com/updater.upd.
+        ///   Looks up a localized string similar to http://windows-client-dev.s3-website-us-east-1.amazonaws.com/updater.exe.
         /// </summary>
         internal static string UpdateFileUrl {
             get {
