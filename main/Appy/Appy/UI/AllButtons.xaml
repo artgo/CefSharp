@@ -6,7 +6,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:controls="clr-namespace:AppDirect.WindowsClient.UI"
         mc:Ignorable="d" 
-             Height="30" Width="40"
+             Height="40" Width="60"
              WindowStyle="None"
              AllowsTransparency="True"
         Background="Transparent">
@@ -16,7 +16,7 @@
         <Style x:Key="MainButtonStyle" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
             <Setter Property="Height" Value="{StaticResource ButtonHeight}"/>
             <Setter Property="Width" Value="{StaticResource ButtonWidth}"/>
-            <Setter Property="Margin" Value="0,0,10,0"></Setter>
+            <Setter Property="Margin" Value="0,0,10,10"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -32,7 +32,10 @@
         </Style>
     </Window.Resources>
     <Grid Background="Transparent">
-        <StackPanel Name="ButtonContainer" Orientation="Horizontal" Background="Transparent">
+        <StackPanel Name="ButtonContainer" Orientation="Horizontal" Background="Transparent" >
+            <Button Style="{StaticResource BorderlessButton}" Click="Cog_click">
+                <Image Source="Images/cogGrey.png" Height="16"/>
+            </Button>
             <Button Style="{StaticResource MainButtonStyle}" Click="AppButton_Click"/>
         </StackPanel>
     </Grid>

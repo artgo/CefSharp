@@ -15,7 +15,7 @@ namespace AppDirect.WindowsClient.Storage
     ///</summary>
     public sealed class LocalStorage
     {
-        private List<string> _hiddenApps = new List<string>(); 
+        private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;

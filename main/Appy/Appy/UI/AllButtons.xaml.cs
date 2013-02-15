@@ -43,8 +43,8 @@ namespace AppDirect.WindowsClient.UI
             InitializeComponent();
             ViewModel = new TaskbarViewModel();
 
-            Left = SystemParameters.WorkArea.Right * .5;
-            Top = SystemParameters.WorkArea.Bottom - Height;
+            Left = 0;
+            Top = 0;
 
             foreach (var application in ViewModel.PinnedApps)
             {
@@ -79,7 +79,28 @@ namespace AppDirect.WindowsClient.UI
         private void AddButton(Application application)
         {
             ButtonContainer.Children.Add(new TaskbarButton(application));
-            Width += 40;
+
+            if (ButtonContainer.Orientation == Orientation.Horizontal)
+            {
+                Width += 40;
+            }
+            else
+            {
+                Height += 40;
+            }
+
+
+            if (TaskbarCallbackEvents != null)
+            {
+                if (ButtonContainer.Orientation == Orientation.Horizontal)
+                {
+                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Width);
+                }
+                else
+                {
+                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Height);
+                }
+            }
         }
 
         private void RemoveButton(Application application)
@@ -89,7 +110,26 @@ namespace AppDirect.WindowsClient.UI
             if (btn != null)
             {
                 ButtonContainer.Children.Remove(btn);
-                Width -= 40;
+                if (ButtonContainer.Orientation == Orientation.Horizontal)
+                {
+                    Width -= 40;
+                }
+                else
+                {
+                    Height -= 40;
+                }
+                
+                if (TaskbarCallbackEvents != null)
+                {
+                    if (ButtonContainer.Orientation == Orientation.Horizontal)
+                    {
+                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Width);
+                    }
+                    else
+                    {
+                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Height);
+                    }
+                }
             }
         }
 
@@ -126,9 +166,14 @@ namespace AppDirect.WindowsClient.UI
 
         public void PositionChanged(TaskbarPosition newPosition)
         {
+            var widthTemp = Width;
+            Width = Height;
+            Height = widthTemp;
+
             if (newPosition == TaskbarPosition.Bottom || newPosition == TaskbarPosition.Top)
             {
                 ButtonContainer.Orientation = Orientation.Horizontal;
+
             }
             else
             {
@@ -137,5 +182,17 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }
+
+        private void Cog_click(object sender, RoutedEventArgs e)
+        {
+            if (ButtonContainer.Orientation == Orientation.Horizontal)
+            {
+                PositionChanged(TaskbarPosition.Left);
+            }
+            else
+            {
+                PositionChanged(TaskbarPosition.Top);
+            }
+        }
     }
 }

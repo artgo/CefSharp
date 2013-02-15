@@ -150,9 +150,6 @@
     <Compile Include="UI\AllButtons.xaml.cs">
       <DependentUpon>AllButtons.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\AllButtonsGuide.xaml.cs">
-      <DependentUpon>AllButtonsGuide.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
@@ -359,10 +356,6 @@
     <Page Include="UI\AllButtons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\AllButtonsGuide.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\LoginView.xaml">
       <SubType>Designer</SubType>

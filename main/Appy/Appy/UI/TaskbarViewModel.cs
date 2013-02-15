@@ -22,7 +22,7 @@ namespace AppDirect.WindowsClient.UI
             PinnedApps = ServiceLocator.LocalStorage.PinnedApps;
         }
 
-        internal void AddPinnedApp(Application clickedApp)
+        public void AddPinnedApp(Application clickedApp)
         {
             PinnedApps.Add(clickedApp);
             ServiceLocator.LocalStorage.SaveAppSettings();
