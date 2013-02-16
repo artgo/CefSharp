@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.InteropAPI;
 using Application = AppDirect.WindowsClient.Common.API.Application;
@@ -42,9 +33,6 @@ namespace AppDirect.WindowsClient.UI
         {
             InitializeComponent();
             ViewModel = new TaskbarViewModel();
-
-            Left = 0;
-            Top = 0;
 
             foreach (var application in ViewModel.PinnedApps)
             {
@@ -161,6 +149,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void HeightChanged(int newHeight)
         {
+            // TODO: implement
             throw new NotImplementedException();
         }
 
@@ -179,6 +168,12 @@ namespace AppDirect.WindowsClient.UI
             {
                 ButtonContainer.Orientation = Orientation.Vertical;
             }
+        }
+
+        public void TaskbarIconsSizeChanged(TaskbarIconsSize newIconsSize)
+        {
+            // TODO: implement
+            throw new NotImplementedException();
         }
 
         public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }

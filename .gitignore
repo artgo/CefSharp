@@ -2,10 +2,13 @@
 *.suo
 *.orig
 *.cs.orig
+*.sdf
+*.opensdf
 bin
 obj
 Debug
 Release
+x64
 main/Appy/Appy.sln.DotSettings.user
 main/Appy/Setup/Appy/
 main/Appy/Setup/AppyInstaller.exe
