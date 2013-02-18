@@ -3,7 +3,7 @@
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public struct RectWin
+    public class RectWin
     {
         public int Left;
         public int Top;
