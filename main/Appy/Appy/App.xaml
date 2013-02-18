@@ -1,8 +1,7 @@
 ﻿<Application x:Class="AppDirect.WindowsClient.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:ui="clr-namespace:AppDirect.WindowsClient.UI"
-             StartupUri="UI\AllButtons.xaml">
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:ui="clr-namespace:AppDirect.WindowsClient.UI">
     <Application.Resources>
         <sys:Double x:Key="WindowHeight">330</sys:Double>
         <sys:Double x:Key="WindowWidth">680</sys:Double>
