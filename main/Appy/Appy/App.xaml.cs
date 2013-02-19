@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
 
 namespace AppDirect.WindowsClient
@@ -23,8 +24,10 @@ namespace AppDirect.WindowsClient
 
             ServiceLocator.IpcCommunicator.Start();
 
+            var size = NativeDll.GetInitialADButtonSize();
+
             var buttons = new AllButtons();
-            TaskbarApi.Instance.InsertTaskbarWindow(buttons, buttons);
+            TaskbarApi.Instance.InsertTaskbarWindow(buttons, buttons, size.Width);
 
             base.OnStartup(e);
         }

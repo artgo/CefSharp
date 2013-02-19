@@ -36,7 +36,13 @@
             <!--<Button Style="{StaticResource BorderlessButton}" Click="Cog_click">
                 <Image Source="Images/cogGrey.png" Height="16"/>
             </Button>-->
-            <Button Name="MainButton" Style="{StaticResource MainButtonStyle}" Click="AppButton_Click"/>
+            <Button Name="MainButton" Style="{StaticResource MainButtonStyle}" Click="AppButton_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="E_xit" Click="MenuItemExitClick"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -37,7 +37,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -154,7 +154,6 @@
     <Compile Include="InteropAPI\Internal\Interop.cs" />
     <Compile Include="InteropAPI\Internal\NativeDll.cs" />
     <Compile Include="InteropAPI\Internal\RectWin.cs" />
-    <Compile Include="InteropAPI\Internal\TaskbarCallbackObject.cs" />
     <Compile Include="InteropAPI\ITaskbarInterop.cs" />
     <Compile Include="InteropAPI\ITaskbarInteropCallback.cs" />
     <Compile Include="InteropAPI\TaskbarAPI.cs" />
