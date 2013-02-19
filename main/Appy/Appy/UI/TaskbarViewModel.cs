@@ -8,11 +8,11 @@ using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.UI
 {
-    public class TaskbarViewModel
+    public class DeskbandViewModel
     {
         public List<Application> PinnedApps { get; set; }
         
-        public TaskbarViewModel()
+        public DeskbandViewModel()
         {
             if (ServiceLocator.LocalStorage.PinnedApps == null)
             {

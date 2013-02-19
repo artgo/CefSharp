@@ -25,6 +25,9 @@ namespace AppDirect.WindowsClient.API
         public static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w\+]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
         public static readonly Regex PasswordMatchPattern = new Regex(@"^(.{" + MinimumPasswordLength + "," + MaximumPasswordLength + "})$");
 
+        public const int taskbarButtonSize = 34;
+        public const int deskbandInitialSize = 40;
+
 
         public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
         {

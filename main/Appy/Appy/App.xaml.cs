@@ -26,8 +26,8 @@ namespace AppDirect.WindowsClient
 
             var size = NativeDll.GetInitialADButtonSize();
 
-            var buttons = new AllButtons();
-            TaskbarApi.Instance.InsertTaskbarWindow(buttons, buttons, size.Width);
+            var buttons = new Deskband();
+            TaskbarApi.Instance.InsertTaskbarWindow(buttons, buttons, (int)buttons.Width);
 
             base.OnStartup(e);
         }

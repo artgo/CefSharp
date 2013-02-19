@@ -22,7 +22,7 @@
                         <Grid Background="{StaticResource MenuItemColor}" Name="MenuItemGrid">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="25" />
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="Header"/>
+                                <ColumnDefinition Width="80" SharedSizeGroup="Header"/>
                             </Grid.ColumnDefinitions>
                             <Border 
         Name="Check"  
@@ -76,7 +76,7 @@
         IsOpen="{TemplateBinding IsSubmenuOpen}"
         AllowsTransparency="True" 
         Focusable="False"
-        PopupAnimation="Fade" VerticalOffset="25" Width="110" HorizontalOffset="30">
+        PopupAnimation="Fade" VerticalOffset="25"  HorizontalOffset="30">
                                     <Border 
           Name="SubmenuBorder"
           SnapsToDevicePixels="True"
