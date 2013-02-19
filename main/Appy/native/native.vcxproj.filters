@@ -27,9 +27,6 @@
     <ClInclude Include="native.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ADButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="path.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -51,9 +48,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ADButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="path.cpp">

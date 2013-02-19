@@ -53,10 +53,11 @@ namespace AppDirect.WindowsClient.InteropAPI
         /// </summary>
         /// <param name="control">WPF window to be placed on taskbar</param>
         /// <param name="notifyee">An object which will be notified upon taskbar changes</param>
-        public void InsertTaskbarWindow(Control control, ITaskbarInterop notifyee)
+        /// <param name="initialWidth"></param>
+        public void InsertTaskbarWindow(Control control, ITaskbarInterop notifyee, int initialWidth)
         {
             _contorl = control;
-            _interactionsObject.Place(_contorl, notifyee);
+            _interactionsObject.Place(_contorl, notifyee, initialWidth);
         }
 
         public void RemoveTaskbarWindow()

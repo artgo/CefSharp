@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using HINSTANCE = System.IntPtr;
@@ -10,7 +11,7 @@ using HANDLE = System.IntPtr;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
-    public class InteractionsObject
+    public class InteractionsObject : ITaskbarInteropCallback
     {
         private static readonly IntPtr NULL = IntPtr.Zero;
         private const int MAX_LOADSTRING = 100;
@@ -30,8 +31,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private static bool bInitDone = false;
         private static IntPtr hDll;
         private HwndSource hSrc;
-        private TaskbarCallbackObject _taskbarCallback = null;
         private ITaskbarInterop _notifyee = null;
+        private System.Drawing.Size _buttonsWindowSize;
 
         //static IntPtr HookProc_SetupWndHooks(int nCode, IntPtr wParam, IntPtr lParam)
         //{
@@ -45,7 +46,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         //	return User32Dll.CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
         //}
 
-        public void Place(Control wnd, ITaskbarInterop notifyee)
+        public void Place(Control wnd, ITaskbarInterop notifyee, int initialWidth)
         {
             if (wnd == null)
             {
@@ -57,14 +58,14 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 throw new ArgumentNullException("notifyee");
             }
 
-            _taskbarCallback = new TaskbarCallbackObject();
-            notifyee.TaskbarCallbackEvents = _taskbarCallback;
+            notifyee.TaskbarCallbackEvents = this;
             _notifyee = notifyee;
 
-            System.Drawing.Size sz = GetInitialWndSize();
+            _buttonsWindowSize = GetInitialWndSize();
+            _buttonsWindowSize.Width = initialWidth;
             var p = new HwndSourceParameters(
                     "adButton.WPF",			// NAME
-                    sz.Width, sz.Height		// size of WPF window inside usual Win32 window
+                    _buttonsWindowSize.Width, _buttonsWindowSize.Height		// size of WPF window inside usual Win32 window
                 );
             p.PositionX = 0; p.PositionY = 0;
             p.ParentWindow = NativeDll.FindTaskBar();
@@ -76,22 +77,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             //            hSrc.AddHook(WndProc);		// handle custom WM_
 
             // reposition the window
-            System.Drawing.Size szStart = NativeDll.GetStartButtonSize();
-            User32Dll.SetWindowPos(hSrc.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
-                szStart.Width, 0,		// offset
-                sz.Width, sz.Height,
-                (uint)(SetWindowPosConstants.SWP_SHOWWINDOW | SetWindowPosConstants.SWP_NOOWNERZORDER | SetWindowPosConstants.SWP_NOACTIVATE)
-                );
-
-            // reposition Rebar
-            System.Drawing.Size NewSize;
-            System.Drawing.Point NewTopLeft = RebarCoords(out NewSize);
-            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), (IntPtr)0,
-                NewTopLeft.X, NewTopLeft.Y,
-                NewSize.Width, NewSize.Height,
-                0
-                ))
-            { throw new Exception("Cannot move Rebar"); }
+            DoChangeWidth(initialWidth, true);
 
             NativeDll.InjectExplrorerExe();
         }
@@ -126,7 +112,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         /// <returns>return top-left corner and new size</returns>
         private System.Drawing.Point RebarCoords(out System.Drawing.Size NewSize, bool IsInsert = true)
         {
-            var szButton = GetCurrentButtonSize();
+            var szButton = _buttonsWindowSize;
             int d = IsInsert ? 1 : -1;
 
             var RebarOld = new RectWin();
@@ -135,10 +121,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 throw new Exception("Cannot calculate new Rebar position");
             }
 
-            System.Drawing.Size szStart = NativeDll.GetStartButtonSize();
+            //System.Drawing.Size szStart = NativeDll.GetStartButtonSize();
 
             System.Drawing.Point ltTaskBar = NativeDll.GetTaskbarPos();
-            int newX = (IsInsert ? szStart.Width : 0) + szButton.Width;
+            int newX = RebarOld.Left + d * szButton.Width;
             System.Drawing.Point RebarNewTopLeft = new System.Drawing.Point(newX, RebarOld.Top - ltTaskBar.Y);
 
             NewSize = new System.Drawing.Size(RebarOld.Width - d * szButton.Width, RebarOld.Height);
@@ -154,7 +140,14 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             //	RebarNewSize.cy = RebarOld.bottom - RebarOld.top - buttonHeight;
             //	::MapWindowPoints(NULL, g_TaskBar, &RebarNewTopLeft, 1);
             //}
-
+//{
+//var sb = new System.Text.StringBuilder();
+//sb.AppendFormat("RebarOld = ({0},{1}) , size = ({2},{3})\n", RebarOld.Left, RebarOld.Top, RebarOld.Width, RebarOld.Height);
+//sb.AppendFormat("szButton = ({0},{1}) \n", szButton.Width, szButton.Height);
+//sb.AppendFormat("szStart = ({0},{1}) \n", szStart.Width, szStart.Height);
+//sb.AppendFormat("RebarNewTopLeft = ({0},{1}) , NewSize = ({2},{3})\n", RebarNewTopLeft.X, RebarNewTopLeft.Y, NewSize.Width, NewSize.Height);
+//System.Windows.MessageBox.Show(sb.ToString());
+//}
             return RebarNewTopLeft;
         }
 
@@ -200,5 +193,54 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return NativeDll.GetInitialADButtonSize();
         }
         #endregion helpers
+
+        public bool ChangeWidth(int newWidth)
+        {
+            return DoChangeWidth(newWidth, false);
+        }
+
+        private bool DoChangeWidth(int newWidth, bool firstTime)
+        {
+            int delta = newWidth - _buttonsWindowSize.Width;
+            _buttonsWindowSize.Width = newWidth;
+            System.Drawing.Size NewSize;
+            System.Drawing.Point NewTopLeft;
+            if (firstTime)
+            {
+                NewTopLeft = RebarCoords(out NewSize);
+            }
+            else
+            {
+                var RebarOld = new RectWin();
+                if (!User32Dll.GetWindowRect(NativeDll.FindRebar(), RebarOld))
+                {
+                    throw new Exception("Cannot calculate new Rebar position");
+                }
+
+                NewSize = new System.Drawing.Size(RebarOld.Width - delta, RebarOld.Height);
+                System.Drawing.Point ltTaskBar = NativeDll.GetTaskbarPos();
+                NewTopLeft = new System.Drawing.Point(RebarOld.Left + delta, RebarOld.Top - ltTaskBar.Y);
+            }
+
+            System.Drawing.Size szStart = NativeDll.GetStartButtonSize();
+            User32Dll.SetWindowPos(hSrc.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
+                                   szStart.Width, 0, // offset
+                                   _buttonsWindowSize.Width, _buttonsWindowSize.Height,
+                                   (uint)
+                                   (SetWindowPosConstants.SWP_SHOWWINDOW | SetWindowPosConstants.SWP_NOOWNERZORDER |
+                                    SetWindowPosConstants.SWP_NOACTIVATE)
+                );
+
+            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), (IntPtr)0,
+                                        NewTopLeft.X, NewTopLeft.Y,
+                                        NewSize.Width, NewSize.Height,
+                                        (uint)(SetWindowPosConstants.SWP_NOSENDCHANGING)
+                     ))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

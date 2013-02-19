@@ -12,9 +12,7 @@
 
 
 #include "consts.h"
-#include "ADButton.h"
 
-// TODO: -1
 //// This class is exported from the native.dll
 //class NATIVE_API Cnative {
 //public:
@@ -43,7 +41,7 @@ extern NATIVE_API const wchar_t * gc_TheDllName;
 extern NATIVE_API HWND g_TaskBar;
 extern NATIVE_API HWND g_ReBar;		// of the taskbar
 
-extern NATIVE_API CADButton g_TheButton;		// the button	g_TheButton.m_nWnd its HWND
+//extern NATIVE_API CADButton g_TheButton;		// the button	g_TheButton.m_nWnd its HWND
 
 
 //-------------------------------------------------------------------------------------------------

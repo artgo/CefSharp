@@ -82,11 +82,11 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (ButtonContainer.Orientation == Orientation.Horizontal)
                 {
-                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Width);
+                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.ActualWidth);
                 }
                 else
                 {
-                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Height);
+                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.ActualHeight);
                 }
             }
         }
@@ -111,11 +111,11 @@ namespace AppDirect.WindowsClient.UI
                 {
                     if (ButtonContainer.Orientation == Orientation.Horizontal)
                     {
-                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Width);
+                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.ActualWidth);
                     }
                     else
                     {
-                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.Height);
+                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.ActualHeight);
                     }
                 }
             }
@@ -188,6 +188,11 @@ namespace AppDirect.WindowsClient.UI
             {
                 PositionChanged(TaskbarPosition.Top);
             }
+        }
+
+        private void MenuItemExitClick(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }
