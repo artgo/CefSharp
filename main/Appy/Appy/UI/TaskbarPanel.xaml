@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AppDirect.WindowsClient.UI.Deskband"
+﻿<UserControl x:Class="AppDirect.WindowsClient.UI.TaskbarPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -36,8 +36,8 @@
         <StackPanel Name="ButtonContainer" Orientation="Horizontal" Background="{x:Null}" VerticalAlignment="Center">
             <Button x:Name="MainButton" Style="{StaticResource MainButtonStyle}" Click="AppButton_Click">
                 <Button.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Exit" Click="MenuItemExitClick"/>
+                    <ContextMenu VerticalOffset="-50">
+                        <MenuItem Header="E_xit" Click="MenuItemExitClick"/>
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>

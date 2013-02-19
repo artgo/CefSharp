@@ -19,14 +19,14 @@ namespace AppDirect.WindowsClient.UI
     /// <summary>
     /// Interaction logic for TaskbarButton.xaml
     /// </summary>
-    public partial class DeskbandButton : UserControl
+    public partial class TaskbarButton : UserControl
     {
-        public DeskbandButton()
+        public TaskbarButton()
         {
             InitializeComponent();
         }
 
-        public DeskbandButton(Application application)
+        public TaskbarButton(Application application)
         {
             DataContext = application;
             InitializeComponent();

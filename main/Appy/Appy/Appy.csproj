@@ -172,8 +172,8 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
-    <Compile Include="UI\Deskband.xaml.cs">
-      <DependentUpon>Deskband.xaml</DependentUpon>
+    <Compile Include="UI\TaskbarPanel.xaml.cs">
+      <DependentUpon>TaskbarPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -185,10 +185,10 @@
     <Compile Include="UI\RegistrationView.xaml.cs">
       <DependentUpon>RegistrationView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\DeskbandButton.xaml.cs">
-      <DependentUpon>DeskbandButton.xaml</DependentUpon>
+    <Compile Include="UI\TaskbarButton.xaml.cs">
+      <DependentUpon>TaskbarButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\TaskbarViewModel.cs" />
+    <Compile Include="UI\TaskbarPanelViewModel.cs" />
     <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -378,7 +378,7 @@
     <Resource Include="UI\Images\FeaturedMaskClick.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Deskband.xaml">
+    <Page Include="UI\TaskbarPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -394,7 +394,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\DeskbandButton.xaml">
+    <Page Include="UI\TaskbarButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

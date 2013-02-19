@@ -23,10 +23,8 @@ namespace AppDirect.WindowsClient
             }
 
             ServiceLocator.IpcCommunicator.Start();
-
-            var size = NativeDll.GetInitialADButtonSize();
-
-            var buttons = new Deskband();
+            
+            var buttons = new TaskbarPanel();
             TaskbarApi.Instance.InsertTaskbarWindow(buttons, buttons, (int)buttons.Width);
 
             base.OnStartup(e);

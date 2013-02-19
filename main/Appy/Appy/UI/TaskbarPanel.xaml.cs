@@ -11,11 +11,13 @@ namespace AppDirect.WindowsClient.UI
     /// <summary>
     /// Interaction logic for AllButtons.xaml
     /// </summary>
-    public partial class Deskband : ITaskbarInterop   
+    public partial class TaskbarPanel : ITaskbarInterop   
     {
         private MainWindow _applicationWindow;
-        public DeskbandViewModel ViewModel { get; set; }
-        private const int DefaultTaskbarHeight = 40;
+        public TaskbarPanelViewModel ViewModel { get; set; }
+        public const int TaskbarButtonSize = 34;
+        public const int DeskbandInitialSize = 40;
+
 
         private MainWindow ApplicationWindow
         {
@@ -30,11 +32,11 @@ namespace AppDirect.WindowsClient.UI
             set { _applicationWindow = value; }
         }
 
-        public Deskband()
+        public TaskbarPanel()
         {
             InitializeComponent();
             
-            ViewModel = new DeskbandViewModel();
+            ViewModel = new TaskbarPanelViewModel();
 
             foreach (var application in ViewModel.PinnedApps)
             {
@@ -68,15 +70,15 @@ namespace AppDirect.WindowsClient.UI
 
         private void AddButton(Application application)
         {
-            ButtonContainer.Children.Add(new DeskbandButton(application));
+            ButtonContainer.Children.Add(new TaskbarButton(application));
 
             if (ButtonContainer.Orientation == Orientation.Horizontal)
             {
-                Width += Helper.taskbarButtonSize;
+                Width += TaskbarButtonSize;
             }
             else
             {
-                Height += Helper.taskbarButtonSize;
+                Height += TaskbarButtonSize;
             }
 
 
@@ -100,18 +102,18 @@ namespace AppDirect.WindowsClient.UI
 
         private void RemoveButton(Application application)
         {
-            var btn = ButtonContainer.Children.OfType<DeskbandButton>().FirstOrDefault(b => b.Name == application.Id);
+            var btn = ButtonContainer.Children.OfType<TaskbarButton>().FirstOrDefault(b => b.Name == application.Id);
 
             if (btn != null)
             {
                 ButtonContainer.Children.Remove(btn);
                 if (ButtonContainer.Orientation == Orientation.Horizontal)
                 {
-                    Width -= Helper.taskbarButtonSize;
+                    Width -= TaskbarButtonSize;
                 }
                 else
                 {
-                    Height -= Helper.taskbarButtonSize;
+                    Height -= TaskbarButtonSize;
                 }
                 
                 NotifyTaskbarOfChange();
