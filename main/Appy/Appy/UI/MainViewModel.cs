@@ -261,7 +261,7 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
-            for (int index = storedApps.Count; index < displayedList.Count; index++)
+            for (int index = displayedList.Count - 1; index >= storedList.Count; index--)
             {
                 if (System.Windows.Application.Current != null)
                     {

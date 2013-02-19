@@ -173,8 +173,6 @@ namespace AppDirect.WindowsClient.UI
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.Logout();
-            LogoutButton.Visibility = Visibility.Hidden;
-            SyncButton.Visibility = Visibility.Visible;
         }
         
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)

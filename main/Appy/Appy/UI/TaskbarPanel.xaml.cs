@@ -11,10 +11,13 @@ namespace AppDirect.WindowsClient.UI
     /// <summary>
     /// Interaction logic for AllButtons.xaml
     /// </summary>
-    public partial class AllButtons : ITaskbarInterop   
+    public partial class TaskbarPanel : ITaskbarInterop   
     {
         private MainWindow _applicationWindow;
-        public TaskbarViewModel ViewModel { get; set; }
+        public TaskbarPanelViewModel ViewModel { get; set; }
+        public const int TaskbarButtonSize = 34;
+        public const int DeskbandInitialSize = 40;
+
 
         private MainWindow ApplicationWindow
         {
@@ -29,10 +32,11 @@ namespace AppDirect.WindowsClient.UI
             set { _applicationWindow = value; }
         }
 
-        public AllButtons()
+        public TaskbarPanel()
         {
             InitializeComponent();
-            ViewModel = new TaskbarViewModel();
+            
+            ViewModel = new TaskbarPanelViewModel();
 
             foreach (var application in ViewModel.PinnedApps)
             {
@@ -70,23 +74,28 @@ namespace AppDirect.WindowsClient.UI
 
             if (ButtonContainer.Orientation == Orientation.Horizontal)
             {
-                Width += 40;
+                Width += TaskbarButtonSize;
             }
             else
             {
-                Height += 40;
+                Height += TaskbarButtonSize;
             }
 
 
+            NotifyTaskbarOfChange();
+        }
+
+        private void NotifyTaskbarOfChange()
+        {
             if (TaskbarCallbackEvents != null)
             {
                 if (ButtonContainer.Orientation == Orientation.Horizontal)
                 {
-                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.ActualWidth);
+                    TaskbarCallbackEvents.ChangeWidth((int) Width);
                 }
                 else
                 {
-                    TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.ActualHeight);
+                    TaskbarCallbackEvents.ChangeWidth((int) Height);
                 }
             }
         }
@@ -100,24 +109,14 @@ namespace AppDirect.WindowsClient.UI
                 ButtonContainer.Children.Remove(btn);
                 if (ButtonContainer.Orientation == Orientation.Horizontal)
                 {
-                    Width -= 40;
+                    Width -= TaskbarButtonSize;
                 }
                 else
                 {
-                    Height -= 40;
+                    Height -= TaskbarButtonSize;
                 }
                 
-                if (TaskbarCallbackEvents != null)
-                {
-                    if (ButtonContainer.Orientation == Orientation.Horizontal)
-                    {
-                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.ActualWidth);
-                    }
-                    else
-                    {
-                        TaskbarCallbackEvents.ChangeWidth((int)ButtonContainer.ActualHeight);
-                    }
-                }
+                NotifyTaskbarOfChange();
             }
         }
 

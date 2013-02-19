@@ -5,14 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="36" d:DesignWidth="40" >
+             d:DesignHeight="34" d:DesignWidth="34" >
     <UserControl.Resources>
         <sys:Double x:Key="ButtonHeight">28</sys:Double>
         <sys:Double x:Key="ButtonWidth">28</sys:Double>
         <Style x:Key="DeskbandButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Height" Value="{StaticResource ButtonHeight}"/>
             <Setter Property="Width" Value="{StaticResource ButtonWidth}"/>
-            <Setter Property="Margin" Value="0,0,6,6"></Setter>
+            <Setter Property="Margin" Value="0,0,6,0"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Template">
                 <Setter.Value>

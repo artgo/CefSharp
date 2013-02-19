@@ -91,10 +91,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -172,8 +172,8 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
-    <Compile Include="UI\AllButtons.xaml.cs">
-      <DependentUpon>AllButtons.xaml</DependentUpon>
+    <Compile Include="UI\TaskbarPanel.xaml.cs">
+      <DependentUpon>TaskbarPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -188,7 +188,7 @@
     <Compile Include="UI\TaskbarButton.xaml.cs">
       <DependentUpon>TaskbarButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\TaskbarViewModel.cs" />
+    <Compile Include="UI\TaskbarPanelViewModel.cs" />
     <Compile Include="UI\TemplateSelector.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -378,7 +378,7 @@
     <Resource Include="UI\Images\FeaturedMaskClick.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\AllButtons.xaml">
+    <Page Include="UI\TaskbarPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

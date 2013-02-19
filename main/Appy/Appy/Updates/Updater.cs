@@ -24,11 +24,11 @@ namespace AppDirect.WindowsClient.Updates
 
         public Updater()
         {
-            if (ServiceLocator.LocalStorage.UpdateDownloaded)
-            {
-                InstallUpdates();
-                System.Environment.Exit(0);
-            }
+            //if (ServiceLocator.LocalStorage.UpdateDownloaded)
+            //{
+            //    InstallUpdates();
+            //    System.Environment.Exit(0);
+            //}
         }
 
         public bool GetUpdates(string currentVersion)
