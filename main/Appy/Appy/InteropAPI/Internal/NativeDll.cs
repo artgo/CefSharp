@@ -38,6 +38,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 		public static extern System.Drawing.Size GetInitialADButtonSize();
 
 		[DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-		public static extern TaskbarPlacement GetTaskbarEdge();
+		public static extern TaskbarPosition GetTaskbarEdge();
     }
 }
