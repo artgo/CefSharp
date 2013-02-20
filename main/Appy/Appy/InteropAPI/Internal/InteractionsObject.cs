@@ -97,31 +97,13 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private TaskbarPosition GetTaskbarPosition()
         {
-            switch (NativeDll.GetTaskbarEdge())
-            {
-                case TaskbarPlacement.ABE_BOTTOM:
-                    return TaskbarPosition.Bottom;
-                case TaskbarPlacement.ABE_LEFT:
-                    return TaskbarPosition.Left;
-                case TaskbarPlacement.ABE_RIGHT:
-                    return TaskbarPosition.Right;
-                case TaskbarPlacement.ABE_TOP:
-                    return TaskbarPosition.Top;
-            }
-            throw new Exception("Error in return position value");
+            return NativeDll.GetTaskbarEdge();
         }
 
         private TaskbarIconsSize GetTaskbarIconSize()
         {
             var isSmall = (int)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarSmallIcons", -1);
-            switch (isSmall)
-            {
-                case 0:
-                    return TaskbarIconsSize.Large;
-                case 1:
-                    return TaskbarIconsSize.Small;
-            }
-            throw new Exception("Failed to access registry");
+            return (TaskbarIconsSize)isSmall;
         }
 
         private void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
@@ -207,7 +189,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 			System.Drawing.Point rebarNewTopLeft; 
             System.Drawing.Size rebarNewSize;
 			var edge = NativeDll.GetTaskbarEdge();
-			if (edge == TaskbarPlacement.ABE_LEFT || edge == TaskbarPlacement.ABE_RIGHT)		// if vertical
+			if (edge.IsVertical())		// if vertical
             {
 				rebarNewSize = new System.Drawing.Size(rebarOld.Width, rebarOld.Height - d * szButton.Height);
 				rebarNewTopLeft = new System.Drawing.Point(
@@ -270,7 +252,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             var szStart = NativeDll.GetStartButtonSize();
 			System.Drawing.Point offset;
 			var edge = NativeDll.GetTaskbarEdge();
-			if (edge == TaskbarPlacement.ABE_LEFT || edge == TaskbarPlacement.ABE_RIGHT)
+			if (edge.IsVertical())
 			{
 			    offset = new Point(0, szStart.Height);
 			}

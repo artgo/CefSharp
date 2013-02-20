@@ -6,6 +6,12 @@ using System.Text;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
+    public class IconsSize
+    {
+        public const int LARGE = 0;
+        public const int SMALL = 1;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct COLORREF
     {
@@ -3007,12 +3013,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         ForceMinimize = 11
     }
 
-	public enum TaskbarPlacement : uint		// Shellapi.h
+	public class TaskbarPlacement		// Shellapi.h
 	{
-		ABE_LEFT = 0,
-		ABE_TOP = 1,
-		ABE_RIGHT = 2,
-		ABE_BOTTOM = 3
+	    public const uint ABE_LEFT = 0;
+        public const uint ABE_TOP = 1;
+        public const uint ABE_RIGHT = 2;
+        public const uint ABE_BOTTOM = 3;
 	}
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
