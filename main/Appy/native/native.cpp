@@ -30,7 +30,7 @@
 static const int BuffSize = 256;
 
 bool g_bInitDone = false;
-HWND g_TaskBar = NULL;
+HWND _TaskBar = NULL;
 HWND g_ReBar = NULL;		// of the taskbar
 SIZE g_RebarOffset;
 HHOOK g_ProgHook = NULL;
@@ -40,6 +40,13 @@ HMODULE g_hDll = NULL;
 // TODO: -1: explode to 
 // Returns Windows version as usually defined in VC headers: targetver.h
 static WORD g_version = 0;
+
+HWND GetTaskbar()
+{
+	if (!_TaskBar) _TaskBar = FindTaskBar();
+	_ASSERT(_TaskBar);
+	return _TaskBar;
+}
 
 WORD WinVersion()
 {	
@@ -153,7 +160,7 @@ SIZE GetInitialADButtonSize()
 	// TODO: -2 accomodate to the Taskbar actual size
 	SIZE tb = GetTaskbarSize();
 
-	UINT edge = GetTaskbarEdge(g_TaskBar, NULL, NULL, NULL);
+	UINT edge = GetTaskbarEdge(GetTaskbar(), NULL, NULL, NULL);
 	SIZE s2;
 	if (WinVersion() < _WIN32_WINNT_WIN8)
 	{
@@ -330,9 +337,8 @@ UINT GetTaskbarEdge(HWND taskBar, MONITORINFO * pInfo, HMONITOR * pMonitor, RECT
 
 UINT GetTaskbarEdge()
 {
-	_ASSERT(g_TaskBar);
 	MONITORINFO info;
-	return GetTaskbarEdge(g_TaskBar, &info, NULL, NULL);
+	return GetTaskbarEdge(GetTaskbar(), &info, NULL, NULL);
 }
 
 
