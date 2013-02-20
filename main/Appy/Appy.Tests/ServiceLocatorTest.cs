@@ -1,14 +1,14 @@
 ﻿using System;
 using AppDirect.WindowsClient.API;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Ninject;
 
 namespace AppDirect.WindowsClient.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class ServiceLocatorTest
     {
-        [TestMethod]
+        [Test]
         public void ReturnsAlwaysTheSameObject()
         {
             ServiceLocator.Initialize();
@@ -19,7 +19,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.AreSame(api1, api2);
         }
 
-        [TestMethod]
+        [Test]
         public void AppDirectApiIsTheSame()
         {
             ServiceLocator.Initialize();
@@ -30,7 +30,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.AreSame(api1, api2);
         }
 
-        [TestMethod]
+        [Test]
         public void LocalStorageIsTheSame()
         {
             ServiceLocator.Initialize();

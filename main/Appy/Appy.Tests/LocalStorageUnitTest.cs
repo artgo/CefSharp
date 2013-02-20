@@ -10,7 +10,7 @@ namespace AppDirect.WindowsClient.Tests
     public class LocalStorageUnitTest
     {
         private const string FileName = @"\LocalStorage";
-        private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        private FileInfo File;
 
         private LocalStorage localStorage;
 
@@ -22,6 +22,7 @@ namespace AppDirect.WindowsClient.Tests
                 File.Delete();
             }
             localStorage = new LocalStorage();
+            File = localStorage.FileInfo;
         }
 
         [Test]

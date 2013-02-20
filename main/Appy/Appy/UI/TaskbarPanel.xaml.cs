@@ -13,28 +13,18 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class TaskbarPanel : ITaskbarInterop   
     {
-        private MainWindow _applicationWindow;
         public TaskbarPanelViewModel ViewModel { get; set; }
         public const int TaskbarButtonSize = 34;
         public const int DeskbandInitialSize = 40;
 
 
-        private MainWindow ApplicationWindow
-        {
-            get
-            {
-                if (_applicationWindow == null)
-                {
-                    _applicationWindow = new MainWindow();
-                }
-                return _applicationWindow;
-            }
-            set { _applicationWindow = value; }
-        }
+        public MainWindow ApplicationWindow { get; set; }
 
-        public TaskbarPanel()
+        public TaskbarPanel(MainWindow mainView)
         {
             InitializeComponent();
+
+            ApplicationWindow = mainView;
             
             ViewModel = new TaskbarPanelViewModel();
 
@@ -43,8 +33,8 @@ namespace AppDirect.WindowsClient.UI
                 AddButton(application);
             }
 
-            ApplicationWindow.ApplicationAddedNotifier += AddAppButton;
-            ApplicationWindow.ApplicationRemovedNotifier += RemoveAppButton;
+            ApplicationWindow.ViewModel.ApplicationAddedNotifier += AddAppButton;
+            ApplicationWindow.ViewModel.ApplicationRemovedNotifier += RemoveAppButton;
 
             ApplicationWindow.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
         }
@@ -102,7 +92,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void RemoveButton(Application application)
         {
-            var btn = ButtonContainer.Children.OfType<TaskbarButton>().FirstOrDefault(b => b.Name == application.Id);
+            var btn = ButtonContainer.Children.OfType<TaskbarButton>().FirstOrDefault(b => b.Id == application.Id);
 
             if (btn != null)
             {

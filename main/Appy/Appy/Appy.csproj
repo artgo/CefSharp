@@ -438,6 +438,11 @@
   <ItemGroup>
     <Resource Include="UI\Images\TaskBarHoverMask.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\about.png" />
+    <Resource Include="UI\Images\logout.png" />
+    <Resource Include="UI\Images\wrench.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)Appy.exe" "$(SolutionDir)Setup\Appy" /y /i /r

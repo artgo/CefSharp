@@ -19,7 +19,7 @@ namespace AppDirect.WindowsClient.Storage
         private const string FileName = @"\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
-        private static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        public readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
         public List<Application> InstalledLocalApps{ get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }

@@ -24,6 +24,9 @@ namespace AppDirect.WindowsClient.UI
         private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
         private bool _registrationInProgress = false;
+
+        public EventHandler ApplicationAddedNotifier;
+        public EventHandler ApplicationRemovedNotifier;
         
         public string VersionString
         {
@@ -77,7 +80,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (!ServiceLocator.LocalStorage.HasCredentials)
                 {
-                    return Visibility.Hidden;
+                    return Visibility.Collapsed;
                 }
                 else
                 {
@@ -142,14 +145,12 @@ namespace AppDirect.WindowsClient.UI
 
         public MainViewModel()
         {
-            var setupBackgroundWorker = new BackgroundWorker();
-            setupBackgroundWorker.DoWork += setup_Worker_DoWork;
             InitializeAppsLists();
-
-            setupBackgroundWorker.RunWorkerAsync();
+            var setupThread = new Thread(LoginAndGetApps);
+            setupThread.Start();
         }
 
-        private void setup_Worker_DoWork(object sender, DoWorkEventArgs ea)
+        private void LoginAndGetApps()
         {
             while (true)
             {
@@ -184,11 +185,6 @@ namespace AppDirect.WindowsClient.UI
 
                 Thread.Sleep(TimeSpan.FromMinutes(Helper.RefreshAppsIntervalMins));
             }
-        }
-
-        private void worker_RefreshAppLists(object sender, DoWorkEventArgs ea)
-        {
-            RefreshAppsLists();
         }
 
         private void InitializeAppsLists()
@@ -227,7 +223,8 @@ namespace AppDirect.WindowsClient.UI
             SyncDisplayWithStoredList(MyAppDisplayLimit, MyApplications, ServiceLocator.LocalStorage.AllInstalledApplications);
         }
 
-        private void SyncDisplayWithStoredList(int displayLimit, ObservableCollection<Application> displayedList, List<Application> storedList  )
+        private void SyncDisplayWithStoredList(int displayLimit, ObservableCollection<Application> displayedList,
+                                               List<Application> storedList)
         {
             List<Application> storedApps;
 
@@ -239,8 +236,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 storedApps = storedList.Take(displayLimit).ToList();
             }
-            
-            for (int index   = 0; index < storedApps.Count; index++)
+
+            for (int index = 0; index < storedApps.Count; index++)
             {
                 if (displayedList.Count <= index)
                 {
@@ -250,8 +247,7 @@ namespace AppDirect.WindowsClient.UI
                             new Action(() => displayedList.Add(storedApps[index])));
                     }
                 }
-
-                if (!displayedList[index].Equals(storedApps[index]))
+                else if (!displayedList[index].Equals(storedApps[index]))
                 {
                     if (System.Windows.Application.Current != null)
                     {
@@ -264,10 +260,10 @@ namespace AppDirect.WindowsClient.UI
             for (int index = displayedList.Count - 1; index >= storedList.Count; index--)
             {
                 if (System.Windows.Application.Current != null)
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(
-                            new Action(() => displayedList.RemoveAt(index)));
-                    }
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(
+                        new Action(() => displayedList.RemoveAt(index)));
+                }
             }
 
         }
@@ -295,7 +291,39 @@ namespace AppDirect.WindowsClient.UI
                                                                                     application.Id);
             }
 
-            ServiceLocator.LocalStorage.InstalledAppDirectApps = apiApps;
+            SyncTaskbarPanelWithStorage(apiApps);
+        }
+
+        private void SyncTaskbarPanelWithStorage(List<Application> apiApps)
+        {
+            var appsToAdd = apiApps.Where(a => !ServiceLocator.LocalStorage.InstalledAppDirectApps.Contains(a)).ToList();
+            var appsToRemove =
+                ServiceLocator.LocalStorage.InstalledAppDirectApps.Where(a => !apiApps.Contains(a)).ToList();
+
+            if (ApplicationRemovedNotifier != null && System.Windows.Application.Current != null)
+            {
+                foreach (var application in appsToRemove)
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(
+                        new Action(() => ApplicationRemovedNotifier(application, null)));
+                }
+            }
+
+            ServiceLocator.LocalStorage.InstalledAppDirectApps.RemoveAll(appsToRemove.Contains);
+
+            appsToAdd.ForEach(a => a.PinnedToTaskbar = true);
+
+            if (ApplicationRemovedNotifier != null && System.Windows.Application.Current != null)
+            {
+                foreach (var application in appsToAdd)
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(
+                        new Action(() => ApplicationAddedNotifier(application, null)));
+                }
+            }
+
+            ServiceLocator.LocalStorage.InstalledAppDirectApps.RemoveAll(a => !apiApps.Contains(a));
+            ServiceLocator.LocalStorage.InstalledAppDirectApps.AddRange(appsToAdd);
         }
 
         private void GetSuggestedApplications()
@@ -348,6 +376,9 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.SetCredentials(username, password); 
                 
                 RefreshAppsLists();
+
+                CloudSyncVisibility = Visibility.Hidden;
+                LogOutVisibility = Visibility.Visible;
                 return true;
             }
 
@@ -356,9 +387,9 @@ namespace AppDirect.WindowsClient.UI
 
         public void Uninstall(Application application)
         {
+            application.PinnedToTaskbar = false;
             if (application.IsLocalApp)
             {
-                application.PinnedToTaskbar = false;
                 ServiceLocator.LocalStorage.InstalledLocalApps.Remove(application);
                 ServiceLocator.LocalStorage.LastSuggestedApps.Add(application);
             }
@@ -368,10 +399,13 @@ namespace AppDirect.WindowsClient.UI
             }
             
             MyApplications.Remove(application);
+            if (ApplicationRemovedNotifier != null)
+            {
+                ApplicationRemovedNotifier(application, null);
+            }
 
-            var backgroundWorker = new BackgroundWorker();
-            backgroundWorker.DoWork += worker_RefreshAppLists;
-            backgroundWorker.RunWorkerAsync();
+            var refreshAppsThread = new Thread(RefreshAppsLists);
+            refreshAppsThread.Start();
         }
 
         public void Install(Application application)
@@ -381,15 +415,19 @@ namespace AppDirect.WindowsClient.UI
                 application.PinnedToTaskbar = true;
                 ServiceLocator.LocalStorage.InstalledLocalApps.Add(application);
                 ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
+
+                if (ApplicationAddedNotifier != null)
+                {
+                    ApplicationAddedNotifier(application, null); 
+                }
             }
             else
             {
                 System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
 
-            var backgroundWorker = new BackgroundWorker();
-            backgroundWorker.DoWork += worker_RefreshAppLists;
-            backgroundWorker.RunWorkerAsync();
+            var refreshAppsThread = new Thread(RefreshAppsLists);
+            refreshAppsThread.Start();
         }
 
         public void Logout()

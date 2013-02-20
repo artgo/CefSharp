@@ -22,10 +22,7 @@ namespace AppDirect.WindowsClient.UI
     public partial class MainWindow : Window
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
-
         public EventHandler PinToTaskbarClickNotifier;
-        public EventHandler ApplicationAddedNotifier;
-        public EventHandler ApplicationRemovedNotifier;
         
         public MainViewModel ViewModel
         {
@@ -47,11 +44,6 @@ namespace AppDirect.WindowsClient.UI
 
             Left = SystemParameters.WorkArea.Right*.003;
             Top = SystemParameters.WorkArea.Bottom - Height;
-
-            BackgroundWorker getUpdateThread = new BackgroundWorker();
-
-            getUpdateThread.DoWork += DownloadAvailableUpdates;
-            getUpdateThread.RunWorkerAsync();
 
             WindowPanels.Add(LoginViewControl);
             WindowPanels.Add(RegistrationViewControl);
@@ -83,27 +75,6 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void DownloadAvailableUpdates(object sender, DoWorkEventArgs e)
-        {
-            while (true)
-            {
-                bool updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
-
-                if (updateAvailable)
-                {
-                    if (System.Windows.Application.Current != null)
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                                                                                        UpdateAvailableButton.Visibility =
-                                                                                        Visibility.Visible));
-                    }
-                }
-
-                Thread.Sleep(TimeSpan.FromDays(1));
-            }
-        }
-       
-
         private void AppButtonClick(object sender, RoutedEventArgs e)
         {
             Helper.AppButtonClick(sender, e);
@@ -125,7 +96,6 @@ namespace AppDirect.WindowsClient.UI
                 else
                 {
                     ViewModel.Install(clickedApp);
-                    ApplicationAddedNotifier.Invoke(clickedApp, e);
                 }
             }
             catch (Exception ex)
@@ -142,7 +112,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 clickedApp.PinnedToTaskbar = false;
                 ViewModel.Uninstall(clickedApp);
-                ApplicationRemovedNotifier.Invoke(clickedApp, e);
             }
             catch (Exception ex)
             {
@@ -172,24 +141,39 @@ namespace AppDirect.WindowsClient.UI
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            ViewModel.Logout();
+            try
+            {
+                ViewModel.Logout();
+                ViewModel.CloudSyncVisibility = Visibility.Visible;
+                ViewModel.LogOutVisibility = Visibility.Hidden;
+            }
+            catch (Exception)
+            {
+            }
         }
-        
+
+        public void UpdateAvailable(bool updateAvailable)
+        {
+            if (System.Windows.Application.Current != null)
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => UpdateMenuItem.IsEnabled = updateAvailable));
+            }
+        }
+
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
-            BackgroundWorker getUpdateThread = new BackgroundWorker();
+            Thread installUpdateThread = new Thread(InstallUpdates);
 
-            getUpdateThread.DoWork += InstallUpdates;
-            getUpdateThread.RunWorkerAsync();
+            installUpdateThread.Start();
         }
 
-        private void InstallUpdates(object sender, DoWorkEventArgs e)
+        private void InstallUpdates()
         {
             ServiceLocator.Updater.InstallUpdates();
 
             if (System.Windows.Application.Current != null)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => Close()));
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(Close));
             }
         }
 
