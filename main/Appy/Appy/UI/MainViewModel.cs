@@ -146,42 +146,9 @@ namespace AppDirect.WindowsClient.UI
         public MainViewModel()
         {
             InitializeAppsLists();
-            LoginAndGetApps();
+            SyncAppsWithApi();
         }
-
-        private void LoginAndGetApps()
-        {
-            if (ServiceLocator.LocalStorage.HasCredentials && !ServiceLocator.CachedAppDirectApi.IsAuthenticated)
-            {
-                try
-                {
-                    if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
-                                                                        ServiceLocator.LocalStorage.LoginInfo.Password))
-                    {
-                        ServiceLocator.LocalStorage.ClearLoginCredentials();
-                    }
-                }
-                catch (CryptographicException e)
-                {
-                    ServiceLocator.LocalStorage.ClearLoginCredentials();
-                    MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
-                }
-                catch (Exception)
-                {
-                    if (System.Windows.Application.Current != null)
-                    {
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                                                                                        LoginFailedMessage =
-                                                                                        Resources.NetworkProblemError));
-                    }
-                }
-            }
-
-            GetMyApplications();
-            GetSuggestedApplicationsWithApiCall();
-            ServiceLocator.LocalStorage.SaveAppSettings();
-        }
-
+        
         private void InitializeAppsLists()
         {
             if (!ServiceLocator.LocalStorage.InstalledLocalApps.Contains(LocalApplications.AppStoreApp))
@@ -274,10 +241,10 @@ namespace AppDirect.WindowsClient.UI
                                                                                     application.Id);
             }
 
-            SyncTaskbarPanelWithStorage(apiApps);
+            SyncTaskbarPanelAndStorageWithApi(apiApps);
         }
 
-        private void SyncTaskbarPanelWithStorage(List<Application> apiApps)
+        private void SyncTaskbarPanelAndStorageWithApi(List<Application> apiApps)
         {
             var appsToAdd = apiApps.Where(a => !ServiceLocator.LocalStorage.InstalledAppDirectApps.Contains(a)).ToList();
             var appsToRemove =
@@ -320,6 +287,41 @@ namespace AppDirect.WindowsClient.UI
                 suggestedApps.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
             SyncDisplayWithStoredList(0, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
+        }
+
+        public void SyncAppsWithApi()
+        {
+            if (ServiceLocator.LocalStorage.HasCredentials)
+            {
+                try
+                {
+                    if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
+                                                                        ServiceLocator.LocalStorage.LoginInfo.Password))
+                    {
+                        ServiceLocator.LocalStorage.ClearLoginCredentials();
+                    }
+                }
+                catch (CryptographicException e)
+                {
+                    ServiceLocator.LocalStorage.ClearLoginCredentials();
+                    MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
+                }
+                catch (Exception)
+                {
+                    if (System.Windows.Application.Current != null)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(
+                            new Action(() => LoginFailedMessage = Resources.NetworkProblemError));
+                    }
+                }
+                finally
+                {
+                    GetMyApplications();
+                }
+            }
+
+            GetSuggestedApplicationsWithApiCall();
+            ServiceLocator.LocalStorage.SaveAppSettings();
         }
 
         public void GetSuggestedApplicationsWithApiCall()

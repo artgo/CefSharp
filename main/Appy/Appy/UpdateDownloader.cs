@@ -7,7 +7,7 @@ namespace AppDirect.WindowsClient
 {
     public static class UpdateDownloader
     {
-        private static MainWindow MainWindow { get; set; }
+        private static volatile MainWindow _mainWindow;
         private static readonly TimeSpan CheckForUpdatesTimeSpan = TimeSpan.FromDays(1);
 
         private static void DownloadAvailableUpdates()
@@ -18,7 +18,7 @@ namespace AppDirect.WindowsClient
 
                 if (updateAvailable)
                 {
-                    MainWindow.UpdateAvailable(true);
+                    _mainWindow.UpdateAvailable(true);
                 }
 
                 Thread.Sleep(CheckForUpdatesTimeSpan);
@@ -27,7 +27,7 @@ namespace AppDirect.WindowsClient
 
         public static void Start(MainWindow mainWindow)
         {
-            MainWindow = mainWindow;
+            _mainWindow = mainWindow;
 
             var getUpdateThread = new Thread(DownloadAvailableUpdates);
             getUpdateThread.Start();

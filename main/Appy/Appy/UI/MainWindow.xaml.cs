@@ -29,11 +29,11 @@ namespace AppDirect.WindowsClient.UI
             get { return DataContext as MainViewModel; }
         }
 
-        public MainWindow()
+        public MainWindow(MainViewModel mainViewModel)
         {
             try
             {
-                DataContext = new MainViewModel();
+                DataContext = mainViewModel;
             }
             catch (Exception e)
             {

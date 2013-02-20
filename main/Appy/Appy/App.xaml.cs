@@ -29,7 +29,8 @@ namespace AppDirect.WindowsClient
 
             ServiceLocator.IpcCommunicator.Start();
 
-            var mainWindow = new MainWindow();
+            var mainViewModel = new MainViewModel();
+            var mainWindow = new MainWindow(mainViewModel);
             UpdateDownloader.Start(mainWindow);
             AppSessionRefresher.Start(mainWindow);
             var taskbarPanel = new TaskbarPanel(mainWindow);

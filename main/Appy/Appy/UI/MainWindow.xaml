@@ -23,7 +23,7 @@
                         <Grid Background="{StaticResource MenuItemColor}" Name="MenuItemGrid">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="25" />
-                                <ColumnDefinition Width="80" SharedSizeGroup="Header"/>
+                                <ColumnDefinition Width="85" SharedSizeGroup="Header"/>
                             </Grid.ColumnDefinitions>
                             <Border 
         Name="Check"  
