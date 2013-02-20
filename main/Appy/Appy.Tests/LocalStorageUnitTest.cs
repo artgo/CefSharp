@@ -2,32 +2,35 @@
 using System.IO;
 using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class LocalStorageUnitTest
     {
-        private const string FileName = @"\AppDirect\LocalStorage";
+        private const string FileName = @"\LocalStorage";
         private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
         private LocalStorage localStorage;
 
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void Setup()
         {
-            File.Delete();
+            if (File.Exists)
+            {
+                File.Delete();
+            }
             localStorage = new LocalStorage();
         }
 
-        [TestMethod]
+        [Test]
         public void InstalledAppsListNullWithoutFile()
         {
             Assert.IsNull(localStorage.InstalledLocalApps);
         }
 
-        [TestMethod]
+        [Test]
         public void LocalStorageListsNotNullWhenFileContainsApps()
         {
             localStorage.InstalledLocalApps = LocalApplications.LocalApplicationsList;
@@ -41,7 +44,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.IsNotNull(localStorage.InstalledLocalApps);
         }
 
-        [TestMethod]
+        [Test]
         public void SaveLocalStorageCreatesStorageFile()
         {
             localStorage.SaveAppSettings();
@@ -50,7 +53,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.IsTrue(File.Exists);
         }
 
-        [TestMethod]
+        [Test]
         public void HasCredentialsTrueForUnexpiredCredentials()
         {
             string unencryptedPassword = "IamPassWordValue84";
@@ -61,7 +64,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.IsTrue(localStorage.HasCredentials);
         }
 
-        [TestMethod]
+        [Test]
         public void StoredCredentialsRestoredToOriginalValues()
         {
             string unencryptedPassword = "IamPassWordValue84";
@@ -73,7 +76,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.AreEqual(unencryptedUserName, localStorage.LoginInfo.Username);
         }
 
-        [TestMethod]
+        [Test]
         public void CredentialsOlderThanLimitAreCleared()
         {
             string unencryptedPassword = "IamPassWordValue84";
@@ -84,7 +87,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.IsFalse(localStorage.HasCredentials);
         }
 
-        [TestMethod]
+        [Test]
         public void BadImageFile()
         {
             string appId = "BadImageTest";
