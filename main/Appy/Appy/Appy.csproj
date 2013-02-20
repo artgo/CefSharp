@@ -172,6 +172,7 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
+    <Compile Include="UI\AppSessionRefresher.cs" />
     <Compile Include="UI\TaskbarPanel.xaml.cs">
       <DependentUpon>TaskbarPanel.xaml</DependentUpon>
     </Compile>
@@ -203,6 +204,7 @@
     <Compile Include="API\CachedAppDirectApi.cs" />
     <Compile Include="UI\MainViewModel.cs" />
     <Compile Include="UI\WaterMarkTextHelper.cs" />
+    <Compile Include="UpdateDownloader.cs" />
     <Compile Include="Updates\Updater.cs" />
   </ItemGroup>
   <ItemGroup>

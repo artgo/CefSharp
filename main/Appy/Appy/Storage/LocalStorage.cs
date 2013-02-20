@@ -15,13 +15,12 @@ namespace AppDirect.WindowsClient.Storage
     ///</summary>
     public sealed class LocalStorage
     {
-        private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
-        public readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        private static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
-        public List<Application> InstalledLocalApps{ get; set; }
+        public List<Application> InstalledLocalApps { get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
         public List<Application> PinnedApps { get; set;}
@@ -48,11 +47,7 @@ namespace AppDirect.WindowsClient.Storage
            
         }
 
-        public List<string> HiddenApps
-        {
-            get { return _hiddenApps; }
-            set { _hiddenApps = value; }
-        }
+        public List<string> HiddenApps { get; set; }
 
         public LoginObject LoginInfo { get; set; }
 
@@ -79,6 +74,7 @@ namespace AppDirect.WindowsClient.Storage
 
                 lock (FileInfo)
                 {
+                    var localStorage = new LocalStorage();
                     // If the file exists, open it.
                     if (FileInfo.Exists)
                     {
@@ -86,23 +82,23 @@ namespace AppDirect.WindowsClient.Storage
                         using (var fileStream = FileInfo.OpenRead())
                         {
                             // Create a new instance of the LocalStorage by deserializing the file.
-                            var localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
-
-                            LoginInfo = localStorage.LoginInfo;
-                            InstalledLocalApps = localStorage.InstalledLocalApps;
-                            InstalledAppDirectApps = localStorage.InstalledAppDirectApps;
-                            LastSuggestedApps = localStorage.LastSuggestedApps;
-                            UpdateDownloaded = localStorage.UpdateDownloaded;
-
-                            HiddenApps = localStorage.HiddenApps;
-                            PinnedApps = localStorage.PinnedApps; 
-
+                            localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
+                            
                             if (!localStorage.HasCredentials)
                             {
                                 localStorage.ClearLoginCredentials();
                             }
                         }
                     }
+
+                    LoginInfo = localStorage.LoginInfo;
+                    InstalledLocalApps = localStorage.InstalledLocalApps ?? new List<Application>();
+                    InstalledAppDirectApps = localStorage.InstalledAppDirectApps ?? new List<Application>();
+                    LastSuggestedApps = localStorage.LastSuggestedApps ?? new List<Application>();
+                    UpdateDownloaded = localStorage.UpdateDownloaded;
+
+                    HiddenApps = localStorage.HiddenApps ?? new List<string>();
+                    PinnedApps = localStorage.PinnedApps ?? new List<Application>();
                 }
             }   
         }     

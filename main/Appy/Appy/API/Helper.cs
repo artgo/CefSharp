@@ -18,7 +18,8 @@ namespace AppDirect.WindowsClient.API
         public static readonly string ApplicationDirectory = @"\AppDirect\" + ApplicationName;
         public static readonly string BrowserProjectExt = ".Browser";
         public static readonly string ExeExt = ".exe";
-        public static readonly int RefreshAppsIntervalMins = 55;
+        private const int RefreshAppsIntervalMins = 55;
+        public static TimeSpan RefreshAppsTimeSpan = TimeSpan.FromMinutes(RefreshAppsIntervalMins);
 
         private const int MinimumPasswordLength = 4;
         private const int MaximumPasswordLength = 18;

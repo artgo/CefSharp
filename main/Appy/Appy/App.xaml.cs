@@ -14,8 +14,6 @@ namespace AppDirect.WindowsClient
     /// </summary>
     public partial class App : System.Windows.Application
     {
-        private MainWindow mainWindow;
-
         protected override void OnStartup(StartupEventArgs e)
         {
             try
@@ -29,30 +27,14 @@ namespace AppDirect.WindowsClient
 
             ServiceLocator.IpcCommunicator.Start();
 
-            Thread getUpdateThread = new Thread(DownloadAvailableUpdates);
-            getUpdateThread.Start();
-
-            mainWindow = new MainWindow();
-
+            var mainWindow = new MainWindow();
+            UpdateDownloader.Start(mainWindow);
+            AppSessionRefresher.Start(mainWindow);
             var taskbarPanel = new TaskbarPanel(mainWindow);
+
             TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, (int)taskbarPanel.Width);
 
             base.OnStartup(e);
-        }
-
-        private void DownloadAvailableUpdates()
-        {
-            while (true)
-            {
-                bool updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
-
-                if (updateAvailable)
-                {
-                    mainWindow.UpdateAvailable(true);
-                }
-
-                Thread.Sleep(TimeSpan.FromDays(1));
-            }
         }
 
         protected override void OnExit(ExitEventArgs e)

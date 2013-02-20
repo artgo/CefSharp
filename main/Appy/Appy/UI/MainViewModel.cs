@@ -146,80 +146,63 @@ namespace AppDirect.WindowsClient.UI
         public MainViewModel()
         {
             InitializeAppsLists();
-            var setupThread = new Thread(LoginAndGetApps);
-            setupThread.Start();
+            LoginAndGetApps();
         }
 
         private void LoginAndGetApps()
         {
-            while (true)
+            if (ServiceLocator.LocalStorage.HasCredentials && !ServiceLocator.CachedAppDirectApi.IsAuthenticated)
             {
-                if (ServiceLocator.LocalStorage.HasCredentials && !ServiceLocator.CachedAppDirectApi.IsAuthenticated)
+                try
                 {
-                    try
-                    {
-                        if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
-                                                                            ServiceLocator.LocalStorage.LoginInfo.Password))
-                        {
-                            ServiceLocator.LocalStorage.ClearLoginCredentials();
-                        }
-                    }
-                    catch (CryptographicException e)
+                    if (!ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
+                                                                        ServiceLocator.LocalStorage.LoginInfo.Password))
                     {
                         ServiceLocator.LocalStorage.ClearLoginCredentials();
-                        MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
-                    }
-                    catch (Exception)
-                    {
-                        if (System.Windows.Application.Current != null)
-                        {
-                            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => 
-                                                                                            LoginFailedMessage = Resources.NetworkProblemError));
-                        }
                     }
                 }
-
-                GetMyApplications();
-                GetSuggestedApplicationsWithApiCall();
-                ServiceLocator.LocalStorage.SaveAppSettings();
-
-                Thread.Sleep(TimeSpan.FromMinutes(Helper.RefreshAppsIntervalMins));
+                catch (CryptographicException e)
+                {
+                    ServiceLocator.LocalStorage.ClearLoginCredentials();
+                    MessageBox.Show("Credentials were present, but there was an error decrypting: " + e.Message);
+                }
+                catch (Exception)
+                {
+                    if (System.Windows.Application.Current != null)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                                                                                        LoginFailedMessage =
+                                                                                        Resources.NetworkProblemError));
+                    }
+                }
             }
+
+            GetMyApplications();
+            GetSuggestedApplicationsWithApiCall();
+            ServiceLocator.LocalStorage.SaveAppSettings();
         }
 
         private void InitializeAppsLists()
         {
-            if (ServiceLocator.LocalStorage.InstalledLocalApps == null)
-            {
-                ServiceLocator.LocalStorage.InstalledLocalApps = new List<Application>(); 
-            }
-
             if (!ServiceLocator.LocalStorage.InstalledLocalApps.Contains(LocalApplications.AppStoreApp))
             {
                 ServiceLocator.LocalStorage.InstalledLocalApps.Insert(0, LocalApplications.AppStoreApp);
             }
-
-            if (ServiceLocator.LocalStorage.InstalledAppDirectApps == null )
-            {
-                ServiceLocator.LocalStorage.InstalledAppDirectApps = new List<Application>();
-            }
-
+            
             var installedAppIds = ServiceLocator.LocalStorage.AllInstalledApplications.Select(a => a.Id).ToList();
 
-            if (ServiceLocator.LocalStorage.LastSuggestedApps == null)
+            if (ServiceLocator.LocalStorage.LastSuggestedApps.Count == 0)
             {
                 ServiceLocator.LocalStorage.LastSuggestedApps = LocalApplications.LocalApplicationsList.Where(a => !installedAppIds.Contains(a.Id)).ToList();
             }
 
             MyApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.AllInstalledApplications.Take(MyAppDisplayLimit));
-
             SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps);
         }
-        
-        private void GetMyApplications()
+
+        public void GetMyApplications()
         {
             SyncStorageWithApi();
-
             SyncDisplayWithStoredList(MyAppDisplayLimit, MyApplications, ServiceLocator.LocalStorage.AllInstalledApplications);
         }
 
@@ -339,7 +322,7 @@ namespace AppDirect.WindowsClient.UI
             SyncDisplayWithStoredList(0, SuggestedApplications, ServiceLocator.LocalStorage.LastSuggestedApps);
         }
 
-        private void GetSuggestedApplicationsWithApiCall()
+        public void GetSuggestedApplicationsWithApiCall()
         {
             var suggestedApps = LocalApplications.LocalApplicationsList;
             var apiSuggestedApps = new List<Application>();
@@ -404,8 +387,7 @@ namespace AppDirect.WindowsClient.UI
                 ApplicationRemovedNotifier(application, null);
             }
 
-            var refreshAppsThread = new Thread(RefreshAppsLists);
-            refreshAppsThread.Start();
+            RefreshAppsLists();
         }
 
         public void Install(Application application)
@@ -426,8 +408,7 @@ namespace AppDirect.WindowsClient.UI
                 System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
 
-            var refreshAppsThread = new Thread(RefreshAppsLists);
-            refreshAppsThread.Start();
+            RefreshAppsLists();
         }
 
         public void Logout()

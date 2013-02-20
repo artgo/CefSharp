@@ -162,13 +162,6 @@ namespace AppDirect.WindowsClient.UI
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
-            Thread installUpdateThread = new Thread(InstallUpdates);
-
-            installUpdateThread.Start();
-        }
-
-        private void InstallUpdates()
-        {
             ServiceLocator.Updater.InstallUpdates();
 
             if (System.Windows.Application.Current != null)
@@ -176,7 +169,7 @@ namespace AppDirect.WindowsClient.UI
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(Close));
             }
         }
-
+        
         private void MainWindow_OnClosing(object o, CancelEventArgs e)
         {
             Process[] processes = Process.GetProcessesByName(Helper.ApplicationName + Helper.BrowserProjectExt);
