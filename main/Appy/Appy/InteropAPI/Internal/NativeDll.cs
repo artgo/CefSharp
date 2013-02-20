@@ -9,6 +9,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private const string NativeDllName = "native.dll";
         private NativeDll() {}
 
+		[DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void InjectExplrorerExe();
+
+		[DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void DetachHooks();
+
+		[DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr SetupHooks2(int code, IntPtr wParam, IntPtr lParam);
+
         // TODO: -1 tmp code: to be rewritten into C#
         [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr FindTaskBar();
@@ -23,18 +32,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern Point GetTaskbarPos();
 
         [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Size GetStartButtonSize();
+		public static extern System.Drawing.Size GetStartButtonSize();
 
         [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Size GetInitialADButtonSize();
+		public static extern System.Drawing.Size GetInitialADButtonSize();
 
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void InjectExplrorerExe();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void DetachHooks();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr SetupHooks2(int code, IntPtr wParam, IntPtr lParam);
+		[DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+		public static extern TaskbarPlacement GetTaskbarEdge();
     }
 }

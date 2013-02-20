@@ -38,8 +38,7 @@ NATIVE_API LRESULT CALLBACK SetupHooks(int code, WPARAM wParam, LPARAM lParam);
 NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam);		// just clone for debug&bugfix
 
 extern NATIVE_API const wchar_t * gc_TheDllName;
-extern NATIVE_API HWND g_TaskBar;
-extern NATIVE_API HWND g_ReBar;		// of the taskbar
+//extern NATIVE_API HWND g_ReBar;		// of the taskbar
 
 //extern NATIVE_API CADButton g_TheButton;		// the button	g_TheButton.m_nWnd its HWND
 
@@ -96,8 +95,7 @@ extern "C" NATIVE_API SIZE GetStartButtonSize();
 extern "C" NATIVE_API POINT GetTaskbarPos();
 extern "C" NATIVE_API void InjectExplrorerExe();
 extern "C" NATIVE_API void DetachHooks();
-
-UINT GetTaskbarEdge();
+extern "C" NATIVE_API UINT GetTaskbarEdge();
 
 
 SIZE SizeOfRect(const RECT& r);
