@@ -16,6 +16,7 @@ namespace AppDirect.WindowsClient.InteropAPI
         private TaskbarApi()
         {
             _interactionsObject = new InteractionsObject();
+            _interactionsObject.LoadInitialValues();
         }
 
         public static TaskbarApi Instance
@@ -35,14 +36,15 @@ namespace AppDirect.WindowsClient.InteropAPI
         }
         #endregion Singleton
 
+        public int TaskbarHeight { get { return _interactionsObject.TaskbarHeight; } }
+        public TaskbarPosition TaskbarPosition { get { return _interactionsObject.TaskbarPosition; } }
+        public TaskbarIconsSize TaskbarIconsSize { get { return _interactionsObject.TaskbarIconsSize; } }
+
         public static void Cleanup()
         {
             if (_instance != null)
 			{
-				if (_instance._interactionsObject != null)
-					;
-
-				;	// TODO: -2 if needed
+				// TODO: -2 if needed
 			}
         }
 
@@ -53,7 +55,7 @@ namespace AppDirect.WindowsClient.InteropAPI
         /// </summary>
         /// <param name="control">WPF window to be placed on taskbar</param>
         /// <param name="notifyee">An object which will be notified upon taskbar changes</param>
-        /// <param name="initialWidth"></param>
+        /// <param name="initialWidth">Initial width</param>
         public void InsertTaskbarWindow(Control control, ITaskbarInterop notifyee, int initialWidth)
         {
             _contorl = control;
