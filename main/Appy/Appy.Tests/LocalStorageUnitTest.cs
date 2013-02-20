@@ -10,15 +10,15 @@ namespace AppDirect.WindowsClient.Tests
     public class LocalStorageUnitTest
     {
         private const string FileName = @"\AppDirect\LocalStorage";
-        private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        private FileInfo File;
 
         private LocalStorage localStorage;
 
         [TestInitialize]
         public void Setup()
         {
-            File.Delete();
             localStorage = new LocalStorage();
+            File = localStorage.FileInfo;
         }
 
         [TestMethod]

@@ -270,7 +270,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
-            <Setter Property="ToolTip" Value="{StaticResource ToolTip}"></Setter>
+            <!--<Setter Property="ToolTip" Value="{StaticResource ToolTip}"></Setter>-->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -434,16 +434,20 @@
                         </MenuItem.Icon>
                         <MenuItem Name="UpdateMenuItem" Header="Update">
                             <MenuItem.Icon>
-                                <Image Source="Images/cogGrey.png" Width="12" />
+                                <Image Source="Images/wrench.png" Width="12" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator Style="{StaticResource MenuItemSeparator}"/>
-                        <MenuItem Name="LogOutMenuItem" Header="Log Out" Click="Logout_Click">
+                        <MenuItem Name="LogOutMenuItem" Header="Log Out" Click="Logout_Click" Visibility="{Binding LogOutVisibility}">
                             <MenuItem.Icon>
-                                <Image Source="Images/cogGrey.png" Width="12" />
+                                <Image Source="Images/logout.png" Width="12" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <!--<MenuItem Name="AboutMenuItem" Background="Black" BorderThickness="0" Header="About" Foreground="{StaticResource DefaultTextColor}"></MenuItem>-->
+                        <MenuItem Name="AboutMenuItem" Header="About">
+                            <MenuItem.Icon>
+                                <Image Source="Images/about.png" Width="12" ToolTip="{Binding VersionString}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                 </Menu>
                 <Line Grid.ColumnSpan="5" X1="5" Y1="30" X2="420" Y2="30" Stroke="#656565" StrokeThickness="1" />
