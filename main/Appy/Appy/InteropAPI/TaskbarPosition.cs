@@ -1,5 +1,10 @@
 ﻿using AppDirect.WindowsClient.InteropAPI.Internal;
 
+namespace System.Runtime.CompilerServices
+{
+	public class ExtensionAttribute : Attribute { }
+}
+
 namespace AppDirect.WindowsClient.InteropAPI
 {
     public enum TaskbarPosition : uint
