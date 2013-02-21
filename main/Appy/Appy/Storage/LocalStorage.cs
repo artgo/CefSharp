@@ -78,16 +78,21 @@ namespace AppDirect.WindowsClient.Storage
                     // If the file exists, open it.
                     if (FileInfo.Exists)
                     {
-
-                        using (var fileStream = FileInfo.OpenRead())
+                        try
                         {
-                            // Create a new instance of the LocalStorage by deserializing the file.
-                            localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
-                            
-                            if (!localStorage.HasCredentials)
+                            using (var fileStream = FileInfo.OpenRead())
                             {
-                                localStorage.ClearLoginCredentials();
+                                // Create a new instance of the LocalStorage by deserializing the file.
+                                localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
+
+                                if (!localStorage.HasCredentials)
+                                {
+                                    localStorage.ClearLoginCredentials();
+                                }
                             }
+                        }
+                        catch (Exception)
+                        {
                         }
                     }
 

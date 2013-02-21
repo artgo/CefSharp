@@ -123,7 +123,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.LocalStorage.HasCredentials)
             {
-                ViewModel.RefreshAppsLists();
+                ViewModel.SyncAppsWithApi();
             }
             else
             {

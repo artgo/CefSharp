@@ -12,7 +12,7 @@ namespace AppDirect.WindowsClient.UI
 {
     public static class AppSessionRefresher
     {
-        private const int RefreshAppsIntervalMins = 55;
+        private const int RefreshAppsIntervalMins = 25;
         public static TimeSpan RefreshAppsTimeSpan = TimeSpan.FromMinutes(RefreshAppsIntervalMins);
 
         private static volatile MainWindow _mainWindow;
