@@ -75,10 +75,33 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 );
             p.PositionX = 0; p.PositionY = 0;
             p.ParentWindow = NativeDll.FindTaskBar();
-            p.WindowStyle = (int)(WindowsStyleConstants.WS_VISIBLE | WindowsStyleConstants.WS_CHILD);
-            p.UsesPerPixelOpacity = true;
+			p.UsesPerPixelOpacity = true;		// set the WS_EX_LAYERED extended window style
+			unchecked
+			{
+				// 94000C00
+				p.WindowStyle = (int)0x94000C00;
+				//p.WindowStyle =
+				//	(int)(0
+				//	| WindowsStyleConstants.WS_VISIBLE		// 10000000
+				//	| WindowsStyleConstants.WS_POPUP		// 80000000
+				//	//| WindowsStyleConstants.WS_CHILD
+				//	)
+				
+				//;
+			
+				// 00080088
+				p.ExtendedWindowStyle = 0x00080088;
+				//p.ExtendedWindowStyle = 0
+				//	| 0x00080000	// WS_EX_LAYERED
+				//	| 0x00000008	//WS_EX_TOPMOST
+				//;
+
+			}
+			
             _hSrc = new HwndSource(p);
             _hSrc.RootVisual = wnd;
+
+			// TODO: -1 remove if unneeded
             //_hSrc.AddHook(WndProc);		// handle custom WM_
 
             DoChangeWidth(initialWidth, true);
@@ -266,8 +289,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 			    offset = new Point(szStart.Width, 0);
 			}
 
+			var offset2 = ScreenFromWpf(offset, NativeDll.FindTaskBar());
+
             User32Dll.SetWindowPos(_hSrc.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
-								   offset.X, offset.Y,
+								   offset2.X, offset2.Y,
                                    _buttonsWindowSize.Width, _buttonsWindowSize.Height,
                                    (uint)
                                    (SetWindowPosConstants.SWP_SHOWWINDOW | SetWindowPosConstants.SWP_NOOWNERZORDER |
@@ -283,5 +308,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             return true;
         }
+
+		private Point ScreenFromWpf(Point local, IntPtr hwnd)
+		{
+			var p = new POINT() { x = local.X, y = local.Y};
+			if (User32Dll.MapWindowPoints(hwnd, IntPtr.Zero, ref p, 1) == 0) throw new Exception("Error converting points");
+			return new Point(p.x, p.y);
+		}
     }
 }
