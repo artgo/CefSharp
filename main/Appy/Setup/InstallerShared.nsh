@@ -10,6 +10,9 @@
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
 !define COPYFILES "/r /x Appy\ApplicationData\*.* Appy\*.*"
 
+!define COPYDLL64 "/r 64BitDLL\*.*"
+!define COPYDLL32 "/r 32BitDLL\*.*"
+
 !searchparse /file version.txt '' VERSION_SHORT 
 
 ; Request application privileges for Windows Vista
