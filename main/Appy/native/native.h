@@ -52,7 +52,6 @@ void PressADButton(bool bPressed);
 NATIVE_API SIZE GetADButtonSize();
 
 bool IsADButtonSmallIcons();
-bool IsTaskbarSmallIcons();
 //-------------------------------------------------------------------------------------------------
 
 
