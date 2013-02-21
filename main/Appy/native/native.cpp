@@ -2,31 +2,6 @@
 #include "native.h"
 #include "consts.h"
 
-#include "dbgh.h"	// TODO: -2 remove after release
-
-
-// TODO: -1
-//// This is an example of an exported variable
-//NATIVE_API int nnative=0;
-//
-//// This is an example of an exported function.
-//NATIVE_API int fnnative()
-//{
-//	return 42;
-//}
-//
-//// This is the constructor of a class that has been exported.
-//// see native.h for the class definition
-//Cnative::Cnative()
-//{
-//	return;
-//}
-
-
-//-------------------------------------------------------------------------------------------------
-//namespace adButton 
-//{
-//-------------------------------------------------------------------------------------------------
 static const int BuffSize = 256;
 
 bool g_bInitDone = false;
@@ -35,7 +10,6 @@ HWND g_ReBar = NULL;		// of the taskbar
 SIZE g_RebarOffset;
 HHOOK g_ProgHook = NULL;
 HMODULE g_hDll = NULL;
-
 
 // TODO: -1: explode to 
 // Returns Windows version as usually defined in VC headers: targetver.h
@@ -74,9 +48,6 @@ WORD WinVersion()
 //	return TRUE;
 //}
 
-
-
-
 static HWND tmpTaskbar = NULL;
 
 // look for top-level window with class "Shell_TrayWnd" and process ID=lParam
@@ -86,10 +57,10 @@ static BOOL CALLBACK TaskBarEnumFunc(HWND hwnd, LPARAM lParam)
 	::GetWindowThreadProcessId(hwnd, &process);
 	if (process != lParam) return TRUE;
 
-	CStringW s;
-	::GetClassName(hwnd, s.GetBuffer(BuffSize), BuffSize);
-	s.ReleaseBuffer();
-	if (s.CompareNoCase(L"Shell_TrayWnd") != 0)	return TRUE;
+	wchar_t s[BuffSize];
+	::GetClassName(hwnd, s, BuffSize);
+
+	if (_wcsnicmp(s, L"Shell_TrayWnd", BuffSize) != 0)	return TRUE;
 	
 	tmpTaskbar = hwnd;
 	return FALSE;
@@ -110,14 +81,12 @@ HWND FindTaskBar(DWORD process)
 	return tmpTaskbar;
 }
 
-
 static HWND tmpStartButton = NULL;
 static BOOL CALLBACK StartButtonEnumFunc(HWND hwnd, LPARAM lParam)
 {
-	CStringW s;
-	int len = ::GetClassName(hwnd, s.GetBuffer(BuffSize), BuffSize);
-	s.ReleaseBuffer();
-	if (s.CompareNoCase(L"button") != 0) return TRUE;
+	wchar_t s[BuffSize];
+	int len = ::GetClassName(hwnd, s, BuffSize);
+	if (_wcsnicmp(s, L"Button", BuffSize) != 0) return TRUE;
 	tmpStartButton = hwnd;
 	return FALSE;
 }
@@ -191,8 +160,6 @@ SIZE GetInitialADButtonSize()
 	}
 	return s2;
 }
-
-
 
 static bool bExiting = false;
 static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
@@ -347,8 +314,6 @@ UINT GetExitMsg()
 	return ::RegisterWindowMessage(L"adButtonsExit");
 }
 
-
-
 // TODO: -1 merge into actual SetupHooks()
 NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
 {
@@ -372,7 +337,7 @@ void InjectExplrorerExe()
 	if (!ExplorerHook)
 	{
 		int err = GetLastError();
-		at("Hook FAILS! "); tx(err);
+		//at("Hook FAILS! "); tx(err);
 	}
 	::PostMessage(FindRebar(), WM_NULL, 0, 0); // make sure there is one message in the queue
 }
@@ -387,15 +352,6 @@ void DetachHooks()
 		//b = ::SendMessage(reb, GetExitMsg(), 0, 0);	_ASSERT(b);
 		b = ::PostMessage(reb, GetExitMsg(), 0, 0);	_ASSERT(b);
 	}
-}
-
-bool IsTaskbarSmallIcons()
-{
-	CRegKey regKey;
-	if (regKey.Open(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced") != ERROR_SUCCESS)
-		return true;
-	DWORD v;
-	return (regKey.QueryDWORDValue(L"TaskbarSmallIcons", v) != ERROR_SUCCESS) || v;		// old versions use small icons
 }
 
 //SIZE DimensionsFromRect(const RECT & r)
@@ -431,7 +387,3 @@ bool IsTaskbarSmallIcons()
 //	BOOL b = ::GetWindowRect(GetStartButton(), &r);	_ASSERT(b);
 //	return DimensionsFromRect(r);
 //}
-
-//-------------------------------------------------------------------------------------------------
-//}	// end of namespace adButton 
-//-------------------------------------------------------------------------------------------------

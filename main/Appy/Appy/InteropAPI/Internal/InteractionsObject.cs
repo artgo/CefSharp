@@ -102,8 +102,13 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private TaskbarIconsSize GetTaskbarIconSize()
         {
-            var isSmall = (int)Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarSmallIcons", -1);
-            return (TaskbarIconsSize)isSmall;
+			var sz = TaskbarIconsSize.Small;	// old versions use small icons
+			Object RegSmall = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarSmallIcons", -1);
+			if (RegSmall != null)				// since Win7
+			{
+				if ((int)RegSmall == 0) sz = TaskbarIconsSize.Large;
+			}
+			return sz;
         }
 
         private void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
