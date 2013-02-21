@@ -241,6 +241,7 @@
     <None Include="apps_list.xss">
       <DependentUpon>apps_list.xsd</DependentUpon>
     </None>
+    <None Include="ClassDiagram1.cd" />
     <None Include="myapps.xsc">
       <DependentUpon>myapps.xsd</DependentUpon>
     </None>
@@ -441,7 +442,6 @@
     <Resource Include="UI\Images\TaskBarHoverMask.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\about.png" />
     <Resource Include="UI\Images\logout.png" />
     <Resource Include="UI\Images\wrench.png" />
   </ItemGroup>
@@ -458,8 +458,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\about.png" />
-    <Resource Include="UI\Images\logout.png" />
-    <Resource Include="UI\Images\wrench.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

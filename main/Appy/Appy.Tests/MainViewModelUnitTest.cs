@@ -34,7 +34,7 @@ namespace AppDirect.WindowsClient.Tests
         private volatile ICachedAppDirectApi _cachedAppDirectApiMock;
 
         [TestFixtureSetUp]
-        public void Initialize()
+        public void SetUpForTests()
         {
             _appDirectApiMock = Substitute.For<IAppDirectApi>();
             _cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
@@ -42,18 +42,25 @@ namespace AppDirect.WindowsClient.Tests
             _localStorage = new LocalStorage();
 
             _cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
-            
+
             var kernel = ServiceLocator.Kernel;
             kernel.Bind<IAppDirectApi>().ToConstant(_appDirectApiMock);
             kernel.Bind<ICachedAppDirectApi>().ToConstant(_cachedAppDirectApiMock);
             kernel.Bind<LocalStorage>().ToConstant(_localStorage);
 
+        }
+
+        private void InitializeTests()
+        {
+            ServiceLocator.LocalStorage.ClearAllStoredData();
             _mainViewModel = new MainViewModel();
         }
 
         [Test]
         public void InstallAppMarksAppPinned()
         {
+            InitializeTests();
+
             _mainViewModel.MyApplications.Clear();
             var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
             _mainViewModel.Install(app);
@@ -64,18 +71,21 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void SuggestedApplicationsCollectionIsNotNull()
         {
+            InitializeTests();
             Assert.IsTrue(_mainViewModel.SuggestedApplications.Count > 0);
         }
 
         [Test]
         public void MyApplicationsCollectionIsPopulated()
         {
+            InitializeTests();
             Assert.IsTrue(_mainViewModel.MyApplications.Count > 0);
         }
 
         [Test]
         public void LoginReturnsTrueForValidLogin()
         {
+            InitializeTests();
             Assert.IsTrue(_mainViewModel.Login(Username, Password));
             _cachedAppDirectApiMock.Received().Authenticate(Username, Password);
         }
@@ -83,6 +93,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void LoginReturnsFalseForInvalidLogin()
         {
+            InitializeTests();
             Assert.IsFalse(_mainViewModel.Login(Username, BadPassword));
             _cachedAppDirectApiMock.Received().Authenticate(Username, BadPassword);
         }
@@ -90,6 +101,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void ValidUsernameIsStored()
         {
+            InitializeTests();
             _mainViewModel.Login(Username, Password);
             Assert.AreEqual(Username, ServiceLocator.LocalStorage.LoginInfo.Username);
 
@@ -99,6 +111,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void ValidPasswordIsStored()
         {
+            InitializeTests();
             _mainViewModel.Login(Username, Password);
             Assert.AreEqual(Password, ServiceLocator.LocalStorage.LoginInfo.Password);
 
@@ -108,6 +121,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void PasswordSetDateIsStored()
         {
+            InitializeTests();
             _mainViewModel.Login(Username, Password);
             Assert.AreEqual(DateTime.Now.Date, ServiceLocator.LocalStorage.LoginInfo.PasswordSetDate.Date);
 
@@ -118,6 +132,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void IncorrectLoginIsNotStored()
         {
+            InitializeTests();
             _mainViewModel.Login(Username, BadPassword);
             Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
 
@@ -128,6 +143,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void LogOutRemovesLoginInfo()
         {
+            InitializeTests();
             _mainViewModel.Login(Username, Password);
             _mainViewModel.Logout();
 
@@ -138,6 +154,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void LogOutRemovesApiApps()
         {
+            InitializeTests();
             SetMyAppsAndLogin(_myApplications);
             _mainViewModel.Logout();
 
@@ -147,6 +164,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void InstallApplicationLocalIncrementsMyApplication()
         {
+            InitializeTests();
             _mainViewModel.MyApplications.Clear();
             var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
             _mainViewModel.Install(app);
@@ -157,21 +175,15 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void MyAppsContainsCachedAppDirectMyApps()
         {
+            InitializeTests();
             SetMyAppsAndLogin(_myApplications);
             Assert.IsTrue(ServiceLocator.LocalStorage.InstalledAppDirectApps.Contains(_myApplications[0]));
         }
-
-        [Test]
-        public void MyAppsDoesNotContainHiddenMyApps()
-        {
-            SetMyAppsAndLogin(_myApplications);
-
-            Assert.IsFalse(_mainViewModel.MyApplications.Contains(_myApplications[0]));
-        }
-
+        
         [Test]
         public void UninstallLocalApplicationIncrementsSuggestedApplications()
         {
+            InitializeTests();
             _mainViewModel.MyApplications.Clear();
             var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
             _mainViewModel.Install(app);
@@ -183,6 +195,7 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void UninstallLocalApplicationDecrementsMyApplications()
         {
+            InitializeTests();
             _mainViewModel.MyApplications.Clear();
             var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
             _mainViewModel.Install(app);
@@ -194,11 +207,13 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void LocalStorageInitializedByConstructor()
         {
+            InitializeTests();
             Assert.IsNotNull(ServiceLocator.LocalStorage.InstalledLocalApps);
         }
 
         private void SetMyAppsAndLogin(List<Application> myApps)
         {
+            InitializeTests();
             _cachedAppDirectApiMock.MyApps.Returns(myApps);
 
             _mainViewModel.MyApplications.Clear();

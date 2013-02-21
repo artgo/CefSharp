@@ -63,9 +63,14 @@ namespace AppDirect.WindowsClient.Storage
             }                               
         }
 
-        public LocalStorage(){}
-
-         
+        public LocalStorage()
+        {
+            InstalledLocalApps = new List<Application>();
+            InstalledAppDirectApps = new List<Application>();
+            LastSuggestedApps = new List<Application>();
+            PinnedApps = new List<Application>();
+        }
+        
         public LocalStorage(bool loadFromLocalStorage) 
         {
             if (loadFromLocalStorage)
@@ -100,10 +105,8 @@ namespace AppDirect.WindowsClient.Storage
                     InstalledLocalApps = localStorage.InstalledLocalApps ?? new List<Application>();
                     InstalledAppDirectApps = localStorage.InstalledAppDirectApps ?? new List<Application>();
                     LastSuggestedApps = localStorage.LastSuggestedApps ?? new List<Application>();
-                    UpdateDownloaded = localStorage.UpdateDownloaded;
-
-                    HiddenApps = localStorage.HiddenApps ?? new List<string>();
                     PinnedApps = localStorage.PinnedApps ?? new List<Application>();
+                    UpdateDownloaded = localStorage.UpdateDownloaded;
                 }
             }   
         }     
@@ -176,6 +179,15 @@ namespace AppDirect.WindowsClient.Storage
         public void ClearLoginCredentials()
         {
             LoginInfo = null;
+        }
+
+        public void ClearAllStoredData()
+        {
+            LoginInfo = null;
+            InstalledLocalApps = new List<Application>();
+            InstalledAppDirectApps = new List<Application>();
+            LastSuggestedApps = new List<Application>();
+            PinnedApps = new List<Application>();
         }
 
         public void SetCredentials(string username, string password)

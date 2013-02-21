@@ -182,14 +182,14 @@ namespace AppDirect.WindowsClient.UI
 
                 foreach (var application in expiredApps)
                 {
-                    RemoveAppFromMyApps(application, false);
+                    RemoveFromMyApps(application, false);
                 }
 
                 foreach (var application in newApps)
                 {
                     application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath,
                                                                                             application.Id);
-                    AddAppToMyApps(application, false);
+                    AddToMyApps(application, false);
                 }
 
                 ServiceLocator.LocalStorage.SaveAppSettings();
@@ -240,14 +240,14 @@ namespace AppDirect.WindowsClient.UI
 
                 foreach (var application in expiredApps)
                 {
-                    RemoveAppFromSuggestedApps(application, false);
+                    RemoveFromSuggestedApps(application, false);
                 }
 
                 foreach (var application in newApps)
                 {
                     application.LocalImagePath = ServiceLocator.LocalStorage.SaveAppIcon(application.ImagePath,
                                                                                             application.Id);
-                    AddAppToSuggestedApps(application, false);
+                    AddToSuggestedApps(application, false);
                 }
 
                 ServiceLocator.LocalStorage.SaveAppSettings();
@@ -278,9 +278,8 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
-                application.PinnedToTaskbar = false;
-                RemoveAppFromMyApps(application);
-                AddAppToSuggestedApps(application);
+                RemoveFromMyApps(application);
+                AddToSuggestedApps(application);
             }
             else
             {
@@ -292,8 +291,8 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
-                AddAppToMyApps(application);
-                RemoveAppFromSuggestedApps(application);
+                AddToMyApps(application);
+                RemoveFromSuggestedApps(application);
             }
             else
             {
@@ -301,27 +300,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void RemoveAppFromSuggestedApps(Application application, bool saveLocalStorage = true)
-        {
-            ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
-
-            if (saveLocalStorage)
-            {
-                ServiceLocator.LocalStorage.SaveAppSettings();
-            }
-
-            if (Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
-            {
-                SuggestedApplications.Remove(application);
-            }
-            else if (System.Windows.Application.Current != null)
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(
-                    new Action(() => SuggestedApplications.Remove(application)));
-            }
-        }
-
-        private void AddAppToMyApps(Application application, bool saveLocalStorage = true)
+        private void AddToMyApps(Application application, bool saveLocalStorage = true)
         {
             application.PinnedToTaskbar = true;
 
@@ -339,11 +318,11 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.SaveAppSettings();
             }
 
-            if (Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
+            if (System.Windows.Application.Current == null || Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
             {
                 MyApplications.Add(application);
             }
-            else if (System.Windows.Application.Current != null )
+            else
             {
                 System.Windows.Application.Current.Dispatcher.Invoke(
                     new Action(() => MyApplications.Add(application)));
@@ -355,7 +334,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void RemoveAppFromMyApps(Application application, bool saveLocalStorage = true)
+        private void RemoveFromMyApps(Application application, bool saveLocalStorage = true)
         {
             if (application.IsLocalApp)
             {
@@ -371,7 +350,11 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.SaveAppSettings();
             }
 
-            if (System.Windows.Application.Current != null && MyApplications.Count < MyAppDisplayLimit)
+            if (System.Windows.Application.Current == null || Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
+            {
+                MyApplications.Remove(application);
+            }
+            else
             {
                 System.Windows.Application.Current.Dispatcher.Invoke(
                     new Action(() => MyApplications.Remove(application)));
@@ -383,7 +366,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void AddAppToSuggestedApps(Application application, bool saveLocalStorage = true)
+        private void AddToSuggestedApps(Application application, bool saveLocalStorage = true)
         {
             application.PinnedToTaskbar = false;
 
@@ -393,11 +376,34 @@ namespace AppDirect.WindowsClient.UI
             {
                 ServiceLocator.LocalStorage.SaveAppSettings();
             }
+            
+            if (System.Windows.Application.Current == null || Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
+            {
+                SuggestedApplications.Add(application);
+            }
+            else
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => SuggestedApplications.Add(application)));
+            }
+        }
 
-            if (System.Windows.Application.Current != null && MyApplications.Count < MyAppDisplayLimit)
+        private void RemoveFromSuggestedApps(Application application, bool saveLocalStorage = true)
+        {
+            ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
+
+            if (saveLocalStorage)
+            {
+                ServiceLocator.LocalStorage.SaveAppSettings();
+            }
+
+            if (System.Windows.Application.Current == null || Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
+            {
+                SuggestedApplications.Remove(application);
+            }
+            else
             {
                 System.Windows.Application.Current.Dispatcher.Invoke(
-                    new Action(() => SuggestedApplications.Add(application)));
+                    new Action(() => SuggestedApplications.Remove(application)));
             }
         }
 
