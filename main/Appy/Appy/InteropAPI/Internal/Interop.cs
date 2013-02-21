@@ -3309,6 +3309,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         [DllImport(User32DllName)]
         public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
+		[DllImport(User32DllName)]
+		public static extern long GetWindowLong(IntPtr hwnd, int nIndex);
+
+		[DllImport(User32DllName)]
+        public static extern IntPtr SetWindowLong(IntPtr hwnd, int nIndex, long dwNewLong);
+
+		[DllImport(User32DllName)]
+		public static extern bool SetLayeredWindowAttributes(IntPtr hwnd, UInt32 crKey, Byte bAlpha, UInt32 dwFlags);
     }	// class User32Dll
 
     public class Kernel32Dll
