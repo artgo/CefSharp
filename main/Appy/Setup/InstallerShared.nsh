@@ -10,8 +10,8 @@
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
 !define COPYFILES "/r /x Appy\ApplicationData\*.* Appy\*.*"
 
-!define COPYDLL64 "/r 64BitDLL\*.*"
-!define COPYDLL32 "/r 32BitDLL\*.*"
+!define COPY64 "/r 64BitDLL\*.*"
+!define COPY32 "/r 32BitDLL\*.*"
 
 !searchparse /file version.txt '' VERSION_SHORT 
 
@@ -37,4 +37,20 @@ loop:
   MessageBox MB_OK "${APPNAME} can't install because there is another version of the application running."
     Abort
 done:
+!macroend
+
+!macro CopyFiles
+EnumRegKey $0 HKLM "SOFTWARE\Wow6432Node" 0
+  IfErrors 0 Is64Bit    
+  
+  ; Files to copy
+  File ${COPYFILES}
+  File ${COPY32}
+  GOTO ENDCOPY
+  
+  Is64Bit:
+  ; Files to copy
+  File ${COPYFILES}
+  File ${COPY64}
+  GOTO ENDCOPY
 !macroend

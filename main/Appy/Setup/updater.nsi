@@ -28,22 +28,7 @@ Section "Create"
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
     
-  EnumRegKey $0 HKLM "SOFTWARE\Wow6432Node" 0
-  IfErrors 0 Is64Bit     
-  ; Set output path to the installation directory.
-  
-  ; Files to copy
-  File ${COPYFILES}
-  File ${COPYDLL32}
-  GOTO ENDCOPY
-  
-  Is64Bit:
-  ; Files to copy
-  File ${COPYFILES}
-  File ${COPYDLL64}
-  GOTO ENDCOPY
-       
-  ENDCOPY:
+ !insertmacro COPYFILES
     
   WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT} 
      
