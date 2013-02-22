@@ -10,8 +10,8 @@
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
 !define COPYFILES "/r /x Appy\ApplicationData\*.* Appy\*.*"
 
-!define COPY64 "/r 64BitDLL\*.*"
-!define COPY32 "/r 32BitDLL\*.*"
+!define COPY64 "/r 64Bit\*.*"
+!define COPY32 "/r 32Bit\*.*"
 
 !searchparse /file version.txt '' VERSION_SHORT 
 
@@ -40,17 +40,17 @@ done:
 !macroend
 
 !macro CopyFiles
-EnumRegKey $0 HKLM "SOFTWARE\Wow6432Node" 0
-  IfErrors 0 Is64Bit    
-  
+ 
   ; Files to copy
   File ${COPYFILES}
+  
+  EnumRegKey $0 HKLM "SOFTWARE\Wow6432Node" 0
+  IfErrors 0 Is64Bit
+  
   File ${COPY32}
   GOTO ENDCOPY
   
   Is64Bit:
-  ; Files to copy
-  File ${COPYFILES}
   File ${COPY64}
   GOTO ENDCOPY
 !macroend
