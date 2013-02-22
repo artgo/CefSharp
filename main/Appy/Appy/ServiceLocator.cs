@@ -36,6 +36,9 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<Updater>(); }
         }
 
+        /// <summary>
+        /// Initializes Apis, Loads Local Storage, etc
+        /// </summary>
         public static void Initialize()
         {
             Kernel.Bind<IAppDirectApi>().ToConstant(new AppDirectApi());

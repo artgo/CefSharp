@@ -25,9 +25,15 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         [Test]
-        public void InstalledAppsListNullWithoutFile()
+        public void CorruptXmlLoadsEmptyStorage()
         {
-            Assert.IsNull(localStorage.InstalledLocalApps);
+            using (var streamWriter = new StreamWriter(File.FullName, false))
+            {
+                // Serialize this instance of the LocalStorage class to the config file.
+                streamWriter.Write("this is not valid xml");
+            }
+
+            localStorage = new LocalStorage(true);
         }
 
         [Test]
@@ -41,7 +47,7 @@ namespace AppDirect.WindowsClient.Tests
 
             localStorage = new LocalStorage(true);
             
-            Assert.IsNotNull(localStorage.InstalledLocalApps);
+            Assert.AreEqual(LocalApplications.LocalApplicationsList, localStorage.InstalledLocalApps);
         }
 
         [Test]

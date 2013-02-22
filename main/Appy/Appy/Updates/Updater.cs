@@ -21,16 +21,6 @@ namespace AppDirect.WindowsClient.Updates
         public const double RetryInterval = 15d;
         private const int RetryUpdatesLimit = 3;
 
-
-        public Updater()
-        {
-            //if (ServiceLocator.LocalStorage.UpdateDownloaded)
-            //{
-            //    InstallUpdates();
-            //    System.Environment.Exit(0);
-            //}
-        }
-
         public bool GetUpdates(string currentVersion)
         {
             int retryCount = 0;

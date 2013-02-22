@@ -104,6 +104,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AppDirectApiUnitTest.cs" />
+    <Compile Include="HelperTests.cs" />
     <Compile Include="LocalStorageUnitTest.cs" />
     <Compile Include="MainViewModelUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

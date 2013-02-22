@@ -264,10 +264,6 @@
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
     <Resource Include="UI\Images\FeaturedMaskDefault.png" />
-    <Resource Include="UI\Images\LaunchAppStore.png" />
-    <Resource Include="UI\Images\Line.png" />
-    <Resource Include="UI\Images\Reload.png" />
-    <Resource Include="UI\Images\titlebar.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\facebook.png" />
@@ -303,9 +299,6 @@
     <Resource Include="UI\Icons\linked.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\cancelLogin.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\deleteDefault.png" />
   </ItemGroup>
   <ItemGroup>
@@ -332,9 +325,6 @@
     <Resource Include="UI\Icons\yelp.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\cloudHover.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Appy.Common\Appy.Common.csproj">
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
       <Name>Appy.Common</Name>
@@ -355,16 +345,12 @@
     <Resource Include="UI\Icons\AppIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\aboutGrey.png" />
-    <Resource Include="UI\Images\aboutWhite.png" />
     <Resource Include="UI\Images\alertGrey.png" />
     <Resource Include="UI\Images\alertWhite.png" />
     <Resource Include="UI\Images\cogGrey.png" />
     <Resource Include="UI\Images\cogWhite.png" />
     <Resource Include="UI\Images\dotGrey.png" />
     <Resource Include="UI\Images\dotWhite.png" />
-    <Resource Include="UI\Images\hiddenAppGrey.png" />
-    <Resource Include="UI\Images\hiddenAppWhite.png" />
     <Resource Include="UI\Images\myAppGrey.png" />
     <Resource Include="UI\Images\myAppWhite.png" />
   </ItemGroup>

@@ -271,7 +271,6 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}" />
-            <!--<Setter Property="ToolTip" Value="{StaticResource ToolTip}"></Setter>-->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -467,7 +466,7 @@
             </Grid>
             <TabControl Grid.ColumnSpan="2" Margin="0,30,0,0" Background="Transparent" HorizontalAlignment="Left" BorderThickness="0" TabStripPlacement="Top" Width="{StaticResource WindowWidth}">
                 <TabItem Style ="{DynamicResource LeftMenu}"  Name="YourAppsTab" Background="Transparent" Width="Auto">
-                    <Grid Name="YourApps" Margin="20,25,0,0" Height="240" Width="410" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Grid Name="YourApps" Margin="20,25,0,0" Height="235" Width="410" VerticalAlignment="Top" HorizontalAlignment="Left">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="331*"/>
                             <ColumnDefinition Width="79*"/>
@@ -498,7 +497,6 @@
             </TabControl>
             <Grid Grid.Column="1" Margin="0,0,0,0">
                 <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="12" Padding="0" Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left" Margin="30,30,0,0" VerticalAlignment="Top" />
-                <!--<Button Style="{StaticResource InstallAppButton}" Height="34"  Margin="0,0,0,10" Click="InstallAppClick" />-->
                 <ListBox Style="{StaticResource ListBoxStyle}" Height="{StaticResource WindowHeight}" VerticalAlignment="Top" Padding="30,60,30,20"  Name="SuggestedListBox" ItemsSource="{Binding SuggestedApplications}">
                     <ListBox.Resources >
                         <Style TargetType="ListBoxItem">
