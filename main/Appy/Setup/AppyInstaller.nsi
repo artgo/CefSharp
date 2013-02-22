@@ -35,12 +35,10 @@ Section "Create"
 
   SectionIn RO
   
-  ; Set output path to the installation directory.
   SetOutPath $INSTDIR
   
-  ; Files to copy
-  File ${COPYFILES}
-    
+  !insertmacro COPYFILES
+        
   ; Write the installation path into the registry
   WriteRegStr HKCU ${REGISTRYPATH} "Install_Dir" "$INSTDIR"
   

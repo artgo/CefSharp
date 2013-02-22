@@ -10,6 +10,9 @@
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
 !define COPYFILES "/r /x Appy\ApplicationData\*.* Appy\*.*"
 
+!define COPY64 "/r 64Bit\*.*"
+!define COPY32 "/r 32Bit\*.*"
+
 !searchparse /file version.txt '' VERSION_SHORT 
 
 ; Request application privileges for Windows Vista
@@ -34,4 +37,21 @@ loop:
   MessageBox MB_OK "${APPNAME} can't install because there is another version of the application running."
     Abort
 done:
+!macroend
+
+!macro CopyFiles
+ 
+  ; Files to copy
+  File ${COPYFILES}
+  
+  EnumRegKey $0 HKLM "SOFTWARE\Wow6432Node" 0
+  IfErrors 0 Is64Bit
+  
+  File ${COPY32}
+  Goto ENDCOPY
+  
+  Is64Bit:
+  File ${COPY64}
+
+ENDCOPY:    
 !macroend
