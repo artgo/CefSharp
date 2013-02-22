@@ -28,8 +28,7 @@ Section "Create"
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
     
-  ; Files to copy
-  File ${COPYFILES}
+ !insertmacro COPYFILES
     
   WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT} 
      

@@ -150,6 +150,7 @@ Global
 		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Release|Win32.ActiveCfg = Release|x86
 		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Release|Win32.Build.0 = Release|x86
 		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Release|x64.ActiveCfg = Release|Any CPU
+		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Release|x64.Build.0 = Release|Any CPU
 		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Release|x86.ActiveCfg = Release|x86
 		{B0C3746C-D7ED-4DDB-8B64-3AB49C462430}.Release|x86.Build.0 = Release|x86
 		{9D4888F7-6EC2-42DF-A1B3-9779C01CB2F3}.Debug_Windows|Any CPU.ActiveCfg = Debug|Any CPU
@@ -235,8 +236,8 @@ Global
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug_Windows|x86.ActiveCfg = Debug|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug_Windows|x86.Build.0 = Debug|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
-		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug|Win32.ActiveCfg = Debug|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug|Win32.Build.0 = Debug|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Debug|x64.ActiveCfg = Debug|x64
@@ -254,8 +255,8 @@ Global
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release_Windows|x86.Build.0 = Release|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|Any CPU.ActiveCfg = Release|x64
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|Any CPU.Build.0 = Release|x64
-		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|Mixed Platforms.ActiveCfg = Release|x64
-		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|Mixed Platforms.Build.0 = Release|x64
+		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|Win32.ActiveCfg = Release|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|Win32.Build.0 = Release|Win32
 		{05B3BB9B-1582-415F-B72E-5E96C8B6A073}.Release|x64.ActiveCfg = Release|x64
