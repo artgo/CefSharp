@@ -28,6 +28,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private HWND g_hWPFWnd = NULL;
         private bool DoExit = false;
         private const int HC_ACTION = 0;
+        private const string SmallIconsPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
+        private const string SmallIconsFiledName = "TaskbarSmallIcons";
         private HookProc hookProc;
         private IntPtr ExplorerHook;
         private static bool bInitDone = false;
@@ -40,6 +42,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile int _taskbarHeight = 0;
         private volatile TaskbarPosition _taskbarPosition = TaskbarPosition.Bottom;
         private volatile TaskbarIconsSize _taskbarIconsSize = TaskbarIconsSize.Large;
+        private volatile RegistryChangeMonitor _smallIconsRegirstyMonitor;
 
         public int TaskbarHeight { get { return _taskbarHeight; } }
         public TaskbarPosition TaskbarPosition { get { return _taskbarPosition; } }
@@ -113,9 +116,19 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             var taskbarThreadId = User32Dll.GetWindowThreadProcessId(taskberHwnd, out taskbarProcessId);
 
             // Hook resize event catcher
+            // EVENT_OBJECT_DRAGCOMPLETE
             _hWinEventHook = User32Dll.SetWinEventHook((uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND, 
                 (uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND, NULL, WinEventDelegate,
                 taskbarProcessId, taskbarThreadId, (uint)(WinEventHookFlags.WINEVENT_OUTOFCONTEXT | WinEventHookFlags.WINEVENT_SKIPOWNPROCESS));
+
+            _smallIconsRegirstyMonitor = new RegistryChangeMonitor(SmallIconsPath);
+            _smallIconsRegirstyMonitor.Changed += RegistryChangeHandler;
+            _smallIconsRegirstyMonitor.Start();
+        }
+
+        private void RegistryChangeHandler(object sender, RegistryChangeEventArgs e)
+        {
+            CheckIconSize();
         }
 
         private TaskbarPosition GetTaskbarPosition()
@@ -126,11 +139,16 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private TaskbarIconsSize GetTaskbarIconSize()
         {
 			var sz = TaskbarIconsSize.Small;	// old versions use small icons
-			Object RegSmall = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarSmallIcons", -1);
-			if (RegSmall != null)				// since Win7
+			var regSmall = Registry.GetValue(SmallIconsPath, SmallIconsFiledName, -1);
+			
+            if (regSmall != null)				// since Win7
 			{
-				if ((int)RegSmall == 0) sz = TaskbarIconsSize.Large;
+				if ((int) regSmall == IconsSize.LARGE)
+				{
+				    sz = TaskbarIconsSize.Large;
+				}
 			}
+
 			return sz;
         }
 
@@ -159,14 +177,19 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                         _taskbarPosition = newTaskbarPosition;
                     }
 
-                    var newTaskbarIconSize = GetTaskbarIconSize();
-                    if (newTaskbarIconSize != _taskbarIconsSize)
-                    {
-                        _notifyee.TaskbarIconsSizeChanged(newTaskbarIconSize);
-                        _taskbarIconsSize = newTaskbarIconSize;
-                    }
+                    CheckIconSize();
 
                     break;
+            }
+        }
+
+        private void CheckIconSize()
+        {
+            var newTaskbarIconSize = GetTaskbarIconSize();
+            if (newTaskbarIconSize != _taskbarIconsSize)
+            {
+                _notifyee.TaskbarIconsSizeChanged(newTaskbarIconSize);
+                _taskbarIconsSize = newTaskbarIconSize;
             }
         }
 
@@ -178,13 +201,22 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         public void Remove()
         {
+            if (_smallIconsRegirstyMonitor != null)
+            {
+                _smallIconsRegirstyMonitor.Stop();
+                _smallIconsRegirstyMonitor = null;
+            }
+
             System.Drawing.Size newSize;	// calculate correct coords first
             System.Drawing.Point newTopLeft = RebarCoords(out newSize, false);
 
             NativeDll.DetachHooks();					// detach - can cause reposition by Rebar itself
 
             // Unhook resize event catcher
-            User32Dll.UnhookWinEvent(_hWinEventHook);
+            if (_hWinEventHook != IntPtr.Zero)
+            {
+                User32Dll.UnhookWinEvent(_hWinEventHook);
+            }
 
             if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), (IntPtr) 0,
                                         newTopLeft.X, newTopLeft.Y, newSize.Width, newSize.Height,
