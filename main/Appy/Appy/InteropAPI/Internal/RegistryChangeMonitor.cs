@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Microsoft.Win32;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
@@ -16,6 +16,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private readonly string _registryPath;
         private volatile RegistryKey _monitorKey;
         private volatile Thread _monitorThread;
+        private volatile IntPtr _keyPtr = IntPtr.Zero;
 
         public RegistryChangeMonitor(string registryPath)
             : this(registryPath, REG_NOTIFY_CHANGE.LAST_SET)
@@ -69,20 +70,21 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         {
             lock (this)
             {
-                if (_monitorThread == null)
-                {
-                    ThreadStart ts = MonitorThread;
-                    _monitorThread = new Thread(ts) {IsBackground = true};
-                }
-
-                if (!_monitorThread.IsAlive)
+                ThreadStart ts = MonitorThread;
+                _monitorThread = new Thread(ts) {IsBackground = true};
+                _keyPtr = Init();
+                if (_keyPtr != IntPtr.Zero)
                 {
                     _monitorThread.Start();
+                } 
+                else
+                {
+                    throw new Exception("Key not found");
                 }
             }
         }
 
-        public void Stop()
+        public void Stop(bool hard = true)
         {
             lock (this)
             {
@@ -101,11 +103,14 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     return;
                 }
 
-                if (_monitorThread.IsAlive)
+                if (hard)
                 {
-                    _monitorThread.Abort();
+                    if (_monitorThread.IsAlive)
+                    {
+                        _monitorThread.Abort();
+                    }
+                    _monitorThread = null;
                 }
-                _monitorThread = null;
             }
         }
 
@@ -113,74 +118,35 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         {
             try
             {
-                var ptr = IntPtr.Zero;
-
-                lock (this)
-                {
-                    if (_registryPath.StartsWith("HKEY_CLASSES_ROOT"))
-                        _monitorKey = Registry.ClassesRoot.OpenSubKey(_registryPath.Substring(18));
-                    else if (_registryPath.StartsWith("HKCR"))
-                        _monitorKey = Registry.ClassesRoot.OpenSubKey(_registryPath.Substring(5));
-                    else if (_registryPath.StartsWith("HKEY_CURRENT_USER"))
-                        _monitorKey = Registry.CurrentUser.OpenSubKey(_registryPath.Substring(18));
-                    else if (_registryPath.StartsWith("HKCU"))
-                        _monitorKey = Registry.CurrentUser.OpenSubKey(_registryPath.Substring(5));
-                    else if (_registryPath.StartsWith("HKEY_LOCAL_MACHINE"))
-                        _monitorKey = Registry.LocalMachine.OpenSubKey(_registryPath.Substring(19));
-                    else if (_registryPath.StartsWith("HKLM"))
-                        _monitorKey = Registry.LocalMachine.OpenSubKey(_registryPath.Substring(5));
-                    else if (_registryPath.StartsWith("HKEY_USERS"))
-                        _monitorKey = Registry.Users.OpenSubKey(_registryPath.Substring(11));
-                    else if (_registryPath.StartsWith("HKU"))
-                        _monitorKey = Registry.Users.OpenSubKey(_registryPath.Substring(4));
-                    else if (_registryPath.StartsWith("HKEY_CURRENT_CONFIG"))
-                        _monitorKey = Registry.CurrentConfig.OpenSubKey(_registryPath.Substring(20));
-                    else if (_registryPath.StartsWith("HKCC"))
-                        _monitorKey = Registry.CurrentConfig.OpenSubKey(_registryPath.Substring(5));
-
-                    // Fetch the native handle
-                    if (_monitorKey != null)
-                    {
-                        object hkey = typeof (RegistryKey).InvokeMember(
-                            "hkey",
-                            BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic,
-                            null,
-                            _monitorKey,
-                            null
-                            );
-
-                        ptr = (IntPtr) typeof (SafeHandle).InvokeMember(
-                            "handle",
-                            BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic,
-                            null,
-                            hkey,
-                            null);
-                    }
-                }
-
-                if (ptr != IntPtr.Zero)
+                if (_keyPtr != IntPtr.Zero)
                 {
                     while (true)
                     {
-                        // If _monitorThread is null that probably means Dispose is being called. Don't monitor anymore.
-                        if ((_monitorThread == null) || (_monitorKey == null))
+                        lock (this)
                         {
-                            break;
+                            // If _monitorThread is null that probably means Dispose is being called. Don't monitor anymore.
+                            if ((_monitorThread == null) || (_monitorKey == null) || (_keyPtr == IntPtr.Zero))
+                            {
+                                break;
+                            }
                         }
 
                         // RegNotifyChangeKeyValue blocks until a change occurs.
-                        var result = Advapi32Dll.RegNotifyChangeKeyValue(ptr, true, _filter, IntPtr.Zero, false);
+                        var result = Advapi32Dll.RegNotifyChangeKeyValue(_keyPtr, true, _filter, IntPtr.Zero, false);
 
-                        if ((_monitorThread == null) || (_monitorKey == null))
+                        lock (this)
                         {
-                            break;
+                            if ((_monitorThread == null) || (_monitorKey == null) || (_keyPtr == IntPtr.Zero))
+                            {
+                                break;
+                            }
                         }
 
                         if (result == 0)
                         {
                             if (Changed != null)
                             {
-                                var e = new RegistryChangeEventArgs(this);
+                                var e = new RegistryChangeEventArgs(this, null);
                                 Changed(this, e);
 
                                 if (e.Stop)
@@ -204,7 +170,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                                     new object[] {new StackTrace(true)}
                                     );
 
-                                var e = new RegistryChangeEventArgs(this) {Exception = ex};
+                                var e = new RegistryChangeEventArgs(this, ex);
                                 Error(this, e);
                             }
 
@@ -217,14 +183,59 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 if (Error != null)
                 {
-                    var e = new RegistryChangeEventArgs(this) {Exception = ex};
+                    var e = new RegistryChangeEventArgs(this, ex);
                     Error(this, e);
                 }
             }
             finally
             {
-                Stop();
+                Stop(false);
             }
+        }
+
+        private IntPtr Init()
+        {
+            if (_registryPath.StartsWith("HKEY_CLASSES_ROOT"))
+                _monitorKey = Registry.ClassesRoot.OpenSubKey(_registryPath.Substring(18));
+            else if (_registryPath.StartsWith("HKCR"))
+                _monitorKey = Registry.ClassesRoot.OpenSubKey(_registryPath.Substring(5));
+            else if (_registryPath.StartsWith("HKEY_CURRENT_USER"))
+                _monitorKey = Registry.CurrentUser.OpenSubKey(_registryPath.Substring(18));
+            else if (_registryPath.StartsWith("HKCU"))
+                _monitorKey = Registry.CurrentUser.OpenSubKey(_registryPath.Substring(5));
+            else if (_registryPath.StartsWith("HKEY_LOCAL_MACHINE"))
+                _monitorKey = Registry.LocalMachine.OpenSubKey(_registryPath.Substring(19));
+            else if (_registryPath.StartsWith("HKLM"))
+                _monitorKey = Registry.LocalMachine.OpenSubKey(_registryPath.Substring(5));
+            else if (_registryPath.StartsWith("HKEY_USERS"))
+                _monitorKey = Registry.Users.OpenSubKey(_registryPath.Substring(11));
+            else if (_registryPath.StartsWith("HKU"))
+                _monitorKey = Registry.Users.OpenSubKey(_registryPath.Substring(4));
+            else if (_registryPath.StartsWith("HKEY_CURRENT_CONFIG"))
+                _monitorKey = Registry.CurrentConfig.OpenSubKey(_registryPath.Substring(20));
+            else if (_registryPath.StartsWith("HKCC"))
+                _monitorKey = Registry.CurrentConfig.OpenSubKey(_registryPath.Substring(5));
+
+            // Fetch the native handle
+            if (_monitorKey != null)
+            {
+                object hkey = typeof (RegistryKey).InvokeMember(
+                    "hkey",
+                    BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic,
+                    null,
+                    _monitorKey,
+                    null
+                    );
+
+                _keyPtr = (IntPtr) typeof (SafeHandle).InvokeMember(
+                    "handle",
+                    BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic,
+                    null,
+                    hkey,
+                    null);
+            }
+
+            return _keyPtr;
         }
     }
 }
