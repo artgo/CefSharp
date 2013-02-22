@@ -88,15 +88,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         {
             lock (this)
             {
-                Changed = null;
-                Error = null;
-
-                // The "Close()" will trigger RegNotifyChangeKeyValue if it is still listening
-                if (_monitorKey != null)
-                {
-                    _monitorKey.Close();
-                    _monitorKey = null;
-                }
+                Cleanup();
 
                 if (_monitorThread == null)
                 {
@@ -112,6 +104,18 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     _monitorThread = null;
                 }
             }
+        }
+
+        private void Cleanup()
+        {
+            // The "Close()" will trigger RegNotifyChangeKeyValue if it is still listening
+            if (_monitorKey != null)
+            {
+                _monitorKey.Close();
+                _monitorKey = null;
+            }
+
+            _keyPtr = IntPtr.Zero;
         }
 
         private void MonitorThread()
@@ -189,7 +193,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
             finally
             {
-                Stop(false);
+                Cleanup();
             }
         }
 
