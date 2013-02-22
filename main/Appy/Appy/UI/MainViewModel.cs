@@ -149,6 +149,62 @@ namespace AppDirect.WindowsClient.UI
             SyncAppsWithApi();
         }
         
+        public void SyncAppsWithApi()
+        {
+            SyncMyApplications();
+            GetSuggestedApplicationsWithApiCall();
+        }
+
+        public bool Login(string username, string password)
+        {
+            if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
+            {
+                ServiceLocator.LocalStorage.SetCredentials(username, password);
+
+                SyncAppsWithApi();
+
+                CloudSyncVisibility = Visibility.Hidden;
+                LogOutVisibility = Visibility.Visible;
+                return true;
+            }
+
+            return false;
+        }
+
+        public void Logout()
+        {
+            ServiceLocator.CachedAppDirectApi.UnAuthenticate();
+            ServiceLocator.LocalStorage.ClearLoginCredentials();
+
+            SyncAppsWithApi();
+        }
+
+        public void Install(Application application)
+        {
+            if (application.IsLocalApp)
+            {
+                AddToMyApps(application);
+                RemoveFromSuggestedApps(application);
+            }
+            else
+            {
+                System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
+            }
+        }
+
+        public void Uninstall(Application application)
+        {
+            if (application.IsLocalApp)
+            {
+                RemoveFromMyApps(application);
+                AddToSuggestedApps(application);
+            }
+            else
+            {
+                MessageBox.Show(application.Name + " can not be removed.");
+            }
+        }
+
         private void InitializeAppsLists()
         {
             if (!ServiceLocator.LocalStorage.InstalledLocalApps.Contains(LocalApplications.AppStoreApp))
@@ -166,7 +222,7 @@ namespace AppDirect.WindowsClient.UI
             SuggestedApplications = new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps);
         }
 
-        public void SyncMyApplications()
+        private void SyncMyApplications()
         {
             try
             {
@@ -222,19 +278,13 @@ namespace AppDirect.WindowsClient.UI
             ServiceLocator.LocalStorage.ClearLoginCredentials();
             return false;
         }
-        
-        public void SyncAppsWithApi()
-        {
-            SyncMyApplications();
-            GetSuggestedApplicationsWithApiCall();
-        }
 
-        public void GetSuggestedApplicationsWithApiCall()
+        private void GetSuggestedApplicationsWithApiCall()
         {
             try
             {
                 var apiSuggestedApps = ServiceLocator.CachedAppDirectApi.SuggestedApps.Except(ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
-                
+
                 var newApps = apiSuggestedApps.Except(ServiceLocator.LocalStorage.LastSuggestedApps).ToList();
                 var expiredApps = ServiceLocator.LocalStorage.LastSuggestedApps.Where(a => !a.IsLocalApp).Except(apiSuggestedApps).ToList();
 
@@ -255,48 +305,6 @@ namespace AppDirect.WindowsClient.UI
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
-            }
-        }
-
-        public bool Login(string username, string password)
-        {
-            if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
-            {
-                ServiceLocator.LocalStorage.SetCredentials(username, password);
-
-                SyncAppsWithApi();
-
-                CloudSyncVisibility = Visibility.Hidden;
-                LogOutVisibility = Visibility.Visible;
-                return true;
-            }
-
-            return false;
-        }
-
-        public void Uninstall(Application application)
-        {
-            if (application.IsLocalApp)
-            {
-                RemoveFromMyApps(application);
-                AddToSuggestedApps(application);
-            }
-            else
-            {
-                MessageBox.Show(application.Name + " can not be removed.");
-            }
-        }
-
-        public void Install(Application application)
-        {
-            if (application.IsLocalApp)
-            {
-                AddToMyApps(application);
-                RemoveFromSuggestedApps(application);
-            }
-            else
-            {
-                System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + application.Id);
             }
         }
 
@@ -405,14 +413,6 @@ namespace AppDirect.WindowsClient.UI
                 System.Windows.Application.Current.Dispatcher.Invoke(
                     new Action(() => SuggestedApplications.Remove(application)));
             }
-        }
-
-        public void Logout()
-        {
-            ServiceLocator.CachedAppDirectApi.UnAuthenticate();
-            ServiceLocator.LocalStorage.ClearLoginCredentials();
-
-            SyncAppsWithApi();
         }
 
         protected void NotifyPropertyChanged(string propertyName)
