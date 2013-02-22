@@ -48,9 +48,10 @@ done:
   IfErrors 0 Is64Bit
   
   File ${COPY32}
-  GOTO ENDCOPY
+  Goto ENDCOPY
   
   Is64Bit:
   File ${COPY64}
-  GOTO ENDCOPY
+
+ENDCOPY:    
 !macroend
