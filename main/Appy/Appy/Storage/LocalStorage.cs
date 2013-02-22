@@ -25,6 +25,8 @@ namespace AppDirect.WindowsClient.Storage
         public List<Application> LastSuggestedApps { get; set; }
         public List<Application> PinnedApps { get; set;}
 
+        public object Locker = new object();
+
         public bool UpdateDownloaded { get; set; }  
 
         [XmlIgnore]

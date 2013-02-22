@@ -241,7 +241,6 @@
     <None Include="apps_list.xss">
       <DependentUpon>apps_list.xsd</DependentUpon>
     </None>
-    <None Include="ClassDiagram1.cd" />
     <None Include="myapps.xsc">
       <DependentUpon>myapps.xsd</DependentUpon>
     </None>

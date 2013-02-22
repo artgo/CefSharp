@@ -28,11 +28,7 @@ namespace AppDirect.WindowsClient.Tests
                 new Application {IsLocalApp = false, Id = "AppDirectApplicationId2", Name = "FakeApp2"},
                 new Application {IsLocalApp = false, Id = "AppDirectApplicationId3", Name = "FakeApp3"}
             };
-
-        //private volatile LocalStorage _localStorage;
-        //private volatile IAppDirectApi _appDirectApiMock;
-        //private volatile ICachedAppDirectApi _cachedAppDirectApiMock;
-
+        
         [TestFixtureSetUp]
         public void SetUpForTests()
         {
@@ -73,7 +69,6 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         #endregion
-
         #region Install Test
 
         [Test]
@@ -210,7 +205,6 @@ namespace AppDirect.WindowsClient.Tests
         }
 
         #endregion
-
         #region Log Out Tests
 
         [Test]
@@ -236,12 +230,40 @@ namespace AppDirect.WindowsClient.Tests
 
         #endregion
 
+        #region SyncAppsWithApi Tests
+
+        [Test]
+        public void SyncAppsWithApiAddsMissingApiApps()
+        {
+            SetMyAppsAndLogin(_myApplications);
+            var apiApp = _mainViewModel.MyApplications.First(a => !a.IsLocalApp);
+            _mainViewModel.MyApplications.Remove(apiApp);
+            _mainViewModel.SyncAppsWithApi();
+
+            Assert.IsTrue(_mainViewModel.MyApplications.Contains(apiApp));
+        }
+
+        [Test]
+        public void SyncAppsWithApiRemovesExpiredApiApps()
+        {
+            SetMyAppsAndLogin(_myApplications);
+
+            var expiredApp = _myApplications[0];
+            _myApplications.Remove(expiredApp);
+
+            SetMyAppsAndLogin(_myApplications);
+
+            _mainViewModel.SyncAppsWithApi();
+
+            Assert.IsFalse(_mainViewModel.MyApplications.Contains(expiredApp));
+        }
+
+        #endregion
+        
         private void SetMyAppsAndLogin(List<Application> myApps)
         {
             InitializeTests();
             ServiceLocator.CachedAppDirectApi.MyApps.Returns(myApps);
-
-            _mainViewModel.MyApplications.Clear();
             _mainViewModel.Login(Username, Password);
         }
 
