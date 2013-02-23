@@ -92,5 +92,34 @@ namespace AppDirect.WindowsClient.API
             var clickedApp = ((MenuItem) sender).DataContext as Application;
             return clickedApp;
         }
+
+        /// <summary>
+        /// MUST BE WRAPPED IN TRY-CATCH Throws exceptions for network errors or API Errors
+        /// </summary>
+        /// <returns></returns>
+        public static bool Authenticate()
+        {
+            var localStorage = ServiceLocator.LocalStorage;
+
+            lock (localStorage.Locker)
+            {
+                if (localStorage.HasCredentials)
+                {
+                    if (ServiceLocator.CachedAppDirectApi.IsAuthenticated)
+                    {
+                        return true;
+                    }
+                    if (ServiceLocator.CachedAppDirectApi.Authenticate(localStorage.LoginInfo.Username,
+                                                                       localStorage.LoginInfo.Password))
+                    {
+                        return true;
+                    }
+
+                    localStorage.ClearLoginCredentials();
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Properties;
+using AppDirect.WindowsClient.Storage;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -142,12 +143,6 @@ namespace AppDirect.WindowsClient.UI
         public ObservableCollection<Application> SuggestedApplications { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public MainViewModel()
-        {
-            InitializeAppsLists();
-            SyncAppsWithApi();
-        }
         
         public void SyncAppsWithApi()
         {
@@ -159,7 +154,10 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
             {
-                ServiceLocator.LocalStorage.SetCredentials(username, password);
+                lock (ServiceLocator.LocalStorage.Locker)
+                {
+                    ServiceLocator.LocalStorage.SetCredentials(username, password);
+                }
 
                 SyncAppsWithApi();
 
@@ -173,8 +171,11 @@ namespace AppDirect.WindowsClient.UI
 
         public void Logout()
         {
-            ServiceLocator.CachedAppDirectApi.UnAuthenticate();
-            ServiceLocator.LocalStorage.ClearLoginCredentials();
+            lock (ServiceLocator.LocalStorage.Locker)
+            {
+                ServiceLocator.CachedAppDirectApi.UnAuthenticate();
+                ServiceLocator.LocalStorage.ClearLoginCredentials();
+            }
 
             SyncAppsWithApi();
         }
@@ -205,7 +206,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void InitializeAppsLists()
+        public void InitializeAppsLists()
         {
             lock (ServiceLocator.LocalStorage.Locker)
             {
@@ -239,7 +240,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 var apiApps = new List<Application>();
 
-                if (AuthenticateSession())
+                if (Helper.Authenticate())
                 {
                     apiApps = ServiceLocator.CachedAppDirectApi.MyApps.ToList();
                 }
@@ -268,33 +269,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 MessageBox.Show(e.Message);
             }
-        }
-
-        /// <summary>
-        /// MUST BE WRAPPED IN TRY-CATCH Throws exceptions for network errors or API Errors
-        /// </summary>
-        /// <returns></returns>
-        private bool AuthenticateSession()
-        {
-            lock (ServiceLocator.LocalStorage.Locker)
-            {
-                if (ServiceLocator.LocalStorage.HasCredentials)
-                {
-                    if (ServiceLocator.CachedAppDirectApi.IsAuthenticated)
-                    {
-                        return true;
-                    }
-                    if (ServiceLocator.CachedAppDirectApi.Authenticate(ServiceLocator.LocalStorage.LoginInfo.Username,
-                                                                       ServiceLocator.LocalStorage.LoginInfo.Password))
-                    {
-                        return true;
-                    }
-                }
-
-                ServiceLocator.LocalStorage.ClearLoginCredentials();
-            }
-
-            return false;
         }
 
         private void GetSuggestedApplicationsWithApiCall()

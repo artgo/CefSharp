@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Xml;
 using System.Xml.Serialization;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
@@ -26,7 +27,7 @@ namespace AppDirect.WindowsClient.Storage
         public List<Application> PinnedApps { get; set;}
 
         public object Locker = new object();
-
+   
         public bool UpdateDownloaded { get; set; }  
 
         [XmlIgnore]
@@ -72,48 +73,48 @@ namespace AppDirect.WindowsClient.Storage
             LastSuggestedApps = new List<Application>();
             PinnedApps = new List<Application>();
         }
-        
-        public LocalStorage(bool loadFromLocalStorage) 
+
+        public void LoadStorage()
         {
-            if (loadFromLocalStorage)
+            var mySerializer = new XmlSerializer(typeof (LocalStorage));
+
+            lock (FileInfo)
             {
-                var mySerializer = new XmlSerializer(typeof(LocalStorage));
-
-                lock (FileInfo)
+                var localStorage = new LocalStorage();
+                // If the file exists, open it.
+                if (FileInfo.Exists)
                 {
-                    var localStorage = new LocalStorage();
-                    // If the file exists, open it.
-                    if (FileInfo.Exists)
+                    try
                     {
-                        try
+                        using (var fileStream = FileInfo.OpenRead())
                         {
-                            using (var fileStream = FileInfo.OpenRead())
-                            {
-                                // Create a new instance of the LocalStorage by deserializing the file.
-                                localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
+                            // Create a new instance of the LocalStorage by deserializing the file.
+                            localStorage = (LocalStorage) mySerializer.Deserialize(fileStream);
 
-                                if (!localStorage.HasCredentials)
-                                {
-                                    localStorage.ClearLoginCredentials();
-                                }
+                            if (!localStorage.HasCredentials)
+                            {
+                                localStorage.ClearLoginCredentials();
                             }
                         }
-                        catch (Exception)
-                        {
-                        }
                     }
-
-                    LoginInfo = localStorage.LoginInfo;
-                    InstalledLocalApps = localStorage.InstalledLocalApps ?? new List<Application>();
-                    InstalledAppDirectApps = localStorage.InstalledAppDirectApps ?? new List<Application>();
-                    LastSuggestedApps = localStorage.LastSuggestedApps ?? new List<Application>();
-                    PinnedApps = localStorage.PinnedApps ?? new List<Application>();
-                    UpdateDownloaded = localStorage.UpdateDownloaded;
+                    catch (InvalidOperationException)
+                    {
+                    }
+                    catch (XmlException)
+                    {
+                    }
                 }
-            }   
-        }     
 
-       public void SaveAppSettings()
+                LoginInfo = localStorage.LoginInfo;
+                InstalledLocalApps = localStorage.InstalledLocalApps ?? new List<Application>();
+                InstalledAppDirectApps = localStorage.InstalledAppDirectApps ?? new List<Application>();
+                LastSuggestedApps = localStorage.LastSuggestedApps ?? new List<Application>();
+                PinnedApps = localStorage.PinnedApps ?? new List<Application>();
+                UpdateDownloaded = localStorage.UpdateDownloaded;
+            }
+        }
+
+        public void SaveAppSettings()
         {
             //Create the directory if it does not exist
             if (FileInfo.Directory != null)

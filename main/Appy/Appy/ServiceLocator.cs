@@ -43,7 +43,7 @@ namespace AppDirect.WindowsClient
         {
             Kernel.Bind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Bind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
-            Kernel.Bind<LocalStorage>().ToConstant(new LocalStorage(true));
+            Kernel.Bind<LocalStorage>().ToConstant(new LocalStorage());
             Kernel.Bind<BrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator());
             Kernel.Bind<IpcCommunicator>().ToConstant(new IpcCommunicator()); 
             Kernel.Bind<Updater>().ToConstant(new Updater());

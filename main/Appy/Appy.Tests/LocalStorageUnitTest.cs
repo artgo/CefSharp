@@ -33,7 +33,9 @@ namespace AppDirect.WindowsClient.Tests
                 streamWriter.Write("this is not valid xml");
             }
 
-            localStorage = new LocalStorage(true);
+            localStorage.LoadStorage();
+
+            Assert.IsNotNull(localStorage.InstalledLocalApps);
         }
 
         [Test]
@@ -45,7 +47,7 @@ namespace AppDirect.WindowsClient.Tests
             File.Refresh();
             Assert.IsTrue(File.Exists);
 
-            localStorage = new LocalStorage(true);
+            localStorage.LoadStorage();
             
             Assert.AreEqual(LocalApplications.LocalApplicationsList, localStorage.InstalledLocalApps);
         }
@@ -111,7 +113,7 @@ namespace AppDirect.WindowsClient.Tests
             File.Refresh();
             Assert.IsTrue(File.Exists);
 
-            localStorage = new LocalStorage(true);
+            localStorage.LoadStorage();
         }
     }
 }

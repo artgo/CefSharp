@@ -1,10 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Threading;
 using System.Windows;
-using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.InteropAPI;
-using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
 
 namespace AppDirect.WindowsClient
@@ -14,8 +10,6 @@ namespace AppDirect.WindowsClient
     /// </summary>
     public partial class App : System.Windows.Application
     {
-        private MainWindow mainWindow;
-
         protected override void OnStartup(StartupEventArgs e)
         {
             try
@@ -28,8 +22,11 @@ namespace AppDirect.WindowsClient
             }
 
             ServiceLocator.IpcCommunicator.Start();
+            ServiceLocator.LocalStorage.LoadStorage();
 
             var mainViewModel = new MainViewModel();
+            mainViewModel.InitializeAppsLists();
+            mainViewModel.SyncAppsWithApi();
             var mainWindow = new MainWindow(mainViewModel);
             UpdateDownloader.Start(mainWindow);
             AppSessionRefresher.Start(mainWindow);
