@@ -61,7 +61,7 @@ Section "Start Menu Shortcuts"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "${UNINSTALLEXEPATH}" "" "${UNINSTALLEXEPATH}" 0
   CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
   CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
-  CreateShortCut "$SMPROGRAMS\Startup\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
+  CreateShortCut "$SMSTARTUP\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
   
 SectionEnd
 

@@ -50,7 +50,7 @@ Section "Uninstall"
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\${APPNAME}\*.*"
   Delete "$SMPROGRAMS\${APPNAME}.lnk"
-  Delete "$SMPROGRAMS\Startup\${APPNAME}.lnk"
+  Delete "$SMSTARTUP\${APPNAME}.lnk"
 
   ; Remove directories used
   
