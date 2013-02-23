@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Xml;
 using System.Xml.Serialization;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
@@ -15,17 +16,18 @@ namespace AppDirect.WindowsClient.Storage
     ///</summary>
     public sealed class LocalStorage
     {
-        private List<string> _hiddenApps = new List<string>();
         private const string FileName = @"\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
-        private static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        public static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
-        public List<Application> InstalledLocalApps{ get; set; }
+        public List<Application> InstalledLocalApps { get; set; }
         public List<Application> InstalledAppDirectApps { get; set; }
         public List<Application> LastSuggestedApps { get; set; }
         public List<Application> PinnedApps { get; set;}
 
+        public object Locker = new object();
+   
         public bool UpdateDownloaded { get; set; }  
 
         [XmlIgnore]
@@ -48,11 +50,7 @@ namespace AppDirect.WindowsClient.Storage
            
         }
 
-        public List<string> HiddenApps
-        {
-            get { return _hiddenApps; }
-            set { _hiddenApps = value; }
-        }
+        public List<string> HiddenApps { get; set; }
 
         public LoginObject LoginInfo { get; set; }
 
@@ -68,34 +66,30 @@ namespace AppDirect.WindowsClient.Storage
             }                               
         }
 
-        public LocalStorage(){}
-
-         
-        public LocalStorage(bool loadFromLocalStorage) 
+        public LocalStorage()
         {
-            if (loadFromLocalStorage)
+            InstalledLocalApps = new List<Application>();
+            InstalledAppDirectApps = new List<Application>();
+            LastSuggestedApps = new List<Application>();
+            PinnedApps = new List<Application>();
+        }
+
+        public void LoadStorage()
+        {
+            var mySerializer = new XmlSerializer(typeof (LocalStorage));
+
+            lock (FileInfo)
             {
-                var mySerializer = new XmlSerializer(typeof(LocalStorage));
-
-                lock (FileInfo)
+                var localStorage = new LocalStorage();
+                // If the file exists, open it.
+                if (FileInfo.Exists)
                 {
-                    // If the file exists, open it.
-                    if (FileInfo.Exists)
+                    try
                     {
-
                         using (var fileStream = FileInfo.OpenRead())
                         {
                             // Create a new instance of the LocalStorage by deserializing the file.
-                            var localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
-
-                            LoginInfo = localStorage.LoginInfo;
-                            InstalledLocalApps = localStorage.InstalledLocalApps;
-                            InstalledAppDirectApps = localStorage.InstalledAppDirectApps;
-                            LastSuggestedApps = localStorage.LastSuggestedApps;
-                            UpdateDownloaded = localStorage.UpdateDownloaded;
-
-                            HiddenApps = localStorage.HiddenApps;
-                            PinnedApps = localStorage.PinnedApps; 
+                            localStorage = (LocalStorage) mySerializer.Deserialize(fileStream);
 
                             if (!localStorage.HasCredentials)
                             {
@@ -103,11 +97,24 @@ namespace AppDirect.WindowsClient.Storage
                             }
                         }
                     }
+                    catch (InvalidOperationException)
+                    {
+                    }
+                    catch (XmlException)
+                    {
+                    }
                 }
-            }   
-        }     
 
-       public void SaveAppSettings()
+                LoginInfo = localStorage.LoginInfo;
+                InstalledLocalApps = localStorage.InstalledLocalApps ?? new List<Application>();
+                InstalledAppDirectApps = localStorage.InstalledAppDirectApps ?? new List<Application>();
+                LastSuggestedApps = localStorage.LastSuggestedApps ?? new List<Application>();
+                PinnedApps = localStorage.PinnedApps ?? new List<Application>();
+                UpdateDownloaded = localStorage.UpdateDownloaded;
+            }
+        }
+
+        public void SaveAppSettings()
         {
             //Create the directory if it does not exist
             if (FileInfo.Directory != null)
@@ -175,6 +182,15 @@ namespace AppDirect.WindowsClient.Storage
         public void ClearLoginCredentials()
         {
             LoginInfo = null;
+        }
+
+        public void ClearAllStoredData()
+        {
+            LoginInfo = null;
+            InstalledLocalApps = new List<Application>();
+            InstalledAppDirectApps = new List<Application>();
+            LastSuggestedApps = new List<Application>();
+            PinnedApps = new List<Application>();
         }
 
         public void SetCredentials(string username, string password)

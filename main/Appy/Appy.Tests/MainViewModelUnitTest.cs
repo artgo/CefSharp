@@ -6,12 +6,12 @@ using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using NSubstitute;
 
 namespace AppDirect.WindowsClient.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class MainViewModelUnitTest
     {
         private volatile MainViewModel _mainViewModel;
@@ -21,222 +21,267 @@ namespace AppDirect.WindowsClient.Tests
         private const string Username = TestData.TestUsername;
         private const string Password = TestData.TestPassword;
         private const string BadPassword = "BadPassword";
-        private readonly List<Application> _myApplications = new List<Application>() { new Application { IsLocalApp = false, Id = "AppDirectApplicationId", Name = "FakeApp" } };
 
-        private volatile LocalStorage _localStorage;
-        private volatile IAppDirectApi _appDirectApiMock;
-        private volatile ICachedAppDirectApi _cachedAppDirectApiMock;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            lock (this)
+        private readonly List<Application> _myApplications = new List<Application>()
             {
+                new Application {IsLocalApp = false, Id = "AppDirectApplicationId", Name = "FakeApp"},
+                new Application {IsLocalApp = false, Id = "AppDirectApplicationId2", Name = "FakeApp2"},
+                new Application {IsLocalApp = false, Id = "AppDirectApplicationId3", Name = "FakeApp3"}
+            };
+        
+        [TestFixtureSetUp]
+        public void SetUpForTests()
+        {
+            var appDirectApiMock = Substitute.For<IAppDirectApi>();
+            var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
 
-                _appDirectApiMock = Substitute.For<IAppDirectApi>();
-                _cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
+            var localStorage = new LocalStorage();
 
-                _localStorage = new LocalStorage();
+            cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
 
-                _cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
+            var kernel = ServiceLocator.Kernel;
+            kernel.Bind<IAppDirectApi>().ToConstant(appDirectApiMock);
+            kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
+            kernel.Bind<LocalStorage>().ToConstant(localStorage);
 
-                var kernel = ServiceLocator.Kernel;
-                kernel.Bind<IAppDirectApi>().ToConstant(_appDirectApiMock);
-                kernel.Bind<ICachedAppDirectApi>().ToConstant(_cachedAppDirectApiMock);
-                kernel.Bind<LocalStorage>().ToConstant(_localStorage);
-
-                _mainViewModel = new MainViewModel();
-            }
         }
 
-        [TestMethod]
-        public void SuggestedApplicationsCollectionIsNotNull()
+        private void InitializeTests()
         {
-            lock (this)
-            {
-                Assert.IsTrue(_mainViewModel.SuggestedApplications.Count > 0);
-            }
+            ServiceLocator.LocalStorage.ClearAllStoredData();
+            _mainViewModel = new MainViewModel();
+        }
+        
+        #region Constructor Tests
+
+        [Test]
+        public void SuggestedApplicationsContainsAllLocalApps()
+        {
+            InitializeTests();
+            Assert.AreEqual(LocalApplications.LocalApplicationsList, _mainViewModel.SuggestedApplications);
         }
 
-        [TestMethod]
-        public void MyApplicationsCollectionIsPopulated()
+        [Test]
+        public void MyApplicationsCollectionContainsAppStoreApp()
         {
-            lock (this)
-            {
-                Assert.IsNotNull(_mainViewModel.MyApplications);
-                _cachedAppDirectApiMock.MyApps.Received();
-            }
+            InitializeTests();
+            Assert.AreEqual(LocalApplications.AppStoreApp, _mainViewModel.MyApplications[0]);
         }
 
-        [TestMethod]
+        #endregion
+        #region Install Test
+
+        [Test]
+        public void InstallAppMarksAppPinned()
+        {
+            var app = CallInstallApp();
+            Assert.IsTrue(app.PinnedToTaskbar);
+        }
+
+        [Test]
+        public void InstallApplicationAddsAppToMyApps()
+        {
+            var app = CallInstallApp();
+            Assert.IsTrue(_mainViewModel.MyApplications.Contains(app));
+        }
+
+        [Test]
+        public void InstallApplicationAddsAppToStoredInstalledList()
+        {
+            var app = CallInstallApp();
+            Assert.IsTrue(ServiceLocator.LocalStorage.InstalledLocalApps.Contains(app));
+        }
+
+        [Test]
+        public void InstallApplicationRemovesAppFromSuggestedApps()
+        {
+            var app = CallInstallApp();
+            Assert.IsFalse(_mainViewModel.SuggestedApplications.Contains(app));
+        }
+
+        [Test]
+        public void InstallApplicationRemovesAppFromStoredSuggestedApps()
+        {
+            var app = CallInstallApp();
+            Assert.IsFalse(ServiceLocator.LocalStorage.LastSuggestedApps.Contains(app));
+        }
+
+        #endregion
+        #region Uninstall Tests
+
+        [Test]
+        public void UninstallLocalApplicationAddsAppToSuggestedApplications()
+        {
+            var app = CallUninstallApp();
+            Assert.IsTrue(_mainViewModel.SuggestedApplications.Contains(app));
+        }
+
+        [Test]
+        public void UninstallLocalApplicationAddsAppToStoredSuggestedApplications()
+        {
+            var app = CallUninstallApp();
+            Assert.IsTrue(ServiceLocator.LocalStorage.LastSuggestedApps.Contains(app));
+        }
+
+        [Test]
+        public void UninstallLocalApplicationRemovesAppFromMyApplications()
+        {
+            var app = CallUninstallApp();
+            Assert.IsFalse(_mainViewModel.MyApplications.Contains(app));
+        }
+
+        [Test]
+        public void UninstallLocalApplicationRemovesAppFromStoredInstalledApplications()
+        {
+            var app = CallUninstallApp();
+            Assert.IsFalse(ServiceLocator.LocalStorage.InstalledLocalApps.Contains(app));
+        }
+
+        #endregion
+        #region Login Tests
+
+        [Test]
         public void LoginReturnsTrueForValidLogin()
         {
-            lock (this)
-            {
-                Assert.IsTrue(_mainViewModel.Login(Username, Password));
-                _cachedAppDirectApiMock.Received().Authenticate(Username, Password);
-            }
+            InitializeTests();
+            Assert.IsTrue(_mainViewModel.Login(Username, Password));
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
         }
 
-        [TestMethod]
+        [Test]
         public void LoginReturnsFalseForInvalidLogin()
         {
-            lock (this)
-            {
-                Assert.IsFalse(_mainViewModel.Login(Username, BadPassword));
-                _cachedAppDirectApiMock.Received().Authenticate(Username, BadPassword);
-            }
+            InitializeTests();
+            Assert.IsFalse(_mainViewModel.Login(Username, BadPassword));
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, BadPassword);
         }
 
-        [TestMethod]
+        [Test]
         public void ValidUsernameIsStored()
         {
-            lock (this)
-            {
-                _mainViewModel.Login(Username, Password);
-                Assert.AreEqual(Username, ServiceLocator.LocalStorage.LoginInfo.Username);
+            InitializeTests();
+            _mainViewModel.Login(Username, Password);
+            Assert.AreEqual(Username, ServiceLocator.LocalStorage.LoginInfo.Username);
 
-                _cachedAppDirectApiMock.Received().Authenticate(Username, Password);
-            }
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
         }
 
-        [TestMethod]
+        [Test]
         public void ValidPasswordIsStored()
         {
-            lock (this)
-            {
-                _mainViewModel.Login(Username, Password);
-                Assert.AreEqual(Password, ServiceLocator.LocalStorage.LoginInfo.Password);
+            InitializeTests();
+            _mainViewModel.Login(Username, Password);
+            Assert.AreEqual(Password, ServiceLocator.LocalStorage.LoginInfo.Password);
 
-                _cachedAppDirectApiMock.Received().Authenticate(Username, Password);
-            }
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
         }
 
-        [TestMethod]
+        [Test]
         public void PasswordSetDateIsStored()
         {
-            lock (this)
-            {
-                _mainViewModel.Login(Username, Password);
-                Assert.AreEqual(DateTime.Now.Date, ServiceLocator.LocalStorage.LoginInfo.PasswordSetDate.Date);
+            InitializeTests();
+            _mainViewModel.Login(Username, Password);
+            Assert.AreEqual(DateTime.Now.Date, ServiceLocator.LocalStorage.LoginInfo.PasswordSetDate.Date);
 
-                _cachedAppDirectApiMock.Received().Authenticate(Username, Password);
-            }
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
         }
 
-
-        [TestMethod]
+        [Test]
         public void IncorrectLoginIsNotStored()
         {
-            lock (this)
-            {
-                _mainViewModel.Login(Username, BadPassword);
-                Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
+            InitializeTests();
+            _mainViewModel.Login(Username, BadPassword);
+            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
 
-                _cachedAppDirectApiMock.Received().Authenticate(Username, BadPassword);
-            }
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, BadPassword);
         }
 
-        [TestMethod]
-        public void LogOutRemovesLoginInfo()
-        {
-            lock (this)
-            {
-                _mainViewModel.Login(Username, Password);
-                _mainViewModel.Logout();
-
-                Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
-                _cachedAppDirectApiMock.ReceivedWithAnyArgs().UnAuthenticate();
-            }
-        }
-
-        [TestMethod]
-        public void InstallApplicationLocalIncrementsMyApplication()
-        {
-            lock (this)
-            {
-                _mainViewModel.MyApplications.Clear();
-                var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
-                _mainViewModel.Install(app);
-
-                Assert.IsTrue(ServiceLocator.LocalStorage.InstalledLocalApps.Contains(app));
-            }
-        }
-
-        [TestMethod]
+        [Test]
         public void MyAppsContainsCachedAppDirectMyApps()
         {
-            lock (this)
-            {
-                SetMyAppsAndLogin(_myApplications);
-                Assert.IsTrue(ServiceLocator.LocalStorage.InstalledAppDirectApps.Contains(_myApplications[0]));
-            }
+            InitializeTests();
+            SetMyAppsAndLogin(_myApplications);
+            Assert.IsTrue(ServiceLocator.LocalStorage.InstalledAppDirectApps.Contains(_myApplications[0]));
         }
 
-        [TestMethod]
-        public void LocalStorageContainsCachedAppDirectMyApps()
+        #endregion
+        #region Log Out Tests
+
+        [Test]
+        public void LogOutRemovesLoginInfo()
         {
-            lock (this)
-            {
-                SetMyAppsAndLogin(_myApplications);
-                Assert.IsTrue(_localStorage.InstalledAppDirectApps.Contains(_myApplications[0]));
-            }
+            InitializeTests();
+            _mainViewModel.Login(Username, Password);
+            _mainViewModel.Logout();
+
+            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
+            ServiceLocator.CachedAppDirectApi.ReceivedWithAnyArgs().UnAuthenticate();
         }
 
-        [TestMethod]
-        public void MyAppsDoesNotContainHiddenMyApps()
+        [Test]
+        public void LogOutRemovesApiApps()
         {
-            lock (this)
-            {
-                SetMyAppsAndLogin(_myApplications);
+            InitializeTests();
+            SetMyAppsAndLogin(_myApplications);
+            _mainViewModel.Logout();
 
-                Assert.IsFalse(_mainViewModel.MyApplications.Contains(_myApplications[0]));
-            }
+            Assert.IsEmpty(ServiceLocator.LocalStorage.InstalledAppDirectApps);
         }
 
-        [TestMethod]
-        public void UninstallLocalApplicationIncrementsSuggestedApplications()
+        #endregion
+
+        #region SyncAppsWithApi Tests
+
+        [Test]
+        public void SyncAppsWithApiAddsMissingApiApps()
         {
-            lock (this)
-            {
-                _mainViewModel.MyApplications.Clear();
-                var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
-                _mainViewModel.Install(app);
-                _mainViewModel.Uninstall(app);
+            SetMyAppsAndLogin(_myApplications);
+            var apiApp = _mainViewModel.MyApplications.First(a => !a.IsLocalApp);
+            _mainViewModel.MyApplications.Remove(apiApp);
+            _mainViewModel.SyncAppsWithApi();
 
-                Assert.IsTrue(_localStorage.LastSuggestedApps.Contains(app));
-            }
+            Assert.IsTrue(_mainViewModel.MyApplications.Contains(apiApp));
         }
 
-        [TestMethod]
-        public void UninstallLocalApplicationDecrementsMyApplications()
+        [Test]
+        public void SyncAppsWithApiRemovesExpiredApiApps()
         {
-            lock (this)
-            {
-                _mainViewModel.MyApplications.Clear();
-                var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
-                _mainViewModel.Install(app);
-                _mainViewModel.Uninstall(app);
+            SetMyAppsAndLogin(_myApplications);
 
-                Assert.IsFalse(_mainViewModel.MyApplications.Contains(app));
-            }
+            var expiredApp = _myApplications[0];
+            _myApplications.Remove(expiredApp);
+
+            SetMyAppsAndLogin(_myApplications);
+
+            _mainViewModel.SyncAppsWithApi();
+
+            Assert.IsFalse(_mainViewModel.MyApplications.Contains(expiredApp));
         }
 
-        [TestMethod]
-        public void LocalStorageInitializedByConstructor()
-        {
-            lock (this)
-            {
-                Assert.IsNotNull(ServiceLocator.LocalStorage.InstalledLocalApps);
-            }
-        }
-
+        #endregion
+        
         private void SetMyAppsAndLogin(List<Application> myApps)
         {
-            _cachedAppDirectApiMock.MyApps.Returns(myApps);
-
-            _mainViewModel.MyApplications.Clear();
+            InitializeTests();
+            ServiceLocator.CachedAppDirectApi.MyApps.Returns(myApps);
             _mainViewModel.Login(Username, Password);
+        }
+
+        private Application CallInstallApp()
+        {
+            InitializeTests();
+            var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
+            _mainViewModel.Install(app);
+            return app;
+        }
+
+        private Application CallUninstallApp()
+        {
+            InitializeTests();
+            var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
+            _mainViewModel.Install(app);
+            _mainViewModel.Uninstall(app);
+            return app;
         }
     }
 }

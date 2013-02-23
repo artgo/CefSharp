@@ -11,7 +11,7 @@ namespace AppDirect.WindowsClient.Tests.UI
         [TestMethod]
         public void Orientation()
         {
-            var taskbar = new TaskbarPanel();
+            var taskbar = new TaskbarPanel(null);
             taskbar.PositionChanged(TaskbarPosition.Bottom);
         }
     }

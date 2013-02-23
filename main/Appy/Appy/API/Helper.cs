@@ -18,13 +18,12 @@ namespace AppDirect.WindowsClient.API
         public static readonly string ApplicationDirectory = @"\AppDirect\" + ApplicationName;
         public static readonly string BrowserProjectExt = ".Browser";
         public static readonly string ExeExt = ".exe";
-        public static readonly int RefreshAppsIntervalMins = 55;
 
         private const int MinimumPasswordLength = 4;
         private const int MaximumPasswordLength = 18;
         public static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w\+]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
         public static readonly Regex PasswordMatchPattern = new Regex(@"^(.{" + MinimumPasswordLength + "," + MaximumPasswordLength + "})$");
-        
+
         public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
         {
             var tryAttemptsRemaining = numberOfTries;
@@ -92,6 +91,35 @@ namespace AppDirect.WindowsClient.API
         {
             var clickedApp = ((MenuItem) sender).DataContext as Application;
             return clickedApp;
+        }
+
+        /// <summary>
+        /// MUST BE WRAPPED IN TRY-CATCH Throws exceptions for network errors or API Errors
+        /// </summary>
+        /// <returns></returns>
+        public static bool Authenticate()
+        {
+            var localStorage = ServiceLocator.LocalStorage;
+
+            lock (localStorage.Locker)
+            {
+                if (localStorage.HasCredentials)
+                {
+                    if (ServiceLocator.CachedAppDirectApi.IsAuthenticated)
+                    {
+                        return true;
+                    }
+                    if (ServiceLocator.CachedAppDirectApi.Authenticate(localStorage.LoginInfo.Username,
+                                                                       localStorage.LoginInfo.Password))
+                    {
+                        return true;
+                    }
+
+                    localStorage.ClearLoginCredentials();
+                }
+            }
+
+            return false;
         }
     }
 }

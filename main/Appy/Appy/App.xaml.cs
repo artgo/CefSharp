@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using AppDirect.WindowsClient.InteropAPI;
-using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
 
 namespace AppDirect.WindowsClient
@@ -23,9 +22,17 @@ namespace AppDirect.WindowsClient
             }
 
             ServiceLocator.IpcCommunicator.Start();
-            
-            var buttons = new TaskbarPanel();
-            TaskbarApi.Instance.InsertTaskbarWindow(buttons, buttons, (int)buttons.Width);
+            ServiceLocator.LocalStorage.LoadStorage();
+
+            var mainViewModel = new MainViewModel();
+            mainViewModel.InitializeAppsLists();
+            mainViewModel.SyncAppsWithApi();
+            var mainWindow = new MainWindow(mainViewModel);
+            UpdateDownloader.Start(mainWindow);
+            AppSessionRefresher.Start(mainWindow);
+            var taskbarPanel = new TaskbarPanel(mainWindow);
+
+            TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, (int)taskbarPanel.Width);
 
             base.OnStartup(e);
         }

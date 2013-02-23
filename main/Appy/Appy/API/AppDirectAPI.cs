@@ -26,6 +26,7 @@ namespace AppDirect.WindowsClient.API
         private DateTime _time = DateTime.Now;
         private volatile CookieContainer _context = null;
         private readonly IList<Cookie> _cookies = new List<Cookie>();
+        private TimeSpan timeoutTimeSpan;
 
         public MyappsMyapp[] MyApps
         {
@@ -78,7 +79,8 @@ namespace AppDirect.WindowsClient.API
         {
             get
             {
-                if ((_context != null) && (DateTime.Now - _time) > (new TimeSpan(0, 1, 0, 0)))
+                timeoutTimeSpan = TimeSpan.FromMinutes(30);
+                if ((_context != null) && (DateTime.Now - _time) > (timeoutTimeSpan))
                 {
                     UnAuthenticate();
                 }

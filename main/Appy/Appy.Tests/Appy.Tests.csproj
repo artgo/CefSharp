@@ -81,6 +81,10 @@
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.1.5.0.0\lib\NET35\NSubstitute.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -100,6 +104,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AppDirectApiUnitTest.cs" />
+    <Compile Include="HelperTests.cs" />
     <Compile Include="LocalStorageUnitTest.cs" />
     <Compile Include="MainViewModelUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -161,7 +166,7 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)Setup\AppIcon.ico" "$(SolutionDir)Setup\Appy"
 "C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\build_uninstaller.nsi"
-"$(SolutionDir)Setup\build_uninstaller.exe" /NCRC
+runas "$(SolutionDir)Setup\build_uninstaller.exe"
 "C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\uninstall.exe"
 xcopy "$(SolutionDir)Setup\uninstall.exe" "$(SolutionDir)Setup\Appy" /r /y
 "C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\AppyInstaller.nsi"

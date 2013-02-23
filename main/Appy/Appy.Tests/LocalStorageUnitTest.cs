@@ -2,32 +2,43 @@
 using System.IO;
 using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class LocalStorageUnitTest
     {
-        private const string FileName = @"\AppDirect\LocalStorage";
+        private const string FileName = @"\LocalStorage";
         private FileInfo File = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
         private LocalStorage localStorage;
 
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void Setup()
         {
-            File.Delete();
+            if (File.Exists)
+            {
+                File.Delete();
+            }
             localStorage = new LocalStorage();
         }
 
-        [TestMethod]
-        public void InstalledAppsListNullWithoutFile()
+        [Test]
+        public void CorruptXmlLoadsEmptyStorage()
         {
-            Assert.IsNull(localStorage.InstalledLocalApps);
+            using (var streamWriter = new StreamWriter(File.FullName, false))
+            {
+                // Serialize this instance of the LocalStorage class to the config file.
+                streamWriter.Write("this is not valid xml");
+            }
+
+            localStorage.LoadStorage();
+
+            Assert.IsNotNull(localStorage.InstalledLocalApps);
         }
 
-        [TestMethod]
+        [Test]
         public void LocalStorageListsNotNullWhenFileContainsApps()
         {
             localStorage.InstalledLocalApps = LocalApplications.LocalApplicationsList;
@@ -36,12 +47,12 @@ namespace AppDirect.WindowsClient.Tests
             File.Refresh();
             Assert.IsTrue(File.Exists);
 
-            localStorage = new LocalStorage(true);
+            localStorage.LoadStorage();
             
-            Assert.IsNotNull(localStorage.InstalledLocalApps);
+            Assert.AreEqual(LocalApplications.LocalApplicationsList, localStorage.InstalledLocalApps);
         }
 
-        [TestMethod]
+        [Test]
         public void SaveLocalStorageCreatesStorageFile()
         {
             localStorage.SaveAppSettings();
@@ -50,7 +61,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.IsTrue(File.Exists);
         }
 
-        [TestMethod]
+        [Test]
         public void HasCredentialsTrueForUnexpiredCredentials()
         {
             string unencryptedPassword = "IamPassWordValue84";
@@ -61,7 +72,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.IsTrue(localStorage.HasCredentials);
         }
 
-        [TestMethod]
+        [Test]
         public void StoredCredentialsRestoredToOriginalValues()
         {
             string unencryptedPassword = "IamPassWordValue84";
@@ -73,7 +84,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.AreEqual(unencryptedUserName, localStorage.LoginInfo.Username);
         }
 
-        [TestMethod]
+        [Test]
         public void CredentialsOlderThanLimitAreCleared()
         {
             string unencryptedPassword = "IamPassWordValue84";
@@ -84,7 +95,7 @@ namespace AppDirect.WindowsClient.Tests
             Assert.IsFalse(localStorage.HasCredentials);
         }
 
-        [TestMethod]
+        [Test]
         public void BadImageFile()
         {
             string appId = "BadImageTest";
@@ -102,7 +113,7 @@ namespace AppDirect.WindowsClient.Tests
             File.Refresh();
             Assert.IsTrue(File.Exists);
 
-            localStorage = new LocalStorage(true);
+            localStorage.LoadStorage();
         }
     }
 }

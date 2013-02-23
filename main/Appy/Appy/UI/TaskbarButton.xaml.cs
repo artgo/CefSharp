@@ -21,6 +21,8 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class TaskbarButton : UserControl
     {
+        public string Id { get; set; }
+
         public TaskbarButton()
         {
             InitializeComponent();
@@ -31,7 +33,7 @@ namespace AppDirect.WindowsClient.UI
             DataContext = application;
             InitializeComponent();
 
-            Name = application.Id;
+            Id = application.Id;
         }
 
         private void TaskbarButton_Click(object sender, RoutedEventArgs e)

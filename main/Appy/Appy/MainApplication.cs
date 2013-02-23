@@ -14,30 +14,34 @@ namespace AppDirect.WindowsClient
                 return null;
             }
 
-            var apps = ServiceLocator.LocalStorage.InstalledLocalApps;
-            foreach (var app in apps)
+            lock (ServiceLocator.LocalStorage.Locker)
             {
-                if (id.Equals(app.Id))
-                {
-                    return app;
-                }
-            }
+                var apps = ServiceLocator.LocalStorage.InstalledLocalApps;
 
-            apps = ServiceLocator.LocalStorage.InstalledAppDirectApps;
-            foreach (var app in apps)
-            {
-                if (id.Equals(app.Id))
+                foreach (var app in apps)
                 {
-                    return app;
+                    if (id.Equals(app.Id))
+                    {
+                        return app;
+                    }
                 }
-            }
 
-            apps = ServiceLocator.LocalStorage.LastSuggestedApps;
-            foreach (var app in apps)
-            {
-                if (id.Equals(app.Id))
+                apps = ServiceLocator.LocalStorage.InstalledAppDirectApps;
+                foreach (var app in apps)
                 {
-                    return app;
+                    if (id.Equals(app.Id))
+                    {
+                        return app;
+                    }
+                }
+
+                apps = ServiceLocator.LocalStorage.LastSuggestedApps;
+                foreach (var app in apps)
+                {
+                    if (id.Equals(app.Id))
+                    {
+                        return app;
+                    }
                 }
             }
 

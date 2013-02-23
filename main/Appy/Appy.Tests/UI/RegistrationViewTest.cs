@@ -1,18 +1,18 @@
 ﻿using System.Windows;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.UI;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests.UI
 {
-    [TestClass]
+    [TestFixture]
     public class RegistrationViewTest
     {
         private volatile IAppDirectApi _appDirectApiMock;
         private volatile ICachedAppDirectApi _cachedAppDirectApiMock;
 
-        [TestInitialize]
+        [TestFixtureSetUp]
         public void Initialize()
         {
             lock (this)
@@ -26,13 +26,13 @@ namespace AppDirect.WindowsClient.Tests.UI
             }
         }
 
-        [TestMethod]
+        [Test]
         public void OnRegisterClickCallsRightApis()
         {
             //var registerWindow = new RegistrationView();
             //registerWindow.RegisterButton_Click(registerWindow, new RoutedEventArgs());
-            //_appDirectApiMock.Received().RegisterUser(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), 
-            //    Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), 
+            //_appDirectApiMock.Received().RegisterUser(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(),
+            //    Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(),
             //    Arg.Any<string>(), Arg.Any<string>());
         }
     }
