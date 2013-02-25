@@ -21,7 +21,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Image Name="Icon"  Source="Icons/AppIcon.ico" Height="{StaticResource ButtonHeight}" Width="{StaticResource ButtonWidth}"/>
+                        <Image Name="Icon"  Source="Icons/AppIcon.ico"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Icon" Property="Source" Value="Icons/deskIcon-Hover.png"/>

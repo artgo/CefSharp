@@ -16,8 +16,10 @@ namespace AppDirect.WindowsClient.UI
         public TaskbarPanelViewModel ViewModel { get; set; }
         public const int TaskbarButtonSize = 34;
         public const int DeskbandInitialSize = 40;
-
-
+        
+        private const int LargeIconSize = 30;
+        private const int SmallIconSize = 20;
+        
         public MainWindow ApplicationWindow { get; set; }
 
         public TaskbarPanel(MainWindow mainView)
@@ -28,15 +30,20 @@ namespace AppDirect.WindowsClient.UI
             
             ViewModel = new TaskbarPanelViewModel();
 
+            ApplicationWindow.ViewModel.ApplicationAddedNotifier += AddAppButton;
+            ApplicationWindow.ViewModel.ApplicationRemovedNotifier += RemoveAppButton;
+            ApplicationWindow.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
+        }
+
+        public void InitializeButtons(TaskbarPosition taskbarPosition, TaskbarIconsSize taskbarIconsSize)
+        {
             foreach (var application in ViewModel.PinnedApps)
             {
                 AddButton(application);
             }
 
-            ApplicationWindow.ViewModel.ApplicationAddedNotifier += AddAppButton;
-            ApplicationWindow.ViewModel.ApplicationRemovedNotifier += RemoveAppButton;
-
-            ApplicationWindow.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
+            TaskbarIconsSizeChanged(taskbarIconsSize);
+            PositionChanged(taskbarPosition);
         }
 
         private void PinToTaskbarClickHandler(object sender, EventArgs eventArgs)
@@ -70,7 +77,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 Height += TaskbarButtonSize;
             }
-
 
             NotifyTaskbarOfChange();
         }
@@ -138,8 +144,8 @@ namespace AppDirect.WindowsClient.UI
 
         public void HeightChanged(int newHeight)
         {
-            // TODO: implement
-            throw new NotImplementedException();
+            
+            
         }
 
         public void PositionChanged(TaskbarPosition newPosition)
@@ -161,27 +167,21 @@ namespace AppDirect.WindowsClient.UI
 
         public void TaskbarIconsSizeChanged(TaskbarIconsSize newIconsSize)
         {
-            // TODO: implement
-            throw new NotImplementedException();
+            foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
+            {
+                taskbarButton.ChangeIconSize(newIconsSize);
+            }
+
+            MainButton.Height = newIconsSize == TaskbarIconsSize.Small ? SmallIconSize : LargeIconSize;
+            MainButton.Width = newIconsSize == TaskbarIconsSize.Small ? SmallIconSize : LargeIconSize;
         }
 
         public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }
-
-        private void Cog_click(object sender, RoutedEventArgs e)
-        {
-            if (ButtonContainer.Orientation == Orientation.Horizontal)
-            {
-                PositionChanged(TaskbarPosition.Left);
-            }
-            else
-            {
-                PositionChanged(TaskbarPosition.Top);
-            }
-        }
-
+        
         private void MenuItemExitClick(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
         }
+        
     }
 }

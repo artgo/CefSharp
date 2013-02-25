@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.InteropAPI;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -22,6 +23,9 @@ namespace AppDirect.WindowsClient.UI
     public partial class TaskbarButton : UserControl
     {
         public string Id { get; set; }
+
+        private const int LargeIconSize = 28;
+        private const int SmallIconSize = 18;
 
         public TaskbarButton()
         {
@@ -39,6 +43,20 @@ namespace AppDirect.WindowsClient.UI
         private void TaskbarButton_Click(object sender, RoutedEventArgs e)
         {
             Helper.AppButtonClick(sender, e);
+        }
+
+        public void ChangeIconSize(TaskbarIconsSize newIconsSize)
+        {
+            if (newIconsSize == TaskbarIconsSize.Large)
+            {
+                Button.Width = LargeIconSize;
+                Button.Height = LargeIconSize;
+            }
+            else
+            {
+                Button.Width = SmallIconSize;
+                Button.Height = SmallIconSize;
+            }
         }
     }
 }

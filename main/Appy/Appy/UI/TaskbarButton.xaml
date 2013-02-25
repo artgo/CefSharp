@@ -14,7 +14,7 @@
             <Setter Property="Width" Value="{StaticResource ButtonWidth}"/>
             <Setter Property="Margin" Value="0,0,6,0"></Setter>
             <Setter Property="VerticalAlignment" Value="Center"></Setter>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -38,6 +38,6 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Button Style="{StaticResource DeskbandButtonStyle}" Click="TaskbarButton_Click">
+    <Button Name="Button"  Style="{StaticResource DeskbandButtonStyle}" Click="TaskbarButton_Click">
     </Button>
 </UserControl>
