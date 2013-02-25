@@ -21,10 +21,9 @@
                         <Border BorderThickness="1" BorderBrush="DimGray">
                             <Grid>
                                 <Image Name="Icon" Source="{Binding LocalImagePath}" ></Image>
-                                 <Image Name="HighlightMask"  Source="Images\TaskBarHoverMask.png" Visibility="Hidden"/>
+                                 <Image Name="HighlightMask" Source="Images\TaskBarHoverMask.png" Visibility="Hidden"/>
                             </Grid>
                         </Border>
-                       
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="HighlightMask" Property="Visibility" Value="Visible"/>
@@ -38,6 +37,6 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Button Name="Button"  Style="{StaticResource DeskbandButtonStyle}" Click="TaskbarButton_Click">
+    <Button Name="Button" Style="{StaticResource DeskbandButtonStyle}" Click="TaskbarButton_Click">
     </Button>
 </UserControl>

@@ -145,23 +145,23 @@ namespace AppDirect.WindowsClient.UI
         public void HeightChanged(int newHeight)
         {
             
-            
         }
 
         public void PositionChanged(TaskbarPosition newPosition)
         {
-            var widthTemp = Width;
-            Width = Height;
-            Height = widthTemp;
-
-            if (newPosition == TaskbarPosition.Bottom || newPosition == TaskbarPosition.Top)
-            {
-                ButtonContainer.Orientation = Orientation.Horizontal;
-
-            }
-            else
+            if (newPosition.IsVertical() && ButtonContainer.Orientation != Orientation.Vertical)
             {
                 ButtonContainer.Orientation = Orientation.Vertical;
+                var widthTemp = Width;
+                Width = Height;
+                Height = widthTemp;
+            }
+            else if (!newPosition.IsVertical() && ButtonContainer.Orientation != Orientation.Horizontal)
+            {
+                ButtonContainer.Orientation = Orientation.Horizontal;
+                var widthTemp = Width;
+                Width = Height;
+                Height = widthTemp;
             }
         }
 
@@ -182,6 +182,5 @@ namespace AppDirect.WindowsClient.UI
         {
             System.Windows.Application.Current.Shutdown();
         }
-        
     }
 }
