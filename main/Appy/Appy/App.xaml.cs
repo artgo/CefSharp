@@ -30,8 +30,9 @@ namespace AppDirect.WindowsClient
             var mainWindow = new MainWindow(mainViewModel);
             UpdateDownloader.Start(mainWindow);
             AppSessionRefresher.Start(mainWindow);
+            
             var taskbarPanel = new TaskbarPanel(mainWindow);
-
+            taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
             TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, (int)taskbarPanel.Width);
 
             base.OnStartup(e);

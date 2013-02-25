@@ -16,8 +16,10 @@ namespace AppDirect.WindowsClient.UI
         public TaskbarPanelViewModel ViewModel { get; set; }
         public const int TaskbarButtonSize = 34;
         public const int DeskbandInitialSize = 40;
-
-
+        
+        private const int MainIconLargeSize = 30;
+        private const int MainIconSmallSize = 20;
+        
         public MainWindow ApplicationWindow { get; set; }
 
         public TaskbarPanel(MainWindow mainView)
@@ -28,15 +30,20 @@ namespace AppDirect.WindowsClient.UI
             
             ViewModel = new TaskbarPanelViewModel();
 
+            ApplicationWindow.ViewModel.ApplicationAddedNotifier += AddAppButton;
+            ApplicationWindow.ViewModel.ApplicationRemovedNotifier += RemoveAppButton;
+            ApplicationWindow.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
+        }
+
+        public void InitializeButtons(TaskbarPosition taskbarPosition, TaskbarIconsSize taskbarIconsSize)
+        {
             foreach (var application in ViewModel.PinnedApps)
             {
                 AddButton(application);
             }
 
-            ApplicationWindow.ViewModel.ApplicationAddedNotifier += AddAppButton;
-            ApplicationWindow.ViewModel.ApplicationRemovedNotifier += RemoveAppButton;
-
-            ApplicationWindow.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
+            TaskbarIconsSizeChanged(taskbarIconsSize);
+            PositionChanged(taskbarPosition);
         }
 
         private void PinToTaskbarClickHandler(object sender, EventArgs eventArgs)
@@ -70,7 +77,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 Height += TaskbarButtonSize;
             }
-
 
             NotifyTaskbarOfChange();
         }
@@ -138,47 +144,40 @@ namespace AppDirect.WindowsClient.UI
 
         public void HeightChanged(int newHeight)
         {
-            // TODO: implement
-            throw new NotImplementedException();
+            //Nothing to do as long as the window gets moved correctly
         }
 
         public void PositionChanged(TaskbarPosition newPosition)
         {
-            var widthTemp = Width;
-            Width = Height;
-            Height = widthTemp;
-
-            if (newPosition == TaskbarPosition.Bottom || newPosition == TaskbarPosition.Top)
-            {
-                ButtonContainer.Orientation = Orientation.Horizontal;
-
-            }
-            else
+            if (newPosition.IsVertical() && ButtonContainer.Orientation != Orientation.Vertical)
             {
                 ButtonContainer.Orientation = Orientation.Vertical;
+                var widthTemp = Width;
+                Width = Height;
+                Height = widthTemp;
+            }
+            else if (!newPosition.IsVertical() && ButtonContainer.Orientation != Orientation.Horizontal)
+            {
+                ButtonContainer.Orientation = Orientation.Horizontal;
+                var widthTemp = Width;
+                Width = Height;
+                Height = widthTemp;
             }
         }
 
         public void TaskbarIconsSizeChanged(TaskbarIconsSize newIconsSize)
         {
-            // TODO: implement
-            throw new NotImplementedException();
+            foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
+            {
+                taskbarButton.ChangeIconSize(newIconsSize);
+            }
+
+            MainButton.Height = newIconsSize == TaskbarIconsSize.Small ? MainIconSmallSize : MainIconLargeSize;
+            MainButton.Width = newIconsSize == TaskbarIconsSize.Small ? MainIconSmallSize : MainIconLargeSize;
         }
 
         public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }
-
-        private void Cog_click(object sender, RoutedEventArgs e)
-        {
-            if (ButtonContainer.Orientation == Orientation.Horizontal)
-            {
-                PositionChanged(TaskbarPosition.Left);
-            }
-            else
-            {
-                PositionChanged(TaskbarPosition.Top);
-            }
-        }
-
+        
         private void MenuItemExitClick(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
