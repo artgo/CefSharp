@@ -17,8 +17,8 @@ namespace AppDirect.WindowsClient.UI
         public const int TaskbarButtonSize = 34;
         public const int DeskbandInitialSize = 40;
         
-        private const int LargeIconSize = 30;
-        private const int SmallIconSize = 20;
+        private const int MainIconLargeSize = 30;
+        private const int MainIconSmallSize = 20;
         
         public MainWindow ApplicationWindow { get; set; }
 
@@ -144,7 +144,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void HeightChanged(int newHeight)
         {
-            
+            //Nothing to do as long as the window gets moved correctly
         }
 
         public void PositionChanged(TaskbarPosition newPosition)
@@ -172,8 +172,8 @@ namespace AppDirect.WindowsClient.UI
                 taskbarButton.ChangeIconSize(newIconsSize);
             }
 
-            MainButton.Height = newIconsSize == TaskbarIconsSize.Small ? SmallIconSize : LargeIconSize;
-            MainButton.Width = newIconsSize == TaskbarIconsSize.Small ? SmallIconSize : LargeIconSize;
+            MainButton.Height = newIconsSize == TaskbarIconsSize.Small ? MainIconSmallSize : MainIconLargeSize;
+            MainButton.Width = newIconsSize == TaskbarIconsSize.Small ? MainIconSmallSize : MainIconLargeSize;
         }
 
         public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }
