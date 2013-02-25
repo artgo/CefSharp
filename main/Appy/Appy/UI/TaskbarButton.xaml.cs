@@ -49,13 +49,13 @@ namespace AppDirect.WindowsClient.UI
         {
             if (newIconsSize == TaskbarIconsSize.Large)
             {
-                Button.Width = LargeIconSize;
-                Button.Height = LargeIconSize;
+                AppButton.Width = LargeIconSize;
+                AppButton.Height = LargeIconSize;
             }
             else
             {
-                Button.Width = SmallIconSize;
-                Button.Height = SmallIconSize;
+                AppButton.Width = SmallIconSize;
+                AppButton.Height = SmallIconSize;
             }
         }
     }
