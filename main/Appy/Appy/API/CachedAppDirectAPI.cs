@@ -94,7 +94,10 @@ namespace AppDirect.WindowsClient.API
                         UrlString = applicationsApplication.Url,
                         ImagePath = applicationsApplication.IconUrl,
                         IsLocalApp = false,
-                        Price = applicationsApplication.StartingPrice
+                        Price = applicationsApplication.StartingPrice,
+                        BrowserHeight = Helper.DefaultBrowserHeight,
+                        BrowserWidth = Helper.DefaultBrowserWidth,
+                        BrowserResizable = Helper.DefaultBrowserResizable
                     };
                    
                 appList.Add(app);
@@ -123,7 +126,10 @@ namespace AppDirect.WindowsClient.API
                     Name = applicationsApplication.Name,
                     UrlString = applicationsApplication.LoginUrl,
                     IsLocalApp = false,
-                    Price = applicationsApplication.StartingPrice
+                    Price = applicationsApplication.StartingPrice,
+                    BrowserHeight = Helper.DefaultBrowserHeight,
+                    BrowserWidth = Helper.DefaultBrowserWidth,
+                    BrowserResizable = Helper.DefaultBrowserResizable
                 };
                 appList.Add(app);
             }

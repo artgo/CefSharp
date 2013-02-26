@@ -74,7 +74,7 @@ namespace AppDirect.WindowsClient.Browser
                 return browser;
             }
 
-            return new BrowserWindow(DefaultUrl, null);
+            return new BrowserWindow(DefaultUrl, null, 0,0,false);
         }
 
         private static BrowserWindow ProcessApplicationId(string appId)
@@ -126,7 +126,7 @@ namespace AppDirect.WindowsClient.Browser
 
             SetCookies(session);
 
-            var browser = new BrowserWindow(app.UrlString, session);
+            var browser = new BrowserWindow(app.UrlString, session, app.BrowserWidth, app.BrowserHeight, app.BrowserResizable);
 
             return browser;
         }

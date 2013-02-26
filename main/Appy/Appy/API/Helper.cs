@@ -23,6 +23,9 @@ namespace AppDirect.WindowsClient.API
         private const int MaximumPasswordLength = 18;
         public static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w\+]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
         public static readonly Regex PasswordMatchPattern = new Regex(@"^(.{" + MinimumPasswordLength + "," + MaximumPasswordLength + "})$");
+        public static readonly int DefaultBrowserWidth = 1000;
+        public static readonly int DefaultBrowserHeight = 581;
+        public static readonly bool DefaultBrowserResizable = true;
 
         public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
         {
