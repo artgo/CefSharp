@@ -35,5 +35,14 @@ namespace AppDirect.WindowsClient.Common.API
 
         [DataMember]
         public abstract string Price { get; set; }
+
+        [DataMember]
+        public abstract int BrowserHeight { get; set; }
+        
+        [DataMember]
+        public abstract int BrowserWidth { get; set; }
+        
+        [DataMember]
+        public abstract bool BrowserResizable { get; set; }
     }
 }

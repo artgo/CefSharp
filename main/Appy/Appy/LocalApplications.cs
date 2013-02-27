@@ -40,7 +40,9 @@ namespace AppDirect.WindowsClient
                         LocalImagePath = "Icons/facebook.png",
                         ImagePath = "Icons/facebook.png",
                         Name = "Facebook",
-                        UrlString = "http://www.facebook.com"
+                        UrlString = "http://www.facebook.com",
+                        BrowserHeight = 700,
+                        BrowserWidth = 1100
                     },
 
                 new LocalApplication()
@@ -50,7 +52,9 @@ namespace AppDirect.WindowsClient
                         LocalImagePath = "Icons/gmail.png",
                         ImagePath =  "Icons/gmail.png",
                         Name = "Gmail",
-                        UrlString = "http://www.gmail.com"
+                        UrlString = "http://www.gmail.com",
+                        BrowserHeight = 800,
+                        BrowserWidth = 1000
                     },
                 new LocalApplication()
                     {

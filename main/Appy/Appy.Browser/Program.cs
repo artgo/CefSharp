@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using System.Windows.Forms;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.MainApp;
@@ -64,8 +65,7 @@ namespace AppDirect.WindowsClient.Browser
 
             return null;
         }
-
-
+        
         private static BrowserWindow BuildBrowserWindow(string appId)
         {
             var browser = ProcessApplicationId(appId);
@@ -126,7 +126,7 @@ namespace AppDirect.WindowsClient.Browser
 
             SetCookies(session);
 
-            var browser = new BrowserWindow(app.UrlString, session);
+            var browser = new BrowserWindow(app.UrlString, session, app.BrowserWidth, app.BrowserHeight, app.BrowserResizable);
 
             return browser;
         }
