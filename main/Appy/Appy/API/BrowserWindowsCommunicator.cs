@@ -16,7 +16,7 @@ namespace AppDirect.WindowsClient.API
         {
             var browserWindowProcess = new Process();
             browserWindowProcess.StartInfo.FileName = Helper.ApplicationName + BrowserPostfix;
-            browserWindowProcess.StartInfo.Arguments =  AppIdParameterName + "\"" + a.Id + "\"";
+            browserWindowProcess.StartInfo.Arguments = AppIdParameterName + "\"" + a.Id + "\"";
             browserWindowProcess.Start();
         }
 

@@ -7,7 +7,8 @@ namespace AppDirect.WindowsClient.Browser.UI
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private System.ComponentModel.IContainer components = null; 
+        private const int CS_DROPSHADOW = 0x00020000;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -46,11 +47,11 @@ namespace AppDirect.WindowsClient.Browser.UI
             this.ContentPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ContentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
-            this.ContentPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ContentPanel.Location = new System.Drawing.Point(0, 24);
+            this.ContentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(7)))), ((int)(((byte)(42)))), ((int)(((byte)(53)))));
+            this.ContentPanel.Location = new System.Drawing.Point(0, 30);
             this.ContentPanel.Name = "ContentPanel";
-            this.ContentPanel.Size = new System.Drawing.Size(984, 585);
+            this.ContentPanel.Padding = new System.Windows.Forms.Padding(2);
+            this.ContentPanel.Size = new System.Drawing.Size(984, 582);
             this.ContentPanel.TabIndex = 0;
             // 
             // panel1
@@ -66,7 +67,7 @@ namespace AppDirect.WindowsClient.Browser.UI
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(984, 29);
+            this.panel1.Size = new System.Drawing.Size(984, 30);
             this.panel1.TabIndex = 1;
             // 
             // forwardBtn
@@ -174,13 +175,22 @@ namespace AppDirect.WindowsClient.Browser.UI
 
         #endregion
 
-        private System.Windows.Forms.Panel ContentPanel;
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams p = base.CreateParams;
+                p.ClassStyle |= CS_DROPSHADOW;
+                return p;
+            }
+        }
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button minimizeBtn;
         private System.Windows.Forms.Button maximizeBtn;
         private System.Windows.Forms.Button closeBtn;
         private Button forwardBtn;
         private Button backBtn;
+        public Panel ContentPanel;
 
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using System.Windows.Forms;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.MainApp;
@@ -74,7 +75,7 @@ namespace AppDirect.WindowsClient.Browser
                 return browser;
             }
 
-            return new BrowserWindow(DefaultUrl, null, 0,0,false);
+            return new BrowserWindow(DefaultUrl, null, Helper.DefaultBrowserWidth, Helper.DefaultBrowserHeight, Helper.DefaultBrowserResizable);
         }
 
         private static BrowserWindow ProcessApplicationId(string appId)
