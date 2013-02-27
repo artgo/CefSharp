@@ -180,6 +180,8 @@ namespace AppDirect.WindowsClient.UI
             }
 
             SetMainButtonIconSize(newIconsSize);
+
+            NotifyTaskbarOfChange();
         }
 
         private void SetMainButtonIconSize(TaskbarIconsSize newIconsSize)
