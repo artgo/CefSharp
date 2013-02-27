@@ -14,8 +14,9 @@ namespace AppDirect.WindowsClient.UI
     public partial class TaskbarPanel : ITaskbarInterop   
     {
         public TaskbarPanelViewModel ViewModel { get; set; }
-        public const int TaskbarButtonSize = 34;
         public const int DeskbandInitialSize = 40;
+
+        public TaskbarIconsSize CurrentIconSize { get; set; }
         
         private const int MainIconLargeSize = 30;
         private const int MainIconSmallSize = 20;
@@ -37,12 +38,14 @@ namespace AppDirect.WindowsClient.UI
 
         public void InitializeButtons(TaskbarPosition taskbarPosition, TaskbarIconsSize taskbarIconsSize)
         {
+            CurrentIconSize = taskbarIconsSize;
+
             foreach (var application in ViewModel.PinnedApps)
             {
                 AddButton(application);
             }
 
-            TaskbarIconsSizeChanged(taskbarIconsSize);
+            SetMainButtonIconSize(taskbarIconsSize);
             PositionChanged(taskbarPosition);
         }
 
@@ -67,15 +70,17 @@ namespace AppDirect.WindowsClient.UI
 
         private void AddButton(Application application)
         {
-            ButtonContainer.Children.Add(new TaskbarButton(application));
+            var taskbarButton = new TaskbarButton(application, CurrentIconSize);
+
+            ButtonContainer.Children.Add(taskbarButton);
 
             if (ButtonContainer.Orientation == Orientation.Horizontal)
             {
-                Width += TaskbarButtonSize;
+                Width += taskbarButton.Width;
             }
             else
             {
-                Height += TaskbarButtonSize;
+                Height += taskbarButton.Height;
             }
 
             NotifyTaskbarOfChange();
@@ -105,11 +110,11 @@ namespace AppDirect.WindowsClient.UI
                 ButtonContainer.Children.Remove(btn);
                 if (ButtonContainer.Orientation == Orientation.Horizontal)
                 {
-                    Width -= TaskbarButtonSize;
+                    Width -= btn.Width;
                 }
                 else
                 {
-                    Height -= TaskbarButtonSize;
+                    Height -= btn.Height;
                 }
                 
                 NotifyTaskbarOfChange();
@@ -167,11 +172,18 @@ namespace AppDirect.WindowsClient.UI
 
         public void TaskbarIconsSizeChanged(TaskbarIconsSize newIconsSize)
         {
+            CurrentIconSize = newIconsSize;
+
             foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
             {
                 taskbarButton.ChangeIconSize(newIconsSize);
             }
 
+            SetMainButtonIconSize(newIconsSize);
+        }
+
+        private void SetMainButtonIconSize(TaskbarIconsSize newIconsSize)
+        {
             MainButton.Height = newIconsSize == TaskbarIconsSize.Small ? MainIconSmallSize : MainIconLargeSize;
             MainButton.Width = newIconsSize == TaskbarIconsSize.Small ? MainIconSmallSize : MainIconLargeSize;
         }
