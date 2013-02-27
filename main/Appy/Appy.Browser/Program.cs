@@ -65,8 +65,7 @@ namespace AppDirect.WindowsClient.Browser
 
             return null;
         }
-
-
+        
         private static BrowserWindow BuildBrowserWindow(string appId)
         {
             var browser = ProcessApplicationId(appId);
@@ -75,7 +74,7 @@ namespace AppDirect.WindowsClient.Browser
                 return browser;
             }
 
-            return new BrowserWindow(DefaultUrl, null, Helper.DefaultBrowserWidth, Helper.DefaultBrowserHeight, Helper.DefaultBrowserResizable);
+            return new BrowserWindow(DefaultUrl, null);
         }
 
         private static BrowserWindow ProcessApplicationId(string appId)

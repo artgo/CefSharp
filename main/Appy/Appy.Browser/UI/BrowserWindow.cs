@@ -13,7 +13,7 @@ namespace AppDirect.WindowsClient.Browser.UI
         public string BrowserUrl { get; set; }
         private IAppDirectSession AppDirectSession { get; set; }
 
-        public BrowserWindow(string url, IAppDirectSession session, int windowWidth, int windowHeight, bool isResizable = true)
+        public BrowserWindow(string url, IAppDirectSession session, int windowWidth = 0, int windowHeight = 0, bool isResizable = true)
         {
             BrowserUrl = url;
             AppDirectSession = session;
