@@ -27,17 +27,22 @@ namespace AppDirect.WindowsClient.UI
         private const int LargeIconSize = 28;
         private const int SmallIconSize = 18;
 
+        private const int HorizontalMargin = 6;
+        private const int VerticalMargin = 0;
+
         public TaskbarButton()
         {
             InitializeComponent();
         }
 
-        public TaskbarButton(Application application)
+        public TaskbarButton(Application application, TaskbarIconsSize iconsSize)
         {
             DataContext = application;
             InitializeComponent();
 
             Id = application.Id;
+
+            ChangeIconSize(iconsSize);
         }
 
         private void TaskbarButton_Click(object sender, RoutedEventArgs e)
@@ -57,6 +62,9 @@ namespace AppDirect.WindowsClient.UI
                 AppButton.Width = SmallIconSize;
                 AppButton.Height = SmallIconSize;
             }
+
+            Width = AppButton.Width + HorizontalMargin;
+            Height = AppButton.Height + VerticalMargin;
         }
     }
 }
