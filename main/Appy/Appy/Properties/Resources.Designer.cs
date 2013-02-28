@@ -61,6 +61,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Catalist Version: .
+        /// </summary>
+        internal static string AboutString {
+            get {
+                return ResourceManager.GetString("AboutString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Appy.exe.
         /// </summary>
         internal static string ApplicationExe {
@@ -97,11 +106,29 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check For Updates.
+        /// </summary>
+        internal static string GetUpdateString {
+            get {
+                return ResourceManager.GetString("GetUpdateString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://test.appdirect.com/apps/.
         /// </summary>
         internal static string InstallAppTarget {
             get {
                 return ResourceManager.GetString("InstallAppTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install Updates.
+        /// </summary>
+        internal static string InstallUpdateString {
+            get {
+                return ResourceManager.GetString("InstallUpdateString", resourceCulture);
             }
         }
         

@@ -80,28 +80,41 @@ namespace AppDirect.WindowsClient.UI
             Helper.AppButtonClick(sender, e);
         }
 
-        private void InstallAppClick(object sender, RoutedEventArgs e)
+        private void InstallApp_DoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var clickedApp = Helper.GetApplicationFromButtonSender(sender);
-
-            try
+            if (e.ClickCount > 1)
             {
-                if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
-                {
-                    ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
+                e.Handled = true;
+            }
+        }
 
-                    SetVisibleGrid(LoginViewControl);
-                    LoginViewControl.UsernameTextBox.Focus();
-                }
-                else
+        private void InstallApp_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                var clickedApp = Helper.GetApplicationFromButtonSender(sender);
+
+                try
                 {
-                    ViewModel.Install(clickedApp);
+                    if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
+                    {
+                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
+
+                        SetVisibleGrid(LoginViewControl);
+                        LoginViewControl.UsernameTextBox.Focus();
+                    }
+                    else
+                    {
+                        ViewModel.Install(clickedApp);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+
+            e.Handled = true;
         }
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)
@@ -134,11 +147,6 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void CancelRegistrationClick(object sender, RoutedEventArgs e)
-        {
-            SetVisibleGrid(MainViewGrid);
-        }
-
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -156,17 +164,24 @@ namespace AppDirect.WindowsClient.UI
         {
             if (System.Windows.Application.Current != null)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => UpdateMenuItem.IsEnabled = updateAvailable));
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => ViewModel.UpdateString = Properties.Resources.InstallUpdateString));
             }
         }
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
-            ServiceLocator.Updater.InstallUpdates();
-
-            if (System.Windows.Application.Current != null)
+            if (ServiceLocator.LocalStorage.UpdateDownloaded)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(Close));
+                ServiceLocator.Updater.InstallUpdates();
+
+                if (System.Windows.Application.Current != null)
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(Close));
+                }
+            }
+            else
+            {
+                ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
             }
         }
         

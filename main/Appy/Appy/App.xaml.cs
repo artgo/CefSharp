@@ -41,7 +41,8 @@ namespace AppDirect.WindowsClient
         protected override void OnExit(ExitEventArgs e)
         {
             ServiceLocator.IpcCommunicator.Exit();
-
+            UpdateDownloader.Stop();
+            AppSessionRefresher.Stop();
             TaskbarApi.Instance.RemoveTaskbarWindow();
             TaskbarApi.Cleanup();
 

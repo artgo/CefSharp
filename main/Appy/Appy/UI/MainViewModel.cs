@@ -33,7 +33,26 @@ namespace AppDirect.WindowsClient.UI
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                return Properties.Resources.AboutString + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            }
+        }
+
+        public string UpdateString
+        {
+            get
+            {
+                if (ServiceLocator.LocalStorage.UpdateDownloaded)
+                {
+                    return Properties.Resources.InstallUpdateString;
+                }
+                else
+                {
+                    return Properties.Resources.GetUpdateString;
+                }
+            }
+            set
+            {
+                NotifyPropertyChanged("CloudSyncVisibility");
             }
         }
 
@@ -184,8 +203,12 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
-                AddToMyApps(application);
-                RemoveFromSuggestedApps(application);
+                RemoveFromSuggestedApps(application, false);
+                AddToMyApps(application, false);
+                lock (ServiceLocator.LocalStorage.Locker)
+                {
+                    ServiceLocator.LocalStorage.SaveAppSettings();
+                }
             }
             else
             {
@@ -197,8 +220,12 @@ namespace AppDirect.WindowsClient.UI
         {
             if (application.IsLocalApp)
             {
-                RemoveFromMyApps(application);
-                AddToSuggestedApps(application);
+                RemoveFromMyApps(application, false);
+                AddToSuggestedApps(application, false);
+                lock (ServiceLocator.LocalStorage.Locker)
+                {
+                    ServiceLocator.LocalStorage.SaveAppSettings();
+                }
             }
             else
             {
@@ -280,6 +307,9 @@ namespace AppDirect.WindowsClient.UI
                     var apiSuggestedApps =
                         ServiceLocator.CachedAppDirectApi.SuggestedApps.Except(
                             ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
+
+
+                    apiSuggestedApps.RemoveAll(a => !a.Price.Contains("Free"));
 
                     var newApps = apiSuggestedApps.Except(SuggestedApplications.Where(a => !a.IsLocalApp)).ToList();
                     var expiredApps = SuggestedApplications.Where(a => !a.IsLocalApp).Except(apiSuggestedApps).ToList();
