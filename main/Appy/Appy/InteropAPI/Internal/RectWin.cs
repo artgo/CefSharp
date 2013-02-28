@@ -34,6 +34,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
         }
 
+        public RectWin() { }
+        public RectWin(RECT rect)
+        {
+            Left = rect.left;
+            Top = rect.top;
+            Right = rect.right;
+            Bottom = rect.bottom;
+        }
+
         public override bool Equals(object obj)
         {
             if ((obj == null) || (GetType() != obj.GetType()))

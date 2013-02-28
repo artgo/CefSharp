@@ -8,7 +8,7 @@ namespace AppDirect.WindowsClient.InteropAPI
         private static readonly object SyncObject = new object();
 
         private readonly InteractionsObject _interactionsObject;
-        private volatile Control _control = null;
+        private volatile Control _contorl = null;
 
         #region Singleton
         private static volatile TaskbarApi _instance = null;
@@ -58,8 +58,8 @@ namespace AppDirect.WindowsClient.InteropAPI
         /// <param name="initialWidth">Initial width</param>
         public void InsertTaskbarWindow(Control control, ITaskbarInterop notifyee, int initialWidth)
         {
-            _control = control;
-            _interactionsObject.Place(_control, notifyee, initialWidth);
+            _contorl = control;
+            _interactionsObject.Place(_contorl, notifyee, initialWidth);
         }
 
         public void RemoveTaskbarWindow()

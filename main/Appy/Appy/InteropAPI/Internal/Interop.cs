@@ -1979,6 +1979,39 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public bool lParam;
     }
 
+    public enum AppBarMessages : uint
+    {
+        ABM_NEW = 0x00000000,
+        ABM_REMOVE = 0x00000001,
+        ABM_QUERYPOS = 0x00000002,
+        ABM_SETPOS = 0x00000003,
+        ABM_GETSTATE = 0x00000004,
+        ABM_GETTASKBARPOS = 0x00000005,
+        ABM_ACTIVATE = 0x00000006, // lParam == TRUE/FALSE means activate/deactivate
+        ABM_GETAUTOHIDEBAR = 0x00000007,
+        ABM_SETAUTOHIDEBAR = 0x00000008, // this can fail at any time.  MUST check the result
+        // lParam = TRUE/FALSE  Set/Unset
+        // uEdge = what edge
+        ABM_WINDOWPOSCHANGED = 0x0000009,
+        ABM_SETSTATE = 0x0000000a
+    }
+
+    // these are put in the wparam of callback messages
+    public enum AppBarNotifications : uint
+    {
+        ABN_STATECHANGE = 0x0000000,
+        ABN_POSCHANGED = 0x0000001,
+        ABN_FULLSCREENAPP = 0x0000002,
+        ABN_WINDOWARRANGE = 0x0000003 // lParam == TRUE means hide
+    }
+
+    // flags for get state
+    public enum AppBarStates : uint
+    {
+        ABS_AUTOHIDE = 0x0000001,
+        ABS_ALWAYSONTOP = 0x0000002
+    }
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     public struct MonitorInfoEx
     {
@@ -2008,32 +2041,32 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
     [StructLayout(LayoutKind.Sequential)]
     public struct RectStruct
     {
-
         public int Left;
-
         public int Top;
-
         public int Right;
-
         public int Bottom;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct MonitorInfo
     {
-
         public int Size;
-
         public RectStruct Monitor;
-
         public RectStruct WorkArea;
-
         public uint Flags;
-
         public void Init()
         {
             this.Size = 40;
         }
+    }
+
+    public class MonitorConstants
+    {
+        private MonitorConstants() { }
+
+        public const int MONITOR_DEFAULTTONULL = 0;
+        public const int MONITOR_DEFAULTTOPRIMARY = 1;
+        public const int MONITOR_DEFAULTTONEAREST = 2;        
     }
 
     [Flags]
@@ -2144,7 +2177,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern bool GetWindowRect(IntPtr hWnd, [Out] RectWin r);
 
         [DllImport(User32DllName)]
-        public static extern uint RegisterWindowMessage(string Name);
+        public static extern uint RegisterWindowMessage(string name);
 
         [DllImport(User32DllName)]
         public static extern int SetWindowRgn(IntPtr hWnd, IntPtr hRgn, bool bRedraw);
@@ -2283,7 +2316,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private Shell32Dll() { }
 
         [DllImport(Shell32DllName)]
-        public static extern IntPtr SHAppBarMessage(uint dwMessage, [In] ref APPBARDATA pData);
+        public static extern IntPtr SHAppBarMessage(uint dwMessage, ref APPBARDATA pData);
     }
 
     public class OleaccDll
