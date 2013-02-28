@@ -308,6 +308,7 @@ namespace AppDirect.WindowsClient.UI
                         ServiceLocator.CachedAppDirectApi.SuggestedApps.Except(
                             ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
+
                     apiSuggestedApps.RemoveAll(a => !a.Price.Contains("Free"));
 
                     var newApps = apiSuggestedApps.Except(SuggestedApplications.Where(a => !a.IsLocalApp)).ToList();

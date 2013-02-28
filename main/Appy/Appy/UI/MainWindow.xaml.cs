@@ -80,12 +80,41 @@ namespace AppDirect.WindowsClient.UI
             Helper.AppButtonClick(sender, e);
         }
 
-        private void InstallAppClick(object sender, MouseButtonEventArgs e)
+        private void InstallApp_DoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount > 1)
             {
                 e.Handled = true;
             }
+        }
+
+        private void InstallApp_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                var clickedApp = Helper.GetApplicationFromButtonSender(sender);
+
+                try
+                {
+                    if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
+                    {
+                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
+
+                        SetVisibleGrid(LoginViewControl);
+                        LoginViewControl.UsernameTextBox.Focus();
+                    }
+                    else
+                    {
+                        ViewModel.Install(clickedApp);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+
+            e.Handled = true;
         }
 
         private void UninstallAppClick(object sender, RoutedEventArgs e)
@@ -116,11 +145,6 @@ namespace AppDirect.WindowsClient.UI
                 SetVisibleGrid(LoginViewControl);
                 LoginViewControl.UsernameTextBox.Focus();
             }
-        }
-
-        private void CancelRegistrationClick(object sender, RoutedEventArgs e)
-        {
-            SetVisibleGrid(MainViewGrid);
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
@@ -178,35 +202,6 @@ namespace AppDirect.WindowsClient.UI
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)
         {
             PinToTaskbarClickNotifier.Invoke(sender,e);
-        }
-
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (!e.Handled)
-            {
-                var clickedApp = Helper.GetApplicationFromButtonSender(sender);
-
-                try
-                {
-                    if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
-                    {
-                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
-
-                        SetVisibleGrid(LoginViewControl);
-                        LoginViewControl.UsernameTextBox.Focus();
-                    }
-                    else
-                    {
-                        ViewModel.Install(clickedApp);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-
-            e.Handled = true;
         }
     }
 }
