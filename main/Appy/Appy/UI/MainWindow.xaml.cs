@@ -80,27 +80,11 @@ namespace AppDirect.WindowsClient.UI
             Helper.AppButtonClick(sender, e);
         }
 
-        private void InstallAppClick(object sender, RoutedEventArgs e)
+        private void InstallAppClick(object sender, MouseButtonEventArgs e)
         {
-            var clickedApp = Helper.GetApplicationFromButtonSender(sender);
-
-            try
+            if (e.ClickCount > 1)
             {
-                if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
-                {
-                    ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
-
-                    SetVisibleGrid(LoginViewControl);
-                    LoginViewControl.UsernameTextBox.Focus();
-                }
-                else
-                {
-                    ViewModel.Install(clickedApp);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                e.Handled = true;
             }
         }
 
@@ -156,17 +140,24 @@ namespace AppDirect.WindowsClient.UI
         {
             if (System.Windows.Application.Current != null)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => UpdateMenuItem.IsEnabled = updateAvailable));
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => ViewModel.UpdateString = Properties.Resources.InstallUpdateString));
             }
         }
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
-            ServiceLocator.Updater.InstallUpdates();
-
-            if (System.Windows.Application.Current != null)
+            if (ServiceLocator.LocalStorage.UpdateDownloaded)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(Close));
+                ServiceLocator.Updater.InstallUpdates();
+
+                if (System.Windows.Application.Current != null)
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(Close));
+                }
+            }
+            else
+            {
+                ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
             }
         }
         
@@ -187,6 +178,35 @@ namespace AppDirect.WindowsClient.UI
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)
         {
             PinToTaskbarClickNotifier.Invoke(sender,e);
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                var clickedApp = Helper.GetApplicationFromButtonSender(sender);
+
+                try
+                {
+                    if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
+                    {
+                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
+
+                        SetVisibleGrid(LoginViewControl);
+                        LoginViewControl.UsernameTextBox.Focus();
+                    }
+                    else
+                    {
+                        ViewModel.Install(clickedApp);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+
+            e.Handled = true;
         }
     }
 }

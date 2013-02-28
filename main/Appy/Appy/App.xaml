@@ -15,8 +15,8 @@
             <GradientStop Color="#0f2b23" Offset="0.3"/>
             <GradientStop Color="#091e19" Offset=".6"/>
         </LinearGradientBrush>
-        <FontFamily x:Key="DefaultWindowFont">Arial</FontFamily>
-        <SolidColorBrush x:Key="LeftPanelColor" Color="#36454d" />
+        <FontFamily x:Key="DefaultWindowFont">Franklin Gothic Medium</FontFamily>
+        <SolidColorBrush x:Key="LeftPanelColor" Color="#010a0d" />
         <SolidColorBrush x:Key="RightPanelColor" Color="#000708" />
         <SolidColorBrush x:Key="TextFieldFocusColor" Color="#4aa0ce" />
         <SolidColorBrush x:Key="MiddleBarColor" Color="#20393e" />
@@ -27,7 +27,9 @@
         <SolidColorBrush x:Key="ErrorTextColor" Color="#f13737" />
         <SolidColorBrush x:Key="AlertTextColor" Color="#ffad38" />
         <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#36454d" />
-        <SolidColorBrush x:Key="MenuItemColor" Color="#595959" />
+        <SolidColorBrush x:Key="MenuItemColor" Color="#252525" />
+        <SolidColorBrush x:Key="MenuItemHoverColor" Color="#252e34" />
+        <SolidColorBrush x:Key="SeparatorColor" Color="#181818" />
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
         <Storyboard x:Key="enterGotFocus" >
             <DoubleAnimation Duration="0:0:0.4" To=".4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>

@@ -9,9 +9,12 @@ namespace AppDirect.WindowsClient
     {
         private static volatile MainWindow _mainWindow;
         private static readonly TimeSpan CheckForUpdatesTimeSpan = TimeSpan.FromDays(1);
+        private static readonly TimeSpan DelayAfterStartup = TimeSpan.FromSeconds(5);
 
         private static void DownloadAvailableUpdates()
         {
+            Thread.Sleep(DelayAfterStartup);
+
             while (true)
             {
                 bool updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
