@@ -69,6 +69,7 @@ namespace AppDirect.WindowsClient.Browser.UI
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(984, 30);
             this.panel1.TabIndex = 1;
+            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TopMenu_MouseDown);
             // 
             // forwardBtn
             // 

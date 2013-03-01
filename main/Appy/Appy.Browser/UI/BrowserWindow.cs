@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
@@ -9,6 +11,13 @@ namespace AppDirect.WindowsClient.Browser.UI
     public partial class BrowserWindow : Form
     {
         private GeckoWebBrowser _browser;
+        private const int WM_NCLBUTTONDOWN = 0xA1;
+        private const int HT_CAPTION = 0x2;
+
+        [DllImportAttribute("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
 
         public string BrowserUrl { get; set; }
         private IAppDirectSession AppDirectSession { get; set; }
@@ -67,6 +76,15 @@ namespace AppDirect.WindowsClient.Browser.UI
         private void forwardBtn_Click(object sender, System.EventArgs e)
         {
             _browser.GoForward();
+        }
+
+        private void TopMenu_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
         }
     }
 }
