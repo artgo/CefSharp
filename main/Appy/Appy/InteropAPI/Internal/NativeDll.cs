@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
@@ -29,15 +28,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern uint GetRebarThread();
 
         [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern Point GetTaskbarPos();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-		public static extern System.Drawing.Size GetStartButtonSize();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-		public static extern System.Drawing.Size GetInitialADButtonSize();
-
-		[DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-		public static extern TaskbarPosition GetTaskbarEdge();
+        public static extern uint GetUpdatePositionMsg();
     }
 }

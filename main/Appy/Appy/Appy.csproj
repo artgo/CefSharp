@@ -152,6 +152,7 @@
     <Compile Include="API\IpcCommunicator.cs" />
     <Compile Include="InteropAPI\Internal\InteractionsObject.cs" />
     <Compile Include="InteropAPI\Internal\Interop.cs" />
+    <Compile Include="InteropAPI\Internal\InteropException.cs" />
     <Compile Include="InteropAPI\Internal\NativeDll.cs" />
     <Compile Include="InteropAPI\Internal\RectWin.cs" />
     <Compile Include="InteropAPI\Internal\RegistryChangeEventArgs.cs" />

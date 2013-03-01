@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "native.h"
 #include "consts.h"
+#include <mutex>
+#include <string>
+#include <sstream>
 
 static const int BuffSize = 256;
 
 bool g_bInitDone = false;
-HWND _TaskBar = NULL;
 HWND g_ReBar = NULL;		// of the taskbar
 SIZE g_RebarOffset;
 HHOOK g_ProgHook = NULL;
@@ -14,13 +16,6 @@ HMODULE g_hDll = NULL;
 // TODO: -1: explode to 
 // Returns Windows version as usually defined in VC headers: targetver.h
 static WORD g_version = 0;
-
-HWND GetTaskbar()
-{
-	if (!_TaskBar) _TaskBar = FindTaskBar();
-	_ASSERT(_TaskBar);
-	return _TaskBar;
-}
 
 WORD WinVersion()
 {	
@@ -31,22 +26,6 @@ WORD WinVersion()
 	}
 	return g_version;
 }
-
-//static BOOL CALLBACK TooltipEnumFunc(HWND hwnd, LPARAM lParam)
-//{
-//	CStringW s;
-//	wchar_t * name = s.GetBuffer(BuffSize);
-//	GetClassName(hwnd, name, BuffSize);
-//	s.ReleaseBuffer();
-//	if (s.CompareNoCase(TOOLTIPS_CLASS) != 0 ) return TRUE;
-//	TOOLINFO info = { sizeof(info), 0, g_TaskBar, (UINT_PTR)g_WinStartButton };
-//	if ( ::SendMessage(hwnd, TTM_GETTOOLINFO, 0, (LPARAM)&info) )
-//	{
-//		g_Tooltip = hwnd;
-//		return FALSE;
-//	}
-//	return TRUE;
-//}
 
 static HWND tmpTaskbar = NULL;
 
@@ -81,119 +60,89 @@ HWND FindTaskBar(DWORD process)
 	return tmpTaskbar;
 }
 
-static HWND tmpStartButton = NULL;
-static BOOL CALLBACK StartButtonEnumFunc(HWND hwnd, LPARAM lParam)
+static bool IsVertical()
 {
-	wchar_t s[BuffSize];
-	int len = ::GetClassName(hwnd, s, BuffSize);
-	if (_wcsnicmp(s, L"Button", BuffSize) != 0) return TRUE;
-	tmpStartButton = hwnd;
-	return FALSE;
+	HWND taskBar = FindTaskBar();
+	APPBARDATA appbar = {sizeof(appbar), taskBar};
+    SHAppBarMessage(ABM_GETTASKBARPOS, &appbar);
+	return (appbar.uEdge == ABE_LEFT) || (appbar.uEdge == ABE_RIGHT);
 }
 
-HWND FindStartButton()
-{
-	DWORD pidExplorer = GetTaskbarThread();
-	tmpStartButton = NULL;
-	if (WinVersion() < _WIN32_WINNT_VISTA)
-	{
-		tmpStartButton = ::FindWindowEx(FindTaskBar(), NULL, L"Button", NULL);	_ASSERT(tmpStartButton);
-	}
-	else
-	{
-		::EnumThreadWindows(pidExplorer, StartButtonEnumFunc, NULL);	// find Start button
-	}
-	_ASSERT(WinVersion() >= _WIN32_WINNT_WIN8 || tmpStartButton);
-	return tmpStartButton;
-}
-
-SIZE GetStartButtonSize()
-{
-	HWND sb = FindStartButton();
-	RECT r;
-	BOOL b = ::GetWindowRect(sb, &r);		_ASSERT(WinVersion() >= _WIN32_WINNT_WIN8 || b);
-	SIZE sz = {0,0};
-	if (b) sz = SizeOfRect(r);
-	return sz;
-}
-
-SIZE SizeOfRect(const RECT& r)
-{
-	SIZE sz = { r.right - r.left, r.bottom - r.top};
-	return sz;
-}
-
-SIZE GetInitialADButtonSize()
-{
-	// TODO: -2 save/load
-	// TODO: -2 accomodate to the Taskbar actual size
-	SIZE tb = GetTaskbarSize();
-
-	UINT edge = GetTaskbarEdge(GetTaskbar(), NULL, NULL, NULL);
-	SIZE s2;
-	if (WinVersion() < _WIN32_WINNT_WIN8)
-	{
-		SIZE sb =  GetStartButtonSize();
-		s2 = sb;
-		
-		if (edge == ABE_LEFT || edge == ABE_RIGHT)
-		{	// vertical taskbar
-			s2.cy =	40;
-
-			// TODO: -2 implement code block bellow if we need some locig for small icons
-			//if (IsTaskbarSmallIcons())
-			//{
-			//	s2.cy = 
-			//}
-		}
-		else
-		{
-			if (s2.cy > tb.cy)	// limit height: horizontal taskbar with small icons has Start button window out of the screen
-				s2.cy = tb.cy;		
-		}
-	}
-	else	// win8, 9, ...
-	{
-		s2.cx = gc_DefaultButtonWidth;
-		s2.cy = tb.cy;
-		// TODO: -0 vertical taskbar
-	}
-	return s2;
-}
-
-static bool bExiting = false;
+static volatile bool bExiting = false;
+static std::mutex _mutex;
+static RECT buttonsRect;
 static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	if (uMsg == WM_WINDOWPOSCHANGING)
+	if ((uMsg == WM_WINDOWPOSCHANGING) && !bExiting)
 	{
-		if (!bExiting)
+		// prevent rebar from restoring position and hovering our button: return
+		WINDOWPOS* p = (WINDOWPOS*)lParam;
+
+		std::unique_lock<std::mutex> lock(_mutex);
+
+		if (buttonsRect.left < (p->x + p->cx) && buttonsRect.right  > p->x &&
+			buttonsRect.top  < (p->y + p->cy) && buttonsRect.bottom > p->y)
 		{
-			// prevent rebar from restoring position and hovering our button: return
-			WINDOWPOS * p = (WINDOWPOS*)lParam;
-			p->flags |= SWP_NOMOVE;
-			p->flags |= SWP_NOSIZE;
+			if (IsVertical())
+			{
+				const int deltaY = buttonsRect.bottom - p->y;
+				if (deltaY > 0)
+				{
+					p->y += deltaY;
+					p->cy -= deltaY;
+				}
+			}
+			else
+			{
+				const int deltaX = buttonsRect.right - p->x;
+				if (deltaX > 0)
+				{
+					p->x += deltaX;
+					p->cx -= deltaX;
+				}
+			}
 		}
+
 		return 0;	// this message is processed
 	}
-	else { if (uMsg == dwRefData)		// WM_adButtonsExit
+	else 
 	{
-		if (g_bInitDone)
+		APPDIRECT_IPC_MESSAGES* messages = ((APPDIRECT_IPC_MESSAGES*)dwRefData);
+		if (uMsg == messages->ExitMessage)
 		{
-			bExiting = true;
-			g_bInitDone = false;
+			if (g_bInitDone)
+			{
+				bExiting = true;
+				g_bInitDone = false;
+				HWND rebarHwnd = FindRebar();
 
-			BOOL b = ::RemoveWindowSubclass(FindRebar(), SubclassRebarProc, 0);	_ASSERT(b);
+				BOOL b = ::RemoveWindowSubclass(rebarHwnd, SubclassRebarProc, 0); _ASSERT(b);
 
-// TODO: -1 unload not from itself
-//			b = ::FreeLibrary(g_hDll);	_ASSERT(b);
-			// g_hDll = NULL;
-			
-			// force repaint rebar by itself
-			b = ::ShowWindow(FindRebar(), SW_RESTORE);
+				// TODO: -1 unload not from itself
+				//	b = ::FreeLibrary(g_hDll);	_ASSERT(b);
+				// g_hDll = NULL;
+
+				// force repaint rebar by itself
+				b = ::ShowWindow(rebarHwnd, SW_RESTORE);
+
+				delete messages;
+			}
+			bExiting = false;
+			return 0;	// this message is processed
+		} 
+		else if (uMsg == messages->UpdateMessage) 
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+
+			const unsigned int p1 = (unsigned int)wParam;
+			const unsigned int p2 = (unsigned int)lParam;
+			buttonsRect.left = p1 >> 16;
+			buttonsRect.top = p1 & 0xFFFF;
+			buttonsRect.right = p2 >> 16;
+			buttonsRect.bottom = p2 & 0xFFFF;
 		}
-		bExiting = false;
-		return 0;	// this message is processed
-	}}
+	}
+
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
@@ -215,11 +164,6 @@ DWORD GetRebarThread()
 	return ThreadFromWnd(FindRebar());
 }
 
-DWORD GetTaskbarThread()
-{
-	return ThreadFromWnd(FindTaskBar());
-}
-
 DWORD ThreadFromWnd(HWND wnd)
 {
 	DWORD ExplProcess;
@@ -238,90 +182,26 @@ HWND FindRebar(HWND ParentTaskbar)
 	return 	h;
 }
 
-SIZE GetTaskbarSize()
-{
-	MONITORINFO mi;
-	RECT r;
-	GetTaskbarEdge(FindTaskBar(), &mi, NULL, &r);
-	return SizeOfRect(r);
-}
-
-// return global coords of top left conner of taskbar
-POINT GetTaskbarPos()
-{
-	HWND h = FindTaskBar();
-	MONITORINFO Info;
-	RECT r;
-	GetTaskbarEdge(h, &Info, NULL, &r);
-	POINT LeftTop = {r.left, r.top};
-	return LeftTop;
-}
-
-// rect into two points
-void RectToPoints(const RECT& r, POINT * pp)
-{
-	_ASSERT(pp);
-	pp[0].x = r.left; pp[0].y = r.top;
-	pp[1].x = r.right; pp[1].y = r.bottom;
-}
-
-// two points into rect
-void PointsToRect(const POINT * pp, RECT& r)
-{
-	_ASSERT(pp);
-	r.left = pp[0].x; r.top = pp[0].y;
-	r.right = pp[1].x;  r.bottom = pp[1].y;
-}
-
-// return global coords of left top conner of our window = placeholder of buttons
-POINT GetADButtonWndPos()
-{
-	POINT p = GetTaskbarPos();
-	SIZE s = GetStartButtonSize();
-	p.x += s.cx;	// TODO: -1 defferent position of taskbar
-	return p;
-}
-
-// return one of 4 possible edge
-UINT GetTaskbarEdge(HWND taskBar, MONITORINFO * pInfo, HMONITOR * pMonitor, RECT * TaskbarRect)
-{
-	if (!::IsWindow(taskBar)) return 0xFFFFFFFF;	// TODO: -1 signature of the function and returning of error
-
-	APPBARDATA appbar = {sizeof(appbar), taskBar};
-	SHAppBarMessage(ABM_GETTASKBARPOS, &appbar);
-	if (TaskbarRect) 
-		{ *TaskbarRect = appbar.rc; }
-	if (pInfo)
-	{
-		pInfo->cbSize = sizeof(MONITORINFO);
-		HMONITOR monitor = ::MonitorFromRect(&appbar.rc, MONITOR_DEFAULTTONEAREST);
-		BOOL b = ::GetMonitorInfo(monitor, pInfo); _ASSERT(b);
-		if (pMonitor) 
-			{ *pMonitor = monitor; }
-	}
-	return appbar.uEdge;
-}
-
-UINT GetTaskbarEdge()
-{
-	MONITORINFO info;
-	return GetTaskbarEdge(GetTaskbar(), &info, NULL, NULL);
-}
-
-
 UINT GetExitMsg()
 {
-	return ::RegisterWindowMessage(L"adButtonsExit");
+	return ::RegisterWindowMessage(L"AppDirectButtonsExit");
 }
 
-// TODO: -1 merge into actual SetupHooks()
+UINT GetUpdatePositionMsg()
+{
+	return ::RegisterWindowMessage(L"AppDirectButtonPositionUpdate");
+}
+
 NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
 {
 	if (code == HC_ACTION && !g_bInitDone)
 	{
 		g_bInitDone = true;
+		APPDIRECT_IPC_MESSAGES* messages = new APPDIRECT_IPC_MESSAGES();
+		messages->ExitMessage = GetExitMsg();
+		messages->UpdateMessage = GetUpdatePositionMsg();
 		g_hDll = ::LoadLibrary(gc_TheDllName); _ASSERT(g_hDll);		// prevent dll from unloading
-		BOOL b = ::SetWindowSubclass(FindRebar(), SubclassRebarProc, 0, GetExitMsg());	_ASSERT(b);
+		BOOL b = ::SetWindowSubclass(FindRebar(), SubclassRebarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
 	}
 	return ::CallNextHookEx(NULL, code, wParam, lParam);
 }
@@ -349,41 +229,6 @@ void DetachHooks()
 		BOOL b = ::UnhookWindowsHookEx(ExplorerHook);	_ASSERT(b);
 		ExplorerHook = NULL;
 		HWND reb = FindRebar();	_ASSERT(reb);
-		//b = ::SendMessage(reb, GetExitMsg(), 0, 0);	_ASSERT(b);
 		b = ::PostMessage(reb, GetExitMsg(), 0, 0);	_ASSERT(b);
 	}
 }
-
-//SIZE DimensionsFromRect(const RECT & r)
-//{
-//	return SIZE() { r.rihgt - r.left, r.bottom - r.top};
-//}
-//
-//static BOOL CALLBACK TaskBarEnumFunc(HWND hwnd, LPARAM lParam)
-//{
-//	
-//	if (s.CompareNoCase(L"Shell_TrayWnd") != 0)
-//		return TRUE;
-//	tmpTaskbar = hwnd;
-//	return FALSE;
-//}
-//
-//// Find the taskbar window for the given process
-//HWND FindTaskBar(DWORD process)
-//{
-////	g_WinStartButton = NULL;
-//
-//// TODO: -1 rewrite to system call every time
-////	tmpTaskbar = NULL;
-//	if (!tmpTaskbar)
-//	{
-//		::EnumWindows(TaskBarEnumFunc, process);	// changing globals
-//		if (tmpTaskbar)
-//		{
-
-//SIZE GetStartButtonSize()
-//{
-//	RECT r;
-//	BOOL b = ::GetWindowRect(GetStartButton(), &r);	_ASSERT(b);
-//	return DimensionsFromRect(r);
-//}
