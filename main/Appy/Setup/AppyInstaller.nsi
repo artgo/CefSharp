@@ -96,29 +96,14 @@ Function .onInstSuccess
 FunctionEnd
 
 Function .onInit
-System::Call "user32::RegisterWindowMessage(t'${COMPANYNAME}_close') i .r3"
-  Processes::FindProcess "${APPNAME}"
-  ${If} $R0 == "1"
+	System::Call "user32::RegisterWindowMessage(t'${APPLICATIONCLOSEMESSAGE}') i .r3"
+	Processes::FindProcess "${APPNAME}"
+	${If} $R0 == "1"
 	MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
       Abort
     gogogo:
-	Push "adButton.WPF"
-	Call CloseProgram
+	Push "AppDirectTaskbarButtonsWindow"
+	SendMessage $0 $R3 0 0
 	!insertmacro WaitForDead
-  ${EndIf}
-FunctionEnd
- 
-Function CloseProgram 
-  Exch $1
-  Push $0
-  loop:
-    FindWindow $0 $1
-    IntCmp $0 0 done
-      SendMessage $0 $R3 0 0
-    Sleep 100 
-    Goto loop 
-  done: 
-  Pop $0 
-  Pop $1
-FunctionEnd
-
+	${EndIf}
+FunctionEnd 

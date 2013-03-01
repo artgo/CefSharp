@@ -10,6 +10,7 @@
 !define APPEXEPATH "${APPDIR}\${APPEXE}"
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
 !define COPYFILES "/r /x Appy\ApplicationData\*.* Appy\*.*"
+!define APPLICATIONCLOSEMESSAGE "AppDirectForceApplicationCloseMessage"
 
 !define COPY64 "/r 64Bit\*.*"
 !define COPY32 "/r 32Bit\*.*"
