@@ -45,6 +45,7 @@ namespace AppDirect.WindowsClient
             AppSessionRefresher.Stop();
             TaskbarApi.Instance.RemoveTaskbarWindow();
             TaskbarApi.Cleanup();
+            System.Windows.Application.Current.Shutdown();
 
             base.OnExit(e);
         }

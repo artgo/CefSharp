@@ -1,5 +1,6 @@
 !define APPNAME "Appy"
 !define COMPANYNAME "AppDirect"
+!define COMPANYDISPLAYNAME "AppDirect Inc."
 !define APPDIR "$LOCALAPPDATA\${COMPANYNAME}\${APPNAME}"
 !define APPEXE "${APPNAME}.exe"
 !define UNINSTALLERNAME "uninstall.exe"
