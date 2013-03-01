@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using Gecko;
+using Screen = System.Windows.Forms.Screen;
 
 namespace AppDirect.WindowsClient.Browser.UI
 {
@@ -13,6 +14,10 @@ namespace AppDirect.WindowsClient.Browser.UI
         private GeckoWebBrowser _browser;
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
+        private int LastNonMaxHeight;
+        private int LastNonMaxWidth;
+        private int LastNonMaxTop;
+        private int LastNonMaxLeft;
 
         [DllImportAttribute("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
@@ -51,14 +56,24 @@ namespace AppDirect.WindowsClient.Browser.UI
         private void maximizeBtn_Click(object sender, System.EventArgs e)
         {
             var button = sender as Button;
-            if (WindowState == FormWindowState.Maximized)
+            if (Width == Screen.PrimaryScreen.WorkingArea.Width && Height == Screen.PrimaryScreen.WorkingArea.Height)
             {
-                WindowState = FormWindowState.Normal;
+                Left = LastNonMaxLeft;
+                Top = LastNonMaxTop;
+                Width = LastNonMaxWidth;
+                Height = LastNonMaxHeight;
                 button.Image = global::AppDirect.WindowsClient.Browser.Properties.Resources.fullScreen;
             }
             else
             {
-                WindowState = FormWindowState.Maximized;
+                LastNonMaxLeft = Left;
+                LastNonMaxTop = Top;
+                Left = 0;
+                Top = 0;
+                LastNonMaxWidth = Width;
+                LastNonMaxHeight = Height;
+                Width = Screen.PrimaryScreen.WorkingArea.Width;
+                Height = Screen.PrimaryScreen.WorkingArea.Height;
                 button.Image = global::AppDirect.WindowsClient.Browser.Properties.Resources.restoreDown;
             }
         }
