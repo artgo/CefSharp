@@ -96,7 +96,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             var pos = CalculateButtonPosition();
 
             var p = new HwndSourceParameters(
-                    "adButton.WPF",			// NAME
+                    "AppDirectTaskbarButtonsWindow",			// NAME
                     _buttonsWindowSize.Width,
                     _buttonsWindowSize.Height		// size of WPF window inside usual Win32 window
                 );
