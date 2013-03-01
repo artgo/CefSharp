@@ -25,10 +25,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private const string SmallIconsPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
         private const string SmallIconsFiledName = "TaskbarSmallIcons";
         private const int BuffSize = 256;
-        private const string StartButtonClass = "Button";
+        private const string StartButtonClass = @"Button";
         // win 7  default with large buttons
         private const int DefaultStartButtonWidth = 54;
         private const int DefaultStartButtonHeight = 40;
+        private const string CloseMessageName = @"AppDirectForceApplicationCloseMessage";
+        private const string WindowName = @"AppDirectTaskbarButtonsWindow";
         private readonly static bool IsVistaOrUp;
         private readonly static bool IsWin7OrUp;
         private readonly static bool IsWin8OrUp;
@@ -48,6 +50,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile HWND _rebarHwnd = NULL;
         private volatile HWND _startButtonHwnd = NULL;
         private volatile uint _updateMessageId = 0;
+        private volatile uint _closeMessageId = 0;
 
         public int TaskbarHeight { get { return _taskbarHeight; } }
         public TaskbarPosition TaskbarPosition { get { return _taskbarPosition; } }
@@ -72,6 +75,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             _buttonsWindowSize = GetButtonsWindowSize();
             _taskbarHeight = GetTaskbarHeight();
+            _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
         }
 
         public void Place(Control wnd, ITaskbarInterop notifyee, int initialWidth)
@@ -96,7 +100,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             var pos = CalculateButtonPosition();
 
             var p = new HwndSourceParameters(
-                    "adButton.WPF",			// NAME
+                    WindowName,			// NAME
                     _buttonsWindowSize.Width,
                     _buttonsWindowSize.Height		// size of WPF window inside usual Win32 window
                 );

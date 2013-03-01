@@ -174,20 +174,30 @@ namespace AppDirect.WindowsClient.UI
         {
             CurrentIconSize = newIconsSize;
 
-            foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
-            {
-                taskbarButton.ChangeIconSize(newIconsSize);
-            }
+            Helper.PerformInUiThread(() =>
+                {
+                    foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
+                    {
+                        taskbarButton.ChangeIconSize(newIconsSize);
+                    }
 
-            SetMainButtonIconSize(newIconsSize);
+                    SetMainButtonIconSize(newIconsSize);
 
-            NotifyTaskbarOfChange();
+                    NotifyTaskbarOfChange();
+                });
         }
 
         private void SetMainButtonIconSize(TaskbarIconsSize newIconsSize)
         {
-            MainButton.Height = newIconsSize == TaskbarIconsSize.Small ? MainIconSmallSize : MainIconLargeSize;
-            MainButton.Width = newIconsSize == TaskbarIconsSize.Small ? MainIconSmallSize : MainIconLargeSize;
+            Helper.PerformInUiThread(() =>
+                {
+                    MainButton.Height = newIconsSize == TaskbarIconsSize.Small
+                                            ? MainIconSmallSize
+                                            : MainIconLargeSize;
+                    MainButton.Width = newIconsSize == TaskbarIconsSize.Small
+                                           ? MainIconSmallSize
+                                           : MainIconLargeSize;
+                });
         }
 
         public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }
