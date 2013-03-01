@@ -1,5 +1,6 @@
 !define APPNAME "Appy"
 !define COMPANYNAME "AppDirect"
+!define COMPANYDISPLAYNAME "AppDirect Inc."
 !define APPDIR "$LOCALAPPDATA\${COMPANYNAME}\${APPNAME}"
 !define APPEXE "${APPNAME}.exe"
 !define UNINSTALLERNAME "uninstall.exe"
@@ -9,6 +10,8 @@
 !define APPEXEPATH "${APPDIR}\${APPEXE}"
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
 !define COPYFILES "/r /x Appy\ApplicationData\*.* Appy\*.*"
+!define APPCLOSEMESSAGE "AppDirectForceApplicationCloseMessage"
+!define APPWINDOWCLASSNAME "AppDirectTaskbarButtonsWindow"
 
 !define COPY64 "/r 64Bit\*.*"
 !define COPY32 "/r 32Bit\*.*"
