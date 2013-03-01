@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using Gecko;
 using Screen = System.Windows.Forms.Screen;
 
@@ -12,17 +13,12 @@ namespace AppDirect.WindowsClient.Browser.UI
     public partial class BrowserWindow : Form
     {
         private GeckoWebBrowser _browser;
-        private const int WM_NCLBUTTONDOWN = 0xA1;
-        private const int HT_CAPTION = 0x2;
+        //private const int WM_NCLBUTTONDOWN = 0xA1;
+        //private const int HT_CAPTION = 0x2;
         private int LastNonMaxHeight;
         private int LastNonMaxWidth;
         private int LastNonMaxTop;
         private int LastNonMaxLeft;
-
-        [DllImportAttribute("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [DllImport("user32.dll")]
-        public static extern bool ReleaseCapture();
 
         public string BrowserUrl { get; set; }
         private IAppDirectSession AppDirectSession { get; set; }
@@ -97,8 +93,8 @@ namespace AppDirect.WindowsClient.Browser.UI
         {
             if (e.Button == MouseButtons.Left)
             {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                User32Dll.ReleaseCapture();
+                User32Dll.SendMessage(Handle, (int)WM.NCLBUTTONDOWN, (int)WindowsHitTestConstants.HTCAPTION, 0);
             }
         }
     }

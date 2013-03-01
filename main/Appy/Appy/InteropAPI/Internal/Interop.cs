@@ -2096,6 +2096,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private User32Dll() { }
 
         [DllImport(User32DllName, CharSet = CharSet.Auto)]
+        public static extern bool ReleaseCapture();
+
+        [DllImport(User32DllName, CharSet = CharSet.Auto)]
         public static extern uint SendMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
 
         [DllImport(User32DllName, CharSet = CharSet.Auto)]
