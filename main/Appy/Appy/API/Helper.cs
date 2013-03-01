@@ -124,5 +124,23 @@ namespace AppDirect.WindowsClient.API
 
             return false;
         }
+
+        public static void PerformInUiThread(Action action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            var currentApplication = System.Windows.Application.Current;
+            if ((currentApplication == null) || (Thread.CurrentThread == currentApplication.Dispatcher.Thread))
+            {
+                action.Invoke();
+            }
+            else
+            {
+                currentApplication.Dispatcher.Invoke(action);
+            }
+        }
     }
 }

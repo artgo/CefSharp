@@ -63,5 +63,13 @@ namespace AppDirect.WindowsClient.Tests
 
             Assert.IsFalse(Helper.Authenticate());
         }
+
+        [Test]
+        public void PerformInUiThreadDoesPerformAnAction()
+        {
+            var test = false;
+            Helper.PerformInUiThread(() => { test = true; });
+            Assert.IsTrue(test);
+        }
     }
 }

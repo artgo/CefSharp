@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.InteropAPI;
 using Application = AppDirect.WindowsClient.Common.API.Application;
@@ -52,19 +41,22 @@ namespace AppDirect.WindowsClient.UI
 
         public void ChangeIconSize(TaskbarIconsSize newIconsSize)
         {
-            if (newIconsSize == TaskbarIconsSize.Large)
-            {
-                AppButton.Width = LargeIconSize;
-                AppButton.Height = LargeIconSize;
-            }
-            else
-            {
-                AppButton.Width = SmallIconSize;
-                AppButton.Height = SmallIconSize;
-            }
+            Helper.PerformInUiThread(() =>
+                {
+                    if (newIconsSize == TaskbarIconsSize.Large)
+                    {
+                        AppButton.Width = LargeIconSize;
+                        AppButton.Height = LargeIconSize;
+                    }
+                    else
+                    {
+                        AppButton.Width = SmallIconSize;
+                        AppButton.Height = SmallIconSize;
+                    }
 
-            Width = AppButton.Width + HorizontalMargin;
-            Height = AppButton.Height + VerticalMargin;
+                    Width = AppButton.Width + HorizontalMargin;
+                    Height = AppButton.Height + VerticalMargin;
+                });
         }
     }
 }
