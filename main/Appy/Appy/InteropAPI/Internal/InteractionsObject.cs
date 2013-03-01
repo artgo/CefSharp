@@ -38,6 +38,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private System.Drawing.Size _buttonsWindowSize;
         private volatile IntPtr _hWinEventHook = IntPtr.Zero;
         private volatile WinEventDelegate _winEventProc;
+        private volatile RegistryChangeHandler _smallIconsChangeProc;
         private volatile int _taskbarHeight = 0;
         private volatile int _buttonsWidth = 0;
         private volatile TaskbarPosition _taskbarPosition = TaskbarPosition.Bottom;
@@ -141,13 +142,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             
 
             // Hook resize event catcher
-			_winEventProc = new WinEventDelegate(WinEventDelegateImpl);
-            _hWinEventHook = User32Dll.SetWinEventHook((uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND - 1,
-                (uint)EventConstants.EVENT_SYSTEM_DRAGDROPEND + 1, NULL, _winEventProc,
+			_winEventProc = WinEventDelegateImpl;
+            _hWinEventHook = User32Dll.SetWinEventHook((uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND,
+                (uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND, NULL, _winEventProc,
                 taskbarProcessId, taskbarThreadId, (uint)(WinEventHookFlags.WINEVENT_OUTOFCONTEXT));
 
+            _smallIconsChangeProc = RegistryChangeHandler;
+
             _smallIconsRegistryMonitor = new RegistryChangeMonitor(SmallIconsPath);
-            _smallIconsRegistryMonitor.Changed += RegistryChangeHandler;
+            _smallIconsRegistryMonitor.Changed += _smallIconsChangeProc;
             _smallIconsRegistryMonitor.Start();
 
             _updateMessageId = NativeDll.GetUpdatePositionMsg();
@@ -205,7 +208,21 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private void RegistryChangeHandler(object sender, RegistryChangeEventArgs e)
         {
-            CheckIconSize();
+            bool updatePos = CheckIconSize();
+
+            if (updatePos)
+            {
+                UpdatePosition();
+            }
+
+            var newRebarCoords = CalculateRebarCoords(false);
+
+            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), (IntPtr)0,
+                                        newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width, newRebarCoords.Height,
+                                        0)) // move to correct coords
+            {
+                throw new InteropException("Cannot move Rebar back");
+            }
         }
 
         private TaskbarIconsSize GetTaskbarIconSize()
@@ -230,7 +247,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             switch ((EventConstants)eventType)
             {
                 case EventConstants.EVENT_SYSTEM_MOVESIZEEND:
-                case EventConstants.EVENT_SYSTEM_DRAGDROPEND:
                     IAccessible accWindow;
                     object varChild;
 
@@ -255,17 +271,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                         DoChangeWidth(_buttonsWidth, true);
                     }
 
+                    _buttonsWindowSize = GetButtonsWindowSize();
+
                     if (CheckIconSize())
                     {
                         updatePos = true;
                     }
 
-                    _buttonsWindowSize = GetButtonsWindowSize();
-                    var newHeight = GetTaskbarHeight();
-                    if (newHeight != _taskbarHeight)
+                    if (CheckUpdatePos())
                     {
-                        _taskbarHeight = newHeight;
-                        _notifyee.HeightChanged(newHeight);
                         updatePos = true;
                     }
 
@@ -276,6 +290,18 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
                     break;
             }
+        }
+
+        private bool CheckUpdatePos()
+        {
+            var newHeight = GetTaskbarHeight();
+            if (newHeight != _taskbarHeight)
+            {
+                _taskbarHeight = newHeight;
+                _notifyee.HeightChanged(newHeight);
+                return true;
+            }
+            return false;
         }
 
         private int GetTaskbarHeight()
@@ -309,7 +335,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
 
 			var offset2 = (IsWin8OrUp ? offset : ScreenFromWpf(offset, _taskbarHwnd));
-			uint f = (uint)(0
+			var f = (uint)(0
 				| SetWindowPosConstants.SWP_SHOWWINDOW
 				| SetWindowPosConstants.SWP_NOOWNERZORDER
 				| SetWindowPosConstants.SWP_NOACTIVATE

@@ -80,28 +80,12 @@ static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
 		std::unique_lock<std::mutex> lock(_mutex);
 
-		//std::wstringstream sstm;
-		//sstm << L"l: " << buttonsRect.left;
-		//sstm << L"\nt: " << buttonsRect.top;
-		//sstm << L"\nr: " << buttonsRect.right;
-		//sstm << L"\nb: " << buttonsRect.bottom;
-
-		//sstm << L"\np\nl: " << p->x;
-		//sstm << L"\nt: " << p->y;
-		//sstm << L"\nr: " << p->x + p->cx;
-		//sstm << L"\nb: " << p->y + p->cy;
-
-		//::MessageBox(NULL, sstm.str().c_str() , L"Changing", MB_OK);
-
 		if (buttonsRect.left < (p->x + p->cx) && buttonsRect.right  > p->x &&
 			buttonsRect.top  < (p->y + p->cy) && buttonsRect.bottom > p->y)
 		{
 			if (IsVertical())
 			{
 				const int deltaY = buttonsRect.bottom - p->y;
-				//std::wstringstream sstm2;
-				//sstm2 << L"y:" << deltaY;
-				//::MessageBox(NULL, sstm2.str().c_str(), L"Check2", MB_OK);
 				if (deltaY > 0)
 				{
 					p->y += deltaY;
@@ -111,9 +95,6 @@ static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 			else
 			{
 				const int deltaX = buttonsRect.right - p->x;
-				//std::wstringstream sstm2;
-				//sstm2 << L"x: " << deltaX;
-				//::MessageBox(NULL, sstm2.str().c_str(), L"Check3", MB_OK);
 				if (deltaX > 0)
 				{
 					p->x += deltaX;
@@ -127,7 +108,7 @@ static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 	else 
 	{
 		APPDIRECT_IPC_MESSAGES* messages = ((APPDIRECT_IPC_MESSAGES*)dwRefData);
-		if (uMsg == messages->ExitMessage)		// WM_adButtonsExit
+		if (uMsg == messages->ExitMessage)
 		{
 			if (g_bInitDone)
 			{
