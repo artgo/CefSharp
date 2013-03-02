@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -185,6 +186,16 @@ namespace AppDirect.WindowsClient.UI
 
                     NotifyTaskbarOfChange();
                 });
+        }
+
+        public void Shutdown()
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        public void Error(RegistryChangeEventArgs eventArgs)
+        {
+            throw eventArgs.Exception;
         }
 
         private void SetMainButtonIconSize(TaskbarIconsSize newIconsSize)

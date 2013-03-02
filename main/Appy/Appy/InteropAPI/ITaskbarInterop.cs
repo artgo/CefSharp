@@ -1,5 +1,10 @@
-﻿namespace AppDirect.WindowsClient.InteropAPI
+﻿using AppDirect.WindowsClient.InteropAPI.Internal;
+
+namespace AppDirect.WindowsClient.InteropAPI
 {
+    /// <summary>
+    /// This API needs to be implemented on UI and main code side to support taskbar buttons communications
+    /// </summary>
     public interface ITaskbarInterop
     {
         /// <summary>
@@ -19,6 +24,17 @@
         /// </summary>
         /// <param name="newIconsSize"></param>
         void TaskbarIconsSizeChanged(TaskbarIconsSize newIconsSize);
+
+        /// <summary>
+        /// System got request to shutdown
+        /// </summary>
+        void Shutdown();
+
+        /// <summary>
+        /// Exception occured
+        /// </summary>
+        /// <param name="eventArgs">Event details on exception</param>
+        void Error(RegistryChangeEventArgs eventArgs);
 
         /// <summary>
         /// Sets interface for callback events (we want to expand deskband)
