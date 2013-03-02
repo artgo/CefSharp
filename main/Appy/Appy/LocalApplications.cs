@@ -18,7 +18,9 @@ namespace AppDirect.WindowsClient
             LocalImagePath = "Icons/appStore-Icon.png",
             ImagePath = "Icons/appStore-Icon.png",
             Name = "Browse Apps",
-            UrlString = Properties.Resources.BaseAppStoreUrl
+            UrlString = Properties.Resources.BaseAppStoreUrl,
+            BrowserWidth = 1072,
+            BrowserHeight = 830
         };
 
         public static List<Application> LocalApplicationsList
@@ -90,7 +92,9 @@ namespace AppDirect.WindowsClient
                         LocalImagePath = "Icons/pinterest.png",
                         ImagePath = "Icons/pinterest.png",
                         Name = "Pinterest",
-                        UrlString = "http://www.Pinterest.com"
+                        UrlString = "http://www.Pinterest.com",
+                        BrowserHeight = 700,
+                        BrowserWidth = 1100
                     }, 
                     new LocalApplication()
                     {
@@ -126,7 +130,9 @@ namespace AppDirect.WindowsClient
                         LocalImagePath = "Icons/Instagram.png",
                         ImagePath = "Icons/Instagram.png",
                         Name = "Instagram",
-                        UrlString = "http://www.Instagram.com"
+                        UrlString = "http://www.Instagram.com",
+                        BrowserHeight = 700,
+                        BrowserWidth = 800
                     }, 
                     new LocalApplication()
                     {
@@ -179,7 +185,9 @@ namespace AppDirect.WindowsClient
                         LocalImagePath = "Icons/WeatherChannel.png",
                         ImagePath = "Icons/WeatherChannel.png",
                         Name = "Weather Channel",
-                        UrlString = "http://www.WeatherChannel.com"
+                        UrlString = "http://www.WeatherChannel.com",
+                        BrowserHeight = 900,
+                        BrowserWidth = 1100
                     },
                     new LocalApplication()
                     {

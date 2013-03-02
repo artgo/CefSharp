@@ -14,6 +14,11 @@ namespace AppDirect.WindowsClient.Tests
     [TestFixture]
     public class HelperTests
     {
+        private static string username = "Username";
+        private static string password = "Password";
+        private static string usernameBad = "UsernameBad";
+        private static string passwordBad = "PasswordBad";
+
         [Test]
         [STAThread]
         public void GetClickedAppFromContextMenuReturnsApp()
@@ -28,40 +33,29 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void AuthenticateReturnsTrueForValidCredentials()
         {
-            var username = "Username";
-            var password = "Password";
-
-            var localStorage = new LocalStorage();
-            localStorage.SetCredentials(username, password);
-
-            var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
-            cachedAppDirectApiMock.Authenticate(username, password).Returns(true);
-
-            var kernel = ServiceLocator.Kernel;
-            kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
-            kernel.Bind<LocalStorage>().ToConstant(localStorage);
-
+            ServiceLocator.LocalStorage.SetCredentials(username, password);
             Assert.IsTrue(Helper.Authenticate());
         }
-
 
         [Test]
         public void AuthenticateReturnsFalseForInvalidCredentials()
         {
-            var username = "Username";
-            var password = "Password";
-            
+            ServiceLocator.LocalStorage.SetCredentials(usernameBad, passwordBad);
+            Assert.IsFalse(Helper.Authenticate());
+        }
+
+        [TestFixtureSetUp]
+        public void InitializeAuthenticationTest()
+        {
             var localStorage = new LocalStorage();
-            localStorage.SetCredentials(username, password);
 
             var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
-            cachedAppDirectApiMock.Authenticate(username, password).Returns(false);
+            cachedAppDirectApiMock.Authenticate(username, password).Returns(true);
+            cachedAppDirectApiMock.Authenticate(usernameBad, passwordBad).Returns(false);
 
             var kernel = ServiceLocator.Kernel;
             kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
             kernel.Bind<LocalStorage>().ToConstant(localStorage);
-
-            Assert.IsFalse(Helper.Authenticate());
         }
 
         [Test]

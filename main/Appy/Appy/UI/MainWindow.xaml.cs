@@ -23,17 +23,15 @@ namespace AppDirect.WindowsClient.UI
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
         public EventHandler PinToTaskbarClickNotifier;
-        
-        public MainViewModel ViewModel
-        {
-            get { return DataContext as MainViewModel; }
-        }
+
+        public MainViewModel ViewModel { get; set; }
 
         public MainWindow(MainViewModel mainViewModel)
         {
             try
             {
                 DataContext = mainViewModel;
+                ViewModel = mainViewModel;
             }
             catch (Exception e)
             {

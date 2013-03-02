@@ -50,6 +50,7 @@ namespace AppDirect.WindowsClient.Tests
         {
             ServiceLocator.LocalStorage.ClearAllStoredData();
             _mainViewModel = new MainViewModel();
+            _mainViewModel.InitializeAppsLists();
         }
         
         #region Constructor Tests

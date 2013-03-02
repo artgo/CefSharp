@@ -8,11 +8,15 @@ namespace AppDirect.WindowsClient.Tests
     [TestFixture]
     public class ServiceLocatorTest
     {
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            ServiceLocator.Initialize();
+        }
+
         [Test]
         public void ReturnsAlwaysTheSameObject()
         {
-            ServiceLocator.Initialize();
-
             var api1 = ServiceLocator.CachedAppDirectApi;
             var api2 = ServiceLocator.CachedAppDirectApi;
 
@@ -22,8 +26,6 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void AppDirectApiIsTheSame()
         {
-            ServiceLocator.Initialize();
-
             var api1 = ServiceLocator.Kernel.Get<IAppDirectApi>();
             var api2 = ServiceLocator.Kernel.Get<IAppDirectApi>();
 
@@ -33,8 +35,6 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void LocalStorageIsTheSame()
         {
-            ServiceLocator.Initialize();
-
             var localStorage1 = ServiceLocator.LocalStorage;
             var localStorage2 = ServiceLocator.LocalStorage;
 
