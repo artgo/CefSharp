@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
-using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
 using NUnit.Framework;
 
-namespace AppDirect.WindowsClient.Tests
+namespace AppDirect.WindowsClient.Tests.UnitTests
 {
     [TestFixture]
     public class LocalStorageUnitTest

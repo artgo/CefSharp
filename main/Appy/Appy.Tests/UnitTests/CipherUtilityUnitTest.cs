@@ -1,8 +1,7 @@
-﻿using System;
-using AppDirect.WindowsClient.Storage;
+﻿using AppDirect.WindowsClient.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AppDirect.WindowsClient.Tests
+namespace AppDirect.WindowsClient.Tests.UnitTests
 {
     [TestClass]
     public class CipherUtilityUnitTest
