@@ -10,6 +10,8 @@ namespace AppDirect.WindowsClient
     /// </summary>
     public partial class App : System.Windows.Application
     {
+        private MainWindow _mainWindow;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             try
@@ -27,11 +29,11 @@ namespace AppDirect.WindowsClient
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
             mainViewModel.SyncAppsWithApi();
-            var mainWindow = new MainWindow(mainViewModel);
-            UpdateDownloader.Start(mainWindow);
-            AppSessionRefresher.Start(mainWindow);
-            
-            var taskbarPanel = new TaskbarPanel(mainWindow);
+            _mainWindow = new MainWindow(mainViewModel);
+            UpdateDownloader.Start(_mainWindow);
+            AppSessionRefresher.Start(_mainWindow);
+
+            var taskbarPanel = new TaskbarPanel(_mainWindow);
             taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
             TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, (int)taskbarPanel.Width);
 
@@ -47,6 +49,11 @@ namespace AppDirect.WindowsClient
             TaskbarApi.Cleanup();
 
             base.OnExit(e);
+        }
+
+        private void App_OnDeactivated(object sender, EventArgs e)
+        {
+            _mainWindow.Hide();
         }
     }
 }
