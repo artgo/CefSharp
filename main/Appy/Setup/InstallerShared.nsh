@@ -25,15 +25,11 @@ AutoCloseWindow true
 ;--------------------------------
 
 !macro WaitForDead
-;Processes::FindProcess sets $R0 to "1" if the process is found 
 loop:
-  IntOp $0 $0 + 1
-  Processes::FindProcess "${APPNAME}.Browser.exe"
-  ${If} $R0 == "0"
-  Processes::FindProcess "${APPEXE}"
-  StrCmp $R0 "0" done
-  StrCmp $0 "100" message	
-  ${EndIf}	
+  IntOp $R0 $R0 + 1
+  FindWindow $0 "" "${APPWINDOWCLASSNAME}"
+  StrCmp $0 "0" done
+  StrCmp $R0 "100" message	
   Sleep 200
   Goto loop
   message:

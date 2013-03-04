@@ -176,6 +176,9 @@
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
     <Compile Include="UI\AppSessionRefresher.cs" />
+    <Compile Include="UI\Spinner.xaml.cs">
+      <DependentUpon>Spinner.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\TaskbarPanel.xaml.cs">
       <DependentUpon>TaskbarPanel.xaml</DependentUpon>
     </Compile>
@@ -369,6 +372,10 @@
     <Resource Include="UI\Images\FeaturedMaskClick.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Spinner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\TaskbarPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
