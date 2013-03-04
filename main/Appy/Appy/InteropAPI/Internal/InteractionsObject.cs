@@ -23,7 +23,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private static readonly IntPtr NULL = IntPtr.Zero;
         private readonly object _lockObject = new object();
         private const string SmallIconsPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
-        private const string SmallIconsFiledName = "TaskbarSmallIcons";
+        private const string SmallIconsFiledName = @"TaskbarSmallIcons";
         private const int BuffSize = 256;
         private const string StartButtonClass = @"Button";
         // win 7  default with large buttons
@@ -41,6 +41,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile IntPtr _hWinEventHook = IntPtr.Zero;
         private volatile WinEventDelegate _winEventProc;
         private volatile RegistryChangeHandler _smallIconsChangeProc;
+        private volatile RegistryChangeHandler _smallIconsChangeProcError;
+        private volatile HwndSourceHook _wndProcHook;
         private volatile int _taskbarHeight = 0;
         private volatile int _buttonsWidth = 0;
         private volatile TaskbarPosition _taskbarPosition = TaskbarPosition.Bottom;
@@ -75,7 +77,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             _buttonsWindowSize = GetButtonsWindowSize();
             _taskbarHeight = GetTaskbarHeight();
-            _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
         }
 
         public void Place(Control wnd, ITaskbarInterop notifyee, int initialWidth)
@@ -96,6 +97,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _buttonsWindowSize.Width = initialWidth;
             _buttonsWidth = initialWidth;
             UpdateHandles();
+            _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
 
             var pos = CalculateButtonPosition();
 
@@ -133,8 +135,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _hSrc = new HwndSource(p);
             _hSrc.RootVisual = wnd;
 
-            // TODO: -1 remove if unneeded
-            //_hSrc.AddHook(WndProc);		// handle custom WM_
+            _wndProcHook = WndProc;
+            _hSrc.AddHook(_wndProcHook);
 
             DoChangeWidth(_buttonsWidth, true);
 
@@ -152,9 +154,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 taskbarProcessId, taskbarThreadId, (uint)(WinEventHookFlags.WINEVENT_OUTOFCONTEXT));
 
             _smallIconsChangeProc = RegistryChangeHandler;
+            _smallIconsChangeProcError = RegistryChangeErrorHandler;
 
             _smallIconsRegistryMonitor = new RegistryChangeMonitor(SmallIconsPath);
             _smallIconsRegistryMonitor.Changed += _smallIconsChangeProc;
+            _smallIconsRegistryMonitor.Error += _smallIconsChangeProcError;
             _smallIconsRegistryMonitor.Start();
 
             _updateMessageId = NativeDll.GetUpdatePositionMsg();
@@ -227,6 +231,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 throw new InteropException("Cannot move Rebar back");
             }
+        }
+
+        private void RegistryChangeErrorHandler(object sender, RegistryChangeEventArgs e)
+        {
+            _notifyee.Error(e);
         }
 
         private TaskbarIconsSize GetTaskbarIconSize()
@@ -459,7 +468,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            // Handle messages...
+            if (msg == _closeMessageId)
+            {
+                _notifyee.Shutdown();
+            }
 
             return NULL;
         }
