@@ -201,6 +201,11 @@ namespace AppDirect.WindowsClient.UI
         {
             PinToTaskbarClickNotifier.Invoke(sender,e);
         }
+
+        private void MainWindow_Deactivated(object sender, EventArgs eventArgs)
+        {
+            Hide();
+        }
     }
 }
     

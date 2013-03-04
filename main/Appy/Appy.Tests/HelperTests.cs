@@ -14,10 +14,10 @@ namespace AppDirect.WindowsClient.Tests
     [TestFixture]
     public class HelperTests
     {
-        private static string username = "Username";
-        private static string password = "Password";
-        private static string usernameBad = "UsernameBad";
-        private static string passwordBad = "PasswordBad";
+        private const string Username = "Username";
+        private const string Password = "Password";
+        private const string UsernameBad = "UsernameBad";
+        private const string PasswordBad = "PasswordBad";
 
         [Test]
         [STAThread]
@@ -33,14 +33,14 @@ namespace AppDirect.WindowsClient.Tests
         [Test]
         public void AuthenticateReturnsTrueForValidCredentials()
         {
-            ServiceLocator.LocalStorage.SetCredentials(username, password);
+            ServiceLocator.LocalStorage.SetCredentials(Username, Password);
             Assert.IsTrue(Helper.Authenticate());
         }
 
         [Test]
         public void AuthenticateReturnsFalseForInvalidCredentials()
         {
-            ServiceLocator.LocalStorage.SetCredentials(usernameBad, passwordBad);
+            ServiceLocator.LocalStorage.SetCredentials(UsernameBad, PasswordBad);
             Assert.IsFalse(Helper.Authenticate());
         }
 
@@ -50,8 +50,8 @@ namespace AppDirect.WindowsClient.Tests
             var localStorage = new LocalStorage();
 
             var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
-            cachedAppDirectApiMock.Authenticate(username, password).Returns(true);
-            cachedAppDirectApiMock.Authenticate(usernameBad, passwordBad).Returns(false);
+            cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
+            cachedAppDirectApiMock.Authenticate(UsernameBad, PasswordBad).Returns(false);
 
             var kernel = ServiceLocator.Kernel;
             kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);

@@ -8,7 +8,7 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Closing="MainWindow_OnClosing"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False" Deactivated="MainWindow_Deactivated">
     <Window.Resources>
         <Style x:Key="MenuItemSeparator" TargetType="Separator">
             <Setter Property="Margin" Value="0,-1,0,-1" />
