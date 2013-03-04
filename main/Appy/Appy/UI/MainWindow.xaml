@@ -8,7 +8,7 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Closing="MainWindow_OnClosing"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False" >
     <Window.Resources>
         <Style x:Key="MenuItemSeparator" TargetType="Separator">
             <Setter Property="Margin" Value="0,-1,0,-1" />
@@ -82,7 +82,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="MenuItem">
-                        <Border>
+                        <Border Background="Transparent">
                             <Grid Name="MenuItemGrid" Height="25">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="25" />
@@ -115,10 +115,13 @@
                     <ControlTemplate TargetType="MenuItem">
                         <Border Name="Border">
                             <Grid>
-                                <ContentPresenter
+                                <ContentPresenter Name="Content"
                                     Margin="6,3,6,3"
-                                    ContentSource="Icon"
-                                    RecognizesAccessKey="True" />
+                                    RecognizesAccessKey="True" >
+                                    <ContentPresenter.Content>
+                                        <Image Name="Icon" Source="Images/cogGrey.png" Width="16"></Image>
+                                    </ContentPresenter.Content>
+                                </ContentPresenter>
                                 <Popup
                                     Name="Popup"
                                     Placement="Left"
@@ -140,18 +143,15 @@
                             <Trigger Property="IsSuspendingPopupAnimation" Value="true">
                                 <Setter TargetName="Popup" Property="PopupAnimation" Value="None" />
                             </Trigger>
-                            <!--<Trigger Property="IsHighlighted" Value="true">
-                                <Setter TargetName="" Property=""
-              Value="{StaticResource ErrorTextColor}" />
-                                <Setter TargetName="Border" Property="BorderBrush"
-              Value="Transparent" />
-                            </Trigger>-->
                             <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="True">
                                 <Setter TargetName="SubmenuBorder" Property="CornerRadius" Value="0,0,0,0" />
                                 <Setter TargetName="SubmenuBorder" Property="Padding" Value="0,0,0,0" />
                             </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Foreground" Value="{StaticResource DisabledColor}" />
+                            <Trigger SourceName="Content" Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Icon" Property="Source" Value="Images/cogWhite.png " />
+                            </Trigger>
+                            <Trigger Property="IsSubmenuOpen" Value="True">
+                                <Setter TargetName="Icon" Property="Source" Value="Images/cogWhite.png " />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -515,9 +515,6 @@
                 <Menu Name="SettingsMenu" Background="Transparent" Grid.Column="4" VerticalAlignment="Center"
                       HorizontalAlignment="Right" Width="30">
                     <MenuItem Style="{StaticResource TopLevelMenuItem}">
-                        <MenuItem.Icon>
-                            <Image Source="Images/cogGrey.png" Width="16"></Image>
-                        </MenuItem.Icon>
                         <MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateMenuItem"
                                   Header="{Binding UpdateString}" Click="UpdateButtonOnClick">
                             <MenuItem.Icon>

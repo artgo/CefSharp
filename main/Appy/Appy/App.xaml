@@ -1,7 +1,7 @@
 ﻿<Application x:Class="AppDirect.WindowsClient.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:ui="clr-namespace:AppDirect.WindowsClient.UI">
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:ui="clr-namespace:AppDirect.WindowsClient.UI" Deactivated="App_OnDeactivated">
     <Application.Resources>
         <sys:Double x:Key="WindowHeight">330</sys:Double>
         <sys:Double x:Key="WindowWidth">680</sys:Double>
@@ -68,7 +68,7 @@
         </ToolTip>
         <Style x:Key="WaterMarkTextBlock" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
             <Setter Property="Opacity" Value="0.7" />
-            <Setter Property="FontSize" Value="10"></Setter>
+            <Setter Property="FontSize" Value="12"></Setter>
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Margin" Value="10,0,0,0" />
@@ -86,7 +86,6 @@
         <Style x:Key="TextStyleBold" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
-       
         <Style x:Key="LeftMenu" TargetType="TabItem">
             <Setter Property="Template">
                 <Setter.Value>
@@ -167,7 +166,7 @@
                         <Grid>
                             <StackPanel Orientation="Horizontal" >
                                 <Image Name="BackImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="UI\Images\back.png" Width="30" />
-                                <TextBlock Name="BackText" Margin="8,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Center" FontSize="10">Back to My Apps</TextBlock>
+                                <TextBlock Name="BackText" Margin="8,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Center" >Back to My Apps</TextBlock>
                             </StackPanel>
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -185,7 +184,7 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
             <Setter Property="FontWeight" Value="Bold"></Setter>
-            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="Background">
                 <Setter.Value>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">

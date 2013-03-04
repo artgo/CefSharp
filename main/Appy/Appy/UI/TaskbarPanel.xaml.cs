@@ -138,13 +138,10 @@ namespace AppDirect.WindowsClient.UI
 
         private void AppButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ApplicationWindow.Visibility == Visibility.Visible)
-            {
-                ApplicationWindow.Visibility = Visibility.Collapsed;
-            }
-            else
+            if (ApplicationWindow.Visibility != Visibility.Visible || !ApplicationWindow.Topmost)
             {
                 ApplicationWindow.Show();
+                ApplicationWindow.Topmost = true;
             }
         }
 
