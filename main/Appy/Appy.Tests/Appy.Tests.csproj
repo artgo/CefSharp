@@ -104,16 +104,16 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AppDirectApiUnitTest.cs" />
-    <Compile Include="HelperTests.cs" />
-    <Compile Include="LocalStorageUnitTest.cs" />
-    <Compile Include="MainViewModelUnitTest.cs" />
+    <Compile Include="UnitTests\AppDirectApiUnitTest.cs" />
+    <Compile Include="UnitTests\HelperTests.cs" />
+    <Compile Include="UnitTests\LocalStorageUnitTest.cs" />
+    <Compile Include="UnitTests\MainViewModelUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CachedAppDirectApiUnitTest.cs" />
-    <Compile Include="ServiceLocatorTest.cs" />
-    <Compile Include="CipherUtilityUnitTest.cs" />
+    <Compile Include="UnitTests\CachedAppDirectApiUnitTest.cs" />
+    <Compile Include="UnitTests\ServiceLocatorTest.cs" />
+    <Compile Include="UnitTests\CipherUtilityUnitTest.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="ApplicationUnitTest.cs" />
+    <Compile Include="UnitTests\ApplicationUnitTest.cs" />
     <Compile Include="UI\RegistrationViewTest.cs" />
     <Compile Include="UI\UnitTest1.cs" />
   </ItemGroup>

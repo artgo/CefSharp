@@ -1,7 +1,7 @@
 ﻿using AppDirect.WindowsClient.API;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AppDirect.WindowsClient.Tests
+namespace AppDirect.WindowsClient.Tests.UnitTests
 {
     [TestClass]
     public class AppDirectApiUnitTest

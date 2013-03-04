@@ -1,9 +1,8 @@
-﻿using System;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using NUnit.Framework;
 using Ninject;
 
-namespace AppDirect.WindowsClient.Tests
+namespace AppDirect.WindowsClient.Tests.UnitTests
 {
     [TestFixture]
     public class ServiceLocatorTest

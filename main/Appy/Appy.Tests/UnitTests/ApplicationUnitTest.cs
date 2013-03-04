@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace AppDirect.WindowsClient.Tests
+namespace AppDirect.WindowsClient.Tests.UnitTests
 {
     [TestClass]
     public class ApplicationUnitTest

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
@@ -9,15 +8,13 @@ using AppDirect.WindowsClient.UI;
 using NUnit.Framework;
 using NSubstitute;
 
-namespace AppDirect.WindowsClient.Tests
+namespace AppDirect.WindowsClient.Tests.UnitTests
 {
     [TestFixture]
     public class MainViewModelUnitTest
     {
         private volatile MainViewModel _mainViewModel;
-
-        private readonly FileInfo File = new FileInfo(TestData.FileName);
-
+        
         private const string Username = TestData.TestUsername;
         private const string Password = TestData.TestPassword;
         private const string BadPassword = "BadPassword";
@@ -40,12 +37,11 @@ namespace AppDirect.WindowsClient.Tests
             cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
 
             var kernel = ServiceLocator.Kernel;
-            kernel.Bind<IAppDirectApi>().ToConstant(appDirectApiMock);
-            kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
-            kernel.Bind<LocalStorage>().ToConstant(localStorage);
+            kernel.Rebind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
+            kernel.Rebind<LocalStorage>().ToConstant(localStorage);
 
         }
-
+        
         private void InitializeTests()
         {
             ServiceLocator.LocalStorage.ClearAllStoredData();

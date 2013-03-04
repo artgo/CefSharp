@@ -21,8 +21,8 @@ namespace AppDirect.WindowsClient.Tests.UI
                 _cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
 
                 var kernel = ServiceLocator.Kernel;
-                kernel.Bind<IAppDirectApi>().ToConstant(_appDirectApiMock);
-                kernel.Bind<ICachedAppDirectApi>().ToConstant(_cachedAppDirectApiMock);
+                kernel.Rebind<IAppDirectApi>().ToConstant(_appDirectApiMock);
+                kernel.Rebind<ICachedAppDirectApi>().ToConstant(_cachedAppDirectApiMock);
             }
         }
 

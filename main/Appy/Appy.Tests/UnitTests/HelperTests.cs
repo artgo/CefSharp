@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Controls;
 using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Storage;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace AppDirect.WindowsClient.Tests
+namespace AppDirect.WindowsClient.Tests.UnitTests
 {
     [TestFixture]
     public class HelperTests
@@ -54,8 +50,8 @@ namespace AppDirect.WindowsClient.Tests
             cachedAppDirectApiMock.Authenticate(UsernameBad, PasswordBad).Returns(false);
 
             var kernel = ServiceLocator.Kernel;
-            kernel.Bind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
-            kernel.Bind<LocalStorage>().ToConstant(localStorage);
+            kernel.Rebind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
+            kernel.Rebind<LocalStorage>().ToConstant(localStorage);
         }
 
         [Test]
