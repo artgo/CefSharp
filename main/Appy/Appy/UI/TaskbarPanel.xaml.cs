@@ -16,6 +16,7 @@ namespace AppDirect.WindowsClient.UI
     {
         public TaskbarPanelViewModel ViewModel { get; set; }
         public const int DeskbandInitialSize = 40;
+        public const int DefaultPanelWidth = 20;
 
         public TaskbarIconsSize CurrentIconSize { get; set; }
         
@@ -93,13 +94,26 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (ButtonContainer.Orientation == Orientation.Horizontal)
                 {
-                    TaskbarCallbackEvents.ChangeWidth((int) Width);
+                    TaskbarCallbackEvents.ChangeWidth(GetCurrentWidth());
                 }
                 else
                 {
                     TaskbarCallbackEvents.ChangeWidth((int) Height);
                 }
             }
+        }
+
+        private int GetCurrentWidth()
+        {
+            double totalWidth = DefaultPanelWidth;
+            totalWidth += MainButton.Width;
+
+            foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
+            {
+                totalWidth += taskbarButton.Width;
+            }
+
+            return (int)totalWidth;
         }
 
         private void RemoveButton(Application application)
