@@ -127,25 +127,25 @@
     <value>https://test.appdirect.com</value>
   </data>
   <data name="CheckingForUpdatesString" xml:space="preserve">
-    <value>Checking For Updates</value>
+    <value>Checking for updates</value>
   </data>
   <data name="CredentialsProblemError" xml:space="preserve">
     <value>Incorrect Username or Password</value>
   </data>
   <data name="DownloadingUpdatesString" xml:space="preserve">
-    <value>Downloading Updates</value>
+    <value>Downloading updates</value>
   </data>
   <data name="ForgotPasswordUrlString" xml:space="preserve">
     <value>https://www.appdirect.com/forgotPassword</value>
   </data>
   <data name="GetUpdateString" xml:space="preserve">
-    <value>Check For Updates</value>
+    <value>Check for updates</value>
   </data>
   <data name="InstallAppTarget" xml:space="preserve">
     <value>https://test.appdirect.com/apps/</value>
   </data>
   <data name="InstallUpdateString" xml:space="preserve">
-    <value>Install Updates Now</value>
+    <value>Install updates now</value>
   </data>
   <data name="LoginHeader" xml:space="preserve">
     <value>To use {0}, please log in</value>
@@ -157,7 +157,7 @@
     <value>Network Error. Please check your internet connection.</value>
   </data>
   <data name="NoUpdateFoundString" xml:space="preserve">
-    <value>Program Is Up-To-Date</value>
+    <value>Program is up-to-date</value>
   </data>
   <data name="RegisterEmailUrl" xml:space="preserve">
     <value>/signupService?email={0}</value>
@@ -166,7 +166,7 @@
     <value>Contact your administrator to uninstall this application</value>
   </data>
   <data name="UpdateAvailableString" xml:space="preserve">
-    <value>Update Available!</value>
+    <value>Update available!</value>
   </data>
   <data name="UpdateFileUrl" xml:space="preserve">
     <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/updater.exe</value>

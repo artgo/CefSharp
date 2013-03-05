@@ -88,7 +88,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checking For Updates.
+        ///   Looks up a localized string similar to Checking for updates.
         /// </summary>
         internal static string CheckingForUpdatesString {
             get {
@@ -106,7 +106,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloading Updates.
+        ///   Looks up a localized string similar to Downloading updates.
         /// </summary>
         internal static string DownloadingUpdatesString {
             get {
@@ -124,7 +124,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check For Updates.
+        ///   Looks up a localized string similar to Check for updates.
         /// </summary>
         internal static string GetUpdateString {
             get {
@@ -142,7 +142,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install Updates Now.
+        ///   Looks up a localized string similar to Install updates now.
         /// </summary>
         internal static string InstallUpdateString {
             get {
@@ -178,7 +178,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Program Is Up-To-Date.
+        ///   Looks up a localized string similar to Program is up-to-date.
         /// </summary>
         internal static string NoUpdateFoundString {
             get {
@@ -205,7 +205,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update Available!.
+        ///   Looks up a localized string similar to Update available!.
         /// </summary>
         internal static string UpdateAvailableString {
             get {

@@ -96,14 +96,5 @@ Function .onInstSuccess
 FunctionEnd
 
 Function .onInit
-	System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
-	FindWindow $0 "" "${APPWINDOWCLASSNAME}"
-	MessageBox MB_OK "$3" 
-	${If} $0 != "0"
-	MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
-      Abort
-    gogogo:
-	SendMessage $0 $3 0 0
-	!insertmacro WaitForDead
-	${EndIf}
+  !insertmacro CloseApplicationIfRunning
 FunctionEnd 

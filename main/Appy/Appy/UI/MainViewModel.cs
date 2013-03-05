@@ -516,27 +516,13 @@ namespace AppDirect.WindowsClient.UI
         {
             Thread.Sleep(1000);
 
-            var updateAvailable = false;
-
-            try
-            {
-                updateAvailable = ServiceLocator.Updater.CheckVersion(Helper.ApplicationVersion);
-            }
-            catch (Exception)
-            {
-            }
-
-            if (updateAvailable)
-            {
-                UpdateString = "Downloading Updates";
-                ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
-            }
-
+            var updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
+            
             Helper.PerformInUiThread(() =>
                 {
                     UpdateString = updateAvailable ? Resources.InstallUpdateString : Resources.NoUpdateFoundString;
                     UpdateSpinnerVisibility = Visibility.Hidden;
-                    UpdateAvailableVisibility = Visibility.Visible;
+                    UpdateAvailableVisibility = updateAvailable ? Visibility.Visible : Visibility.Collapsed;
                 });
         }
 

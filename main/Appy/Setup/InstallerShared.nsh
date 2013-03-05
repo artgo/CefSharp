@@ -38,8 +38,19 @@ loop:
 done:
 !macroend
 
-!macro CopyFiles
- 
+!macro CloseApplicationIfRunning
+  System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
+  FindWindow $0 "" "${APPWINDOWCLASSNAME}"
+  ${If} $0 != "0"
+  MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
+    Abort
+  gogogo:
+  SendMessage $0 $3 0 0
+  !insertmacro WaitForDead
+  ${EndIf}
+!macroend
+
+!macro CopyFiles 
   ; Files to copy
   File ${COPYFILES}
   
@@ -51,6 +62,6 @@ done:
   
   Is64Bit:
   File ${COPY64}
-
+  
 ENDCOPY:    
 !macroend

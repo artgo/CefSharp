@@ -51,10 +51,9 @@ namespace AppDirect.WindowsClient.Updates
         /// Attempts to run updater.  If the process can not be started (Process.Start throws an exception) or the process starts successfully, the value of the UpdateDownloaded switch is set to false
         /// </summary>
         /// <param name="currentVersion"></param>
-        /// <returns>return true if updates appear to be running successfully</returns>
-        public bool InstallUpdates()
+        /// <returns></returns>
+        public void InstallUpdates()
         {
-            bool updateRunning = false;
             try
             {
                 ProcessStartInfo start = new ProcessStartInfo();
@@ -68,21 +67,16 @@ namespace AppDirect.WindowsClient.Updates
                     start.Verb = "runas";
                 }
                 Process.Start(start);
-
-                updateRunning = true;
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
-                updateRunning = false;
             }
             finally
             {
                 ServiceLocator.LocalStorage.UpdateDownloaded = false;
                 ServiceLocator.LocalStorage.SaveAppSettings();
             }
-
-            return updateRunning;
         }
 
         /// <summary>

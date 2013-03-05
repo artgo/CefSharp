@@ -596,7 +596,7 @@
                                 </Grid>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Name="LogOutMenuItem" Style="{StaticResource SubMenuItem}" Header="Log Out"
+                        <MenuItem Name="LogOutMenuItem" Style="{StaticResource SubMenuItem}" Header="Log out"
                                   Click="Logout_Click" Visibility="{Binding LogOutVisibility}">
                             <MenuItem.Icon>
                                 <Image Source="Images/logout.png" Width="12" />
