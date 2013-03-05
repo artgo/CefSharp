@@ -30,7 +30,6 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         [TestFixtureSetUp]
         public void SetUpForTests()
         {
-            var appDirectApiMock = Substitute.For<IAppDirectApi>();
             var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
 
             var localStorage = new LocalStorage();
