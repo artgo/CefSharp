@@ -168,19 +168,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
-            if (ServiceLocator.LocalStorage.UpdateDownloaded)
-            {
-                ServiceLocator.Updater.InstallUpdates();
-
-                if (System.Windows.Application.Current != null)
-                {
-                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(Close));
-                }
-            }
-            else
-            {
-                ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
-            }
+            ViewModel.UpdateClick(sender);           
         }
         
         private void MainWindow_OnClosing(object o, CancelEventArgs e)
@@ -200,6 +188,16 @@ namespace AppDirect.WindowsClient.UI
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)
         {
             PinToTaskbarClickNotifier.Invoke(sender,e);
+        }
+
+        private void Settings_OnSubmenuClosed(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ResetUpdateText();
+        }
+
+        private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ShowAboutDialog();
         }
     }
 }

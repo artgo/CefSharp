@@ -88,11 +88,29 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checking For Updates.
+        /// </summary>
+        internal static string CheckingForUpdatesString {
+            get {
+                return ResourceManager.GetString("CheckingForUpdatesString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incorrect Username or Password.
         /// </summary>
         internal static string CredentialsProblemError {
             get {
                 return ResourceManager.GetString("CredentialsProblemError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading Updates.
+        /// </summary>
+        internal static string DownloadingUpdatesString {
+            get {
+                return ResourceManager.GetString("DownloadingUpdatesString", resourceCulture);
             }
         }
         
@@ -124,7 +142,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install Updates.
+        ///   Looks up a localized string similar to Install Updates Now.
         /// </summary>
         internal static string InstallUpdateString {
             get {
@@ -160,6 +178,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Program Is Up-To-Date.
+        /// </summary>
+        internal static string NoUpdateFoundString {
+            get {
+                return ResourceManager.GetString("NoUpdateFoundString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /signupService?email={0}.
         /// </summary>
         internal static string RegisterEmailUrl {
@@ -174,6 +201,15 @@ namespace AppDirect.WindowsClient.Properties {
         internal static string UninstallAppDirectApp {
             get {
                 return ResourceManager.GetString("UninstallAppDirectApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Available!.
+        /// </summary>
+        internal static string UpdateAvailableString {
+            get {
+                return ResourceManager.GetString("UpdateAvailableString", resourceCulture);
             }
         }
         

@@ -15,14 +15,14 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ProgressBar">
                         <Grid>
-                            <ProgressBar x:Name="pgBar" Value="{TemplateBinding Value}" Visibility="Collapsed" IsIndeterminate="{TemplateBinding IsIndeterminate}"/>
+                            <ProgressBar x:Name="pgBar" Value="{TemplateBinding Value}" Visibility="Collapsed" IsIndeterminate="{TemplateBinding IsIndeterminate}" Background="{StaticResource MenuItemColor}"/>
                             <TextBox Background="Red" Text="{Binding ElementName=pgBar, Path=Value}">
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}">
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="TextBox">
-                                                    <Grid>
+                                                    <Grid >
                                                         <Grid Width="50" Height="50" x:Name="mainGrid">
                                                             <Grid.RenderTransform>
                                                                 <RotateTransform Angle="0" CenterX="25" CenterY="25" />
@@ -43,16 +43,16 @@
                                                                 </Rectangle.OpacityMask>
                                                                 <Rectangle.Fill>
                                                                     <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                                        <GradientStop Color="#FF068206" Offset="0" />
-                                                                        <GradientStop Color="#FF72CE72" Offset="0.198" />
-                                                                        <GradientStop Color="#FFC2FFC2" Offset="0.48" />
-                                                                        <GradientStop Color="#FFC2FFC2" Offset="0.52" />
-                                                                        <GradientStop Color="#FF72CE72" Offset="0.891" />
-                                                                        <GradientStop Color="#FF068206" Offset="1" />
+                                                                        <GradientStop Color="#dfdfdf" Offset="0" />
+                                                                        <GradientStop Color="#bdbdbd" Offset="0.198" />
+                                                                        <GradientStop Color="#9f9f9f" Offset="0.4" />
+                                                                        <GradientStop Color="#9f9f9f" Offset="0.6" />
+                                                                        <GradientStop Color="#bdbdbd" Offset="0.891" />
+                                                                        <GradientStop Color="#dfdfdf" Offset="1" />
                                                                     </LinearGradientBrush>
                                                                 </Rectangle.Fill>
                                                             </Rectangle>
-                                                            <Rectangle Fill="#FF068206">
+                                                            <Rectangle Fill="#dfdfdf">
                                                                 <Rectangle.OpacityMask>
                                                                     <VisualBrush Visual="{Binding ElementName=spinnerMask}"/>
                                                                 </Rectangle.OpacityMask>
@@ -69,7 +69,7 @@
                                 </TextBox.Style>
                             </TextBox>
                             <Grid.RenderTransform>
-                                <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                                <ScaleTransform ScaleX="0.4" ScaleY="0.4"/>
                             </Grid.RenderTransform>
                         </Grid>
                     </ControlTemplate>
@@ -145,6 +145,7 @@
             <Setter Property="Background" Value="{StaticResource MenuItemColor}" />
             <Setter Property="Margin" Value="0,1,0,1" />
             <Setter Property="Height" Value="25" />
+            <Setter Property="StaysOpenOnClick" Value="True"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="MenuItem">
@@ -152,7 +153,7 @@
                             <Grid Name="MenuItemGrid" Height="25">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="25" />
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Header" />
+                                    <ColumnDefinition Width="130" SharedSizeGroup="Header" />
                                 </Grid.ColumnDefinitions>
                                 <ContentPresenter Name="IconHost" Grid.Column="0" ContentSource="Icon"
                                                   RecognizesAccessKey="True" />
@@ -160,17 +161,13 @@
                                 <ContentPresenter Name="HeaderHost" Grid.Column="1" Margin="4,0,6,0"
                                                   ContentSource="Header" RecognizesAccessKey="True"
                                                   VerticalAlignment="Center" />
-                                <ProgressBar Name ="Spinner" Style="{StaticResource SpinnerProgress}"></ProgressBar>
-                            </Grid>
+                                </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="true ">
                                 <Setter Property="Background" TargetName="MenuItemGrid"
                                         Value="{StaticResource MenuItemHoverColor}" />
                                 <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Spinner" Property="Visibility" Value="Visible" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -384,7 +381,7 @@
             <Setter Property="Height" Value="45" />
             <Setter Property="Width" Value="165" />
             <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Margin" Value="0,0,30,2"></Setter>
+            <Setter Property="Margin" Value="0,0,15,2"></Setter>
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -584,11 +581,19 @@
                         Visibility="{Binding VerifyEmailVisibility}" />
                 <Menu Name="SettingsMenu" Background="Transparent" Grid.Column="4" VerticalAlignment="Center"
                       HorizontalAlignment="Right" Width="30">
-                    <MenuItem Style="{StaticResource TopLevelMenuItem}">
+                    <MenuItem Style="{StaticResource TopLevelMenuItem}" SubmenuClosed="Settings_OnSubmenuClosed">
+                        <MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateCheckMenuItem"
+                                  Header="{Binding UpdateAvailableString}" Visibility="{Binding UpdateAvailableVisibility}" >
+                        </MenuItem>
                         <MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateMenuItem"
-                                  Header="{Binding UpdateString}" Click="UpdateButtonOnClick">
+                                  Header="{Binding UpdateString}" Click="UpdateButtonOnClick" >
                             <MenuItem.Icon>
-                                <Image Source="Images/wrench.png" Width="12" />
+                                <Grid>
+                                    <Image Source="Images/wrench.png" Width="12" />
+                                    <Grid Background="{StaticResource MenuItemHoverColor}" Visibility="{Binding UpdateSpinnerVisibility}" >
+                                        <ProgressBar Margin="3,0,0,0" Name ="Spinner" Style="{StaticResource SpinnerProgress}"></ProgressBar>
+                                    </Grid>
+                                </Grid>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Name="LogOutMenuItem" Style="{StaticResource SubMenuItem}" Header="Log Out"
@@ -597,8 +602,7 @@
                                 <Image Source="Images/logout.png" Width="12" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Name="AboutMenuItem" Style="{StaticResource SubMenuItem}" Header="About"
-                                  ToolTip="{Binding VersionString}">
+                        <MenuItem Name="AboutMenuItem" Style="{StaticResource SubMenuItem}" Header="About" Click="AboutMenuItem_OnClick">
                             <MenuItem.Icon>
                                 <Image Source="Images/about.png" Width="12" />
                             </MenuItem.Icon>
@@ -624,7 +628,7 @@
                     </StackPanel>
                 </Border>
             </Grid>
-            <Grid Name="YourApps" Margin="40,60,0,0" Height="235" Width="350" VerticalAlignment="Top"
+            <Grid Name="YourApps" Margin="30,60,0,0" Height="235" Width="400" VerticalAlignment="Top"
                           HorizontalAlignment="Left">
                 <ListBox BorderThickness="0" Background="Transparent"
                                  ScrollViewer.VerticalScrollBarVisibility="Disabled"

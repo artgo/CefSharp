@@ -47,13 +47,14 @@ namespace AppDirect.WindowsClient.Updates
             return false;
         }
 
-                /// <summary>
+        /// <summary>
         /// Attempts to run updater.  If the process can not be started (Process.Start throws an exception) or the process starts successfully, the value of the UpdateDownloaded switch is set to false
         /// </summary>
         /// <param name="currentVersion"></param>
-        /// <returns></returns>
-        public void InstallUpdates()
+        /// <returns>return true if updates appear to be running successfully</returns>
+        public bool InstallUpdates()
         {
+            bool updateRunning = false;
             try
             {
                 ProcessStartInfo start = new ProcessStartInfo();
@@ -67,16 +68,21 @@ namespace AppDirect.WindowsClient.Updates
                     start.Verb = "runas";
                 }
                 Process.Start(start);
+
+                updateRunning = true;
             }
-            catch (Exception e )
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message);
+                updateRunning = false;
             }
             finally
             {
                 ServiceLocator.LocalStorage.UpdateDownloaded = false;
                 ServiceLocator.LocalStorage.SaveAppSettings();
             }
+
+            return updateRunning;
         }
 
         /// <summary>
@@ -100,6 +106,21 @@ namespace AppDirect.WindowsClient.Updates
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Wrap in try catch. Throws exceptions if there are network problems or if the Version file or the update file fail to download and save
+        /// </summary>
+        /// <param name="currentVersion"></param>
+        /// <returns></returns>
+        public bool CheckVersion(string currentVersion)
+        {
+            using (var client = new WebClient())
+            {
+                var versionStream = client.OpenRead(Resources.VersionFileUrl);
+                var versionString = new StreamReader(versionStream).ReadToEnd();
+                return currentVersion != versionString;
+            }
         }
     }
 }
