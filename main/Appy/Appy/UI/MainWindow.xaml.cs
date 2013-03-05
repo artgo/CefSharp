@@ -168,7 +168,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
-            ViewModel.UpdateClick(sender);           
+            ViewModel.UpdateClick();           
         }
         
         private void MainWindow_OnClosing(object o, CancelEventArgs e)

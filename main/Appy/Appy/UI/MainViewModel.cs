@@ -494,7 +494,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public void UpdateClick(object sender)
+        public void UpdateClick()
         {
             if (ServiceLocator.LocalStorage.UpdateDownloaded)
             {

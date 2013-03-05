@@ -14,7 +14,7 @@ namespace AppDirect.WindowsClient.Storage
     ///<summary>
     /// Represents the Serializable Data that persists locally 
     ///</summary>
-    public sealed class LocalStorage
+    public class LocalStorage
     {
         private const string FileName = @"\LocalStorage";
         private const int DaysBeforePasswordExpires = 30;

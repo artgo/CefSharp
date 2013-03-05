@@ -5,6 +5,7 @@ using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
+using AppDirect.WindowsClient.Updates;
 using NUnit.Framework;
 using NSubstitute;
 
@@ -226,7 +227,6 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         }
 
         #endregion
-
         #region SyncAppsWithApi Tests
 
         [Test]
@@ -255,6 +255,31 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsFalse(_mainViewModel.MyApplications.Contains(expiredApp));
         }
 
+        #endregion
+
+        #region Checking For Updates Tests
+
+        [Test]
+        public void ResetUpdateTextUpdateAvailableTest()
+        {
+            ServiceLocator.LocalStorage.UpdateDownloaded = true;
+
+            _mainViewModel = new MainViewModel();
+            _mainViewModel.ResetUpdateText();
+
+            Assert.AreEqual("Install updates now", _mainViewModel.UpdateString);
+        }
+
+        [Test]
+        public void ResetUpdateTextNoUpdateTest()
+        {
+            ServiceLocator.LocalStorage.UpdateDownloaded = false;
+
+            _mainViewModel = new MainViewModel();
+            _mainViewModel.ResetUpdateText();
+            Assert.AreEqual("Check for updates", _mainViewModel.UpdateString);
+        }
+        
         #endregion
         
         private void SetMyAppsAndLogin(List<Application> myApps)
