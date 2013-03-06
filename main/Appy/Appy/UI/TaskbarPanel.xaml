@@ -31,7 +31,7 @@
         </Style>
     </UserControl.Resources>
     <Grid Background="{x:Null}">
-        <StackPanel Name="ButtonContainer" Orientation="Horizontal" Background="{x:Null}" VerticalAlignment="Center">
+        <StackPanel Name="ButtonContainer" Orientation="Horizontal" Background="{x:Null}" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Button x:Name="MainButton" Style="{StaticResource MainButtonStyle}" Click="AppButton_Click" GotFocus="AppButton_Click">
                 <Button.ContextMenu>
                     <ContextMenu VerticalOffset="-50">

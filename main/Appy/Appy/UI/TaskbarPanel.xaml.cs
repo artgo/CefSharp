@@ -163,17 +163,17 @@ namespace AppDirect.WindowsClient.UI
             if (newPosition.IsVertical() && ButtonContainer.Orientation != Orientation.Vertical)
             {
                 ButtonContainer.Orientation = Orientation.Vertical;
-                var widthTemp = Width;
-                Width = Height;
-                Height = widthTemp;
             }
             else if (!newPosition.IsVertical() && ButtonContainer.Orientation != Orientation.Horizontal)
             {
                 ButtonContainer.Orientation = Orientation.Horizontal;
-                var widthTemp = Width;
-                Width = Height;
-                Height = widthTemp;
             }
+
+            var widthTemp = Width;
+            Width = Height;
+            Height = widthTemp;
+
+            NotifyTaskbarOfChange();
         }
 
         public void TaskbarIconsSizeChanged(TaskbarIconsSize newIconsSize)
