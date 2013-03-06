@@ -143,7 +143,7 @@ namespace AppDirect.WindowsClient.API
             }
         }
  
-        public static void PerformForMinimumTime(Action action, bool requiresUiThread, TimeSpan minimumReturnTimeSpan, int millisecondsToSleep)
+        public static void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn)
         {
             var startTime = Environment.TickCount;
 
@@ -161,9 +161,11 @@ namespace AppDirect.WindowsClient.API
                 action.Invoke();
             }
 
-            while (TimeSpan.FromMilliseconds(Environment.TickCount - startTime) < minimumReturnTimeSpan)
+            var remainingTime = minimumMillisecondsBeforeReturn - (Environment.TickCount - startTime);
+
+            if (remainingTime > 0)
             {
-                Thread.Sleep(millisecondsToSleep);
+                Thread.Sleep(remainingTime);
             }
         }
     }

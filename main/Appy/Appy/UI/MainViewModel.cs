@@ -39,8 +39,9 @@ namespace AppDirect.WindowsClient.UI
         
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
+        private int millisecondsToDisplayCheckingString;
 
-        
+
         public string VersionString
         {
             get
@@ -516,7 +517,8 @@ namespace AppDirect.WindowsClient.UI
         {
             var updateAvailable = false;
 
-            Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion); }, false, TimeSpan.FromMilliseconds(1000), 100);
+            millisecondsToDisplayCheckingString = 1000;
+            Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion); }, false, millisecondsToDisplayCheckingString);
 
             Helper.PerformInUiThread(() =>
                 {

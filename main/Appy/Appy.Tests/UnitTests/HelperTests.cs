@@ -66,10 +66,12 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         public void PerformForMinimumTimeDoesPerformAnAction()
         {
             var test = false;
-            Helper.PerformForMinimumTime(() => { test = true; }, false, TimeSpan.Zero, 0);
+            Helper.PerformForMinimumTime(() => { test = true; }, false, 0);
             Assert.IsTrue(test);
         }
 
+
+        //Should be moved to Integration Tests
         [Test]
         public void PerformForMinimumTimeDoesNotReturnBeforeTimeIsElapsed()
         {
@@ -77,8 +79,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
             var start = Environment.TickCount;
             var test = false;
-            Helper.PerformForMinimumTime(() => { test = true; }, false, TimeSpan.FromMilliseconds(millisecondsToSleep), 500);
-            Assert.IsTrue(test);
+            Helper.PerformForMinimumTime(() => { test = true; }, false, millisecondsToSleep);
 
             var stop = Environment.TickCount;
 
