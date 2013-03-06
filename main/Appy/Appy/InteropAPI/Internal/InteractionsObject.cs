@@ -75,7 +75,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _taskbarPosition = GetTaskbarEdge();
             _taskbarIconsSize = GetTaskbarIconSize();
 
-            _buttonsWindowSize = GetButtonsWindowSize();
+            _buttonsWindowSize = GetButtonsWindowSize(true);
             _taskbarHeight = GetTaskbarHeight();
         }
 
@@ -593,24 +593,31 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             throw new InteropException("Didn't find StartButton!");
         }
 
-        private System.Drawing.Size GetButtonsWindowSize()
+        private System.Drawing.Size GetButtonsWindowSize(bool firstTime = false)
         {
             // TODO: -2 save/load
             // TODO: -2 accomodate to the Taskbar actual size
             MonitorInfo mi = new MonitorInfo();
             RectWin taskbarRect = new RectWin();
             HMONITOR monitor = NULL;
-            System.Drawing.Size s2;
+
+            if (firstTime)
+            {
+                _buttonsWindowSize = new System.Drawing.Size(DefaultStartButtonWidth, DefaultStartButtonHeight);
+            }
 
             TaskbarPosition edge = GetTaskbarEdge(_taskbarHwnd, ref mi, ref monitor, ref taskbarRect);
             if (!IsWin8OrUp)
             {
-                RectWin r = GetStartButtonRect();
-                s2 = new System.Drawing.Size(r.Width, r.Height);
+                RectWin startButtonRect = GetStartButtonRect();
 
                 if (edge.IsVertical())
                 {
-                    s2.Width = taskbarRect.Width;
+                    if (firstTime)
+                    {
+                        _buttonsWindowSize.Height = startButtonRect.Height;
+                    }
+                    _buttonsWindowSize.Width = taskbarRect.Width;
 
                     // vertical taskbar
                     //s2.Height = DefaultStartButtonHeight;
@@ -624,22 +631,26 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 else
                 {
                     // limit height: horizontal taskbar with small icons has Start button window out of the screen
-                    s2.Height = taskbarRect.Height;
+                    _buttonsWindowSize.Height = taskbarRect.Height;
+                    if (firstTime)
+                    {
+                        _buttonsWindowSize.Width = startButtonRect.Width;
+                    }
                 }
             }
             else	// win8, 9, ...
             {
                 if (edge.IsVertical())
                 {
-                    s2 = new Size(taskbarRect.Width, DefaultStartButtonHeight);
+                    _buttonsWindowSize.Width = taskbarRect.Width;
                 }
                 else
                 {
-                    s2 = new Size(DefaultStartButtonWidth, taskbarRect.Height);
+                    _buttonsWindowSize.Height = taskbarRect.Height;
                 }
             }
 
-            return s2;
+            return _buttonsWindowSize;
         }
 
         public bool ChangeWidth(int newWidth)
