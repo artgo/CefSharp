@@ -61,5 +61,30 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Helper.PerformInUiThread(() => { test = true; });
             Assert.IsTrue(test);
         }
+
+        [Test]
+        public void PerformForMinimumTimeDoesPerformAnAction()
+        {
+            var test = false;
+            Helper.PerformForMinimumTime(() => { test = true; }, false, TimeSpan.Zero, 0);
+            Assert.IsTrue(test);
+        }
+
+        [Test]
+        public void PerformForMinimumTimeDoesNotReturnBeforeTimeIsElapsed()
+        {
+            var millisecondsToSleep = 3000;
+
+            var start = Environment.TickCount;
+            var test = false;
+            Helper.PerformForMinimumTime(() => { test = true; }, false, TimeSpan.FromMilliseconds(millisecondsToSleep), 500);
+            Assert.IsTrue(test);
+
+            var stop = Environment.TickCount;
+
+            var elapsedTime = stop - start;
+
+            Assert.IsTrue(elapsedTime > millisecondsToSleep);
+        }
     }
 }

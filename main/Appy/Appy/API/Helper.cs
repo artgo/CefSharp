@@ -147,20 +147,18 @@ namespace AppDirect.WindowsClient.API
         {
             var startTime = Environment.TickCount;
 
-
             if (action == null)
             {
                 throw new ArgumentNullException("action");
             }
 
-            var currentApplication = System.Windows.Application.Current;
-            if ( !requiresUiThread || (currentApplication == null) || (Thread.CurrentThread == currentApplication.Dispatcher.Thread))
+            if (requiresUiThread)
             {
-                action.Invoke();
+                PerformInUiThread(action);
             }
             else
             {
-                currentApplication.Dispatcher.Invoke(action);
+                action.Invoke();
             }
 
             while (TimeSpan.FromMilliseconds(Environment.TickCount - startTime) < minimumReturnTimeSpan)

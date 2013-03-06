@@ -52,7 +52,7 @@ namespace AppDirect.WindowsClient.Updates
         /// </summary>
         /// <param name="currentVersion"></param>
         /// <returns></returns>
-        public void InstallUpdates()
+        public virtual void InstallUpdates()
         {
             try
             {

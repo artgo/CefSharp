@@ -255,7 +255,6 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         }
 
         #endregion
-
         #region Checking For Updates Tests
 
         [Test]
@@ -277,6 +276,20 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             _mainViewModel = new MainViewModel();
             _mainViewModel.ResetUpdateText();
             Assert.AreEqual("Check for updates", _mainViewModel.UpdateString);
+        }
+
+        [Test]
+        public void UpdateClickInstallsAvailableUpdateTest()
+        {
+            ServiceLocator.LocalStorage.UpdateDownloaded = true;
+            var mockUpdater = Substitute.For<Updater>();
+
+            ServiceLocator.Kernel.Rebind<Updater>().ToConstant(mockUpdater);
+
+            _mainViewModel = new MainViewModel();
+            _mainViewModel.UpdateClick();
+
+            mockUpdater.Received().InstallUpdates();
         }
         
         #endregion
