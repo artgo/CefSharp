@@ -160,20 +160,32 @@ namespace AppDirect.WindowsClient.UI
 
         public void PositionChanged(TaskbarPosition newPosition)
         {
-            if (newPosition.IsVertical() && ButtonContainer.Orientation != Orientation.Vertical)
+            bool isVertical = newPosition.IsVertical();
+
+            if (isVertical == (ButtonContainer.Orientation == Orientation.Vertical))
             {
-                ButtonContainer.Orientation = Orientation.Vertical;
-                var widthTemp = Width;
-                Width = Height;
-                Height = widthTemp;
+                return;
             }
-            else if (!newPosition.IsVertical() && ButtonContainer.Orientation != Orientation.Horizontal)
+
+            if (isVertical && ButtonContainer.Orientation != Orientation.Vertical)
+            {
+                ButtonContainer.Orientation = Orientation.Vertical;              
+            }
+            else
             {
                 ButtonContainer.Orientation = Orientation.Horizontal;
-                var widthTemp = Width;
-                Width = Height;
-                Height = widthTemp;
             }
+
+            var widthTemp = Width;
+            Width = Height;
+            Height = widthTemp;
+
+            var marginHorizontal = MainButton.Margin.Left;
+            var marginVertical = MainButton.Margin.Top;
+
+            MainButton.Margin = new Thickness(marginVertical, marginHorizontal, marginVertical, marginHorizontal);
+
+            NotifyTaskbarOfChange();
         }
 
         public void TaskbarIconsSizeChanged(TaskbarIconsSize newIconsSize)

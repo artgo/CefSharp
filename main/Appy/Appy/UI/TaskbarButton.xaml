@@ -12,8 +12,8 @@
         <Style x:Key="DeskbandButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Height" Value="{StaticResource ButtonHeight}"/>
             <Setter Property="Width" Value="{StaticResource ButtonWidth}"/>
-            <Setter Property="Margin" Value="0,0,6,0"></Setter>
-            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="3,3,3,3"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
