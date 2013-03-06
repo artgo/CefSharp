@@ -75,7 +75,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         [Test]
         public void PerformForMinimumTimeDoesNotReturnBeforeTimeIsElapsed()
         {
-            var millisecondsToSleep = 3000;
+            var millisecondsToSleep = 300;
 
             var start = Environment.TickCount;
             var test = false;

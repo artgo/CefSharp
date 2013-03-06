@@ -4,13 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Properties;
-using AppDirect.WindowsClient.Storage;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -39,8 +36,6 @@ namespace AppDirect.WindowsClient.UI
         
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
-        private int millisecondsToDisplayCheckingString;
-
 
         public string VersionString
         {
@@ -517,7 +512,7 @@ namespace AppDirect.WindowsClient.UI
         {
             var updateAvailable = false;
 
-            millisecondsToDisplayCheckingString = 1000;
+            const int millisecondsToDisplayCheckingString = 1000;
             Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion); }, false, millisecondsToDisplayCheckingString);
 
             Helper.PerformInUiThread(() =>
