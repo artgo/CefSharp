@@ -165,6 +165,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _taskbarPosition = GetTaskbarEdge();
 
             PostPositionToHook();
+            UpdatePosition();
         }
 
         private void UpdateHandles()
@@ -276,15 +277,25 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
                     var updatePos = false;
 
+                    _buttonsWindowSize = GetButtonsWindowSize();
+
                     var newTaskbarPosition = GetTaskbarEdge();
                     if (newTaskbarPosition != _taskbarPosition)
                     {
                         _notifyee.PositionChanged(newTaskbarPosition);
                         _taskbarPosition = newTaskbarPosition;
-                        DoChangeWidth(_buttonsWidth, true);
+                        int newWidth;
+                        if (newTaskbarPosition.IsVertical())
+                        {
+                            newWidth = _buttonsWindowSize.Height;
+                        }
+                        else
+                        {
+                            newWidth = _buttonsWindowSize.Width;
+                        }
+                        DoChangeWidth(newWidth, true);
+                        updatePos = true;
                     }
-
-                    _buttonsWindowSize = GetButtonsWindowSize();
 
                     if (CheckIconSize())
                     {
@@ -348,7 +359,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
 
 			var offset2 = (IsWin8OrUp ? offset : ScreenFromWpf(offset, _taskbarHwnd));
-			var f = (uint)(0
+			var flags = (uint)(0
 				| SetWindowPosConstants.SWP_SHOWWINDOW
 				| SetWindowPosConstants.SWP_NOOWNERZORDER
 				| SetWindowPosConstants.SWP_NOACTIVATE
@@ -356,7 +367,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             User32Dll.SetWindowPos(_hSrc.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
                                    offset2.X, offset2.Y,
                                    _buttonsWindowSize.Width, _buttonsWindowSize.Height,
-                                   f);
+                                   flags);
         }
 
         private bool CheckIconSize()
@@ -441,7 +452,22 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         {
             // TODO: -1
             var d = isInsert ? 1 : -1;
+            int diff;
+            _taskbarPosition = GetTaskbarEdge();
+            if (_taskbarPosition.IsVertical())
+            {
+                diff = d * _buttonsWindowSize.Height;
+            }
+            else
+            {
+                diff = d * _buttonsWindowSize.Width;
+            }
 
+            return CalculateShiftedRebarCoords(diff);
+        }
+
+        private RectWin CalculateShiftedRebarCoords(int diff)
+        {
             var newRebarCoords = new RectWin();
             if (!User32Dll.GetWindowRect(_rebarHwnd, newRebarCoords))
             {
@@ -449,18 +475,21 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
 
             var taskbarPos = GetTaskbarRect();
-            var edge = GetTaskbarEdge();
-            if (edge.IsVertical())
+            if (_taskbarPosition.IsVertical())
             {
-                newRebarCoords.Left -= taskbarPos.Left;		// to relative
-                newRebarCoords.Top += d * _buttonsWindowSize.Height;
-                newRebarCoords.Height -= d * _buttonsWindowSize.Height;
+                newRebarCoords.Left -= taskbarPos.Left; // to relative
+                newRebarCoords.Top += diff;
+
+                // Do not do this since we are already trimming in C++ part
+                //newRebarCoords.Height -= diff;
             }
             else
             {
-                newRebarCoords.Left += d * _buttonsWindowSize.Width;
-                newRebarCoords.Top -= taskbarPos.Top;		// to relative
-                newRebarCoords.Width -= d * _buttonsWindowSize.Width;
+                newRebarCoords.Left += diff;
+                newRebarCoords.Top -= taskbarPos.Top; // to relative
+
+                // Do not do this since we are already trimming in C++ part
+                //newRebarCoords.Width -= diff;
             }
 
             return newRebarCoords;
@@ -641,26 +670,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
             else
             {
-                newRebarCoords = new RectWin();
-                if (!User32Dll.GetWindowRect(_rebarHwnd, newRebarCoords))
-                {
-                    throw new InteropException("Cannot calculate new Rebar position");
-                }
-
-                var taskbarPos = GetTaskbarRect();
-
-                if (_taskbarPosition.IsVertical())
-                {
-                    newRebarCoords.Left -= taskbarPos.Left;		// to relative
-                    newRebarCoords.Top += delta;
-                    newRebarCoords.Height -= delta;
-                }
-                else
-                {
-                    newRebarCoords.Left += delta;
-                    newRebarCoords.Top -= taskbarPos.Top; // to relative
-                    newRebarCoords.Width -= delta;
-                }
+                newRebarCoords = CalculateShiftedRebarCoords(delta);
             }
 
             // reposition the window
