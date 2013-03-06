@@ -287,6 +287,27 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         EVENT_AIA_END = 0xAFFF
     }
 
+    public enum OBJID : uint
+    {
+        WINDOW = 0x00000000,
+        SYSMENU = 0xFFFFFFFF,
+        TITLEBAR = 0xFFFFFFFE,
+        MENU = 0xFFFFFFFD,
+        CLIENT = 0xFFFFFFFC,
+        VSCROLL = 0xFFFFFFFB,
+        HSCROLL = 0xFFFFFFFA,
+        SIZEGRIP = 0xFFFFFFF9,
+        CARET = 0xFFFFFFF8,
+        CURSOR = 0xFFFFFFF7,
+        ALERT = 0xFFFFFFF6,
+        SOUND = 0xFFFFFFF5,
+    }
+
+    public static class ChildIds
+    {
+        public static int CHILDID_SELF = 0x00;
+    }
+
     public enum WindowsMessages : int
     {
         WM_NULL = 0x0000,
@@ -2227,6 +2248,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
 
         [DllImport(User32DllName)]
+        public static extern void NotifyWinEvent(uint eventId, IntPtr hwnd, int idObject, int idChild);
+
+        [DllImport(User32DllName)]
         public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, 
             WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
 
@@ -2241,6 +2265,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
 		[DllImport(User32DllName)]
 		public static extern bool SetLayeredWindowAttributes(IntPtr hwnd, UInt32 crKey, Byte bAlpha, UInt32 dwFlags);
+
+        [DllImport(User32DllName)]
+        public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+
+        [DllImport(User32DllName)]
+        public static extern bool RedrawWindow(IntPtr hWnd, [In] ref RECT lprcUpdate, IntPtr hrgnUpdate, RedrawWindowConstants flags);
+
+        [DllImport(User32DllName)]
+        public static extern bool RedrawWindow(IntPtr hWnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, RedrawWindowConstants flags); 
     }	// class User32Dll
 
     public class Kernel32Dll
