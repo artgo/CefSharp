@@ -4,7 +4,7 @@
 !define APPDIR "$LOCALAPPDATA\${COMPANYNAME}\${APPNAME}"
 !define APPEXE "${APPNAME}.exe"
 !define UNINSTALLERNAME "uninstall.exe"
-!define REGISTRYPATH "SOFTWARE\${COMPANYNAME}\${APPNAME}" 
+!define REGISTRYPATH "SOFTWARE\${COMPANYNAME}\${APPNAME}"
 !define REGSTR "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
 !define APPICON "AppIcon.ico"
 !define APPEXEPATH "${APPDIR}\${APPEXE}"
@@ -16,7 +16,7 @@
 !define COPY64 "/r 64Bit\*.*"
 !define COPY32 "/r 32Bit\*.*"
 
-!searchparse /file version.txt '' VERSION_SHORT 
+!searchparse /file version.txt '' VERSION_SHORT
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
@@ -29,7 +29,7 @@ loop:
   IntOp $R0 $R0 + 1
   FindWindow $0 "" "${APPWINDOWCLASSNAME}"
   StrCmp $0 "0" done
-  StrCmp $R0 "100" message	
+  StrCmp $R0 "100" message
   Sleep 200
   Goto loop
   message:
@@ -50,18 +50,18 @@ done:
   ${EndIf}
 !macroend
 
-!macro CopyFiles 
+!macro CopyFiles
   ; Files to copy
   File ${COPYFILES}
-  
+
   EnumRegKey $0 HKLM "SOFTWARE\Wow6432Node" 0
   IfErrors 0 Is64Bit
-  
+
   File ${COPY32}
   Goto ENDCOPY
-  
+
   Is64Bit:
   File ${COPY64}
-  
-ENDCOPY:    
+
+ENDCOPY:
 !macroend

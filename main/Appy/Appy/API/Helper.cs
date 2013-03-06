@@ -142,5 +142,31 @@ namespace AppDirect.WindowsClient.API
                 currentApplication.Dispatcher.Invoke(action);
             }
         }
+ 
+        public static void PerformForMinimumTime(Action action, bool requiresUiThread, TimeSpan minimumReturnTimeSpan, int millisecondsToSleep)
+        {
+            var startTime = Environment.TickCount;
+
+
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            var currentApplication = System.Windows.Application.Current;
+            if ( !requiresUiThread || (currentApplication == null) || (Thread.CurrentThread == currentApplication.Dispatcher.Thread))
+            {
+                action.Invoke();
+            }
+            else
+            {
+                currentApplication.Dispatcher.Invoke(action);
+            }
+
+            while (TimeSpan.FromMilliseconds(Environment.TickCount - startTime) < minimumReturnTimeSpan)
+            {
+                Thread.Sleep(millisecondsToSleep);
+            }
+        }
     }
 }

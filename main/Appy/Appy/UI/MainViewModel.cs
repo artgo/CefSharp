@@ -514,10 +514,10 @@ namespace AppDirect.WindowsClient.UI
 
         private void CheckForAvailableUpdate(object sender, DoWorkEventArgs doWorkEventArgs)
         {
-            Thread.Sleep(1000);
+            var updateAvailable = false;
 
-            var updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
-            
+            Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion); }, false, TimeSpan.FromMilliseconds(1000), 100);
+
             Helper.PerformInUiThread(() =>
                 {
                     UpdateString = updateAvailable ? Resources.InstallUpdateString : Resources.NoUpdateFoundString;
