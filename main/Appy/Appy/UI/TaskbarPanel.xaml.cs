@@ -105,7 +105,7 @@ namespace AppDirect.WindowsClient.UI
 
             foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
             {
-                totalSize += isHorizontal ? taskbarButton.Width : MainButton.Height;
+                totalSize += isHorizontal ? taskbarButton.Width : taskbarButton.Height;
             }
             return (int) totalSize;
         }
