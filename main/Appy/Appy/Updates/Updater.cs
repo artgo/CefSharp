@@ -6,10 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows;
 using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.Properties;
 using AppDirect.WindowsClient.Storage;
 
@@ -45,6 +47,30 @@ namespace AppDirect.WindowsClient.Updates
             }
 
             return false;
+        }
+
+        private void InstallUpdatesWhenIdle()
+        {
+            
+        }
+
+        private static int GetLastInputTime()
+        {
+            uint idleTime = 0;
+            LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
+            lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
+            lastInputInfo.dwTime = 0;
+
+            uint envTicks = (uint)Environment.TickCount;
+
+            if (User32Dll.GetLastInputInfo(ref lastInputInfo))
+            {
+                uint lastInputTick = lastInputInfo.dwTime;
+
+                idleTime = envTicks - lastInputTick;
+            }
+
+            return (int)((idleTime > 0) ? (idleTime / 1000) : 0);
         }
 
         /// <summary>
