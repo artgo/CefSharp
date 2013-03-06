@@ -17,7 +17,7 @@ namespace AppDirect.WindowsClient.UI
         private const int SmallIconSize = 18;
 
         private const int HorizontalMargin = 6;
-        private const int VerticalMargin = 0;
+        private const int VerticalMargin = 6;
 
         public TaskbarButton()
         {
