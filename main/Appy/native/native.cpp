@@ -68,8 +68,8 @@ static bool IsVertical()
 	return (appbar.uEdge == ABE_LEFT) || (appbar.uEdge == ABE_RIGHT);
 }
 
+static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 static volatile bool bExiting = false;
-static std::mutex _mutex;
 static RECT buttonsRect;
 static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
@@ -77,8 +77,6 @@ static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 	{
 		// prevent rebar from restoring position and hovering our button: return
 		WINDOWPOS* p = (WINDOWPOS*)lParam;
-
-		std::unique_lock<std::mutex> lock(_mutex);
 
 		if (buttonsRect.left < (p->x + p->cx) && buttonsRect.right  > p->x &&
 			buttonsRect.top  < (p->y + p->cy) && buttonsRect.bottom > p->y)
@@ -114,9 +112,10 @@ static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 			{
 				bExiting = true;
 				g_bInitDone = false;
-				HWND rebarHwnd = FindRebar();
-
+				HWND rebarHwnd = FindRebar();	_ASSERT(rebarHwnd);
 				BOOL b = ::RemoveWindowSubclass(rebarHwnd, SubclassRebarProc, 0); _ASSERT(b);
+				HWND taskbar = FindTaskBar();	_ASSERT(taskbar);
+				b = ::RemoveWindowSubclass(taskbar, SubclassTaskbarProc, 0); _ASSERT(b);
 
 				// TODO: -1 unload not from itself
 				//	b = ::FreeLibrary(g_hDll);	_ASSERT(b);
@@ -132,8 +131,6 @@ static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 		} 
 		else if (uMsg == messages->UpdateMessage) 
 		{
-			std::unique_lock<std::mutex> lock(_mutex);
-
 			const unsigned int p1 = (unsigned int)wParam;
 			const unsigned int p2 = (unsigned int)lParam;
 			buttonsRect.left = p1 >> 16;
@@ -146,6 +143,40 @@ static LRESULT CALLBACK SubclassRebarProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
+static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+	if (bExiting) 
+		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+
+	switch (uMsg)
+	{
+		// Handle on top / topmost Z-Order
+		// place the button on top of Taskbar but not hover the
+		case WM_WINDOWPOSCHANGED:
+		{
+			// place on top of task bar
+			HWND theButton = ::FindWindow(NULL, L"AppDirectTaskbarButtonsWindow");	_ASSERT(theButton);
+			if (theButton)
+			{
+				WINDOWPOS * p = (WINDOWPOS*)lParam;
+				BOOL b = ::SetWindowPos(
+						theButton, 
+						p->hwndInsertAfter,
+						0, 0, 0, 0, 0
+						| SWP_NOACTIVATE
+						| SWP_NOMOVE
+						| SWP_NOSIZE
+						| SWP_ASYNCWINDOWPOS
+						| SWP_NOOWNERZORDER
+					);
+				_ASSERT(b);
+			}
+			break;
+		}
+		default: break;
+	}
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
 HWND GetProgmanHwnd()
 {
 	HWND progWin = ::FindWindowEx(NULL, NULL, L"Progman", NULL);	_ASSERT(progWin);
@@ -202,6 +233,7 @@ NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
 		messages->UpdateMessage = GetUpdatePositionMsg();
 		g_hDll = ::LoadLibrary(gc_TheDllName); _ASSERT(g_hDll);		// prevent dll from unloading
 		BOOL b = ::SetWindowSubclass(FindRebar(), SubclassRebarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
+		b = ::SetWindowSubclass(FindTaskBar(), SubclassTaskbarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
 	}
 	return ::CallNextHookEx(NULL, code, wParam, lParam);
 }
