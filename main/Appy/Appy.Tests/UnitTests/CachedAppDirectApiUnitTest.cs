@@ -75,13 +75,13 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         [TestMethod]
         public void AuthenticationSucceedForRightCredentials()
         {
-            BuildCachedAppDirectApi();
+            var appDirectApi = BuildCachedAppDirectApi();
 
-            Assert.IsTrue(true);
+            Assert.IsTrue(appDirectApi.Authenticate(TestData.TestUsername, TestData.TestPassword));
        } 
 
         [TestMethod]
-        public void DataIsReturnedForMyApps()
+        public void MyAppsAreNeverNull()
         {
             var apps = BuildCachedAppDirectApi().MyApps;
 
