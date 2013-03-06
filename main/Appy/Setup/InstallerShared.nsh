@@ -4,7 +4,7 @@
 !define APPDIR "$LOCALAPPDATA\${COMPANYNAME}\${APPNAME}"
 !define APPEXE "${APPNAME}.exe"
 !define UNINSTALLERNAME "uninstall.exe"
-!define REGISTRYPATH "SOFTWARE\${COMPANYNAME}\${APPNAME}" 
+!define REGISTRYPATH "SOFTWARE\${COMPANYNAME}\${APPNAME}"
 !define REGSTR "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
 !define APPICON "AppIcon.ico"
 !define APPEXEPATH "${APPDIR}\${APPEXE}"
@@ -16,7 +16,7 @@
 !define COPY64 "/r 64Bit\*.*"
 !define COPY32 "/r 32Bit\*.*"
 
-!searchparse /file version.txt '' VERSION_SHORT 
+!searchparse /file version.txt '' VERSION_SHORT
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
@@ -25,15 +25,11 @@ AutoCloseWindow true
 ;--------------------------------
 
 !macro WaitForDead
-;Processes::FindProcess sets $R0 to "1" if the process is found 
 loop:
-  IntOp $0 $0 + 1
-  Processes::FindProcess "${APPNAME}.Browser.exe"
-  ${If} $R0 == "0"
-  Processes::FindProcess "${APPEXE}"
-  StrCmp $R0 "0" done
-  StrCmp $0 "100" message	
-  ${EndIf}	
+  IntOp $R0 $R0 + 1
+  FindWindow $0 "" "${APPWINDOWCLASSNAME}"
+  StrCmp $0 "0" done
+  StrCmp $R0 "100" message
   Sleep 200
   Goto loop
   message:
@@ -42,19 +38,30 @@ loop:
 done:
 !macroend
 
+!macro CloseApplicationIfRunning
+  System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
+  FindWindow $0 "" "${APPWINDOWCLASSNAME}"
+  ${If} $0 != "0"
+  MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
+    Abort
+  gogogo:
+  SendMessage $0 $3 0 0
+  !insertmacro WaitForDead
+  ${EndIf}
+!macroend
+
 !macro CopyFiles
- 
   ; Files to copy
   File ${COPYFILES}
-  
+
   EnumRegKey $0 HKLM "SOFTWARE\Wow6432Node" 0
   IfErrors 0 Is64Bit
-  
+
   File ${COPY32}
   Goto ENDCOPY
-  
+
   Is64Bit:
   File ${COPY64}
 
-ENDCOPY:    
+ENDCOPY:
 !macroend

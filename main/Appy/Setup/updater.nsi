@@ -35,7 +35,7 @@ Section "Create"
 SectionEnd
 
 Function .onInit
-  !insertmacro WaitForDead
+  !insertmacro CloseApplicationIfRunning
 FunctionEnd
 
 Function .onInstSuccess

@@ -5,6 +5,7 @@ using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
+using AppDirect.WindowsClient.Updates;
 using NUnit.Framework;
 using NSubstitute;
 
@@ -29,7 +30,6 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         [TestFixtureSetUp]
         public void SetUpForTests()
         {
-            var appDirectApiMock = Substitute.For<IAppDirectApi>();
             var cachedAppDirectApiMock = Substitute.For<ICachedAppDirectApi>();
 
             var localStorage = new LocalStorage();
@@ -226,7 +226,6 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         }
 
         #endregion
-
         #region SyncAppsWithApi Tests
 
         [Test]
@@ -255,6 +254,44 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsFalse(_mainViewModel.MyApplications.Contains(expiredApp));
         }
 
+        #endregion
+        #region Checking For Updates Tests
+
+        [Test]
+        public void ResetUpdateTextUpdateAvailableTest()
+        {
+            ServiceLocator.LocalStorage.UpdateDownloaded = true;
+
+            _mainViewModel = new MainViewModel();
+            _mainViewModel.ResetUpdateText();
+
+            Assert.AreEqual("Install updates now", _mainViewModel.UpdateString);
+        }
+
+        [Test]
+        public void ResetUpdateTextNoUpdateTest()
+        {
+            ServiceLocator.LocalStorage.UpdateDownloaded = false;
+
+            _mainViewModel = new MainViewModel();
+            _mainViewModel.ResetUpdateText();
+            Assert.AreEqual("Check for updates", _mainViewModel.UpdateString);
+        }
+
+        [Test]
+        public void UpdateClickInstallsAvailableUpdateTest()
+        {
+            ServiceLocator.LocalStorage.UpdateDownloaded = true;
+            var mockUpdater = Substitute.For<Updater>();
+
+            ServiceLocator.Kernel.Rebind<Updater>().ToConstant(mockUpdater);
+
+            _mainViewModel = new MainViewModel();
+            _mainViewModel.UpdateClick();
+
+            mockUpdater.Received().InstallUpdates();
+        }
+        
         #endregion
         
         private void SetMyAppsAndLogin(List<Application> myApps)

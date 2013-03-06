@@ -4,12 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Windows;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Properties;
-using AppDirect.WindowsClient.Storage;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -24,11 +22,21 @@ namespace AppDirect.WindowsClient.UI
         private string _suggestedAppsLoadError = String.Empty;
         private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
         private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
-        private bool _registrationInProgress = false;
+        private Visibility _updateSpinnerVisibility = Visibility.Hidden;
 
+        private Visibility _updateAvailableVisibility = ServiceLocator.LocalStorage.UpdateDownloaded
+                                                            ? Visibility.Visible
+                                                            : Visibility.Collapsed;
+
+        private string _updateString = ServiceLocator.LocalStorage.UpdateDownloaded
+                                           ? Properties.Resources.InstallUpdateString
+                                           : Properties.Resources.GetUpdateString;
+
+        private bool _registrationInProgress = false;
+        
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
-        
+
         public string VersionString
         {
             get
@@ -39,20 +47,37 @@ namespace AppDirect.WindowsClient.UI
 
         public string UpdateString
         {
-            get
-            {
-                if (ServiceLocator.LocalStorage.UpdateDownloaded)
-                {
-                    return Properties.Resources.InstallUpdateString;
-                }
-                else
-                {
-                    return Properties.Resources.GetUpdateString;
-                }
-            }
+            get { return _updateString; }
             set
             {
-                NotifyPropertyChanged("CloudSyncVisibility");
+                _updateString = value;
+                NotifyPropertyChanged("UpdateString");
+            }
+        }
+        
+        public Visibility UpdateSpinnerVisibility
+        {
+            get { return _updateSpinnerVisibility; }
+            set
+            {
+                _updateSpinnerVisibility = value;
+                NotifyPropertyChanged("UpdateSpinnerVisibility");
+            }
+        }
+
+        public string UpdateAvailableString
+        {
+            get { return Resources.UpdateAvailableString; }
+            set { NotifyPropertyChanged("UpdateAvailableString"); }
+        }
+
+        public Visibility UpdateAvailableVisibility
+        {
+            get { return _updateAvailableVisibility; }
+            set
+            {
+                _updateAvailableVisibility = value;
+                NotifyPropertyChanged("UpdateAvailableVisibility");
             }
         }
 
@@ -463,6 +488,51 @@ namespace AppDirect.WindowsClient.UI
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public void UpdateClick()
+        {
+            if (ServiceLocator.LocalStorage.UpdateDownloaded)
+            {
+                ServiceLocator.Updater.InstallUpdates();
+            }
+            else
+            {
+                UpdateSpinnerVisibility = Visibility.Visible;
+
+                UpdateString = Resources.CheckingForUpdatesString;
+
+                var backGroundWorker = new BackgroundWorker();
+                backGroundWorker.DoWork += CheckForAvailableUpdate;
+                backGroundWorker.RunWorkerAsync();
+            }
+        }
+
+        private void CheckForAvailableUpdate(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
+            var updateAvailable = false;
+
+            const int millisecondsToDisplayCheckingString = 1000;
+            Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion); }, false, millisecondsToDisplayCheckingString);
+
+            Helper.PerformInUiThread(() =>
+                {
+                    UpdateString = updateAvailable ? Resources.InstallUpdateString : Resources.NoUpdateFoundString;
+                    UpdateSpinnerVisibility = Visibility.Hidden;
+                    UpdateAvailableVisibility = updateAvailable ? Visibility.Visible : Visibility.Collapsed;
+                });
+        }
+
+        public void ResetUpdateText()
+        {
+            UpdateString =  ServiceLocator.LocalStorage.UpdateDownloaded
+                                         ? Properties.Resources.InstallUpdateString
+                                         : Properties.Resources.GetUpdateString;
+        }
+
+        public void ShowAboutDialog()
+        {
+            MessageBox.Show(VersionString);
         }
     }
 }
