@@ -96,7 +96,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private int GetCurrentDimension()
+        public int GetCurrentDimension()
         {
             double totalSize = DefaultPanelMargins;
             var isHorizontal = ButtonContainer.Orientation == Orientation.Horizontal;
