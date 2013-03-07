@@ -2273,7 +2273,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern bool RedrawWindow(IntPtr hWnd, [In] ref RECT lprcUpdate, IntPtr hrgnUpdate, RedrawWindowConstants flags);
 
         [DllImport(User32DllName)]
-        public static extern bool RedrawWindow(IntPtr hWnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, RedrawWindowConstants flags); 
+        public static extern bool RedrawWindow(IntPtr hWnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, RedrawWindowConstants flags);
+
+        [DllImport(User32DllName)]
+        public static extern bool UpdateWindow(IntPtr hWnd);
     }	// class User32Dll
 
     public class Kernel32Dll

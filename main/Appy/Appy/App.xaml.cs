@@ -35,7 +35,7 @@ namespace AppDirect.WindowsClient
 
             var taskbarPanel = new TaskbarPanel(_mainWindow);
             taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
-            TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, (int)taskbarPanel.Width);
+            TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, taskbarPanel.GetCurrentDimension());
 
             base.OnStartup(e);
         }

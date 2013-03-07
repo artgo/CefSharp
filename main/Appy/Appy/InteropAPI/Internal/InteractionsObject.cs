@@ -7,27 +7,26 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using DWORD = System.UInt32;
-using HANDLE = System.IntPtr;
-using HHOOK = System.IntPtr;
-using HINSTANCE = System.IntPtr;
 using HMONITOR = System.IntPtr;
 using HWND = System.IntPtr;
 using LPARAM = System.IntPtr;
-using UINT = System.UInt32;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
     public class InteractionsObject : ITaskbarInteropCallback
     {
-		#region field members
+        #region field members
+
         private static readonly IntPtr NULL = IntPtr.Zero;
         private readonly object _lockObject = new object();
         private const string SmallIconsPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
         private const string SmallIconsFiledName = @"TaskbarSmallIcons";
         private const int BuffSize = 256;
         private const string StartButtonClass = @"Button";
+
         // win 7  default with large buttons
         private const int DefaultStartButtonWidth = 54;
+
         private const int DefaultStartButtonHeight = 40;
         private const string CloseMessageName = @"AppDirectForceApplicationCloseMessage";
         private const string WindowName = @"AppDirectTaskbarButtonsWindow";
@@ -55,9 +54,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile uint _closeMessageId = 0;
 
         public int TaskbarHeight { get { return _taskbarHeight; } }
+
         public TaskbarPosition TaskbarPosition { get { return _taskbarPosition; } }
+
         public TaskbarIconsSize TaskbarIconsSize { get { return _taskbarIconsSize; } }
-		#endregion
+
+        #endregion field members
 
         static InteractionsObject()
         {
@@ -94,7 +96,14 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             notifyee.TaskbarCallbackEvents = this;
             _notifyee = notifyee;
 
-            _buttonsWindowSize.Width = initialWidth;
+            if (_taskbarPosition.IsVertical())
+            {
+                _buttonsWindowSize.Height = initialWidth;
+            }
+            else
+            {
+                _buttonsWindowSize.Width = initialWidth;
+            }
             _buttonsWidth = initialWidth;
             UpdateHandles();
             _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
@@ -108,30 +117,30 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 );
             p.PositionX = pos.X;
             p.PositionY = pos.Y;
-			p.ParentWindow = (IsWin8OrUp ? _taskbarHwnd : _startButtonHwnd);
+            p.ParentWindow = (IsWin8OrUp ? _taskbarHwnd : _startButtonHwnd);
 
             unchecked
-			{
+            {
+                p.WindowStyle = (int)(0													// TODO: -2 consts from magic numbers
 
-				p.WindowStyle = (int)(0													// TODO: -2 consts from magic numbers
                     //| (uint)0x94000C00												// 94000C00 is from the Start button
-					// | (uint)0x0C00U													// BS_
+                    // | (uint)0x0C00U													// BS_
 
-					// popup is prohibiting child style on Win8
-					//| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
-					| (uint)WindowsStyleConstants.WS_VISIBLE							// 10000000
+                    // popup is prohibiting child style on Win8
+                    //| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
+                    | (uint)WindowsStyleConstants.WS_VISIBLE							// 10000000
 
-					| (uint)WindowsStyleConstants.WS_CLIPSIBLINGS						// 04000000
-					| (IsWin8OrUp ? (uint)WindowsStyleConstants.WS_CHILD : 0U)		// Since Win8 child can be transparent		0x40000000U
-				);
+                    | (uint)WindowsStyleConstants.WS_CLIPSIBLINGS						// 04000000
+                    | (IsWin8OrUp ? (uint)WindowsStyleConstants.WS_CHILD : 0U)		// Since Win8 child can be transparent		0x40000000U
+                );
 
-				p.ExtendedWindowStyle = 0
-					| 0x00080088														// 00080088 is from the Start button
-					| 0x00080000														// WS_EX_LAYERED
-					| 0x00000008														// WS_EX_TOPMOST
-				;
-			}
-			p.UsesPerPixelOpacity = true;		// set the WS_EX_LAYERED extended window style
+                p.ExtendedWindowStyle = 0
+                    | 0x00080088														// 00080088 is from the Start button
+                    | 0x00080000														// WS_EX_LAYERED
+                    | 0x00000008														// WS_EX_TOPMOST
+                ;
+            }
+            p.UsesPerPixelOpacity = true;		// set the WS_EX_LAYERED extended window style
             _hSrc = new HwndSource(p);
             _hSrc.RootVisual = wnd;
 
@@ -145,10 +154,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             uint taskbarProcessId;
             var taskbarThreadId = User32Dll.GetWindowThreadProcessId(_taskbarHwnd, out taskbarProcessId);
 
-            
-
             // Hook resize event catcher
-			_winEventProc = WinEventDelegateImpl;
+            _winEventProc = WinEventDelegateImpl;
             _hWinEventHook = User32Dll.SetWinEventHook((uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND,
                 (uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND, NULL, _winEventProc,
                 taskbarProcessId, taskbarThreadId, (uint)(WinEventHookFlags.WINEVENT_OUTOFCONTEXT));
@@ -192,10 +199,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 pos.Y -= taskbarPos.Top; // to relative
             }
 
-            var left = (uint) pos.X;
-            var top = (uint) pos.Y;
-            var right = (uint) (pos.X + _buttonsWindowSize.Width);
-            var bottom = (uint) (pos.Y + _buttonsWindowSize.Height);
+            var left = (uint)pos.X;
+            var top = (uint)pos.Y;
+            var right = (uint)(pos.X + _buttonsWindowSize.Width);
+            var bottom = (uint)(pos.Y + _buttonsWindowSize.Height);
 
             PostButtonsPosToTheHook(left, top, right, bottom);
         }
@@ -255,7 +262,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return sz;
         }
 
-		private void WinEventDelegateImpl(IntPtr hWinEventHook, uint eventType,
+        private void WinEventDelegateImpl(IntPtr hWinEventHook, uint eventType,
                                       IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
             switch ((EventConstants)eventType)
@@ -276,24 +283,33 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     UpdateHandles();
 
                     var updatePos = false;
-
+                    var oldHeight = _buttonsWindowSize.Height;
+                    var oldWidth = _buttonsWindowSize.Width;
                     _buttonsWindowSize = GetButtonsWindowSize();
 
                     var newTaskbarPosition = GetTaskbarEdge();
                     if (newTaskbarPosition != _taskbarPosition)
                     {
-                        _notifyee.PositionChanged(newTaskbarPosition);
+                        var orientationChanged = (newTaskbarPosition.IsVertical() != _taskbarPosition.IsVertical());
+                        if (orientationChanged)
+                        {
+                            if (newTaskbarPosition.IsVertical())
+                            {
+                                _buttonsWindowSize.Height = oldWidth;
+                                _buttonsWidth = oldWidth;
+                            }
+                            else
+                            {
+                                _buttonsWindowSize.Width = oldHeight;
+                                _buttonsWidth = oldHeight;
+                            }
+                        }
                         _taskbarPosition = newTaskbarPosition;
-                        int newWidth;
-                        if (newTaskbarPosition.IsVertical())
-                        {
-                            newWidth = _buttonsWindowSize.Height;
-                        }
-                        else
-                        {
-                            newWidth = _buttonsWindowSize.Width;
-                        }
-                        DoChangeWidth(newWidth, true);
+                        // We should reinsert buttons only if going from horizontal to vertical mode or vica versa
+                        // it is because shift in C++ code is calculated in relative coordinates, so it will keep exactly
+                        // the same shift for us moving from top to bottom or from left to right edges.
+                        DoChangeWidth(_buttonsWidth, orientationChanged);
+                        _notifyee.PositionChanged(newTaskbarPosition);
                         updatePos = true;
                     }
 
@@ -358,12 +374,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 offset = new Point(szStart.Width, 0);
             }
 
-			var offset2 = (IsWin8OrUp ? offset : ScreenFromWpf(offset, _taskbarHwnd));
-			var flags = (uint)(0
-				| SetWindowPosConstants.SWP_SHOWWINDOW
-				| SetWindowPosConstants.SWP_NOOWNERZORDER
-				| SetWindowPosConstants.SWP_NOACTIVATE
-				);
+            var offset2 = (IsWin8OrUp ? offset : ScreenFromWpf(offset, _taskbarHwnd));
+            var flags = (uint)(0
+                | SetWindowPosConstants.SWP_SHOWWINDOW
+                | SetWindowPosConstants.SWP_NOOWNERZORDER
+                | SetWindowPosConstants.SWP_NOACTIVATE
+                );
             User32Dll.SetWindowPos(_hSrc.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
                                    offset2.X, offset2.Y,
                                    _buttonsWindowSize.Width, _buttonsWindowSize.Height,
@@ -408,7 +424,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 throw new InteropException("Cannot move Rebar back");
             }
-			// TODO: -1    -= event delegates
+
+            // TODO: -1    -= event delegates
             _hSrc.Dispose();
         }
 
@@ -475,9 +492,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
 
             var taskbarPos = GetTaskbarRect();
+
+            // Recalculate position relative to taskbar
+            newRebarCoords.Left -= taskbarPos.Left;
+            newRebarCoords.Right -= taskbarPos.Left;
+            newRebarCoords.Top -= taskbarPos.Top;
+            newRebarCoords.Bottom -= taskbarPos.Top;
+
             if (_taskbarPosition.IsVertical())
             {
-                newRebarCoords.Left -= taskbarPos.Left; // to relative
                 newRebarCoords.Top += diff;
 
                 // Do not do this since we are already trimming in C++ part
@@ -486,7 +509,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             else
             {
                 newRebarCoords.Left += diff;
-                newRebarCoords.Top -= taskbarPos.Top; // to relative
 
                 // Do not do this since we are already trimming in C++ part
                 //newRebarCoords.Width -= diff;
@@ -554,12 +576,13 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return taskbarRect;
         }
 
-        DWORD GetTaskbarThread()
+        private DWORD GetTaskbarThread()
         {
             return User32Dll.GetWindowThreadProcessId(NativeDll.FindTaskBar(), IntPtr.Zero);
         }
 
         private HWND _foundStartButtonHwnd = NULL;
+
         private bool StartButtonEnumFunc(HWND hwnd, LPARAM lParam)
         {
             var buffString = new StringBuilder(BuffSize);
@@ -584,7 +607,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
             else
             {
-				User32Dll.EnumThreadWindows(threadExplorer, StartButtonEnumFunc, NULL); // find Start button
+                User32Dll.EnumThreadWindows(threadExplorer, StartButtonEnumFunc, NULL); // find Start button
             }
             if (IsWin8OrUp || (_foundStartButtonHwnd != NULL))
             {
@@ -625,7 +648,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     // TODO: -2 implement code block bellow if we need some locig for small icons
                     //if (IsTaskbarSmallIcons())
                     //{
-                    //	s2.Height = 
+                    //	s2.Height =
                     //}
                 }
                 else
