@@ -41,7 +41,7 @@ namespace AppDirect.WindowsClient
             mainViewModel.InitializeAppsLists();
             mainViewModel.SyncAppsWithApi();
             _mainWindow = new MainWindow(mainViewModel);
-            UpdateDownloader.Start(_mainWindow);
+            UpdateManager.Start(_mainWindow);
             AppSessionRefresher.Start(_mainWindow);
 
             var taskbarPanel = new TaskbarPanel(_mainWindow);
@@ -57,7 +57,7 @@ namespace AppDirect.WindowsClient
             {
                 _instanceMutex.ReleaseMutex();
                 ServiceLocator.IpcCommunicator.Exit();
-                UpdateDownloader.Stop();
+            UpdateManager.Stop();
                 AppSessionRefresher.Stop();
             }
 

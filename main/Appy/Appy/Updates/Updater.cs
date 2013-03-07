@@ -49,29 +49,6 @@ namespace AppDirect.WindowsClient.Updates
             return false;
         }
 
-        private void InstallUpdatesWhenIdle()
-        {
-            
-        }
-
-        private static int GetLastInputTime()
-        {
-            uint idleTime = 0;
-            LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
-            lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
-            lastInputInfo.dwTime = 0;
-
-            uint envTicks = (uint)Environment.TickCount;
-
-            if (User32Dll.GetLastInputInfo(ref lastInputInfo))
-            {
-                uint lastInputTick = lastInputInfo.dwTime;
-
-                idleTime = envTicks - lastInputTick;
-            }
-
-            return (int)((idleTime > 0) ? (idleTime / 1000) : 0);
-        }
 
         /// <summary>
         /// Attempts to run updater.  If the process can not be started (Process.Start throws an exception) or the process starts successfully, the value of the UpdateDownloaded switch is set to false

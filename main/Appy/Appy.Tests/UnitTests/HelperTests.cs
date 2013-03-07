@@ -81,7 +81,22 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(test);
         }
 
+        [Test]
+        public void PerformWhenIdlePerformsAction()
+        {
+            var test = false;
+            Helper.PerformWhenIdle(() => { test = true; }, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.FromHours(1));
+            Assert.IsTrue(test);
+        }
 
+        [Test]
+        public void PerformWhenIdleTimeoutHonored()
+        {
+            var test = false;
+            Helper.PerformWhenIdle(() => { test = true; }, TimeSpan.FromMinutes(1), TimeSpan.FromMilliseconds(1), TimeSpan.FromMilliseconds(2));
+            Assert.IsFalse(test);
+        }
+        
         //Should be moved to Integration Tests
         [Test]
         public void PerformForMinimumTimeDoesNotReturnBeforeTimeIsElapsed()
