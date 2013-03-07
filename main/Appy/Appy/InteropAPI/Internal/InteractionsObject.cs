@@ -21,7 +21,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private readonly object _lockObject = new object();
         private const string SmallIconsPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
         private const string SmallIconsFiledName = @"TaskbarSmallIcons";
+        private const string DpiSettingPath = @"HKEY_CURRENT_USER\Control Panel\Desktop\Windowmetrics";
+        private const string DpiSettingName = @"AppliedDPI";
         private const int BuffSize = 256;
+        private const double StandardDpi = 96;
         private const string StartButtonClass = @"Button";
 
         // win 7  default with large buttons
@@ -59,6 +62,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         public TaskbarIconsSize TaskbarIconsSize { get { return _taskbarIconsSize; } }
 
+        public Double DpiScalingFactor { get; set; }
+
         #endregion field members
 
         static InteractionsObject()
@@ -73,6 +78,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public void LoadInitialValues()
         {
             UpdateHandles();
+
+            DpiScalingFactor = GetDpiScaleFactor();
 
             _taskbarPosition = GetTaskbarEdge();
             _taskbarIconsSize = GetTaskbarIconSize();
@@ -260,6 +267,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
 
             return sz;
+        }
+
+        private double GetDpiScaleFactor()
+        {
+            var dpiSetting = Registry.GetValue(DpiSettingPath, DpiSettingName, 96) ?? StandardDpi;
+            return (int)dpiSetting / StandardDpi;
         }
 
         private void WinEventDelegateImpl(IntPtr hWinEventHook, uint eventType,
@@ -684,6 +697,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private bool DoChangeWidth(int newWidth, bool firstTime)
         {
+            newWidth = (int)(newWidth * DpiScalingFactor);
+
             int delta;
             if (_taskbarPosition.IsVertical())
             {
