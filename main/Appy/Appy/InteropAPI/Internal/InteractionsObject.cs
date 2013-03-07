@@ -271,7 +271,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private double GetDpiScaleFactor()
         {
-            var dpiSetting = Registry.GetValue(DpiSettingPath, DpiSettingName, 96) ?? StandardDpi;
+            var dpiSetting = Registry.GetValue(DpiSettingPath, DpiSettingName, StandardDpi) ?? StandardDpi;
             return (int)dpiSetting / StandardDpi;
         }
 
