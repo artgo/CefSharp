@@ -283,15 +283,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     UpdateHandles();
 
                     var updatePos = false;
-                    var oldHeigh = _buttonsWindowSize.Height;
+                    var oldHeight = _buttonsWindowSize.Height;
                     var oldWidth = _buttonsWindowSize.Width;
                     _buttonsWindowSize = GetButtonsWindowSize();
 
                     var newTaskbarPosition = GetTaskbarEdge();
                     if (newTaskbarPosition != _taskbarPosition)
                     {
-                        var verticalityChanged = (newTaskbarPosition.IsVertical() != _taskbarPosition.IsVertical());
-                        if (verticalityChanged)
+                        var orientationChanged = (newTaskbarPosition.IsVertical() != _taskbarPosition.IsVertical());
+                        if (orientationChanged)
                         {
                             if (newTaskbarPosition.IsVertical())
                             {
@@ -300,15 +300,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                             }
                             else
                             {
-                                _buttonsWindowSize.Width = oldHeigh;
-                                _buttonsWidth = oldHeigh;
+                                _buttonsWindowSize.Width = oldHeight;
+                                _buttonsWidth = oldHeight;
                             }
                         }
                         _taskbarPosition = newTaskbarPosition;
                         // We should reinsert buttons only if going from horizontal to vertical mode or vica versa
                         // it is because shift in C++ code is calculated in relative coordinates, so it will keep exactly
                         // the same shift for us moving from top to bottom or from left to right edges.
-                        DoChangeWidth(_buttonsWidth, verticalityChanged);
+                        DoChangeWidth(_buttonsWidth, orientationChanged);
                         _notifyee.PositionChanged(newTaskbarPosition);
                         updatePos = true;
                     }
@@ -492,10 +492,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
 
             var taskbarPos = GetTaskbarRect();
+
+            // Recalculate position relative to taskbar
+            newRebarCoords.Left -= taskbarPos.Left;
+            newRebarCoords.Right -= taskbarPos.Left;
+            newRebarCoords.Top -= taskbarPos.Top;
+            newRebarCoords.Bottom -= taskbarPos.Top;
+
             if (_taskbarPosition.IsVertical())
             {
-                newRebarCoords.Left  -= taskbarPos.Left; // to relative
-                newRebarCoords.Right -= taskbarPos.Left; // to relative
                 newRebarCoords.Top += diff;
 
                 // Do not do this since we are already trimming in C++ part
@@ -504,8 +509,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             else
             {
                 newRebarCoords.Left += diff;
-                newRebarCoords.Top    -= taskbarPos.Top; // to relative
-                newRebarCoords.Bottom -= taskbarPos.Top; // to relative
 
                 // Do not do this since we are already trimming in C++ part
                 //newRebarCoords.Width -= diff;
