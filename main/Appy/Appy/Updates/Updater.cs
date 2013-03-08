@@ -59,17 +59,10 @@ namespace AppDirect.WindowsClient.Updates
         {
             try
             {
-                ProcessStartInfo start = new ProcessStartInfo();
-                start.FileName = UpdaterExeFileName;
-
-                start.WindowStyle = ProcessWindowStyle.Hidden;
-                start.CreateNoWindow = true;
-
-                if (System.Environment.OSVersion.Version.Major >= 6)
-                {
-                    start.Verb = "runas";
-                }
-                Process.Start(start);
+                Process updater = new Process();
+                updater.StartInfo.FileName = "kklk.exe";
+                updater.StartInfo.UseShellExecute = true;
+                updater.Start();
             }
             catch (Exception e)
             {
