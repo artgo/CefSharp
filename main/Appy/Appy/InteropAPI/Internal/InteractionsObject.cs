@@ -62,7 +62,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         public TaskbarIconsSize TaskbarIconsSize { get { return _taskbarIconsSize; } }
 
-        private Double _dpiScalingFactor;
+        private double _dpiScalingFactor;
 
         #endregion field members
 
