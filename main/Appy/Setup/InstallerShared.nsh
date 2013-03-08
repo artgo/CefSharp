@@ -42,6 +42,7 @@ done:
   System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
   FindWindow $0 "" "${APPWINDOWCLASSNAME}"
   ${If} $0 != "0"
+  StrCmp $4 "0" gogogo
   MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
     Abort
   gogogo:
