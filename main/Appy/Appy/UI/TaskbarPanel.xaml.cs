@@ -148,6 +148,7 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ApplicationWindow.Visibility != Visibility.Visible || !ApplicationWindow.Topmost)
             {
+                ApplicationWindow.SetPosition();
                 ApplicationWindow.Show();
                 ApplicationWindow.Topmost = true;
             }
@@ -188,7 +189,6 @@ namespace AppDirect.WindowsClient.UI
             var marginVertical = MainButton.Margin.Top;
 
             MainButton.Margin = new Thickness(marginVertical, marginHorizontal, marginVertical, marginHorizontal);
-
             NotifyTaskbarOfChange();
         }
 

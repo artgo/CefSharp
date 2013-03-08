@@ -12,6 +12,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.InteropAPI;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -40,8 +41,7 @@ namespace AppDirect.WindowsClient.UI
 
             InitializeComponent();
 
-            Left = SystemParameters.WorkArea.Right*.003;
-            Top = SystemParameters.WorkArea.Bottom - Height;
+            SetPosition();
 
             WindowPanels.Add(LoginViewControl);
             WindowPanels.Add(RegistrationViewControl);
@@ -51,6 +51,29 @@ namespace AppDirect.WindowsClient.UI
 
             RegistrationViewControl.ClosePanel += Login_Close;
 
+        }
+
+        public void SetPosition()
+        {
+            switch (TaskbarApi.Instance.TaskbarPosition)
+            {
+                case TaskbarPosition.Bottom:
+                    Left = SystemParameters.WorkArea.Left;
+                    Top = SystemParameters.WorkArea.Bottom - Height;
+                    break;
+                case TaskbarPosition.Left:
+                    Left = SystemParameters.WorkArea.Left;
+                    Top = SystemParameters.WorkArea.Top;
+                    break;
+                case TaskbarPosition.Right:
+                    Left = SystemParameters.WorkArea.Right - Width;
+                    Top = SystemParameters.WorkArea.Top;
+                    break;
+                case TaskbarPosition.Top:
+                    Left = SystemParameters.WorkArea.Left;
+                    Top = SystemParameters.WorkArea.Top;
+                    break;
+            }
         }
 
         private void Login_Close(object sender, EventArgs e)
