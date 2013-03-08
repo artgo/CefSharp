@@ -151,8 +151,12 @@ namespace AppDirect.WindowsClient.UI
                 ApplicationWindow.Show();
                 ApplicationWindow.Topmost = true;
             }
+            else
+            {
+                ApplicationWindow.Hide();
+            }
         }
-
+        
         public void HeightChanged(int newHeight)
         {
             //Nothing to do as long as the window gets moved correctly
