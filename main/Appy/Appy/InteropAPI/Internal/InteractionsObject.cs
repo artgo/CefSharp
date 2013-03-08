@@ -62,7 +62,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         public TaskbarIconsSize TaskbarIconsSize { get { return _taskbarIconsSize; } }
 
-        public Double DpiScalingFactor { get; set; }
+        private Double _dpiScalingFactor;
 
         #endregion field members
 
@@ -79,7 +79,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         {
             UpdateHandles();
 
-            DpiScalingFactor = GetDpiScaleFactor();
+            _dpiScalingFactor = GetDpiScaleFactor();
 
             _taskbarPosition = GetTaskbarEdge();
             _taskbarIconsSize = GetTaskbarIconSize();
@@ -271,8 +271,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private double GetDpiScaleFactor()
         {
-            var dpiSetting = Registry.GetValue(DpiSettingPath, DpiSettingName, StandardDpi) ?? StandardDpi;
-            return (int)dpiSetting / StandardDpi;
+            var dpiSetting = (double)(Registry.GetValue(DpiSettingPath, DpiSettingName, StandardDpi) ?? StandardDpi);
+            return dpiSetting / StandardDpi;
         }
 
         private void WinEventDelegateImpl(IntPtr hWinEventHook, uint eventType,
@@ -697,7 +697,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private bool DoChangeWidth(int newWidth, bool firstTime)
         {
-            newWidth = (int)(newWidth * DpiScalingFactor);
+             newWidth = (int)Math.Round(newWidth * _dpiScalingFactor);
 
             int delta;
             if (_taskbarPosition.IsVertical())
