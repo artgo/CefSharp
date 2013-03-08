@@ -9,12 +9,19 @@
     <UserControl.Resources>
         <sys:Double x:Key="ButtonHeight">28</sys:Double>
         <sys:Double x:Key="ButtonWidth">28</sys:Double>
+        <ContextMenu x:Key="UninstallContextMenu" Style="{StaticResource ContextMenuStyle}">
+            <MenuItem Header="Pin to task bar" Style="{StaticResource MenuItem}" IsChecked="{Binding PinnedToTaskbar}"
+                      IsCheckable="True" Click="PinToTaskBarClick" DataContext="{Binding}" />
+            <MenuItem Header="Uninstall" Style="{StaticResource MenuItem}" Click="UninstallAppClick"
+                      DataContext="{Binding}" />
+        </ContextMenu>
         <Style x:Key="DeskbandButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Height" Value="{StaticResource ButtonHeight}"/>
             <Setter Property="Width" Value="{StaticResource ButtonWidth}"/>
             <Setter Property="Margin" Value="3,3,3,3"></Setter>
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
