@@ -37,6 +37,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private readonly static bool IsWin7OrUp;
         private readonly static bool IsWin8OrUp;
 
+        private readonly CoordsPackager _coordsPackager = new CoordsPackager();
+
         private volatile HwndSource _hSrc;
         private volatile ITaskbarInterop _notifyee = null;
         private System.Drawing.Size _buttonsWindowSize;
@@ -55,14 +57,13 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile HWND _startButtonHwnd = NULL;
         private volatile uint _updateMessageId = 0;
         private volatile uint _closeMessageId = 0;
+        private double _dpiScalingFactor;
 
         public int TaskbarHeight { get { return _taskbarHeight; } }
 
         public TaskbarPosition TaskbarPosition { get { return _taskbarPosition; } }
 
         public TaskbarIconsSize TaskbarIconsSize { get { return _taskbarIconsSize; } }
-
-        private double _dpiScalingFactor;
 
         #endregion field members
 
@@ -206,27 +207,17 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 pos.Y -= taskbarPos.Top; // to relative
             }
 
-            var left = (uint)pos.X;
-            var top = (uint)pos.Y;
-            var right = (uint)(pos.X + _buttonsWindowSize.Width);
-            var bottom = (uint)(pos.Y + _buttonsWindowSize.Height);
+            var coords = new RectWin()
+                {
+                    Left = pos.X,
+                    Top = pos.Y,
+                    Width = _buttonsWindowSize.Width,
+                    Height = _buttonsWindowSize.Height
+                };
 
-            PostButtonsPosToTheHook(left, top, right, bottom);
-        }
+            var postParams = _coordsPackager.PackParams(coords);
 
-        private void PostButtonsPosToTheHook(uint left, uint top, uint right, uint bottom)
-        {
-            // C++ would unpack it like this:
-            //const unsigned int p1 = (unsigned int)wParam;
-            //const unsigned int p2 = (unsigned int)lParam;
-            //buttonsRect.left = p1 >> 16;
-            //buttonsRect.top = p1 & 0xFFFF;
-            //buttonsRect.right = p2 >> 16;
-            //buttonsRect.bottom = p2 & 0xFFFF;
-
-            var wParam = (IntPtr)((left << 16) | (top & 0xFFFF));
-            var lParam = (IntPtr)((right << 16) | (bottom & 0xFFFF));
-            User32Dll.PostMessage(_rebarHwnd, _updateMessageId, wParam, lParam);
+            User32Dll.PostMessage(_rebarHwnd, _updateMessageId, postParams.WParam, postParams.LParam);
         }
 
         private void RegistryChangeHandler(object sender, RegistryChangeEventArgs e)
@@ -240,7 +231,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             var newRebarCoords = CalculateRebarCoords(false);
 
-            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), (IntPtr)0,
+            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), IntPtr.Zero,
                                         newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width, newRebarCoords.Height,
                                         0)) // move to correct coords
             {
@@ -271,7 +262,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private double GetDpiScaleFactor()
         {
-            var dpiSetting = (double)(Registry.GetValue(DpiSettingPath, DpiSettingName, StandardDpi) ?? StandardDpi);
+            var dpiSetting = (double)(int)(Registry.GetValue(DpiSettingPath, DpiSettingName, StandardDpi) ?? StandardDpi);
             return dpiSetting / StandardDpi;
         }
 
@@ -293,55 +284,60 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     var newRect = new RectWin();
                     accWindow.accLocation(out newRect.Left, out newRect.Top, out newRect.Right, out newRect.Bottom, varChild);
 
-                    UpdateHandles();
-
-                    var updatePos = false;
-                    var oldHeight = _buttonsWindowSize.Height;
-                    var oldWidth = _buttonsWindowSize.Width;
-                    _buttonsWindowSize = GetButtonsWindowSize();
-
-                    var newTaskbarPosition = GetTaskbarEdge();
-                    if (newTaskbarPosition != _taskbarPosition)
-                    {
-                        var orientationChanged = (newTaskbarPosition.IsVertical() != _taskbarPosition.IsVertical());
-                        if (orientationChanged)
-                        {
-                            if (newTaskbarPosition.IsVertical())
-                            {
-                                _buttonsWindowSize.Height = oldWidth;
-                                _buttonsWidth = oldWidth;
-                            }
-                            else
-                            {
-                                _buttonsWindowSize.Width = oldHeight;
-                                _buttonsWidth = oldHeight;
-                            }
-                        }
-                        _taskbarPosition = newTaskbarPosition;
-                        // We should reinsert buttons only if going from horizontal to vertical mode or vica versa
-                        // it is because shift in C++ code is calculated in relative coordinates, so it will keep exactly
-                        // the same shift for us moving from top to bottom or from left to right edges.
-                        DoChangeWidth(_buttonsWidth, orientationChanged);
-                        _notifyee.PositionChanged(newTaskbarPosition);
-                        updatePos = true;
-                    }
-
-                    if (CheckIconSize())
-                    {
-                        updatePos = true;
-                    }
-
-                    if (CheckUpdatePos())
-                    {
-                        updatePos = true;
-                    }
-
-                    if (updatePos)
-                    {
-                        UpdatePosition();
-                    }
+                    //ReactToSizeMove();
 
                     break;
+            }
+        }
+
+        private void ReactToSizeMove()
+        {
+            UpdateHandles();
+
+            var updatePos = false;
+            var oldHeight = _buttonsWindowSize.Height;
+            var oldWidth = _buttonsWindowSize.Width;
+            _buttonsWindowSize = GetButtonsWindowSize();
+
+            var newTaskbarPosition = GetTaskbarEdge();
+            if (newTaskbarPosition != _taskbarPosition)
+            {
+                var orientationChanged = (newTaskbarPosition.IsVertical() != _taskbarPosition.IsVertical());
+                if (orientationChanged)
+                {
+                    if (newTaskbarPosition.IsVertical())
+                    {
+                        _buttonsWindowSize.Height = oldWidth;
+                        _buttonsWidth = oldWidth;
+                    }
+                    else
+                    {
+                        _buttonsWindowSize.Width = oldHeight;
+                        _buttonsWidth = oldHeight;
+                    }
+                }
+                _taskbarPosition = newTaskbarPosition;
+                // We should reinsert buttons only if going from horizontal to vertical mode or vica versa
+                // it is because shift in C++ code is calculated in relative coordinates, so it will keep exactly
+                // the same shift for us moving from top to bottom or from left to right edges.
+                DoChangeWidth(_buttonsWidth, orientationChanged);
+                _notifyee.PositionChanged(newTaskbarPosition);
+                updatePos = true;
+            }
+
+            if (CheckIconSize())
+            {
+                updatePos = true;
+            }
+
+            if (CheckUpdatePos())
+            {
+                updatePos = true;
+            }
+
+            if (updatePos)
+            {
+                UpdatePosition();
             }
         }
 
@@ -535,6 +531,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             if (msg == _closeMessageId)
             {
                 _notifyee.Shutdown();
+            }
+            else
+            {
+                if (msg == _updateMessageId)
+                {
+                    //var rebarRect = _coordsPackager.UnpackParams(lParam, wParam);
+
+                    ReactToSizeMove();
+                }
             }
 
             return NULL;

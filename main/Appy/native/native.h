@@ -17,6 +17,7 @@
 struct APPDIRECT_IPC_MESSAGES {
   UINT ExitMessage;
   UINT UpdateMessage;
+  HWND AppDirectHwnd;
 };
 
 typedef struct APPDIRECT_IPC_MESSAGES APPDIRECT_IPC_MESSAGES;

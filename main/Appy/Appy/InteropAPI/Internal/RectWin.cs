@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
@@ -59,6 +60,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         {
             const int hbase = 13;
             return Left * hbase * hbase * hbase + Top * hbase * hbase + Right * hbase + Bottom;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{{ Top={0}, Left={1}, Height={2}, Width={3} }}", Top, Left, Height, Width);
         }
     }
 }

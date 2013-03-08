@@ -104,6 +104,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="InteropApi\Internal\CoordsPackagerTest.cs" />
+    <Compile Include="InteropApi\Internal\InteractionsObjectTest.cs" />
+    <Compile Include="InteropApi\Internal\RectWinTest.cs" />
     <Compile Include="UnitTests\AppDirectApiUnitTest.cs" />
     <Compile Include="UnitTests\HelperTests.cs" />
     <Compile Include="UnitTests\LocalStorageUnitTest.cs" />
