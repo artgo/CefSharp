@@ -27,7 +27,7 @@ namespace AppDirect.WindowsClient.UI
 
         public MainViewModel ViewModel { get; set; }
 
-        public MainWindow(MainViewModel mainViewModel, TaskbarPosition taskbarPosition)
+        public MainWindow(MainViewModel mainViewModel)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace AppDirect.WindowsClient.UI
 
             InitializeComponent();
 
-            SetPosition(taskbarPosition);
+            SetPosition();
 
             WindowPanels.Add(LoginViewControl);
             WindowPanels.Add(RegistrationViewControl);
@@ -53,9 +53,9 @@ namespace AppDirect.WindowsClient.UI
 
         }
 
-        public void SetPosition(TaskbarPosition taskbarPosition)
+        public void SetPosition()
         {
-            switch (taskbarPosition)
+            switch (TaskbarApi.Instance.TaskbarPosition)
             {
                 case TaskbarPosition.Bottom:
                     Left = SystemParameters.WorkArea.Left;

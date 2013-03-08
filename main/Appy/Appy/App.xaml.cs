@@ -29,7 +29,7 @@ namespace AppDirect.WindowsClient
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
             mainViewModel.SyncAppsWithApi();
-            _mainWindow = new MainWindow(mainViewModel, TaskbarApi.Instance.TaskbarPosition);
+            _mainWindow = new MainWindow(mainViewModel);
             UpdateDownloader.Start(_mainWindow);
             AppSessionRefresher.Start(_mainWindow);
 
