@@ -1,10 +1,10 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.InteropAPI;
-using AppDirect.WindowsClient.InteropAPI.Internal;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -12,17 +12,18 @@ namespace AppDirect.WindowsClient.UI
     /// <summary>
     /// Interaction logic for AllButtons.xaml
     /// </summary>
-    public partial class TaskbarPanel : ITaskbarInterop   
+    public partial class TaskbarPanel : ITaskbarInterop
     {
         public TaskbarPanelViewModel ViewModel { get; set; }
+
         public const int DeskbandInitialSize = 40;
         public const int DefaultPanelMargins = 20;
 
         public TaskbarIconsSize CurrentIconSize { get; set; }
-        
+
         private const int MainIconLargeSize = 30;
         private const int MainIconSmallSize = 20;
-        
+
         public MainWindow ApplicationWindow { get; set; }
 
         public TaskbarPanel(MainWindow mainView)
@@ -30,7 +31,7 @@ namespace AppDirect.WindowsClient.UI
             InitializeComponent();
 
             ApplicationWindow = mainView;
-            
+
             ViewModel = new TaskbarPanelViewModel();
 
             ApplicationWindow.ViewModel.ApplicationAddedNotifier += AddAppButton;
@@ -107,7 +108,11 @@ namespace AppDirect.WindowsClient.UI
             {
                 totalSize += isHorizontal ? taskbarButton.Width : taskbarButton.Height;
             }
-            return (int) totalSize;
+
+            Width = isHorizontal ? totalSize : MainButton.Height;
+            Height = isHorizontal ? MainButton.Height : totalSize;
+
+            return (int)totalSize;
         }
 
         private void RemoveButton(Application application)
@@ -125,7 +130,7 @@ namespace AppDirect.WindowsClient.UI
                 {
                     Height -= btn.Height;
                 }
-                
+
                 NotifyTaskbarOfChange();
             }
         }
@@ -174,7 +179,7 @@ namespace AppDirect.WindowsClient.UI
 
             if (isVertical && ButtonContainer.Orientation != Orientation.Vertical)
             {
-                ButtonContainer.Orientation = Orientation.Vertical;              
+                ButtonContainer.Orientation = Orientation.Vertical;
             }
             else
             {
@@ -233,7 +238,7 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public ITaskbarInteropCallback TaskbarCallbackEvents { get; set; }
-        
+
         private void MenuItemExitClick(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
