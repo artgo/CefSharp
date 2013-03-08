@@ -156,7 +156,7 @@ namespace AppDirect.WindowsClient.UI
                 ApplicationWindow.Hide();
             }
         }
-        
+
         public void HeightChanged(int newHeight)
         {
             //Nothing to do as long as the window gets moved correctly
