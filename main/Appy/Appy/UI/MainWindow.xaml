@@ -101,7 +101,7 @@
                                 </Grid.ColumnDefinitions>
                                 <Border Grid.Column="0"
                                         Name="Check"
-                                        Width="14" Height="14"
+                                        Width="18" Height="18"
                                         Visibility="Collapsed"
                                         Margin="2,0,2,0"
                                         VerticalAlignment="Bottom"
@@ -195,11 +195,14 @@
                                     IsOpen="{TemplateBinding IsSubmenuOpen}"
                                     AllowsTransparency="True"
                                     Focusable="False"
-                                    PopupAnimation="Fade" VerticalOffset="25" HorizontalOffset="30">
+                                    PopupAnimation="Fade" VerticalOffset="20" HorizontalOffset="35">
                                     <Border Name="SubmenuBorder" SnapsToDevicePixels="True"
                                             Background="{StaticResource MenuItemColor}"
-                                            BorderBrush="{StaticResource DisabledColor}"
-                                            BorderThickness="0">
+                                            BorderBrush="Transparent"
+                                            BorderThickness="5">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="Black" BlurRadius="5" ></DropShadowEffect>
+                                        </Border.Effect>
                                         <StackPanel Margin="0,3,0,3" IsItemsHost="True"
                                                     KeyboardNavigation.DirectionalNavigation="Cycle" />
                                     </Border>
@@ -235,15 +238,15 @@
                     <ControlTemplate TargetType="ContextMenu">
                         <Border
                             Name="Border"
-                            Background="{StaticResource MenuItemColor}"
-                            BorderBrush="{StaticResource MenuItemColor}"
-                            BorderThickness="1">
+                            BorderBrush="Transparent"
+                            BorderThickness="5">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="4" ShadowDepth="2"></DropShadowEffect>
+                                <DropShadowEffect Color="Black" BlurRadius="5" ></DropShadowEffect>
                             </Border.Effect>
                             <StackPanel IsItemsHost="True"
                                         Margin="0,3,0,3"
-                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                        KeyboardNavigation.DirectionalNavigation="Cycle" 
+                            Background="{StaticResource MenuItemColor}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -454,7 +457,18 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Thumb}">
                         <Border
-                            Background="{TemplateBinding Background}" />
+                            Background="{TemplateBinding Background}" >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="7" />
+                                    <ColumnDefinition Width="5" />
+                                    <ColumnDefinition Width="7" />
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Grid.Column="0" Fill="Transparent"></Rectangle>
+                                <Rectangle Grid.Column="1" Fill="#383c44"></Rectangle>
+                                <Rectangle Grid.Column="2" Fill="Transparent"></Rectangle>
+                            </Grid>
+                        </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -470,7 +484,7 @@
                     <Track.Thumb>
                         <Thumb
                             Style="{StaticResource ScrollBarThumb}"
-                            Width="5" Background="#383c44" />
+                            Width="19" Background="Transparent" />
                     </Track.Thumb>
                 </Track>
             </Grid>
@@ -481,7 +495,7 @@
             <Setter Property="Margin" Value="0,60,30,0" />
             <Style.Triggers>
                 <Trigger Property="Orientation" Value="Vertical">
-                    <Setter Property="Width" Value="9" />
+                    <Setter Property="Width" Value="19" />
                     <Setter Property="Height" Value="Auto" />
                     <Setter Property="Template" Value="{StaticResource VerticalScrollBar}" />
                 </Trigger>
