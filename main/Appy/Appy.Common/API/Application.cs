@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient.Common.API
@@ -8,7 +9,7 @@ namespace AppDirect.WindowsClient.Common.API
     ///</summary>
     [Serializable]
     [XmlInclude(typeof(Application)), XmlInclude(typeof(LocalApplication))]
-    public class Application : IApplication
+    public class Application : IApplication, INotifyPropertyChanged
     {
         public override string Id { get; set; }
         public override string Name { get; set; }
@@ -22,7 +23,22 @@ namespace AppDirect.WindowsClient.Common.API
         public override int BrowserHeight { get; set; }
         public override int BrowserWidth { get; set; }
         public override bool BrowserResizable { get; set; }
+
+        /// <summary>
+        /// Public only for XML - use PinnedToTaskbarPublisher to set value
+        /// </summary>
         public bool PinnedToTaskbar { get; set; }
+
+        [XmlIgnore]
+        public bool PinnedToTaskbarPublisher
+        {
+            get { return PinnedToTaskbar; }
+            set
+            {
+                PinnedToTaskbar = value;
+                NotifyPropertyChanged("PinnedToTaskbarPublisher");
+            }
+        }
 
         public override bool Equals(Object obj)
         {
@@ -44,6 +60,16 @@ namespace AppDirect.WindowsClient.Common.API
         public override int GetHashCode()
         {
             return Id.GetHashCode();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

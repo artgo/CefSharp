@@ -33,6 +33,7 @@ namespace AppDirect.WindowsClient.UI
             ApplicationWindow = mainView;
 
             ViewModel = new TaskbarPanelViewModel();
+            DataContext = ViewModel;
 
             ApplicationWindow.ViewModel.ApplicationAddedNotifier += AddAppButton;
             ApplicationWindow.ViewModel.ApplicationRemovedNotifier += RemoveAppButton;
@@ -74,6 +75,9 @@ namespace AppDirect.WindowsClient.UI
         private void AddButton(Application application)
         {
             var taskbarButton = new TaskbarButton(application, CurrentIconSize);
+
+            taskbarButton.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
+            taskbarButton.UninstallClickNotifier += ApplicationWindow.UninstallAppClick;
 
             ButtonContainer.Children.Add(taskbarButton);
 

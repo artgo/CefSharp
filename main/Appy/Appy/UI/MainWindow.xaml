@@ -77,7 +77,7 @@
             </Setter>
         </Style>
         <ContextMenu x:Key="UninstallContextMenu" Style="{StaticResource ContextMenuStyle}">
-            <MenuItem Header="Pin to task bar" Style="{StaticResource MenuItem}" IsChecked="{Binding PinnedToTaskbar}"
+            <MenuItem Header="Pin to task bar" Style="{StaticResource MenuItem}" IsChecked="{Binding PinnedToTaskbarPublisher}"
                       IsCheckable="True" Click="PinToTaskBarClick" DataContext="{Binding}" />
             <MenuItem Header="Uninstall" Style="{StaticResource MenuItem}" Click="UninstallAppClick"
                       DataContext="{Binding}" />
