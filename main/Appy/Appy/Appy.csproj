@@ -161,6 +161,7 @@
     <Compile Include="InteropAPI\Internal\RegistryChangeMonitor.cs" />
     <Compile Include="InteropAPI\ITaskbarInterop.cs" />
     <Compile Include="InteropAPI\ITaskbarInteropCallback.cs" />
+    <Compile Include="InteropAPI\ShutdownHelper.cs" />
     <Compile Include="InteropAPI\TaskbarAPI.cs" />
     <Compile Include="InteropAPI\TaskbarIconsSize.cs" />
     <Compile Include="InteropAPI\TaskbarPosition.cs" />

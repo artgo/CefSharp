@@ -1,5 +1,4 @@
-﻿using Accessibility;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -26,6 +25,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private const int BuffSize = 256;
         private const double StandardDpi = 96;
         private const string StartButtonClass = @"Button";
+        private static readonly TimeSpan UnloadWaitTimeout = TimeSpan.FromSeconds(30.0);
 
         // win 7  default with large buttons
         private const int DefaultStartButtonWidth = 54;
@@ -39,24 +39,21 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private readonly CoordsPackager _coordsPackager = new CoordsPackager();
 
-        private volatile HwndSource _hSrc;
+        private volatile HwndSource _hwndSource;
         private volatile ITaskbarInterop _notifyee = null;
         private System.Drawing.Size _buttonsWindowSize;
-        private volatile IntPtr _hWinEventHook = IntPtr.Zero;
-        private volatile WinEventDelegate _winEventProc;
-        private volatile RegistryChangeHandler _smallIconsChangeProc;
-        private volatile RegistryChangeHandler _smallIconsChangeProcError;
         private volatile HwndSourceHook _wndProcHook;
         private volatile int _taskbarHeight = 0;
         private volatile int _buttonsWidth = 0;
         private volatile TaskbarPosition _taskbarPosition = TaskbarPosition.Bottom;
         private volatile TaskbarIconsSize _taskbarIconsSize = TaskbarIconsSize.Large;
-        private volatile RegistryChangeMonitor _smallIconsRegistryMonitor;
         private volatile HWND _taskbarHwnd = NULL;
         private volatile HWND _rebarHwnd = NULL;
         private volatile HWND _startButtonHwnd = NULL;
         private volatile uint _updateMessageId = 0;
         private volatile uint _closeMessageId = 0;
+        private volatile uint _dllUnloadMessageId = 0;
+        private volatile bool _disposeHwndSource = false;
         private double _dpiScalingFactor;
 
         public int TaskbarHeight { get { return _taskbarHeight; } }
@@ -115,21 +112,23 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _buttonsWidth = initialWidth;
             UpdateHandles();
             _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
+            _updateMessageId = NativeDll.GetUpdatePositionMsg();
+            _dllUnloadMessageId = NativeDll.GetExitMsg();
 
             var pos = CalculateButtonPosition();
 
-            var p = new HwndSourceParameters(
+            var hwndSourceParams = new HwndSourceParameters(
                     WindowName,			// NAME
                     _buttonsWindowSize.Width,
                     _buttonsWindowSize.Height		// size of WPF window inside usual Win32 window
                 );
-            p.PositionX = pos.X;
-            p.PositionY = pos.Y;
-            p.ParentWindow = (IsWin8OrUp ? _taskbarHwnd : _startButtonHwnd);
+            hwndSourceParams.PositionX = pos.X;
+            hwndSourceParams.PositionY = pos.Y;
+            hwndSourceParams.ParentWindow = (IsWin8OrUp ? _taskbarHwnd : _startButtonHwnd);
 
             unchecked
             {
-                p.WindowStyle = (int)(0													// TODO: -2 consts from magic numbers
+                hwndSourceParams.WindowStyle = (int)(0													// TODO: -2 consts from magic numbers
 
                     //| (uint)0x94000C00												// 94000C00 is from the Start button
                     // | (uint)0x0C00U													// BS_
@@ -142,41 +141,27 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     | (IsWin8OrUp ? (uint)WindowsStyleConstants.WS_CHILD : 0U)		// Since Win8 child can be transparent		0x40000000U
                 );
 
-                p.ExtendedWindowStyle = 0
+                hwndSourceParams.ExtendedWindowStyle = 0
                     | 0x00080088														// 00080088 is from the Start button
                     | 0x00080000														// WS_EX_LAYERED
                     | 0x00000008														// WS_EX_TOPMOST
                 ;
             }
-            p.UsesPerPixelOpacity = true;		// set the WS_EX_LAYERED extended window style
-            _hSrc = new HwndSource(p);
-            _hSrc.RootVisual = wnd;
+            hwndSourceParams.UsesPerPixelOpacity = true;		// set the WS_EX_LAYERED extended window style
+            _hwndSource = new HwndSource(hwndSourceParams) {RootVisual = wnd};
 
             _wndProcHook = WndProc;
-            _hSrc.AddHook(_wndProcHook);
+            _hwndSource.AddHook(_wndProcHook);
 
             DoChangeWidth(_buttonsWidth, true);
 
+            lock (_lockObject)
+            {
+                _disposeHwndSource = false;
+            }
+
             NativeDll.InjectExplrorerExe();
 
-            uint taskbarProcessId;
-            var taskbarThreadId = User32Dll.GetWindowThreadProcessId(_taskbarHwnd, out taskbarProcessId);
-
-            // Hook resize event catcher
-            _winEventProc = WinEventDelegateImpl;
-            _hWinEventHook = User32Dll.SetWinEventHook((uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND,
-                (uint)EventConstants.EVENT_SYSTEM_MOVESIZEEND, NULL, _winEventProc,
-                taskbarProcessId, taskbarThreadId, (uint)(WinEventHookFlags.WINEVENT_OUTOFCONTEXT));
-
-            _smallIconsChangeProc = RegistryChangeHandler;
-            _smallIconsChangeProcError = RegistryChangeErrorHandler;
-
-            _smallIconsRegistryMonitor = new RegistryChangeMonitor(SmallIconsPath);
-            _smallIconsRegistryMonitor.Changed += _smallIconsChangeProc;
-            _smallIconsRegistryMonitor.Error += _smallIconsChangeProcError;
-            _smallIconsRegistryMonitor.Start();
-
-            _updateMessageId = NativeDll.GetUpdatePositionMsg();
             _taskbarPosition = GetTaskbarEdge();
 
             PostPositionToHook();
@@ -266,35 +251,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return dpiSetting / StandardDpi;
         }
 
-        private void WinEventDelegateImpl(IntPtr hWinEventHook, uint eventType,
-                                      IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
-        {
-            switch ((EventConstants)eventType)
-            {
-                case EventConstants.EVENT_SYSTEM_MOVESIZEEND:
-                    IAccessible accWindow;
-                    object varChild;
-
-                    var hr = OleaccDll.AccessibleObjectFromEvent(hwnd, (uint)idObject, (uint)idChild, out accWindow, out varChild);
-                    if (hr != HresultCodes.S_OK || accWindow == null)
-                    {
-                        return;
-                    }
-
-                    var newRect = new RectWin();
-                    accWindow.accLocation(out newRect.Left, out newRect.Top, out newRect.Right, out newRect.Bottom, varChild);
-
-                    //ReactToSizeMove();
-
-                    break;
-            }
-        }
-
-        private void ReactToSizeMove()
+        private void ReactToSizeMove(bool forceUpdatePos = false)
         {
             UpdateHandles();
 
-            var updatePos = false;
+            var updatePos = forceUpdatePos;
             var oldHeight = _buttonsWindowSize.Height;
             var oldWidth = _buttonsWindowSize.Width;
             _buttonsWindowSize = GetButtonsWindowSize();
@@ -317,6 +278,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     }
                 }
                 _taskbarPosition = newTaskbarPosition;
+
                 // We should reinsert buttons only if going from horizontal to vertical mode or vica versa
                 // it is because shift in C++ code is calculated in relative coordinates, so it will keep exactly
                 // the same shift for us moving from top to bottom or from left to right edges.
@@ -389,7 +351,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 | SetWindowPosConstants.SWP_NOOWNERZORDER
                 | SetWindowPosConstants.SWP_NOACTIVATE
                 );
-            User32Dll.SetWindowPos(_hSrc.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
+            User32Dll.SetWindowPos(_hwndSource.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
                                    offset2.X, offset2.Y,
                                    _buttonsWindowSize.Width, _buttonsWindowSize.Height,
                                    flags);
@@ -411,31 +373,26 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         public void Remove()
         {
-            if (_smallIconsRegistryMonitor != null)
+            lock (_lockObject)
             {
-                _smallIconsRegistryMonitor.Stop();
-                _smallIconsRegistryMonitor = null;
+                // Flag to dispose HwndSource after everything is complete.
+                // We can't dispose HwndSource in this method because then we won't get
+                //   message from hook that unhooking is complete. So we do it on that unhooking complete message.
+                _disposeHwndSource = true;
             }
+
+            // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
+            NativeDll.DetachHooks(); // detach - can cause reposition by Rebar itself
 
             var newRebarCoords = CalculateRebarCoords(false);
 
-            NativeDll.DetachHooks();					// detach - can cause reposition by Rebar itself
-
-            // Unhook resize event catcher
-            if (_hWinEventHook != IntPtr.Zero)
-            {
-                User32Dll.UnhookWinEvent(_hWinEventHook);
-            }
-
-            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), (IntPtr)0,
-                                        newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width, newRebarCoords.Height,
+            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), IntPtr.Zero,
+                                        newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width,
+                                        newRebarCoords.Height,
                                         0)) // move to correct coords
             {
                 throw new InteropException("Cannot move Rebar back");
             }
-
-            // TODO: -1    -= event delegates
-            _hSrc.Dispose();
         }
 
         // return global coords of left top conner of our window = placeholder of buttons
@@ -528,21 +485,60 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == _closeMessageId)
+            if (msg == _updateMessageId)
+            {
+                //var rebarRect = _coordsPackager.UnpackParams(lParam, wParam);
+
+                ReactToSizeMove();
+            } 
+            else if (msg == _dllUnloadMessageId)
+            {
+                EjectNativeDll(lParam);
+                lock (_lockObject)
+                {
+                    if (_disposeHwndSource)
+                    {
+                        _hwndSource.Dispose();
+                    }
+                }
+            }
+            else if (msg == _closeMessageId)
             {
                 _notifyee.Shutdown();
             }
-            else
+            else if (msg == (int) WindowsMessages.WM_DISPLAYCHANGE)
             {
-                if (msg == _updateMessageId)
-                {
-                    //var rebarRect = _coordsPackager.UnpackParams(lParam, wParam);
-
-                    ReactToSizeMove();
-                }
+                ReactToSizeMove(true);
             }
 
             return NULL;
+        }
+
+        /// <summary>
+        /// Eject our native dll from explorer process
+        /// </summary>
+        /// <param name="DllHandle">HANDLE of dll inside explorer process</param>
+        private void EjectNativeDll(IntPtr DllHandle)
+        {
+            System.Diagnostics.Debug.Assert(DllHandle != IntPtr.Zero, "DllHandle");
+            uint pid;
+            User32Dll.GetWindowThreadProcessId(_taskbarHwnd, out pid);
+            IntPtr hExplorerProcess = Kernel32Dll.OpenProcess(0
+                | ProcessAccessFlags.CreateThread
+                | ProcessAccessFlags.QueryInformation
+                | ProcessAccessFlags.VMOperation
+                | ProcessAccessFlags.VMRead
+                | ProcessAccessFlags.VMWrite
+                , false, pid);
+            if (hExplorerProcess == IntPtr.Zero) throw new Exception("Cannot get Explorer.exe handle");
+
+            IntPtr k = Kernel32Dll.LoadLibrary("Kernel32.dll");
+            IntPtr fl = Kernel32Dll.GetProcAddress(k, "FreeLibrary");
+            uint ThreadId;
+            IntPtr hNewThread = Kernel32Dll.CreateRemoteThread(hExplorerProcess, IntPtr.Zero, 0, fl, DllHandle, 0, out ThreadId);
+            if (hNewThread == IntPtr.Zero) throw new Exception("hNewThread");
+            Kernel32Dll.CloseHandle(hExplorerProcess);
+            Kernel32Dll.CloseHandle(hNewThread);
         }
 
         // return one of 4 possible edge
@@ -702,7 +698,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private bool DoChangeWidth(int newWidth, bool firstTime)
         {
-             newWidth = (int)Math.Round(newWidth * _dpiScalingFactor);
+            newWidth = (int)Math.Round(newWidth * _dpiScalingFactor);
 
             int delta;
             if (_taskbarPosition.IsVertical())
@@ -748,7 +744,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 return false;
             }
 
-            User32Dll.SetWindowPos(_hSrc.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
+            User32Dll.SetWindowPos(_hwndSource.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
                                    offset2.X, offset2.Y,
                                    _buttonsWindowSize.Width, _buttonsWindowSize.Height,
                                    (uint)

@@ -38,6 +38,7 @@ NATIVE_API WORD WinVersion();
 extern "C" NATIVE_API DWORD GetRebarThread();
 extern "C" NATIVE_API HWND FindTaskBar();
 extern "C" NATIVE_API HWND FindRebar();
+extern "C" NATIVE_API UINT GetExitMsg();
 extern "C" NATIVE_API UINT GetUpdatePositionMsg();
 
 // functions bellow performs system call each time

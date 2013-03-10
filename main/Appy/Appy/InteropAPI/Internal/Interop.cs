@@ -2315,10 +2315,27 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         [DllImport(Kernel32DllName)]
         public static extern IntPtr OpenProcess(ProcessAccessFlags dwDesiredAccess,
-            [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, int dwProcessId);
+            [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, uint dwProcessId);
 
         [DllImport(Kernel32DllName)]
         public static extern uint GetVersion();
+
+		[DllImport(Kernel32DllName)]
+        public static extern IntPtr CreateRemoteThread(
+			  IntPtr hProcess,
+			  IntPtr lpThreadAttributes,	// _In_   LPSECURITY_ATTRIBUTES
+			  uint dwStackSize,				// _In_   SIZE_T 
+			  IntPtr lpStartAddress,		// _In_   LPTHREAD_START_ROUTINE 
+			  IntPtr lpParameter,			// _In_   LPVOID
+			  uint dwCreationFlags,
+			  out uint lpThreadId
+			);
+
+		[DllImport(Kernel32DllName)]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+
+		[DllImport(Kernel32DllName)]
+		public static extern bool CloseHandle(IntPtr theHandle);
     }
 
     public class Comctl32Dll

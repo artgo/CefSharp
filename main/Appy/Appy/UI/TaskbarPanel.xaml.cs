@@ -216,7 +216,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void Shutdown()
         {
-            System.Windows.Application.Current.Shutdown();
+            ShutdownHelper.Shutdown();
         }
 
         public void Error(RegistryChangeEventArgs eventArgs)
@@ -241,7 +241,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void MenuItemExitClick(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            ShutdownHelper.Shutdown();
         }
     }
 }

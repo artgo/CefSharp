@@ -68,6 +68,22 @@ static bool IsVertical()
 	return (appbar.uEdge == ABE_LEFT) || (appbar.uEdge == ABE_RIGHT);
 }
 
+UINT GetExitMsg()
+{
+	return ::RegisterWindowMessage(L"AppDirectButtonsExit");
+}
+
+UINT GetUpdatePositionMsg()
+{
+	return ::RegisterWindowMessage(L"AppDirectButtonPositionUpdate");
+}
+
+HWND GetAppDirectHwnd()
+{
+	HWND appDirectHwnd = ::FindWindowEx(NULL, NULL, NULL, L"AppDirectTaskbarButtonsWindow");	_ASSERT(appDirectHwnd);
+	return appDirectHwnd;
+}
+
 static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 static volatile bool bExiting = false;
 static RECT buttonsRect;
@@ -128,16 +144,18 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 				HWND taskbar = FindTaskBar();	_ASSERT(taskbar);
 				b = ::RemoveWindowSubclass(taskbar, SubclassTaskbarProc, 0); _ASSERT(b);
 
-				// TODO: -1 unload not from itself
-				//	b = ::FreeLibrary(g_hDll);	_ASSERT(b);
-				// g_hDll = NULL;
-
 				// force repaint rebar by itself
 				b = ::ShowWindow(rebarHwnd, SW_RESTORE);
 
 				delete messages;
+				
+				HWND theButton = GetAppDirectHwnd();
+				_ASSERT(g_hDll);
+				UINT exitMsgId = GetExitMsg();
+				b = ::PostMessage(theButton, exitMsgId, 0, (LPARAM)g_hDll);	_ASSERT(b);
+				g_hDll = NULL;
 			}
-			bExiting = false;
+
 			return 0;	// this message is processed
 		} 
 		else if (uMsg == messages->UpdateMessage) 
@@ -166,7 +184,7 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		case WM_WINDOWPOSCHANGED:
 		{
 			// place on top of task bar
-			HWND theButton = ::FindWindow(NULL, L"AppDirectTaskbarButtonsWindow");	_ASSERT(theButton);
+			HWND theButton = GetAppDirectHwnd();
 			if (theButton)
 			{
 				WINDOWPOS * p = (WINDOWPOS*)lParam;
@@ -225,22 +243,6 @@ HWND FindRebar(HWND ParentTaskbar)
 	return 	h;
 }
 
-UINT GetExitMsg()
-{
-	return ::RegisterWindowMessage(L"AppDirectButtonsExit");
-}
-
-UINT GetUpdatePositionMsg()
-{
-	return ::RegisterWindowMessage(L"AppDirectButtonPositionUpdate");
-}
-
-HWND GetAppDirectHwnd()
-{
-	HWND appDirectHwnd = ::FindWindowEx(NULL, NULL, NULL, L"AppDirectTaskbarButtonsWindow");	_ASSERT(appDirectHwnd);
-	return appDirectHwnd;
-}
-
 NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
 {
 	if (code == HC_ACTION && !g_bInitDone)
@@ -278,9 +280,9 @@ void DetachHooks()
 {
 	if (ExplorerHook)
 	{
+		HWND reb = FindRebar();	_ASSERT(reb);
+		::PostMessage(reb, GetExitMsg(), 0, 0);
 		BOOL b = ::UnhookWindowsHookEx(ExplorerHook);	_ASSERT(b);
 		ExplorerHook = NULL;
-		HWND reb = FindRebar();	_ASSERT(reb);
-		b = ::PostMessage(reb, GetExitMsg(), 0, 0);	_ASSERT(b);
 	}
 }
