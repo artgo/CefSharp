@@ -362,7 +362,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void AddToMyApps(Application application, bool saveLocalStorage = true)
         {
-            application.PinnedToTaskbarPublisher = true;
+            application.PinnedToTaskbar = true;
 
             lock (ServiceLocator.LocalStorage.Locker)
             {
@@ -437,7 +437,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void AddToSuggestedApps(Application application, bool saveLocalStorage = true)
         {
-            application.PinnedToTaskbarPublisher = false;
+            application.PinnedToTaskbar = false;
 
             lock (ServiceLocator.LocalStorage.Locker)
             {
@@ -482,7 +482,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        protected void NotifyPropertyChanged(string propertyName)
+        public void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
             {

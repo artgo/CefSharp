@@ -144,7 +144,7 @@ namespace AppDirect.WindowsClient.UI
 
             try
             {
-                clickedApp.PinnedToTaskbarPublisher = false;
+                clickedApp.PinnedToTaskbar = false;
                 ViewModel.Uninstall(clickedApp);
             }
             catch (Exception ex)

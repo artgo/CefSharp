@@ -68,6 +68,7 @@ namespace AppDirect.WindowsClient.UI
             else
             {
                 ViewModel.RemovePinnedApp(clickedApp);
+                ApplicationWindow.ViewModel.NotifyPropertyChanged("PinnedToTaskbar");
                 RemoveButton(clickedApp);
             }
         }
