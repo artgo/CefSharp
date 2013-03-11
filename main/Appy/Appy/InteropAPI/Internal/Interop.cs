@@ -2099,6 +2099,33 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         SECURITY = 0x8
     }
 
+    [Flags]
+    public enum DwmWindowAttribute : uint
+    {
+        DWMWA_NCRENDERING_ENABLED = 1,
+        DWMWA_NCRENDERING_POLICY,
+        DWMWA_TRANSITIONS_FORCEDISABLED,
+        DWMWA_ALLOW_NCPAINT,
+        DWMWA_CAPTION_BUTTON_BOUNDS,
+        DWMWA_NONCLIENT_RTL_LAYOUT,
+        DWMWA_FORCE_ICONIC_REPRESENTATION,
+        DWMWA_FLIP3D_POLICY,
+        DWMWA_EXTENDED_FRAME_BOUNDS,
+        DWMWA_HAS_ICONIC_BITMAP,
+        DWMWA_DISALLOW_PEEK,
+        DWMWA_EXCLUDED_FROM_PEEK,
+        DWMWA_LAST
+    }
+
+    [Flags]
+    public enum DWMNCRenderingPolicy : uint
+    {
+        UseWindowStyle,
+        Disabled,
+        Enabled,
+        Last
+    }
+
     public delegate IntPtr HookProc(int code, IntPtr wParam, IntPtr lParam);
 
     public delegate IntPtr SubclassProc(
@@ -2393,5 +2420,19 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         [DllImport(Advapi32DllName)]
         public static extern int RegNotifyChangeKeyValue(IntPtr hKey, bool watchSubtree, REG_NOTIFY_CHANGE notifyFilter,
            IntPtr hEvent, bool asynchronous);
+    }
+
+    public class DwmapiDll
+    {
+        private const string DwmapiDllName = "dwmapi.dll";
+        private DwmapiDll() { }
+
+        [DllImport(DwmapiDllName, PreserveSig = false)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DwmIsCompositionEnabled();
+
+        [DllImport(DwmapiDllName, PreserveSig = false)]
+        public static extern int DwmSetWindowAttribute(IntPtr hwnd, DwmWindowAttribute dwmAttribute,
+                                                       IntPtr pvAttribute, uint cbAttribute);
     }
 }
