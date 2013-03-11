@@ -117,16 +117,16 @@ namespace AppDirect.WindowsClient.UI
 
                 try
                 {
-                    if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
+                    if (!clickedApp.Application.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                     {
-                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
+                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
 
                         SetVisibleGrid(LoginViewControl);
                         LoginViewControl.UsernameTextBox.Focus();
                     }
                     else
                     {
-                        ViewModel.Install(clickedApp);
+                        ViewModel.Install(clickedApp.Application);
                     }
                 }
                 catch (Exception ex)
@@ -144,8 +144,8 @@ namespace AppDirect.WindowsClient.UI
 
             try
             {
-                clickedApp.PinnedToTaskbar = false;
-                ViewModel.Uninstall(clickedApp);
+                clickedApp.PinnedToTaskbarNotifier = false;
+                ViewModel.Uninstall(clickedApp.Application);
             }
             catch (Exception ex)
             {

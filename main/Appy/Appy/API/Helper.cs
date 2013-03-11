@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using AppDirect.WindowsClient.UI;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.API
@@ -64,9 +65,9 @@ namespace AppDirect.WindowsClient.API
             } while (tryAttemptsRemaining > 0);
         }
 
-        public static Application GetApplicationFromButtonSender(object sender)
+        public static ApplicationViewModel GetApplicationFromButtonSender(object sender)
         {
-            return ((Button)sender).DataContext as Application;
+            return ((Button)sender).DataContext as ApplicationViewModel;
         }
 
         public static void AppButtonClick(object sender, RoutedEventArgs e)
@@ -75,13 +76,13 @@ namespace AppDirect.WindowsClient.API
             {
                 var clickedApp = GetApplicationFromButtonSender(sender);
 
-                if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.UrlString)))
+                if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.Application.UrlString)))
                 {
                     MessageBox.Show("Application developer didn't set application's URL");
                 }
                 else
                 {
-                    ServiceLocator.BrowserWindowsCommunicator.OpenApp(clickedApp);
+                    ServiceLocator.BrowserWindowsCommunicator.OpenApp(clickedApp.Application);
                 }
             }
             catch (Exception ex)
@@ -90,9 +91,9 @@ namespace AppDirect.WindowsClient.API
             }
         }
 
-        public static Application GetClickedAppFromContextMenuClick(object sender)
+        public static ApplicationViewModel GetClickedAppFromContextMenuClick(object sender)
         {
-            var clickedApp = ((MenuItem) sender).DataContext as Application;
+            var clickedApp = ((MenuItem)sender).DataContext as ApplicationViewModel;
             return clickedApp;
         }
 

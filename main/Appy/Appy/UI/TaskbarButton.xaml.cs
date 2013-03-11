@@ -28,12 +28,12 @@ namespace AppDirect.WindowsClient.UI
             InitializeComponent();
         }
 
-        public TaskbarButton(Application application, TaskbarIconsSize iconsSize)
+        public TaskbarButton(ApplicationViewModel applicationViewModel, TaskbarIconsSize iconsSize)
         {
-            DataContext = application;
+            DataContext = applicationViewModel;
             InitializeComponent();
 
-            Id = application.Id;
+            Id = applicationViewModel.Application.Id;
 
             ChangeIconSize(iconsSize);
         }

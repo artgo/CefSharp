@@ -44,9 +44,9 @@ namespace AppDirect.WindowsClient.UI
         {
             CurrentIconSize = taskbarIconsSize;
 
-            foreach (var application in ViewModel.PinnedApps)
+            foreach (var applicationViewModel in ViewModel.PinnedApps)
             {
-                AddButton(application);
+                AddButton(applicationViewModel);
             }
 
             SetMainButtonIconSize(taskbarIconsSize);
@@ -68,12 +68,11 @@ namespace AppDirect.WindowsClient.UI
             else
             {
                 ViewModel.RemovePinnedApp(clickedApp);
-                ApplicationWindow.ViewModel.NotifyPropertyChanged("PinnedToTaskbar");
                 RemoveButton(clickedApp);
             }
         }
 
-        private void AddButton(Application application)
+        private void AddButton(ApplicationViewModel application)
         {
             var taskbarButton = new TaskbarButton(application, CurrentIconSize);
 
@@ -120,9 +119,9 @@ namespace AppDirect.WindowsClient.UI
             return (int)totalSize;
         }
 
-        private void RemoveButton(Application application)
+        private void RemoveButton(ApplicationViewModel applicationViewModel)
         {
-            var btn = ButtonContainer.Children.OfType<TaskbarButton>().FirstOrDefault(b => b.Id == application.Id);
+            var btn = ButtonContainer.Children.OfType<TaskbarButton>().FirstOrDefault(b => b.Id == applicationViewModel.Application.Id);
 
             if (btn != null)
             {
@@ -142,16 +141,16 @@ namespace AppDirect.WindowsClient.UI
 
         private void RemoveAppButton(object sender, EventArgs e)
         {
-            var application = sender as Application;
+            var application = sender as ApplicationViewModel;
             ViewModel.RemovePinnedApp(application);
             RemoveButton(application);
         }
 
         private void AddAppButton(object sender, EventArgs e)
         {
-            var application = sender as Application;
-            ViewModel.AddPinnedApp(application);
-            AddButton(application);
+            var applicationViewModel = sender as ApplicationViewModel;
+            ViewModel.AddPinnedApp(applicationViewModel);
+            AddButton(applicationViewModel);
         }
 
         private void AppButton_Click(object sender, RoutedEventArgs e)

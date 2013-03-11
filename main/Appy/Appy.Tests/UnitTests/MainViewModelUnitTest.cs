@@ -251,7 +251,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
             _mainViewModel.SyncAppsWithApi();
 
-            Assert.IsFalse(_mainViewModel.MyApplications.Contains(expiredApp));
+            Assert.IsFalse(_mainViewModel.MyApplications.Contains(expiredApp as ApplicationViewModel));
         }
 
         #endregion
@@ -301,7 +301,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             _mainViewModel.Login(Username, Password);
         }
 
-        private Application CallInstallApp()
+        private ApplicationViewModel CallInstallApp()
         {
             InitializeTests();
             var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);
@@ -309,7 +309,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             return app;
         }
 
-        private Application CallUninstallApp()
+        private ApplicationViewModel CallUninstallApp()
         {
             InitializeTests();
             var app = _mainViewModel.SuggestedApplications.First(a => a.IsLocalApp);

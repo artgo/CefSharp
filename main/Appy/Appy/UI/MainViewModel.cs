@@ -183,8 +183,8 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public ObservableCollection<Application> MyApplications { get; set; }
-        public ObservableCollection<Application> SuggestedApplications { get; set; }
+        public ObservableCollection<ApplicationViewModel> MyApplications { get; set; }
+        public ObservableCollection<ApplicationViewModel> SuggestedApplications { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -278,11 +278,19 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.LastSuggestedApps.AddRange(missingLocalApps);
 
                 MyApplications =
-                    new ObservableCollection<Application>(
-                        ServiceLocator.LocalStorage.AllInstalledApplications.Take(MyAppDisplayLimit));
+                    new ObservableCollection<ApplicationViewModel>();
                 SuggestedApplications =
-                    new ObservableCollection<Application>(ServiceLocator.LocalStorage.LastSuggestedApps);
+                    new ObservableCollection<ApplicationViewModel>();
 
+                foreach (var installedApps in ServiceLocator.LocalStorage.AllInstalledApplications.Take(MyAppDisplayLimit))
+                {
+                    MyApplications.Add(new ApplicationViewModel(installedApps));
+                } 
+
+                foreach (var lastSuggestedApp in ServiceLocator.LocalStorage.LastSuggestedApps)
+                {
+                    SuggestedApplications.Add(new ApplicationViewModel(lastSuggestedApp));
+                }
             }
         }
 
@@ -297,8 +305,11 @@ namespace AppDirect.WindowsClient.UI
                     apiApps = ServiceLocator.CachedAppDirectApi.MyApps.ToList();
                 }
 
-                var newApps = apiApps.Except(MyApplications).ToList();
-                var expiredApps = MyApplications.Where(a => !a.IsLocalApp).Except(apiApps).ToList();
+
+                var displayedApps = MyApplications.Select(a => a.Application).ToList();
+
+                var newApps = apiApps.Except(displayedApps).ToList();
+                var expiredApps = displayedApps.Where(a => !a.IsLocalApp).Except(apiApps).ToList();
 
                 foreach (var application in expiredApps)
                 {
@@ -336,8 +347,10 @@ namespace AppDirect.WindowsClient.UI
 
                     apiSuggestedApps.RemoveAll(a => !a.Price.Contains("Free"));
 
-                    var newApps = apiSuggestedApps.Except(SuggestedApplications.Where(a => !a.IsLocalApp)).ToList();
-                    var expiredApps = SuggestedApplications.Where(a => !a.IsLocalApp).Except(apiSuggestedApps).ToList();
+                    var displayedApps = SuggestedApplications.Select(a => a.Application).ToList();
+
+                    var newApps = apiSuggestedApps.Except(displayedApps.Where(a => !a.IsLocalApp)).ToList();
+                    var expiredApps = displayedApps.Where(a => !a.IsLocalApp).Except(apiSuggestedApps).ToList();
 
                     foreach (var application in expiredApps)
                     {
@@ -384,16 +397,8 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
-            if (System.Windows.Application.Current == null || Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
-            {
-                MyApplications.Add(application);
-            }
-            else
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(
-                    new Action(() => MyApplications.Add(application)));
-            }
-
+            Helper.PerformInUiThread(() => MyApplications.Add(new ApplicationViewModel(application)));
+            
             if (ApplicationAddedNotifier != null)
             {
                 ApplicationAddedNotifier(application, null);
@@ -419,16 +424,11 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
-            if (System.Windows.Application.Current == null || Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
-            {
-                MyApplications.Remove(application);
-            }
-            else
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(
-                    new Action(() => MyApplications.Remove(application)));
-            }
-
+            Helper.PerformInUiThread(() => {
+                var applicationViewModel = MyApplications.First(a => a.Application.Equals(application));
+                MyApplications.Remove(applicationViewModel);
+            });
+            
             if (ApplicationRemovedNotifier != null)
             {
                 ApplicationRemovedNotifier(application, null);
@@ -449,18 +449,12 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
-            if (System.Windows.Application.Current == null || Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
-            {
-                SuggestedApplications.Add(application);
-            }
-            else
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => SuggestedApplications.Add(application)));
-            }
+            Helper.PerformInUiThread(() => SuggestedApplications.Add(new ApplicationViewModel(application)));
         }
 
         private void RemoveFromSuggestedApps(Application application, bool saveLocalStorage = true)
         {
+            application.PinnedToTaskbar = false;
             lock (ServiceLocator.LocalStorage.Locker)
                 {
             ServiceLocator.LocalStorage.LastSuggestedApps.Remove(application);
@@ -471,15 +465,11 @@ namespace AppDirect.WindowsClient.UI
             }
                 }
 
-            if (System.Windows.Application.Current == null || Thread.CurrentThread == System.Windows.Application.Current.Dispatcher.Thread)
+            Helper.PerformInUiThread(() =>
             {
-                SuggestedApplications.Remove(application);
-            }
-            else
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(
-                    new Action(() => SuggestedApplications.Remove(application)));
-            }
+                var applicationViewModel = SuggestedApplications.First(a => a.Application.Equals(application));
+                SuggestedApplications.Remove(applicationViewModel);
+            });
         }
 
         public void NotifyPropertyChanged(string propertyName)

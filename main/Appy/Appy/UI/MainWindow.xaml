@@ -77,7 +77,7 @@
             </Setter>
         </Style>
         <ContextMenu x:Key="UninstallContextMenu" Style="{StaticResource ContextMenuStyle}">
-            <MenuItem Header="Pin to task bar" Style="{StaticResource MenuItem}" IsChecked="{Binding PinnedToTaskbar}"
+            <MenuItem Header="Pin to task bar" Style="{StaticResource MenuItem}" IsChecked="{Binding PinnedToTaskbarNotifier}"
                       IsCheckable="True" Click="PinToTaskBarClick" DataContext="{Binding}" />
             <MenuItem Header="Uninstall" Style="{StaticResource MenuItem}" Click="UninstallAppClick"
                       DataContext="{Binding}" />
@@ -309,12 +309,12 @@
                             <Image Name="BackgroundImage" Grid.ColumnSpan="2" VerticalAlignment="Top"
                                    HorizontalAlignment="Left" Source="Images\AppBtnDefault.png" />
                             <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0"
-                                   Width="37" Height="37" Source="{Binding LocalImagePath}" />
+                                   Width="37" Height="37" Source="{Binding Application.LocalImagePath}" />
                             <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0"
                                    Width="37" Height="37" Source="Images/IconMask.png" />
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"
                                        FontSize="13" Style="{StaticResource TextStyle}" Width="125"
-                                       Text="{Binding Name}" />
+                                       Text="{Binding Application.Name}" />
                             <Image Name="OnHoverMask" Grid.ColumnSpan="2" Margin="-2,2,0,0" VerticalAlignment="Top"
                                    HorizontalAlignment="Left" Source="Images\AppOnHoverMask.png" Visibility="Hidden" />
                         </Grid>
@@ -338,13 +338,13 @@
                             <Rectangle Fill="{StaticResource RightPanelColor}"></Rectangle>
                             <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="34" Height="34">
                                 <Image HorizontalAlignment="Center" VerticalAlignment="Center" Width="30" Height="30"
-                                       Source="{Binding LocalImagePath}" />
+                                       Source="{Binding Application.LocalImagePath}" />
                                 <Image Name="Mask" HorizontalAlignment="Center" VerticalAlignment="Center" Width="34"
                                        Height="34" Source="Images/crossBtn_default.png" />
                             </Grid>
                             <StackPanel Margin="50,3,0,0">
                                 <TextBlock TextTrimming="CharacterEllipsis" FontSize="12" Margin="0,0,0,2"
-                                           VerticalAlignment="Center" Text="{Binding Name}">
+                                           VerticalAlignment="Center" Text="{Binding Application.Name}">
                                 </TextBlock>
                             </StackPanel>
                         </Grid>

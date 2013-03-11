@@ -10,7 +10,7 @@ namespace AppDirect.WindowsClient.UI
 {
     public class TaskbarPanelViewModel
     {
-        public List<Application> PinnedApps { get; set; }
+        public List<ApplicationViewModel> PinnedApps { get; set; }
         
         public TaskbarPanelViewModel()
         {
@@ -19,18 +19,25 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.PinnedApps = new List<Application>();
             }
 
-            PinnedApps = ServiceLocator.LocalStorage.PinnedApps;
-        }
+            foreach (var application in ServiceLocator.LocalStorage.PinnedApps)
+            {
+                PinnedApps.Add(new ApplicationViewModel(application));
+            }
 
-        public void AddPinnedApp(Application clickedApp)
-        {
-            PinnedApps.Add(clickedApp);
             ServiceLocator.LocalStorage.SaveAppSettings();
         }
 
-        public void RemovePinnedApp(Application clickedApp)
+        public void AddPinnedApp(ApplicationViewModel clickedApp)
+        {
+            PinnedApps.Add(clickedApp);
+            ServiceLocator.LocalStorage.PinnedApps.Add(clickedApp.Application);
+            ServiceLocator.LocalStorage.SaveAppSettings();
+        }
+
+        public void RemovePinnedApp(ApplicationViewModel clickedApp)
         {
             PinnedApps.Remove(clickedApp);
+            ServiceLocator.LocalStorage.PinnedApps.Remove(clickedApp.Application);
             ServiceLocator.LocalStorage.SaveAppSettings();
         }
     }
