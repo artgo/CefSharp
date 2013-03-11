@@ -4,13 +4,45 @@ namespace AppDirect.WindowsClient.InteropAPI
 {
     public class ShutdownHelper
     {
-        public static void Shutdown()
+        private readonly TaskbarApi.ShutdownCallback _shutdownCallback;
+
+        #region Singleton
+
+        private static readonly object SyncObject = new object();
+        private static volatile ShutdownHelper _instance = null;
+
+        private ShutdownHelper()
         {
-            if (TaskbarApi.Instance.RemoveTaskbarWindow())
+            _shutdownCallback = DoShutdown;
+        }
+
+        public static ShutdownHelper Instance
+        {
+            get
             {
-                TaskbarApi.Cleanup();
-                Application.Current.Shutdown();
+                lock (SyncObject)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new ShutdownHelper();
+                    }
+                }
+
+                return _instance;
             }
+        }
+
+        #endregion Singleton
+
+        private void DoShutdown()
+        {
+            TaskbarApi.Cleanup();
+            Application.Current.Shutdown();
+        }
+
+        public bool Shutdown()
+        {
+            return TaskbarApi.Instance.RemoveTaskbarWindowAndShutdown(_shutdownCallback);
         }
     }
 }

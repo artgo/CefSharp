@@ -39,10 +39,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private readonly CoordsPackager _coordsPackager = new CoordsPackager();
 
-        private volatile HwndSource _hwndSource;
+        private volatile HwndSource _hwndSource = null;
         private volatile ITaskbarInterop _notifyee = null;
         private System.Drawing.Size _buttonsWindowSize;
-        private volatile HwndSourceHook _wndProcHook;
+        private volatile HwndSourceHook _wndProcHook = null;
         private volatile int _taskbarHeight = 0;
         private volatile int _buttonsWidth = 0;
         private volatile TaskbarPosition _taskbarPosition = TaskbarPosition.Bottom;
@@ -53,9 +53,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile uint _updateMessageId = 0;
         private volatile uint _closeMessageId = 0;
         private volatile uint _dllUnloadMessageId = 0;
-        private volatile bool _disposeHwndSource = false;
         private volatile bool _isShutdown = false;
         private volatile bool _shutdownStarted = false;
+        private volatile TaskbarApi.ShutdownCallback _shutdownCallback = null;
         private double _dpiScalingFactor;
 
         public int TaskbarHeight { get { return _taskbarHeight; } }
@@ -159,7 +159,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             lock (_lockObject)
             {
-                _disposeHwndSource = false;
                 _shutdownStarted = false;
                 _isShutdown = false;
             }
@@ -351,20 +350,18 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return false;
         }
 
-        public bool Remove()
+        public bool Remove(TaskbarApi.ShutdownCallback shutdownCallback)
         {
-            lock (_lockObject)
+            if (_shutdownStarted || _isShutdown)
             {
-                if (_shutdownStarted || _isShutdown)
-                {
-                    return false;
-                }
-                // Flag to dispose HwndSource after everything is complete.
-                // We can't dispose HwndSource in this method because then we won't get
-                //   message from hook that unhooking is complete. So we do it on that unhooking complete message.
-                _disposeHwndSource = true;
-                _shutdownStarted = true;
+                return false;
             }
+            // Flag to dispose HwndSource after everything is complete.
+            // We can't dispose HwndSource in this method because then we won't get
+            //   message from hook that unhooking is complete. So we do it on that unhooking complete message.
+            _shutdownStarted = true;
+
+            _shutdownCallback = shutdownCallback;
 
             // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
             NativeDll.DetachHooks(); // detach - can cause reposition by Rebar itself
@@ -490,13 +487,16 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 {
                     _isShutdown = true;
                     EjectNativeDll(lParam);
-                    if (_disposeHwndSource)
+                    if (_hwndSource != null)
                     {
-                        if (_hwndSource != null)
-                        {
-                            _hwndSource.Dispose();
-                            _hwndSource = null;
-                        }
+                        _hwndSource.Dispose();
+                        _hwndSource = null;
+                        _wndProcHook = null;
+                    }
+                    if (_shutdownCallback != null)
+                    {
+                        _shutdownCallback();
+                        _shutdownCallback = null;
                     }
                 }
             }
@@ -504,7 +504,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 if (!_shutdownStarted && !_isShutdown)
                 {
-                    _notifyee.Shutdown();
+                    ShutdownHelper.Instance.Shutdown();
                 }
             }
             else if (msg == (int) WindowsMessages.WM_DISPLAYCHANGE)
