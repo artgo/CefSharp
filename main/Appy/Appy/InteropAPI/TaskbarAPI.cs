@@ -1,16 +1,16 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 
 namespace AppDirect.WindowsClient.InteropAPI
 {
     public class TaskbarApi
     {
-        private static readonly object SyncObject = new object();
-
         private readonly InteractionsObject _interactionsObject;
         private volatile Control _control = null;
 
         #region Singleton
+        private static readonly object SyncObject = new object();
         private static volatile TaskbarApi _instance = null;
 
         private TaskbarApi()
@@ -61,12 +61,14 @@ namespace AppDirect.WindowsClient.InteropAPI
             _control = control;
             _interactionsObject.Place(_control, notifyee, initialWidth);
         }
+        #endregion public interface
 
-        public void RemoveTaskbarWindow()
+        public delegate void ShutdownCallback();
+
+        internal bool RemoveTaskbarWindowAndShutdown(ShutdownCallback shutdownCallback)
         {
             // use _control
-			_interactionsObject.Remove();
+            return _interactionsObject.Remove(shutdownCallback);
         }
-        #endregion public interface
     }
 }

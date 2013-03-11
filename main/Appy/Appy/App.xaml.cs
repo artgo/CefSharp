@@ -45,8 +45,6 @@ namespace AppDirect.WindowsClient
             ServiceLocator.IpcCommunicator.Exit();
             UpdateDownloader.Stop();
             AppSessionRefresher.Stop();
-            TaskbarApi.Instance.RemoveTaskbarWindow();
-            TaskbarApi.Cleanup();
 
             base.OnExit(e);
         }

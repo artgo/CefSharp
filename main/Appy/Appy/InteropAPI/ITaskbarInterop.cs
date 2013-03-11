@@ -26,11 +26,6 @@ namespace AppDirect.WindowsClient.InteropAPI
         void TaskbarIconsSizeChanged(TaskbarIconsSize newIconsSize);
 
         /// <summary>
-        /// System got request to shutdown
-        /// </summary>
-        void Shutdown();
-
-        /// <summary>
         /// Exception occured
         /// </summary>
         /// <param name="eventArgs">Event details on exception</param>
