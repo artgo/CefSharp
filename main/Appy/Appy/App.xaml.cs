@@ -52,12 +52,12 @@ namespace AppDirect.WindowsClient
 
         protected override void OnExit(ExitEventArgs e)
         {
-            ServiceLocator.IpcCommunicator.Exit();
-            UpdateDownloader.Stop();
-            AppSessionRefresher.Stop();
             if (_instanceMutex != null)
             {
                 _instanceMutex.ReleaseMutex();
+            ServiceLocator.IpcCommunicator.Exit();
+            UpdateDownloader.Stop();
+            AppSessionRefresher.Stop();
             }
 
             base.OnExit(e);

@@ -14,7 +14,11 @@ namespace AppDirect.WindowsClient.API
 
         public void Exit()
         {
-            _host.Close();
+            if (_host != null)
+            {
+                _host.Close();
+            }
+
             _host = null;
         }
     }
