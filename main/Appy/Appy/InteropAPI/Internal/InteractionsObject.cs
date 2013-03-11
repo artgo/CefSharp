@@ -54,6 +54,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile uint _closeMessageId = 0;
         private volatile uint _dllUnloadMessageId = 0;
         private volatile bool _disposeHwndSource = false;
+        private volatile bool _isShutdown = false;
+        private volatile bool _shutdownStarted = false;
         private double _dpiScalingFactor;
 
         public int TaskbarHeight { get { return _taskbarHeight; } }
@@ -158,6 +160,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             lock (_lockObject)
             {
                 _disposeHwndSource = false;
+                _shutdownStarted = false;
+                _isShutdown = false;
             }
 
             NativeDll.InjectExplrorerExe();
@@ -203,30 +207,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             var postParams = _coordsPackager.PackParams(coords);
 
             User32Dll.PostMessage(_rebarHwnd, _updateMessageId, postParams.WParam, postParams.LParam);
-        }
-
-        private void RegistryChangeHandler(object sender, RegistryChangeEventArgs e)
-        {
-            bool updatePos = CheckIconSize();
-
-            if (updatePos)
-            {
-                UpdatePosition();
-            }
-
-            var newRebarCoords = CalculateRebarCoords(false);
-
-            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), IntPtr.Zero,
-                                        newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width, newRebarCoords.Height,
-                                        0)) // move to correct coords
-            {
-                throw new InteropException("Cannot move Rebar back");
-            }
-        }
-
-        private void RegistryChangeErrorHandler(object sender, RegistryChangeEventArgs e)
-        {
-            _notifyee.Error(e);
         }
 
         private TaskbarIconsSize GetTaskbarIconSize()
@@ -371,14 +351,19 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return false;
         }
 
-        public void Remove()
+        public bool Remove()
         {
             lock (_lockObject)
             {
+                if (_shutdownStarted || _isShutdown)
+                {
+                    return false;
+                }
                 // Flag to dispose HwndSource after everything is complete.
                 // We can't dispose HwndSource in this method because then we won't get
                 //   message from hook that unhooking is complete. So we do it on that unhooking complete message.
                 _disposeHwndSource = true;
+                _shutdownStarted = true;
             }
 
             // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
@@ -393,6 +378,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 throw new InteropException("Cannot move Rebar back");
             }
+
+            return true;
         }
 
         // return global coords of left top conner of our window = placeholder of buttons
@@ -485,30 +472,47 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            if (_isShutdown)
+            {
+                return NULL;
+            }
+
             if (msg == _updateMessageId)
             {
-                //var rebarRect = _coordsPackager.UnpackParams(lParam, wParam);
-
-                ReactToSizeMove();
+                if (!_shutdownStarted && !_isShutdown)
+                {
+                    ReactToSizeMove();
+                }
             } 
             else if (msg == _dllUnloadMessageId)
             {
-                EjectNativeDll(lParam);
-                lock (_lockObject)
+                if (_shutdownStarted && !_isShutdown)
                 {
+                    _isShutdown = true;
+                    EjectNativeDll(lParam);
                     if (_disposeHwndSource)
                     {
-                        _hwndSource.Dispose();
+                        if (_hwndSource != null)
+                        {
+                            _hwndSource.Dispose();
+                            _hwndSource = null;
+                        }
                     }
                 }
             }
             else if (msg == _closeMessageId)
             {
-                _notifyee.Shutdown();
+                if (!_shutdownStarted && !_isShutdown)
+                {
+                    _notifyee.Shutdown();
+                }
             }
             else if (msg == (int) WindowsMessages.WM_DISPLAYCHANGE)
             {
-                ReactToSizeMove(true);
+                if (!_shutdownStarted && !_isShutdown)
+                {
+                    ReactToSizeMove(true);
+                }
             }
 
             return NULL;

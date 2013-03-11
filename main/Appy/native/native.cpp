@@ -280,9 +280,9 @@ void DetachHooks()
 {
 	if (ExplorerHook)
 	{
-		HWND reb = FindRebar();	_ASSERT(reb);
-		::PostMessage(reb, GetExitMsg(), 0, 0);
 		BOOL b = ::UnhookWindowsHookEx(ExplorerHook);	_ASSERT(b);
 		ExplorerHook = NULL;
+		HWND reb = FindRebar();	_ASSERT(reb);
+		::PostMessage(reb, GetExitMsg(), 0, 0);
 	}
 }

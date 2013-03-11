@@ -6,9 +6,11 @@ namespace AppDirect.WindowsClient.InteropAPI
     {
         public static void Shutdown()
         {
-            TaskbarApi.Instance.RemoveTaskbarWindow();
-            TaskbarApi.Cleanup();
-            Application.Current.Shutdown();
+            if (TaskbarApi.Instance.RemoveTaskbarWindow())
+            {
+                TaskbarApi.Cleanup();
+                Application.Current.Shutdown();
+            }
         }
     }
 }

@@ -62,10 +62,10 @@ namespace AppDirect.WindowsClient.InteropAPI
             _interactionsObject.Place(_control, notifyee, initialWidth);
         }
 
-        public void RemoveTaskbarWindow()
+        public bool RemoveTaskbarWindow()
         {
             // use _control
-			_interactionsObject.Remove();
+			return _interactionsObject.Remove();
         }
         #endregion public interface
     }
