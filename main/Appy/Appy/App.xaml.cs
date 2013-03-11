@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
@@ -16,7 +17,7 @@ namespace AppDirect.WindowsClient
         protected override void OnStartup(StartupEventArgs e)
         {
             bool createdNew;
-            _instanceMutex = new Mutex(true, @"Global\ControlPanel", out createdNew);
+            _instanceMutex = new Mutex(true, @"AppDirect.WindowsClient Application Manager Mutex ", out createdNew);
             if (!createdNew)
             {
                 _instanceMutex = null;
@@ -55,9 +56,9 @@ namespace AppDirect.WindowsClient
             if (_instanceMutex != null)
             {
                 _instanceMutex.ReleaseMutex();
-            ServiceLocator.IpcCommunicator.Exit();
-            UpdateDownloader.Stop();
-            AppSessionRefresher.Stop();
+                ServiceLocator.IpcCommunicator.Exit();
+                UpdateDownloader.Stop();
+                AppSessionRefresher.Stop();
             }
 
             base.OnExit(e);
