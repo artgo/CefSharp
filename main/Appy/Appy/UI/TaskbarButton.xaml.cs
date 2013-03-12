@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.InteropAPI;
@@ -19,17 +20,20 @@ namespace AppDirect.WindowsClient.UI
         private const int HorizontalMargin = 6;
         private const int VerticalMargin = 6;
 
+        public EventHandler PinToTaskbarClickNotifier;
+        public EventHandler UninstallClickNotifier;
+
         public TaskbarButton()
         {
             InitializeComponent();
         }
 
-        public TaskbarButton(Application application, TaskbarIconsSize iconsSize)
+        public TaskbarButton(ApplicationViewModel applicationViewModel, TaskbarIconsSize iconsSize)
         {
-            DataContext = application;
+            DataContext = applicationViewModel;
             InitializeComponent();
 
-            Id = application.Id;
+            Id = applicationViewModel.Application.Id;
 
             ChangeIconSize(iconsSize);
         }
@@ -37,6 +41,16 @@ namespace AppDirect.WindowsClient.UI
         private void TaskbarButton_Click(object sender, RoutedEventArgs e)
         {
             Helper.AppButtonClick(sender, e);
+        }
+
+        public void PinToTaskBarClick(object sender, RoutedEventArgs e)
+        {
+            PinToTaskbarClickNotifier.Invoke(sender, e);
+        }
+
+        public void UninstallAppClick(object sender, RoutedEventArgs e)
+        {
+            UninstallClickNotifier.Invoke(sender, e);
         }
 
         public void ChangeIconSize(TaskbarIconsSize newIconsSize)

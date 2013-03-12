@@ -662,5 +662,93 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="MenuItemSeparator" TargetType="Separator">
+            <Setter Property="Margin" Value="0,-1,0,-1" />
+            <Setter Property="BorderBrush" Value="{StaticResource SeparatorColor}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Background" Value="{StaticResource SeparatorColor}" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="LayoutTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="90" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MenuItem" TargetType="MenuItem">
+            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border>
+                            <Grid Background="{StaticResource MenuItemColor}" Name="MenuItemGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Header" />
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0"
+                                        Name="Check"
+                                        Width="18" Height="18"
+                                        Visibility="Collapsed"
+                                        Margin="2,0,2,0"
+                                        VerticalAlignment="Bottom"
+                                        Background="Transparent"
+                                        BorderThickness="1"
+                                        BorderBrush="Transparent">
+                                    <Path
+                                        Name="CheckMark"
+                                        Width="14" Height="14"
+                                        VerticalAlignment="Bottom"
+                                        Visibility="Hidden"
+                                        SnapsToDevicePixels="False"
+                                        Stroke="{StaticResource DefaultTextColor}"
+                                        StrokeThickness="2"
+                                        Data="M0,4 L4,7 L10,0" />
+                                </Border>
+                                <Separator Style="{StaticResource MenuItemSeparator}" />
+                                <ContentPresenter Name="HeaderHost" Grid.Column="1" Margin="4,2,6,2"
+                                                  ContentSource="Header" RecognizesAccessKey="True" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsCheckable" Value="true">
+                                <Setter TargetName="Check" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true ">
+                                <Setter Property="Background" TargetName="MenuItemGrid"
+                                        Value="{StaticResource MenuItemHoverColor}" />
+                                <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ContextMenuStyle" TargetType="ContextMenu">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+            <Setter Property="HasDropShadow" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border
+                            Name="Border"
+                            BorderBrush="Transparent"
+                            BorderThickness="5">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="5" ></DropShadowEffect>
+                            </Border.Effect>
+                            <StackPanel IsItemsHost="True"
+                                        Margin="0,3,0,3"
+                                        KeyboardNavigation.DirectionalNavigation="Cycle" 
+                            Background="{StaticResource MenuItemColor}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

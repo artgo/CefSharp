@@ -117,9 +117,9 @@ namespace AppDirect.WindowsClient.UI
 
                 try
                 {
-                    if (!clickedApp.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
+                    if (!clickedApp.Application.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                     {
-                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Name);
+                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
 
                         SetVisibleGrid(LoginViewControl);
                         LoginViewControl.UsernameTextBox.Focus();
@@ -138,13 +138,13 @@ namespace AppDirect.WindowsClient.UI
             e.Handled = true;
         }
 
-        private void UninstallAppClick(object sender, RoutedEventArgs e)
+        public void UninstallAppClick(object sender, EventArgs e)
         {
-            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
+            var clickedApp = Helper.GetApplicationViewModelFromContextMenuClick(sender);
 
             try
             {
-                clickedApp.PinnedToTaskbar = false;
+                clickedApp.PinnedToTaskbarNotifier = false;
                 ViewModel.Uninstall(clickedApp);
             }
             catch (Exception ex)
