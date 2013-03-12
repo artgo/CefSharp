@@ -27,7 +27,7 @@
                     <ControlTemplate TargetType="Button">
                         <Border BorderThickness="1" BorderBrush="DimGray">
                             <Grid>
-                                <Image Name="Icon" Source="{Binding LocalImagePath}" ></Image>
+                                <Image Name="Icon" Source="{Binding Application.LocalImagePath}" ></Image>
                                  <Image Name="HighlightMask" Source="Images\TaskBarHoverMask.png" Visibility="Hidden"/>
                             </Grid>
                         </Border>

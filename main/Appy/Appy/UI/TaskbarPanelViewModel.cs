@@ -19,6 +19,7 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.PinnedApps = new List<Application>();
             }
 
+            PinnedApps = new List<ApplicationViewModel>();
             foreach (var application in ServiceLocator.LocalStorage.PinnedApps)
             {
                 PinnedApps.Add(new ApplicationViewModel(application));

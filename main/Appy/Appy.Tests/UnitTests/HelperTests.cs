@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Storage;
+using AppDirect.WindowsClient.UI;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -17,13 +18,23 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
         [Test]
         [STAThread]
-        public void GetClickedAppFromContextMenuReturnsApp()
+        public void GetClickedApplicationViewModelFromContextMenuReturnsApplicationViewModel()
+        {
+            MenuItem testMenuItem = new MenuItem();
+            var testAppViewModel = new ApplicationViewModel(LocalApplications.AppStoreApp);
+            testMenuItem.DataContext = testAppViewModel;
+            Assert.AreEqual(testAppViewModel, Helper.GetApplicationViewModelFromContextMenuClick(testMenuItem));
+        }
+
+        [Test]
+        [STAThread]
+        public void GetClickedApplicationViewModelFromContextMenuReturnsAppViewModel()
         {
             MenuItem testMenuItem = new MenuItem();
             var testApp = LocalApplications.AppStoreApp;
-            testMenuItem.DataContext = testApp;
+            testMenuItem.DataContext = new ApplicationViewModel(testApp);
 
-            Assert.AreEqual(testApp, Helper.GetClickedAppFromContextMenuClick(testMenuItem));
+            Assert.AreEqual(testApp, Helper.GetApplicationViewModelFromContextMenuClick(testMenuItem).Application);
         }
 
         [Test]
@@ -85,7 +96,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
             var elapsedTime = stop - start;
 
-            Assert.IsTrue(elapsedTime > millisecondsToSleep);
+            Assert.IsTrue(elapsedTime >= millisecondsToSleep);
         }
     }
 }

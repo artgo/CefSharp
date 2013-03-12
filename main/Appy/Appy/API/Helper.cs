@@ -91,7 +91,7 @@ namespace AppDirect.WindowsClient.API
             }
         }
 
-        public static ApplicationViewModel GetClickedAppFromContextMenuClick(object sender)
+        public static ApplicationViewModel GetApplicationViewModelFromContextMenuClick(object sender)
         {
             var clickedApp = ((MenuItem)sender).DataContext as ApplicationViewModel;
             return clickedApp;

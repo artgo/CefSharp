@@ -55,7 +55,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void PinToTaskbarClickHandler(object sender, EventArgs eventArgs)
         {
-            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
+            var clickedApp = Helper.GetApplicationViewModelFromContextMenuClick(sender);
 
             var clickedItem = (MenuItem)sender;
 

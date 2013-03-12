@@ -55,14 +55,14 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         public void SuggestedApplicationsContainsAllLocalApps()
         {
             InitializeTests();
-            Assert.AreEqual(LocalApplications.LocalApplicationsList, _mainViewModel.SuggestedApplications);
+            Assert.AreEqual(LocalApplications.LocalApplicationsList, _mainViewModel.SuggestedApplications.Select(a => a.Application));
         }
 
         [Test]
         public void MyApplicationsCollectionContainsAppStoreApp()
         {
             InitializeTests();
-            Assert.AreEqual(LocalApplications.AppStoreApp, _mainViewModel.MyApplications[0]);
+            Assert.AreEqual(LocalApplications.AppStoreApp, _mainViewModel.MyApplications[0].Application);
         }
 
         #endregion
@@ -236,7 +236,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             _mainViewModel.MyApplications.Remove(apiApp);
             _mainViewModel.SyncAppsWithApi();
 
-            Assert.IsTrue(_mainViewModel.MyApplications.Contains(apiApp));
+            Assert.IsNotNull(_mainViewModel.MyApplications.FirstOrDefault(a => Equals(a.Application, apiApp.Application)));
         }
 
         [Test]
@@ -251,7 +251,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
             _mainViewModel.SyncAppsWithApi();
 
-            Assert.IsNotNull(_mainViewModel.MyApplications.FirstOrDefault(a => a.Application.Id == expiredApp.Id));
+            Assert.IsNull(_mainViewModel.MyApplications.FirstOrDefault(a => a.Application == expiredApp));
         }
 
         #endregion
@@ -305,7 +305,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             var app = _mainViewModel.SuggestedApplications.First(a => a.Application.IsLocalApp);
-            _mainViewModel.Install(app.Application);
+            _mainViewModel.Install(app);
             return app;
         }
 
@@ -313,8 +313,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             var app = _mainViewModel.SuggestedApplications.First(a => a.Application.IsLocalApp);
-            _mainViewModel.Install(app.Application);
-            _mainViewModel.Uninstall(app.Application);
+            _mainViewModel.Install(app);
+            _mainViewModel.Uninstall(app);
             return app;
         }
     }

@@ -126,7 +126,7 @@ namespace AppDirect.WindowsClient.UI
                     }
                     else
                     {
-                        ViewModel.Install(clickedApp.Application);
+                        ViewModel.Install(clickedApp);
                     }
                 }
                 catch (Exception ex)
@@ -140,12 +140,12 @@ namespace AppDirect.WindowsClient.UI
 
         public void UninstallAppClick(object sender, EventArgs e)
         {
-            var clickedApp = Helper.GetClickedAppFromContextMenuClick(sender);
+            var clickedApp = Helper.GetApplicationViewModelFromContextMenuClick(sender);
 
             try
             {
                 clickedApp.PinnedToTaskbarNotifier = false;
-                ViewModel.Uninstall(clickedApp.Application);
+                ViewModel.Uninstall(clickedApp);
             }
             catch (Exception ex)
             {
