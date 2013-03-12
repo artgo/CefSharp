@@ -169,6 +169,14 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             PostPositionToHook();
             UpdatePosition();
+
+            if (IsVistaOrUp && DwmapiDll.DwmIsCompositionEnabled())
+            {
+                var status = Marshal.AllocHGlobal(sizeof(int));
+                Marshal.WriteInt32(status, 1); // true
+
+                DwmapiDll.DwmSetWindowAttribute(_hwndSource.Handle, DwmWindowAttribute.DWMWA_EXCLUDED_FROM_PEEK, status, sizeof(int));
+            }
         }
 
         private void UpdateHandles()
