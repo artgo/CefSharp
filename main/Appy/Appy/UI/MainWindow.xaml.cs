@@ -79,6 +79,7 @@ namespace AppDirect.WindowsClient.UI
         private void Login_Close(object sender, EventArgs e)
         {
             SetVisibleGrid(MainViewGrid);
+            LoginViewControl.PasswordBox.Password = string.Empty;
         }
 
         private void SetVisibleGrid(UIElement visibleControl)
@@ -122,7 +123,7 @@ namespace AppDirect.WindowsClient.UI
                         ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
 
                         SetVisibleGrid(LoginViewControl);
-                        LoginViewControl.UsernameTextBox.Focus();
+                        LoginViewControl.SetFocusField();
                     }
                     else
                     {
@@ -161,10 +162,10 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                ViewModel.LoginHeaderText = "Please Login to View Your Apps";
+                ViewModel.LoginHeaderText = Properties.Resources.LoginHeaderDefault;
 
                 SetVisibleGrid(LoginViewControl);
-                LoginViewControl.UsernameTextBox.Focus();
+                LoginViewControl.SetFocusField();
             }
         }
 
