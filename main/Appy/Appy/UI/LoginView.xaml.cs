@@ -25,9 +25,9 @@ namespace AppDirect.WindowsClient.UI
         public EventHandler RegistrationClick;
         public EventHandler CloseLogin;
 
-        private readonly SolidColorBrush _errorColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#de2b2b"));
-        private readonly SolidColorBrush _defaultColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#36454d"));
-        private readonly SolidColorBrush _validColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#4aa0ce"));
+        private readonly SolidColorBrush _errorColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#a32424"));
+        private readonly SolidColorBrush _defaultColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#072b35"));
+        private readonly SolidColorBrush _validColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#072b35"));
 
         public MainViewModel ViewModel
         {
@@ -207,12 +207,26 @@ namespace AppDirect.WindowsClient.UI
 
         private void CancelLoginClick(object sender, RoutedEventArgs e)
         {
+            PasswordBox.Password = string.Empty;
             this.Visibility = Visibility.Hidden;
         }
 
         public void GoToRegistrationClick(object sender, EventArgs eventArgs)
         {
             RegistrationClick.Invoke(sender, eventArgs);
+        }
+
+        public void SetFocusField()
+        {
+            if (String.IsNullOrEmpty(UsernameTextBox.Text) ||
+                                 !Helper.EmailMatchPattern.IsMatch(UsernameTextBox.Text))
+            {
+                UsernameTextBox.Focus();
+            }
+            else
+            {
+                PasswordBox.Focus();
+            }
         }
     }
 }

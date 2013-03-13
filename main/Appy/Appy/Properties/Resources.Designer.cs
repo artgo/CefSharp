@@ -160,7 +160,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please Log In.
+        ///   Looks up a localized string similar to Please Log In to View Your Apps.
         /// </summary>
         internal static string LoginHeaderDefault {
             get {

@@ -18,30 +18,32 @@
         <FontFamily x:Key="DefaultWindowFont">Franklin Gothic Medium</FontFamily>
         <SolidColorBrush x:Key="LeftPanelColor" Color="#010a0d" />
         <SolidColorBrush x:Key="RightPanelColor" Color="#000708" />
-        <SolidColorBrush x:Key="TextFieldFocusColor" Color="#4aa0ce" />
+        <SolidColorBrush x:Key="TextFieldFocusColor" Color="#072b35" />
         <SolidColorBrush x:Key="MiddleBarColor" Color="#20393e" />
-        <SolidColorBrush x:Key="BorderFocusColor" Color="#a4c8df" />
+        <SolidColorBrush x:Key="BorderFocusColor" Color="#dfdfdf" />
         <SolidColorBrush x:Key="LoginPanelColor" Color="#021318" />
         <SolidColorBrush x:Key="DefaultTextColor" Color="#dfdfdf" />
         <SolidColorBrush x:Key="DisabledColor" Color="#656565" />
-        <SolidColorBrush x:Key="ErrorTextColor" Color="#f13737" />
+        <SolidColorBrush x:Key="ErrorTextColor" Color="#a32424"/>
+        <SolidColorBrush x:Key="ErrorTextBorderColor" Color="#a32424"/>
         <SolidColorBrush x:Key="AlertTextColor" Color="#ffad38" />
-        <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#36454d" />
+        <SolidColorBrush x:Key="TextFieldDefaultColor" Color="#072b35" />
+        <SolidColorBrush x:Key="TextFieldDefaultBorderColor" Color="#333333" />
         <SolidColorBrush x:Key="MenuItemColor" Color="#252525" />
         <SolidColorBrush x:Key="MenuItemHoverColor" Color="#252e34" />
         <SolidColorBrush x:Key="SeparatorColor" Color="#181818" />
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
         <Storyboard x:Key="enterGotFocus" >
-            <DoubleAnimation Duration="0:0:0.4" To=".4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+            <DoubleAnimation Duration="0:0:0.2" To=".4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
         </Storyboard>
         <Storyboard x:Key="exitGotFocus" >
-            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+            <DoubleAnimation Duration="0:0:0.2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
         </Storyboard>
         <Storyboard x:Key="enterHasText" >
-            <DoubleAnimation Duration="0:0:0.4" From=".4" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+            <DoubleAnimation Duration="0:0:0.2" From=".4" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
         </Storyboard>
         <Storyboard x:Key="exitHasText" >
-            <DoubleAnimation Duration="0:0:0.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
+            <DoubleAnimation Duration="0:0:0.2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
         </Storyboard>
         <Style x:Key="TextStyle" TargetType="TextBlock">
             <Setter Property="Background" Value="Transparent"/>
@@ -67,7 +69,7 @@
             <TextBlock  Margin="5,8,5,5" DataContext="{Binding}" Text="{Binding Description}" Style="{StaticResource TextStyle}"/>
         </ToolTip>
         <Style x:Key="WaterMarkTextBlock" TargetType="TextBlock" BasedOn="{StaticResource TextStyle}">
-            <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="Opacity" Value="0.4" />
             <Setter Property="FontSize" Value="12"></Setter>
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -224,14 +226,15 @@
         <Style x:Key="LoginButtonDefault" TargetType="Button" BasedOn="{StaticResource MainButtonStyle}">
             <Setter Property="Margin" Value="0,1,1,1"/>
             <Setter Property="Padding" Value="0"/>
-            <Setter Property="Foreground" Value="DimGray" />
+            <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
+            <Setter Property="FontFamily" Value="{StaticResource DefaultWindowFont}"></Setter>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Background">
                 <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#3a444d" Offset="0"/>
-                        <GradientStop Color="#2f3942" Offset="0.05"/>
-                        <GradientStop Color="#1c272d" Offset="0.4"/>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
+                        <GradientStop Color="#2e6d90" Offset="0"/>
+                        <GradientStop Color="#1a597a" Offset="0.05"/>
+                        <GradientStop Color="#134256" Offset=".6"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
@@ -249,22 +252,10 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#748a96" Offset="0"/>
-                                            <GradientStop Color="#587381" Offset="0.05"/>
-                                            <GradientStop Color="#46616e" Offset="0.4"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="True">
-                                <Setter Property="Foreground" Value ="{StaticResource DefaultTextColor}"/>
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,3">
-                                            <GradientStop Color="#3a444d" Offset="0"/>
-                                            <GradientStop Color="#2f3942" Offset="0.05"/>
-                                            <GradientStop Color="#1c272d" Offset="0.4"/>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
+                                            <GradientStop Color="#134256" Offset="0"/>
+                                            <GradientStop Color="#1a597a" Offset="0.05"/>
+                                            <GradientStop Color="#2e6d90" Offset="0.6"/>
                                         </LinearGradientBrush>
                                     </Setter.Value>
                                 </Setter>
@@ -330,7 +321,8 @@
         </Style>
         <Style x:Key="PasswordBoxWater" TargetType="PasswordBox">
             <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextFieldDefaultBorderColor}"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Margin" Value="12,10,12,0"/>
@@ -366,6 +358,13 @@
                                 <MultiTrigger.ExitActions>
                                     <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
                                 </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Background" Value="{StaticResource ErrorTextColor}"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="{StaticResource ErrorTextBorderColor}" />
                             </MultiTrigger>
                             <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
                                 <Trigger.EnterActions>
@@ -423,7 +422,8 @@
         </Style>
         <Style x:Key="TextBoxWater" TargetType="{x:Type TextBox}">
             <Setter Property="Background" Value="{StaticResource TextFieldDefaultColor}"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextFieldDefaultBorderColor}"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Margin" Value="12,10,12,0"/>
@@ -460,6 +460,13 @@
                                 <MultiTrigger.ExitActions>
                                     <BeginStoryboard Storyboard="{StaticResource exitGotFocus}"/>
                                 </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Background" Value="{StaticResource ErrorTextColor}"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="{StaticResource ErrorTextBorderColor}" />
                             </MultiTrigger>
                             <Trigger Property="ui:WaterMarkTextHelper.HasText" Value="True">
                                 <Trigger.EnterActions>
