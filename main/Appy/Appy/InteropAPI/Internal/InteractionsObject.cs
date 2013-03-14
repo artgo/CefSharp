@@ -402,6 +402,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             if (_subclassProc != null)
             {
                 Comctl32Dll.RemoveWindowSubclass(_hwndSource.Handle, _subclassProc, NULL);
+                _subclassProc = null;
             }
 
             var newRebarCoords = CalculateRebarCoords(false);
