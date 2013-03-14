@@ -61,16 +61,6 @@ namespace AppDirect.WindowsClient.Browser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap close {
-            get {
-                object obj = ResourceManager.GetObject("close", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Communications can&apos;t be established, error: {0}.
         /// </summary>
         internal static string Communications_can_t_be_established_error_message {
@@ -98,36 +88,6 @@ namespace AppDirect.WindowsClient.Browser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap fullScreen {
-            get {
-                object obj = ResourceManager.GetObject("fullScreen", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap leftArrow {
-            get {
-                object obj = ResourceManager.GetObject("leftArrow", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap minimize {
-            get {
-                object obj = ResourceManager.GetObject("minimize", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No app data transfered for application with id {0}.
         /// </summary>
         internal static string No_app_data_transfered_error_message {
@@ -146,41 +106,11 @@ namespace AppDirect.WindowsClient.Browser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap restoreDown {
-            get {
-                object obj = ResourceManager.GetObject("restoreDown", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap rightArrow {
-            get {
-                object obj = ResourceManager.GetObject("rightArrow", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Url for the application with id {0} is empty.
         /// </summary>
         internal static string Url_for_the_application_is_empty_error_message {
             get {
                 return ResourceManager.GetString("Url_for_the_application_is_empty_error_message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap windowBar {
-            get {
-                object obj = ResourceManager.GetObject("windowBar", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

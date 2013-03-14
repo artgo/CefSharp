@@ -4,16 +4,50 @@
   <xs:complexType name="IApplication">
     <xs:sequence>
       <xs:element minOccurs="0" name="AlertCount" type="xs:int" />
+      <xs:element minOccurs="0" name="BrowserHeight" type="xs:int" />
+      <xs:element minOccurs="0" name="BrowserResizable" type="xs:boolean" />
+      <xs:element minOccurs="0" name="BrowserWidth" type="xs:int" />
       <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ImagePath" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="IsLocalApp" type="xs:boolean" />
       <xs:element minOccurs="0" name="LocalImagePath" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Price" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="UrlString" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="IApplication" nillable="true" type="tns:IApplication" />
+  <xs:complexType name="LocalApplication">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Application">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="LocalApplication" nillable="true" type="tns:LocalApplication" />
+  <xs:complexType name="Application">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:IApplication">
+        <xs:sequence>
+          <xs:element name="_x003C_AlertCount_x003E_k__BackingField" type="xs:int" />
+          <xs:element name="_x003C_BrowserHeight_x003E_k__BackingField" type="xs:int" />
+          <xs:element name="_x003C_BrowserResizable_x003E_k__BackingField" type="xs:boolean" />
+          <xs:element name="_x003C_BrowserWidth_x003E_k__BackingField" type="xs:int" />
+          <xs:element name="_x003C_Description_x003E_k__BackingField" nillable="true" type="xs:string" />
+          <xs:element name="_x003C_Id_x003E_k__BackingField" nillable="true" type="xs:string" />
+          <xs:element name="_x003C_ImagePath_x003E_k__BackingField" nillable="true" type="xs:string" />
+          <xs:element name="_x003C_IsLocalApp_x003E_k__BackingField" type="xs:boolean" />
+          <xs:element name="_x003C_LocalImagePath_x003E_k__BackingField" nillable="true" type="xs:string" />
+          <xs:element name="_x003C_Name_x003E_k__BackingField" nillable="true" type="xs:string" />
+          <xs:element name="_x003C_PinnedToTaskbar_x003E_k__BackingField" type="xs:boolean" />
+          <xs:element name="_x003C_Price_x003E_k__BackingField" nillable="true" type="xs:string" />
+          <xs:element name="_x003C_UrlString_x003E_k__BackingField" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Application" nillable="true" type="tns:Application" />
   <xs:complexType name="IAppDirectSession">
     <xs:sequence>
       <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Net" minOccurs="0" name="Cookies" nillable="true" type="q1:ArrayOfCookie" />
@@ -21,4 +55,15 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="IAppDirectSession" nillable="true" type="tns:IAppDirectSession" />
+  <xs:complexType name="AppDirectSession">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:IAppDirectSession">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/System.Net" name="_x003C_Cookies_x003E_k__BackingField" nillable="true" type="q2:ArrayOfCookie" />
+          <xs:element name="_x003C_ExpirationDate_x003E_k__BackingField" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AppDirectSession" nillable="true" type="tns:AppDirectSession" />
 </xs:schema>

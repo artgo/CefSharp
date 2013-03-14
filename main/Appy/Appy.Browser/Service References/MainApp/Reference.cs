@@ -8,8 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using AppDirect.WindowsClient.Common.API;
-
 namespace AppDirect.WindowsClient.Browser.MainApp {
     using System.Runtime.Serialization;
     
@@ -35,12 +33,33 @@ namespace AppDirect.WindowsClient.Browser.MainApp {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IMainApplicationChannel : IMainApplication, System.ServiceModel.IClientChannel {
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="MainApp.IMainApplication", CallbackContract=typeof(AppDirect.WindowsClient.Browser.MainApp.IMainApplicationCallback))]
+    public interface IMainApplication {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMainApplication/GetApplicationById", ReplyAction="http://tempuri.org/IMainApplication/GetApplicationByIdResponse")]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(AppDirect.WindowsClient.Common.API.Application))]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(AppDirect.WindowsClient.Common.API.LocalApplication))]
+        AppDirect.WindowsClient.Common.API.IApplication GetApplicationById(string id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMainApplication/GetCurrentSession", ReplyAction="http://tempuri.org/IMainApplication/GetCurrentSessionResponse")]
+        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(AppDirect.WindowsClient.Common.API.AppDirectSession))]
+        AppDirect.WindowsClient.Common.API.IAppDirectSession GetCurrentSession();
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IMainApplicationCallback {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMainApplication/CloseWindow", ReplyAction="http://tempuri.org/IMainApplication/CloseWindowResponse")]
+        void CloseWindow();
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IMainApplicationChannel : AppDirect.WindowsClient.Browser.MainApp.IMainApplication, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class MainApplicationClient : System.ServiceModel.DuplexClientBase<IMainApplication>, IMainApplication {
+    public partial class MainApplicationClient : System.ServiceModel.DuplexClientBase<AppDirect.WindowsClient.Browser.MainApp.IMainApplication>, AppDirect.WindowsClient.Browser.MainApp.IMainApplication {
         
         public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance) : 
                 base(callbackInstance) {

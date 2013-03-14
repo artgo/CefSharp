@@ -1,8 +1,4 @@
-﻿using System;
-using System.ServiceModel;
-using System.Windows.Forms;
-using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.Browser.API;
+﻿using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.MainApp;
 using AppDirect.WindowsClient.Browser.Properties;
@@ -10,13 +6,15 @@ using AppDirect.WindowsClient.Browser.Session;
 using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using CommandLine;
-using Application = System.Windows.Forms.Application;
+using System;
+using System.ServiceModel;
+using System.Windows;
 
 namespace AppDirect.WindowsClient.Browser
 {
     static class Program
     {
-        private const string DefaultUrl = @"http://localhost";
+        private static readonly BrowserObject BrowserObject = new BrowserObject();
 
         /// <summary>
         /// The main entry point for the application.
@@ -27,29 +25,38 @@ namespace AppDirect.WindowsClient.Browser
             var appId = ExtractAppId(args);
             try
             {
-                BrowserObject.Instance.Initialize(appId);
+                BrowserObject.Initialize(appId);
             }
             catch (Exception e)
             {
                 MessageBox.Show(String.Format(Resources.Failed_to_initialize_browser_error_message, e.Message));
             }
 
-            var browser = BuildBrowserWindow(appId);
+            var browserViewModel = BuildBrowserViewModel(appId);
 
-            var url = browser.BrowserUrl;
             SessionKeeper sessionKeeper = null;
-            if (!string.IsNullOrEmpty(url))
+            if ((browserViewModel != null) && (browserViewModel.Application != null))
             {
-                sessionKeeper = new SessionKeeper(url);
-                sessionKeeper.Start();
+                var url = browserViewModel.Application.UrlString;
+                if (!string.IsNullOrEmpty(url))
+                {
+                    sessionKeeper = new SessionKeeper(url);
+                    sessionKeeper.Start();
+                }
             }
 
-            Application.Run(browser);
+            Window browserWindow = new BrowserWindow(browserViewModel);
+
+            var app = new App(browserWindow);
+            app.InitializeComponent();
+            app.Run();
 
             if (sessionKeeper != null)
             {
                 sessionKeeper.Stop();
             }
+
+            BrowserObject.Unload();
         }
 
         private static string ExtractAppId(string[] args)
@@ -65,19 +72,8 @@ namespace AppDirect.WindowsClient.Browser
 
             return null;
         }
-        
-        private static BrowserWindow BuildBrowserWindow(string appId)
-        {
-            var browser = ProcessApplicationId(appId);
-            if (browser != null)
-            {
-                return browser;
-            }
 
-            return new BrowserWindow(DefaultUrl, null);
-        }
-
-        private static BrowserWindow ProcessApplicationId(string appId)
+        private static BrowserViewModel BuildBrowserViewModel(string appId)
         {
             MainApplicationClient client;
             try
@@ -126,7 +122,7 @@ namespace AppDirect.WindowsClient.Browser
 
             SetCookies(session);
 
-            var browser = new BrowserWindow(app.UrlString, session, app.BrowserWidth, app.BrowserHeight, app.BrowserResizable);
+            var browser = new BrowserViewModel() { Application = app, Session = session };
 
             return browser;
         }
@@ -137,7 +133,7 @@ namespace AppDirect.WindowsClient.Browser
             {
                 foreach (var cookie in session.Cookies)
                 {
-                    BrowserObject.Instance.SetCookie(cookie);
+                    BrowserObject.SetCookie(cookie);
                 }
             }
         }

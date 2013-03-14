@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.Browser.Control;
+using System;
 using System.IO;
-using System.Windows.Forms;
-using Gecko;
+using System.Windows;
+using Xilium.CefGlue;
 using Cookie = System.Net.Cookie;
 
 namespace AppDirect.WindowsClient.Browser.Interaction
@@ -11,37 +12,77 @@ namespace AppDirect.WindowsClient.Browser.Interaction
     /// </summary>
     public class BrowserObject
     {
-        private static readonly object SyncObject = new object();
-        private static volatile BrowserObject _browserObject = null;
-        private const string GfxFontRenderingGraphiteEnabled = @"gfx.font_rendering.graphite.enabled";
         private static readonly long InfiniteDate = (new DateTime(2100, 1, 1)).ToBinary();
         private const string CacheDirectory = @"Cache";
         private const string DefaultId = @"Default";
-        private const string CacheDiskEnable = @"browser.cache.disk.enable";
-        private const string CacheMemoryEnable = @"browser.cache.memory.enable";
-        private const string CacheDiskParentDirectory = @"browser.cache.disk.parent_directory";
-        private const string StartupPage = @"browser.startup.page";
         private const int RestoreSession = 3;
-        private const string SessionStoreRestoreFromCrash = @"browser.sessionstore.resume_from_crash";
 
-        private BrowserObject() { }
-
-        public static BrowserObject Instance
+        public void Load()
         {
-            get
+            try
             {
-                lock (SyncObject)
-                {
-                    if (_browserObject == null)
-                    {
-                        _browserObject = new BrowserObject();
-                    }
-                }
+                CefRuntime.Load();
+            }
+            catch (DllNotFoundException ex)
+            {
+                ErrorAndExit(ex);
+            }
+            catch (CefRuntimeException ex)
+            {
+                ErrorAndExit(ex);
+            }
+            catch (Exception ex)
+            {
+                ErrorAndExit(ex);
+            }
 
-                return _browserObject;
+            var mainArgs = new CefMainArgs(new string[] {});
+            var cefApp = new AppDirectCefApp();
+
+            var exitCode = CefRuntime.ExecuteProcess(mainArgs, cefApp);
+            if (exitCode != -1)
+            {
+                ErrorAndExit(new Exception("CEF Failed to load"));
+            }
+
+            var cefSettings = new CefSettings
+            {
+                // BrowserSubprocessPath = browserSubprocessPath,
+                SingleProcess = false,
+                MultiThreadedMessageLoop = true,
+                LogSeverity = CefLogSeverity.Error,
+                PersistSessionCookies = true,
+                LogFile = "cef.log",
+            };
+
+            try
+            {
+                CefRuntime.Initialize(mainArgs, cefSettings, cefApp);
+            }
+            catch (CefRuntimeException ex)
+            {
+                ErrorAndExit(ex);
             }
         }
 
+        private static void ErrorAndExit(Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            Environment.Exit(1);
+        }
+
+        internal void Unload()
+        {
+            try
+            {
+                // Shutdown CEF
+                CefRuntime.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                // Do nothing for now.
+            }
+        }
         public void Initialize(string appId)
         {
             var safeAppId = string.IsNullOrEmpty(appId) ? DefaultId : appId;
@@ -49,46 +90,18 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             var cachePath = currentDirectory + Path.DirectorySeparatorChar + CacheDirectory +
                             Path.DirectorySeparatorChar + safeAppId;
 
-            Xpcom.Initialize(currentDirectory);
-
             if (!Directory.Exists(cachePath))
             {
                 Directory.CreateDirectory(cachePath);
             }
 
-            GeckoPreferences.User[CacheDiskEnable] = true;
-            GeckoPreferences.User[CacheMemoryEnable] = true;
-            GeckoPreferences.User[CacheDiskParentDirectory] = cachePath;
-            GeckoPreferences.User[SessionStoreRestoreFromCrash] = true;
-            GeckoPreferences.User[StartupPage] = RestoreSession;
-
-            // Uncomment the follow line to enable CustomPrompt's
-            // GeckoPreferences.User["browser.xul.error_pages.enabled"] = false;
-            GeckoPreferences.User[GfxFontRenderingGraphiteEnabled] = true;
-
-            RestoreBrowserSession();
-
-            Application.ApplicationExit += (sender, e) => Xpcom.Shutdown();
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            Load();
 
             ResurrectCookies();
         }
 
         private void ResurrectCookies()
         {
-            var cookiesEnumerator = CookieManager.GetEnumerator();
-
-            while (cookiesEnumerator.MoveNext())
-            {
-                var cookie = cookiesEnumerator.Current;
-                if (cookie != null)
-                {
-                    CookieManager.Add(cookie.Host, cookie.Path, cookie.Name, cookie.Value, cookie.IsSecure,
-                                      cookie.IsHttpOnly, cookie.IsSession, InfiniteDate);
-                }
-            }
         }
 
         private void RestoreBrowserSession()
@@ -100,10 +113,37 @@ namespace AppDirect.WindowsClient.Browser.Interaction
 //            sessionStore.RestoreLastSession();
         }
 
+
+        private class CookieSetTask : CefTask
+        {
+            private readonly Cookie _cookie;
+
+            internal CookieSetTask(Cookie cookie)
+            {
+                _cookie = cookie;
+            }
+
+            protected override void Execute()
+            {
+                CefCookieManager.Global.SetCookie("https://" + _cookie.Domain + _cookie.Path, new CefCookie()
+                {
+                    Creation = _cookie.TimeStamp,
+                    Domain = _cookie.Domain,
+                    Expires = _cookie.Expires,
+                    HttpOnly = _cookie.HttpOnly,
+                    LastAccess = _cookie.TimeStamp,
+                    Name = _cookie.Name,
+                    Path = _cookie.Path,
+                    Secure = _cookie.Secure,
+                    Value = _cookie.Value
+                });
+            }
+        }
+
         public void SetCookie(Cookie cookie)
         {
-            CookieManager.Add(cookie.Domain, cookie.Path, cookie.Name, cookie.Value,
-                cookie.Secure, cookie.HttpOnly, false, InfiniteDate);
+            var cookieTask = new CookieSetTask(cookie);
+            CefRuntime.PostTask(CefThreadId.IO, cookieTask);
         }
     }
 }
