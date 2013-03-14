@@ -1769,6 +1769,18 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             SWP_NOOWNERZORDER | SWP_NOSENDCHANGING)
     }
 
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public class WINDOWPOS
+    {
+      public IntPtr hwnd;
+      public IntPtr hwndInsertAfter;
+      public int x;
+      public int y;
+      public int cx;
+      public int cy;
+      public uint flags;
+    } 
+
     public enum WindowsHitTestConstants : int
     {
         HTERROR = (-2),
@@ -2129,7 +2141,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
     public delegate IntPtr HookProc(int code, IntPtr wParam, IntPtr lParam);
 
     public delegate IntPtr SubclassProc(
-        IntPtr hWnd, uint uMsg, uint wParam, uint lParam, IntPtr uIdSubclass, IntPtr dwRefData);
+        IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData);
 
     public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
@@ -2372,6 +2384,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         [DllImport(Comctl32DllName)]
         public static extern bool SetWindowSubclass(IntPtr hWnd, SubclassProc pfnSubclass, IntPtr uIdSubclass, IntPtr dwRefData);
+
+        [DllImport(Comctl32DllName)]
+        public static extern IntPtr DefSubclassProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport(Comctl32DllName)]
+        public static extern bool RemoveWindowSubclass(IntPtr hWnd, SubclassProc pfnSubclass, IntPtr uIdSubclass);
     }
 
     public class Gdi32Dll
