@@ -747,7 +747,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 offset = new Point(szStart.Width, 0);
             }
 
-            var offset2 = ScreenFromWpf(offset, NativeDll.FindTaskBar());
+            var offset2 = IsWin8OrUp ? offset : ScreenFromWpf(offset, NativeDll.FindTaskBar());
 
             PostPositionToHook();
 
@@ -775,8 +775,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private Point ScreenFromWpf(Point local, IntPtr hwnd)
         {
             var p = new POINT() { x = local.X, y = local.Y };
-            User32Dll.MapWindowPoints(hwnd, IntPtr.Zero, ref p, 1);
-            if (Kernel32Dll.GetLastError() != 0)
+            int diff = User32Dll.MapWindowPoints(hwnd, IntPtr.Zero, ref p, 1);
+            if (diff == 0 && Kernel32Dll.GetLastError() != 0)
             {
                 throw new InteropException("Error converting points");
             }
