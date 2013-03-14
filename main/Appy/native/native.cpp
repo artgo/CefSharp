@@ -177,7 +177,7 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 
 			return 0;	// this message is processed
 		} 
-		else if (uMsg == messages->UpdateMessage) 
+		else if ((uMsg == messages->UpdateMessage) && !bExiting) 
 		{
 			const unsigned int p1 = (unsigned int)wParam;
 			const unsigned int p2 = (unsigned int)lParam;
@@ -185,6 +185,8 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 			buttonsRect.top = p1 & BitMask;
 			buttonsRect.right = p2 >> BitsToShift;
 			buttonsRect.bottom = p2 & BitMask;
+
+			return 0;	// this message is processed
 		}
 	}
 

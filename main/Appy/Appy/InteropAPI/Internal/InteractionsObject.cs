@@ -25,7 +25,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private const int BuffSize = 256;
         private const double StandardDpi = 96;
         private const string StartButtonClass = @"Button";
-        private static readonly TimeSpan UnloadWaitTimeout = TimeSpan.FromSeconds(30.0);
+        private const uint NotHideWindow = ~(uint) SetWindowPosConstants.SWP_HIDEWINDOW;
 
         // win 7  default with large buttons
         private const int DefaultStartButtonWidth = 54;
@@ -56,6 +56,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile bool _isShutdown = false;
         private volatile bool _shutdownStarted = false;
         private volatile TaskbarApi.ShutdownCallback _shutdownCallback = null;
+        private volatile SubclassProc _subclassProc = null;
         private double _dpiScalingFactor;
 
         public int TaskbarHeight { get { return _taskbarHeight; } }
@@ -154,6 +155,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             _wndProcHook = WndProc;
             _hwndSource.AddHook(_wndProcHook);
+            _subclassProc = PfnSubclass;
+
+            Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL);
 
             DoChangeWidth(_buttonsWidth, true);
 
@@ -170,13 +174,34 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             PostPositionToHook();
             UpdatePosition();
 
-            if (IsVistaOrUp && DwmapiDll.DwmIsCompositionEnabled())
+            if (IsWin7OrUp &&!IsWin8OrUp && DwmapiDll.DwmIsCompositionEnabled())
             {
                 var status = Marshal.AllocHGlobal(sizeof(int));
                 Marshal.WriteInt32(status, 1); // true
 
                 DwmapiDll.DwmSetWindowAttribute(_hwndSource.Handle, DwmWindowAttribute.DWMWA_EXCLUDED_FROM_PEEK, status, sizeof(int));
             }
+        }
+
+        private IntPtr PfnSubclass(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
+        {
+            if (uMsg == (uint)WindowsMessages.WM_SHOWWINDOW)
+            {
+                // wParam == FALSE (hide window)
+                if (wParam == NULL)
+                {
+                    // return 0 to indicate that message was processed
+                    return NULL;
+                }
+            }
+            else if (uMsg == (uint)WindowsMessages.WM_WINDOWPOSCHANGING)
+            {
+                var winPos = (WINDOWPOS) Marshal.PtrToStructure(lParam, typeof(WINDOWPOS));
+                winPos.flags = winPos.flags & NotHideWindow;
+                Marshal.StructureToPtr(winPos, lParam, true);
+            }
+
+            return Comctl32Dll.DefSubclassProc(hWnd, uMsg, wParam, lParam);
         }
 
         private void UpdateHandles()
@@ -374,6 +399,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
             NativeDll.DetachHooks(); // detach - can cause reposition by Rebar itself
 
+            if (_subclassProc != null)
+            {
+                Comctl32Dll.RemoveWindowSubclass(_hwndSource.Handle, _subclassProc, NULL);
+            }
+
             var newRebarCoords = CalculateRebarCoords(false);
 
             if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), IntPtr.Zero,
@@ -487,6 +517,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 if (!_shutdownStarted && !_isShutdown)
                 {
                     ReactToSizeMove();
+                    handled = true;
                 }
             } 
             else if (msg == _dllUnloadMessageId)
@@ -506,6 +537,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                         _shutdownCallback();
                         _shutdownCallback = null;
                     }
+                    handled = true;
                 }
             }
             else if (msg == _closeMessageId)
@@ -513,6 +545,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 if (!_shutdownStarted && !_isShutdown)
                 {
                     ShutdownHelper.Instance.Shutdown();
+                    handled = true;
                 }
             }
             else if (msg == (int) WindowsMessages.WM_DISPLAYCHANGE)
@@ -520,6 +553,13 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 if (!_shutdownStarted && !_isShutdown)
                 {
                     ReactToSizeMove(true);
+                }
+            }
+            else if (msg == (int)WindowsMessages.WM_SHOWWINDOW)
+            {
+                if (!_shutdownStarted && !_isShutdown && (wParam == NULL))
+                {
+                    handled = true;
                 }
             }
 
