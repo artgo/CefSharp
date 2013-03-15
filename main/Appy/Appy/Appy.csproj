@@ -180,6 +180,7 @@
     <Compile Include="Storage\LocalStorage.cs" />
     <Compile Include="UI\ApplicationViewModel.cs" />
     <Compile Include="UI\AppSessionRefresher.cs" />
+    <Compile Include="UI\LoginViewModel.cs" />
     <Compile Include="UI\TaskbarPanel.xaml.cs">
       <DependentUpon>TaskbarPanel.xaml</DependentUpon>
     </Compile>
@@ -419,12 +420,6 @@
     <Resource Include="UI\Images\ScrollBarBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\cloudGrey.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\cloudWhite.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Icons\deskIcon-Hover.png" />
   </ItemGroup>
   <ItemGroup>
@@ -450,6 +445,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\logoutWhite.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

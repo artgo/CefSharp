@@ -8,7 +8,7 @@
     <UserControl.Resources>
     
     </UserControl.Resources>
-    <Grid Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
+    <Grid Visibility="{Binding IsVisible}" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
         <Rectangle Height="320" Width="670" Fill="{StaticResource LoginPanelColor}">
             <Rectangle.Effect>
                 <BlurEffect Radius="10"></BlurEffect>
@@ -32,10 +32,10 @@
             <Line Grid.Column="1" X1="0" Y1="-3" X2="0" Y2="168" Stroke="{StaticResource MiddleBarColor}" StrokeThickness=".5" />
             <Grid Grid.Column="1" Margin="20,0,32,0" Width="180" HorizontalAlignment="Left">
                 <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Text="Existing Customer" Margin="0,0,0,214"/>
-                <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,16,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
+                <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,20,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="11" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
                 <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWaterEmail}"
                                                 HorizontalAlignment="Stretch" Width="Auto" Margin="0,40,0,0" LostKeyboardFocus="UsernameTextBox_OnLostKeyboardFocus" KeyUp="UsernameTextBox_OnKeyUp" GotKeyboardFocus="UsernameTextBox_OnFocus" TextChanged="UsernameTextBox_OnTextChanged" />
-                <TextBlock x:Name="EmailFormatErrorMessage" Style="{StaticResource TextStyle}" Margin="0,76,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="9" Text="Please enter a valid email address" Visibility="Hidden"  />
+                <TextBlock x:Name="EmailFormatErrorMessage" Style="{StaticResource TextStyle}" Margin="0,76,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="11" Text="Please enter a valid email address" Visibility="Hidden"  />
                 <PasswordBox Name="PasswordBox" Style="{DynamicResource PasswordBoxWater}"
                                                     HorizontalAlignment="Stretch" Width="Auto" Margin="0,90,0,0" KeyDown="PasswordBox_OnKeyDown" GotKeyboardFocus="Password_OnFocus" LostKeyboardFocus="Password_OnLostKeyboardFocus" PasswordChanged="PasswordBox_OnPasswordChanged">
                 </PasswordBox>

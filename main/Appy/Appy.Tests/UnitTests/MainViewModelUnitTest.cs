@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Models;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using AppDirect.WindowsClient.Updates;
@@ -138,62 +139,6 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         #region Login Tests
 
         [Test]
-        public void LoginReturnsTrueForValidLogin()
-        {
-            InitializeTests();
-            Assert.IsTrue(_mainViewModel.Login(Username, Password));
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
-        }
-
-        [Test]
-        public void LoginReturnsFalseForInvalidLogin()
-        {
-            InitializeTests();
-            Assert.IsFalse(_mainViewModel.Login(Username, BadPassword));
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, BadPassword);
-        }
-
-        [Test]
-        public void ValidUsernameIsStored()
-        {
-            InitializeTests();
-            _mainViewModel.Login(Username, Password);
-            Assert.AreEqual(Username, ServiceLocator.LocalStorage.LoginInfo.Username);
-
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
-        }
-
-        [Test]
-        public void ValidPasswordIsStored()
-        {
-            InitializeTests();
-            _mainViewModel.Login(Username, Password);
-            Assert.AreEqual(Password, ServiceLocator.LocalStorage.LoginInfo.Password);
-
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
-        }
-
-        [Test]
-        public void PasswordSetDateIsStored()
-        {
-            InitializeTests();
-            _mainViewModel.Login(Username, Password);
-            Assert.AreEqual(DateTime.Now.Date, ServiceLocator.LocalStorage.LoginInfo.PasswordSetDate.Date);
-
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
-        }
-
-        [Test]
-        public void IncorrectLoginIsNotStored()
-        {
-            InitializeTests();
-            _mainViewModel.Login(Username, BadPassword);
-            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
-
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, BadPassword);
-        }
-
-        [Test]
         public void MyAppsContainsCachedAppDirectMyApps()
         {
             InitializeTests();
@@ -208,7 +153,9 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         public void LogOutRemovesLoginInfo()
         {
             InitializeTests();
-            _mainViewModel.Login(Username, Password);
+            //ServiceLocator.LocalStorage.LoginInfo = new LoginObject();
+            ServiceLocator.LocalStorage.SetCredentials(Username, Password);
+
             _mainViewModel.Logout();
 
             Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
@@ -298,7 +245,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             ServiceLocator.CachedAppDirectApi.MyApps.Returns(myApps);
-            _mainViewModel.Login(Username, Password);
+            ServiceLocator.LocalStorage.SetCredentials(Username, Password);
+            _mainViewModel.LoginSuccessful(null,null);
         }
 
         private ApplicationViewModel CallInstallApp()

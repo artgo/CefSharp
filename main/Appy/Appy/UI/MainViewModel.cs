@@ -17,13 +17,12 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public class MainViewModel : INotifyPropertyChanged
     {
+        public LoginViewModel LoginViewModel = new LoginViewModel();
         private const int MyAppDisplayLimit = 10;
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
-        private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
-        private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
         private Visibility _updateSpinnerVisibility = Visibility.Hidden;
-
+        
         private Visibility _updateAvailableVisibility = ServiceLocator.LocalStorage.UpdateDownloaded
                                                             ? Visibility.Visible
                                                             : Visibility.Collapsed;
@@ -36,6 +35,7 @@ namespace AppDirect.WindowsClient.UI
         
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
+        private bool _isLogged = ServiceLocator.LocalStorage.HasCredentials;
 
         public string VersionString
         {
@@ -80,26 +80,7 @@ namespace AppDirect.WindowsClient.UI
                 NotifyPropertyChanged("UpdateAvailableVisibility");
             }
         }
-
-        public Visibility CloudSyncVisibility
-        {
-            get
-            {
-                if (ServiceLocator.LocalStorage.HasCredentials)
-                {
-                    return Visibility.Hidden;
-                }
-                else
-                {
-                    return Visibility.Visible;
-                }
-            }
-            set
-            {
-                NotifyPropertyChanged("CloudSyncVisibility");
-            }
-        }
-
+        
         public Visibility VerifyEmailVisibility
         {
             get
@@ -119,22 +100,13 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public Visibility LogOutVisibility
+        public bool IsLoggedIn
         {
-            get
-            {
-                if (!ServiceLocator.LocalStorage.HasCredentials)
-                {
-                    return Visibility.Collapsed;
-                }
-                else
-                {
-                    return Visibility.Visible;
-                }
-            }
+            get { return _isLogged; }
             set
             {
-                NotifyPropertyChanged("LogOutVisibility");
+                _isLogged = value;
+                NotifyPropertyChanged("IsLoggedIn");
             }
         }
 
@@ -162,26 +134,6 @@ namespace AppDirect.WindowsClient.UI
                 NotifyPropertyChanged("SuggestedAppsLoadError");
             }
         }
-        
-        public string LoginHeaderText
-        {
-            get { return _loginHeaderText; }
-            set
-            {
-                _loginHeaderText = value;
-                NotifyPropertyChanged("LoginHeaderText");
-            }
-        }
-
-        public string LoginFailedMessage
-        {
-            get { return _loginFailedMessage; }
-            set
-            {
-                _loginFailedMessage = value;
-                NotifyPropertyChanged("LoginFailedMessage");
-            }
-        }
 
         public ObservableCollection<ApplicationViewModel> MyApplications { get; set; }
         public ObservableCollection<ApplicationViewModel> SuggestedApplications { get; set; }
@@ -194,25 +146,6 @@ namespace AppDirect.WindowsClient.UI
             GetSuggestedApplicationsWithApiCall();
         }
 
-        public bool Login(string username, string password)
-        {
-            if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
-            {
-                lock (ServiceLocator.LocalStorage.Locker)
-                {
-                    ServiceLocator.LocalStorage.SetCredentials(username, password);
-                }
-
-                SyncAppsWithApi();
-
-                CloudSyncVisibility = Visibility.Hidden;
-                LogOutVisibility = Visibility.Visible;
-                return true;
-            }
-
-            return false;
-        }
-
         public void Logout()
         {
             lock (ServiceLocator.LocalStorage.Locker)
@@ -222,6 +155,7 @@ namespace AppDirect.WindowsClient.UI
             }
 
             SyncAppsWithApi();
+            IsLoggedIn = false;
         }
 
         public void Install(ApplicationViewModel applicationViewModel)
@@ -518,6 +452,29 @@ namespace AppDirect.WindowsClient.UI
         public void ShowAboutDialog()
         {
             MessageBox.Show(VersionString);
+        }
+
+        public void LogInClicked()
+        {
+            if (IsLoggedIn)
+            {
+                Logout();
+            }
+            else
+            {
+                LoginViewModel.IsVisible = Visibility.Visible;
+            }
+        }
+
+        public void CollapseLogin()
+        {
+            LoginViewModel.IsVisible = Visibility.Collapsed;
+        }
+
+        public void LoginSuccessful(object sender, EventArgs e)
+        {
+            SyncAppsWithApi();
+            IsLoggedIn = true;
         }
     }
 }

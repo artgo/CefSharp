@@ -110,6 +110,7 @@
     <Compile Include="UnitTests\AppDirectApiUnitTest.cs" />
     <Compile Include="UnitTests\HelperTests.cs" />
     <Compile Include="UnitTests\LocalStorageUnitTest.cs" />
+    <Compile Include="UnitTests\LoginViewModelUnitTest.cs" />
     <Compile Include="UnitTests\MainViewModelUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\CachedAppDirectApiUnitTest.cs" />

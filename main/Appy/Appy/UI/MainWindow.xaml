@@ -228,30 +228,32 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="CloudSyncButton" TargetType="Button" BasedOn="{StaticResource TopPanelButton}">
+        <Style x:Key="LogInButton" TargetType="Button" BasedOn="{StaticResource TopPanelButton}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid Style="{StaticResource TopPanelGridStyle}">
-                            <StackPanel Style="{StaticResource TopPanelStackPanelStyle}" Margin="6,2,0,0">
-                                <Image Name="CloudSyncImage" VerticalAlignment="Bottom" Margin="0,0,0,.5"
-                                       HorizontalAlignment="Left" Source="Images/cloudGrey.png" Width="20" />
-                                <TextBlock Name="CloudSyncTextBlock" HorizontalAlignment="Left"
+                            <StackPanel Style="{StaticResource TopPanelStackPanelStyle}" Margin="6,2,0,0" HorizontalAlignment="Center">
+                                <Image Name="LogInImage" VerticalAlignment="Bottom" Margin="0,0,5,0"
+                                       HorizontalAlignment="Center" Source="Images/logout.png" Width="12" />
+                                <TextBlock Name="LogInTextBlock" HorizontalAlignment="Center"
                                            Style="{StaticResource TextStyle}"
-                                           Foreground="{StaticResource DisabledColor}" VerticalAlignment="Bottom">
-                                    Cloud Sync
-                                </TextBlock>
+                                           Foreground="{StaticResource DisabledColor}" VerticalAlignment="Center" Text="Log In" />
                             </StackPanel>
-                            <Line Name="CloudSyncUnderline" X1="0" Y1="28" X2="100" Y2="28"
+                            <Line Name="LogInUnderline" X1="0" Y1="28" X2="100" Y2="28"
                                   Stroke="{StaticResource DefaultTextColor}" StrokeThickness="1" Visibility="Hidden" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="CloudSyncTextBlock" Property="Foreground"
+                                <Setter TargetName="LogInTextBlock" Property="Foreground"
                                         Value="{StaticResource DefaultTextColor}" />
-                                <Setter TargetName="CloudSyncImage" Property="Source" Value="Images/cloudWhite.png" />
-                                <Setter TargetName="CloudSyncUnderline" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="LogInImage" Property="Source" Value="Images/logoutWhite.png" />
+                                <Setter TargetName="LogInUnderline" Property="Visibility" Value="Visible" />
                             </Trigger>
+                            <DataTrigger Binding="{Binding IsLoggedIn}" Value="True">
+                                <Setter TargetName="LogInTextBlock" Property="Text" Value="Log Out"/>
+                                <Setter TargetName="LogInImage" Property="Width" Value="12"/>
+                            </DataTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -501,10 +503,9 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button Name="MyAppsButton" Grid.Column="0" Style="{StaticResource MyAppsButton}" />
-                <Button Name="SyncButton" Click="SyncButtonOnClick" Grid.Column="1"
-                        Style="{StaticResource CloudSyncButton}" Visibility="{Binding CloudSyncVisibility}" />
-                <Button Name="AlertsButton" Grid.Column="1" Style="{StaticResource AlertsButton}"
-                        Visibility="{Binding VerifyEmailVisibility}" />
+                <Button Name="LogInButton" Click="LogInButtonClick" Grid.Column="1"
+                        Style="{StaticResource LogInButton}" />
+                <Button Name="AlertsButton" Grid.Column="1" Style="{StaticResource AlertsButton}" Visibility="{Binding VerifyEmailVisibility}" />
                 <Menu Name="SettingsMenu" Background="Transparent" Grid.Column="4" VerticalAlignment="Center"
                       HorizontalAlignment="Right" Width="30">
                     <MenuItem Style="{StaticResource TopLevelMenuItem}" SubmenuClosed="Settings_OnSubmenuClosed">
@@ -520,12 +521,6 @@
                                         <ProgressBar Margin="3,0,0,0" Name ="Spinner" Style="{StaticResource SpinnerProgress}"></ProgressBar>
                                     </Grid>
                                 </Grid>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Name="LogOutMenuItem" Style="{StaticResource SubMenuItem}" Header="Log out"
-                                  Click="Logout_Click" Visibility="{Binding LogOutVisibility}">
-                            <MenuItem.Icon>
-                                <Image Source="Images/logout.png" Width="12" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Name="AboutMenuItem" Style="{StaticResource SubMenuItem}" Header="About" Click="AboutMenuItem_OnClick">
@@ -613,7 +608,7 @@
             <TextBlock Text="{Binding SuggestedAppsLoadError}" HorizontalAlignment="Left" Margin="75,300,0,0"
                        VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2" />
         </Grid>
-        <controls:LoginView x:Name="LoginViewControl" Visibility="Hidden" />
+        <controls:LoginView x:Name="LoginViewControl" />
         <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden" />
     </Grid>
 </Window>

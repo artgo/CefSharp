@@ -24,7 +24,6 @@ namespace AppDirect.WindowsClient.UI
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
         public EventHandler PinToTaskbarClickNotifier;
-
         public MainViewModel ViewModel { get; set; }
 
         public MainWindow(MainViewModel mainViewModel)
@@ -48,9 +47,11 @@ namespace AppDirect.WindowsClient.UI
 
             LoginViewControl.RegistrationClick += Login_OnRegistrationClick;
             LoginViewControl.CloseLogin += Login_Close;
+            LoginViewControl.LoginSuccessfulNotifier += ViewModel.LoginSuccessful;
+
+            LoginViewControl.DataContext = ViewModel.LoginViewModel;
 
             RegistrationViewControl.ClosePanel += Login_Close;
-
         }
 
         public void SetPosition()
@@ -78,7 +79,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void Login_Close(object sender, EventArgs e)
         {
-            SetVisibleGrid(MainViewGrid);
+            ViewModel.CollapseLogin();
             LoginViewControl.PasswordBox.Password = string.Empty;
         }
 
@@ -120,7 +121,7 @@ namespace AppDirect.WindowsClient.UI
                 {
                     if (!clickedApp.Application.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                     {
-                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
+                        ViewModel.LoginViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
 
                         SetVisibleGrid(LoginViewControl);
                         LoginViewControl.SetFocusField();
@@ -154,32 +155,9 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void SyncButtonOnClick(object sender, RoutedEventArgs e)
+        private void LogInButtonClick(object sender, RoutedEventArgs e)
         {
-            if (ServiceLocator.LocalStorage.HasCredentials)
-            {
-                ViewModel.SyncAppsWithApi();
-            }
-            else
-            {
-                ViewModel.LoginHeaderText = Properties.Resources.LoginHeaderDefault;
-
-                SetVisibleGrid(LoginViewControl);
-                LoginViewControl.SetFocusField();
-            }
-        }
-
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                ViewModel.Logout();
-                ViewModel.CloudSyncVisibility = Visibility.Visible;
-                ViewModel.LogOutVisibility = Visibility.Hidden;
-            }
-            catch (Exception)
-            {
-            }
+            ViewModel.LogInClicked();
         }
 
         public void UpdateAvailable(bool updateAvailable)
