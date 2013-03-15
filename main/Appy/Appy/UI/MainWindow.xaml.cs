@@ -24,7 +24,6 @@ namespace AppDirect.WindowsClient.UI
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
         public EventHandler PinToTaskbarClickNotifier;
-
         public MainViewModel ViewModel { get; set; }
 
         public MainWindow(MainViewModel mainViewModel)
@@ -48,11 +47,13 @@ namespace AppDirect.WindowsClient.UI
 
             LoginViewControl.RegistrationClick += Login_OnRegistrationClick;
             LoginViewControl.CloseLogin += Login_Close;
+            LoginViewControl.LoginSuccessfulNotifier += ViewModel.LoginSuccessful;
 
-            RegistrationViewControl.ClosePanel += Login_Close;
+            LoginViewControl.DataContext = ViewModel.LoginViewModel;
 
+            RegistrationViewControl.ClosePanel += Registration_Close;
         }
-
+        
         public void SetPosition()
         {
             switch (TaskbarApi.Instance.TaskbarPosition)
@@ -78,23 +79,14 @@ namespace AppDirect.WindowsClient.UI
 
         private void Login_Close(object sender, EventArgs e)
         {
-            SetVisibleGrid(MainViewGrid);
+            ViewModel.CollapseLogin();
             LoginViewControl.PasswordBox.Password = string.Empty;
         }
 
-        private void SetVisibleGrid(UIElement visibleControl)
+        private void Registration_Close(object sender, EventArgs e)
         {
-            foreach (var windowPanel in WindowPanels)
-            {
-                if (windowPanel.Equals(visibleControl))
-                {
-                    windowPanel.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    windowPanel.Visibility = Visibility.Hidden;
-                }
-            }
+            LoginViewControl.PasswordBox.Password = string.Empty;
+            RegistrationViewControl.Visibility = Visibility.Hidden;
         }
 
         private void AppButtonClick(object sender, RoutedEventArgs e)
@@ -120,10 +112,8 @@ namespace AppDirect.WindowsClient.UI
                 {
                     if (!clickedApp.Application.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                     {
-                        ViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
-
-                        SetVisibleGrid(LoginViewControl);
-                        LoginViewControl.SetFocusField();
+                        ViewModel.LoginViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
+                        ViewModel.LoginViewModel.IsVisible = Visibility.Visible;
                     }
                     else
                     {
@@ -154,32 +144,9 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void SyncButtonOnClick(object sender, RoutedEventArgs e)
+        private void LogInLogOutButtonClick(object sender, RoutedEventArgs e)
         {
-            if (ServiceLocator.LocalStorage.HasCredentials)
-            {
-                ViewModel.SyncAppsWithApi();
-            }
-            else
-            {
-                ViewModel.LoginHeaderText = Properties.Resources.LoginHeaderDefault;
-
-                SetVisibleGrid(LoginViewControl);
-                LoginViewControl.SetFocusField();
-            }
-        }
-
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                ViewModel.Logout();
-                ViewModel.CloudSyncVisibility = Visibility.Visible;
-                ViewModel.LogOutVisibility = Visibility.Hidden;
-            }
-            catch (Exception)
-            {
-            }
+            ViewModel.LogInLogOutClicked();
         }
 
         public void UpdateAvailable(bool updateAvailable)
@@ -206,7 +173,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void Login_OnRegistrationClick(object o, EventArgs e)
         {
-            SetVisibleGrid(RegistrationViewControl);
+            RegistrationViewControl.Visibility = Visibility.Visible;
         }
 
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)

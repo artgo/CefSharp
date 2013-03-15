@@ -153,6 +153,9 @@
   <data name="LoginHeaderDefault" xml:space="preserve">
     <value>Please Log In to View Your Apps</value>
   </data>
+  <data name="LoginHeaderLoginRequired" xml:space="preserve">
+    <value>Please log in to use your apps</value>
+  </data>
   <data name="NetworkProblemError" xml:space="preserve">
     <value>Network Error. Please check your internet connection.</value>
   </data>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Models;
+using AppDirect.WindowsClient.Properties;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using AppDirect.WindowsClient.Updates;
@@ -27,6 +29,13 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
                 new Application {IsLocalApp = false, Id = "AppDirectApplicationId3", Name = "FakeApp3"}
             };
         
+        private readonly List<Application> _suggestedApplications = new List<Application>()
+            {
+                new Application {IsLocalApp = true, Id = "AppDirectApplicationId", Name = "FakeApp4"},
+                new Application {IsLocalApp = false, Id = "AppDirectApplicationId2", Name = "FakeApp5"},
+                new Application {IsLocalApp = false, Id = "AppDirectApplicationId3", Name = "FakeApp6"}
+            };
+
         [TestFixtureSetUp]
         public void SetUpForTests()
         {
@@ -35,6 +44,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             var localStorage = new LocalStorage();
 
             cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
+
+            cachedAppDirectApiMock.SuggestedApps.Returns(_suggestedApplications);
 
             var kernel = ServiceLocator.Kernel;
             kernel.Rebind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
@@ -47,15 +58,17 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             ServiceLocator.LocalStorage.ClearAllStoredData();
             _mainViewModel = new MainViewModel();
             _mainViewModel.InitializeAppsLists();
+            _mainViewModel.SyncAppsWithApi();
         }
         
         #region Constructor Tests
 
         [Test]
-        public void SuggestedApplicationsContainsAllLocalApps()
+        public void SuggestedApplicationsContainsNoLocalApps()
         {
             InitializeTests();
-            Assert.AreEqual(LocalApplications.LocalApplicationsList, _mainViewModel.SuggestedApplications.Select(a => a.Application));
+            var intersect = _mainViewModel.SuggestedApplications.Select(a => a.Application).Intersect(LocalApplications.LocalApplicationsList);
+            Assert.IsEmpty(intersect);
         }
 
         [Test]
@@ -138,62 +151,6 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         #region Login Tests
 
         [Test]
-        public void LoginReturnsTrueForValidLogin()
-        {
-            InitializeTests();
-            Assert.IsTrue(_mainViewModel.Login(Username, Password));
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
-        }
-
-        [Test]
-        public void LoginReturnsFalseForInvalidLogin()
-        {
-            InitializeTests();
-            Assert.IsFalse(_mainViewModel.Login(Username, BadPassword));
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, BadPassword);
-        }
-
-        [Test]
-        public void ValidUsernameIsStored()
-        {
-            InitializeTests();
-            _mainViewModel.Login(Username, Password);
-            Assert.AreEqual(Username, ServiceLocator.LocalStorage.LoginInfo.Username);
-
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
-        }
-
-        [Test]
-        public void ValidPasswordIsStored()
-        {
-            InitializeTests();
-            _mainViewModel.Login(Username, Password);
-            Assert.AreEqual(Password, ServiceLocator.LocalStorage.LoginInfo.Password);
-
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
-        }
-
-        [Test]
-        public void PasswordSetDateIsStored()
-        {
-            InitializeTests();
-            _mainViewModel.Login(Username, Password);
-            Assert.AreEqual(DateTime.Now.Date, ServiceLocator.LocalStorage.LoginInfo.PasswordSetDate.Date);
-
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
-        }
-
-        [Test]
-        public void IncorrectLoginIsNotStored()
-        {
-            InitializeTests();
-            _mainViewModel.Login(Username, BadPassword);
-            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
-
-            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, BadPassword);
-        }
-
-        [Test]
         public void MyAppsContainsCachedAppDirectMyApps()
         {
             InitializeTests();
@@ -208,7 +165,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         public void LogOutRemovesLoginInfo()
         {
             InitializeTests();
-            _mainViewModel.Login(Username, Password);
+            ServiceLocator.LocalStorage.SetCredentials(Username, Password);
+
             _mainViewModel.Logout();
 
             Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
@@ -298,7 +256,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             ServiceLocator.CachedAppDirectApi.MyApps.Returns(myApps);
-            _mainViewModel.Login(Username, Password);
+            ServiceLocator.LocalStorage.SetCredentials(Username, Password);
+            _mainViewModel.LoginSuccessful(null,null);
         }
 
         private ApplicationViewModel CallInstallApp()
