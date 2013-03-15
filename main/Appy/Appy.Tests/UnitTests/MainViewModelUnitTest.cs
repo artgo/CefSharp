@@ -165,7 +165,6 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         public void LogOutRemovesLoginInfo()
         {
             InitializeTests();
-            //ServiceLocator.LocalStorage.LoginInfo = new LoginObject();
             ServiceLocator.LocalStorage.SetCredentials(Username, Password);
 
             _mainViewModel.Logout();

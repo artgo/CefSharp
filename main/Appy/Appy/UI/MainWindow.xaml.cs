@@ -51,9 +51,9 @@ namespace AppDirect.WindowsClient.UI
 
             LoginViewControl.DataContext = ViewModel.LoginViewModel;
 
-            RegistrationViewControl.ClosePanel += Login_Close;
+            RegistrationViewControl.ClosePanel += Registration_Close;
         }
-
+        
         public void SetPosition()
         {
             switch (TaskbarApi.Instance.TaskbarPosition)
@@ -83,19 +83,10 @@ namespace AppDirect.WindowsClient.UI
             LoginViewControl.PasswordBox.Password = string.Empty;
         }
 
-        private void SetVisibleGrid(UIElement visibleControl)
+        private void Registration_Close(object sender, EventArgs e)
         {
-            foreach (var windowPanel in WindowPanels)
-            {
-                if (windowPanel.Equals(visibleControl))
-                {
-                    windowPanel.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    windowPanel.Visibility = Visibility.Hidden;
-                }
-            }
+            LoginViewControl.PasswordBox.Password = string.Empty;
+            RegistrationViewControl.Visibility = Visibility.Hidden;
         }
 
         private void AppButtonClick(object sender, RoutedEventArgs e)
@@ -182,7 +173,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void Login_OnRegistrationClick(object o, EventArgs e)
         {
-            SetVisibleGrid(RegistrationViewControl);
+            RegistrationViewControl.Visibility = Visibility.Visible;
         }
 
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)

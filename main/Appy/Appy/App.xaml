@@ -168,7 +168,7 @@
                         <Grid>
                             <StackPanel Orientation="Horizontal" >
                                 <Image Name="BackImage" VerticalAlignment="Bottom" HorizontalAlignment="Left" Source="UI\Images\back.png" Width="30" />
-                                <TextBlock Name="BackText" Margin="8,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Center" >Back to My Apps</TextBlock>
+                                <TextBlock Name="BackText" Margin="8,0,0,0" HorizontalAlignment="Left" Foreground="{StaticResource DisabledColor}" Style="{StaticResource TextStyle}" VerticalAlignment="Center" >Back to Log In</TextBlock>
                             </StackPanel>
                         </Grid>
                         <ControlTemplate.Triggers>
