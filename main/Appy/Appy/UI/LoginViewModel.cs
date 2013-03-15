@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using AppDirect.WindowsClient.Properties;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -7,7 +8,7 @@ namespace AppDirect.WindowsClient.UI
     {
         private Visibility _isVisible = Visibility.Collapsed;
         private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
-        private string _loginHeaderText = Properties.Resources.LoginHeaderDefault;
+        private string _loginHeaderText = Settings.Default.LoginRequiredForUse ? Properties.Resources.LoginHeaderLoginRequired : Properties.Resources.LoginHeaderDefault;
 
         public Visibility IsVisible
         {
@@ -18,7 +19,12 @@ namespace AppDirect.WindowsClient.UI
                 NotifyPropertyChanged("IsVisible");
             }
         }
-        
+
+        public Visibility BackButtonVisibility
+        {
+            get { return Settings.Default.LoginRequiredForUse ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
         public string LoginFailedMessage
         {
             get { return _loginFailedMessage; }
@@ -62,6 +68,14 @@ namespace AppDirect.WindowsClient.UI
             }
 
             return false;
+        }
+
+        public void SetVisibility(bool isLoggedIn)
+        {
+            if (Settings.Default.LoginRequiredForUse)
+            {
+                IsVisible = isLoggedIn ? Visibility.Collapsed : Visibility.Visible;
+            }
         }
     }
 }

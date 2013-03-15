@@ -38,6 +38,7 @@ namespace AppDirect.WindowsClient.UI
         public LoginView()
         {
             InitializeComponent();
+            SetFocusField();
         }
         
         private void LoginFailed()

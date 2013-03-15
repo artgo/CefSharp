@@ -122,9 +122,7 @@ namespace AppDirect.WindowsClient.UI
                     if (!clickedApp.Application.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                     {
                         ViewModel.LoginViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
-
-                        SetVisibleGrid(LoginViewControl);
-                        LoginViewControl.SetFocusField();
+                        ViewModel.LoginViewModel.IsVisible = Visibility.Visible;
                     }
                     else
                     {

@@ -35,7 +35,7 @@ namespace AppDirect.WindowsClient.UI
         
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
-        private bool _isLogged = ServiceLocator.LocalStorage.HasCredentials;
+        private bool _isLoggedIn = ServiceLocator.LocalStorage.HasCredentials;
 
         public string VersionString
         {
@@ -102,11 +102,12 @@ namespace AppDirect.WindowsClient.UI
 
         public bool IsLoggedIn
         {
-            get { return _isLogged; }
+            get { return _isLoggedIn; }
             set
             {
-                _isLogged = value;
+                _isLoggedIn = value;
                 NotifyPropertyChanged("IsLoggedIn");
+                LoginViewModel.SetVisibility(_isLoggedIn);
             }
         }
 
@@ -139,6 +140,14 @@ namespace AppDirect.WindowsClient.UI
         public ObservableCollection<ApplicationViewModel> SuggestedApplications { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public MainViewModel()
+        {
+            if (Settings.Default.LoginRequiredForUse)
+            {
+                LoginViewModel.SetVisibility(IsLoggedIn);
+            }
+        }
         
         public void SyncAppsWithApi()
         {
@@ -204,13 +213,16 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.LastSuggestedApps.RemoveAll(
                     a => ServiceLocator.LocalStorage.AllInstalledApplications.Contains(a));
 
-                var missingLocalApps =
-                    LocalApplications.LocalApplicationsList.Except(ServiceLocator.LocalStorage.LastSuggestedApps)
-                                     .Except(ServiceLocator.LocalStorage.AllInstalledApplications)
-                                     .ToList();
+                if (!Settings.Default.LoginRequiredForUse)
+                {
+                    var missingLocalApps =
+                        LocalApplications.LocalApplicationsList.Except(ServiceLocator.LocalStorage.LastSuggestedApps)
+                                         .Except(ServiceLocator.LocalStorage.AllInstalledApplications)
+                                         .ToList();
 
-                ServiceLocator.LocalStorage.LastSuggestedApps.AddRange(missingLocalApps);
-
+                    ServiceLocator.LocalStorage.LastSuggestedApps.AddRange(missingLocalApps); 
+                }
+                
                 MyApplications =
                     new ObservableCollection<ApplicationViewModel>();
                 SuggestedApplications =
