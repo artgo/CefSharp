@@ -143,10 +143,7 @@ namespace AppDirect.WindowsClient.UI
 
         public MainViewModel()
         {
-            if (Settings.Default.LoginRequiredForUse)
-            {
-                LoginViewModel.SetVisibility(IsLoggedIn);
-            }
+            LoginViewModel.SetVisibility(IsLoggedIn);
         }
         
         public void SyncAppsWithApi()
@@ -212,17 +209,7 @@ namespace AppDirect.WindowsClient.UI
 
                 ServiceLocator.LocalStorage.LastSuggestedApps.RemoveAll(
                     a => ServiceLocator.LocalStorage.AllInstalledApplications.Contains(a));
-
-                if (!Settings.Default.LoginRequiredForUse)
-                {
-                    var missingLocalApps =
-                        LocalApplications.LocalApplicationsList.Except(ServiceLocator.LocalStorage.LastSuggestedApps)
-                                         .Except(ServiceLocator.LocalStorage.AllInstalledApplications)
-                                         .ToList();
-
-                    ServiceLocator.LocalStorage.LastSuggestedApps.AddRange(missingLocalApps); 
-                }
-                
+               
                 MyApplications =
                     new ObservableCollection<ApplicationViewModel>();
                 SuggestedApplications =
@@ -291,7 +278,7 @@ namespace AppDirect.WindowsClient.UI
                             ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
 
-                    apiSuggestedApps.RemoveAll(a => !a.Price.Contains("Free"));
+                    apiSuggestedApps.RemoveAll(a => a.Price != null && !a.Price.Contains("Free"));
 
                     var displayedApps = SuggestedApplications.Select(a => a.Application).ToList();
 

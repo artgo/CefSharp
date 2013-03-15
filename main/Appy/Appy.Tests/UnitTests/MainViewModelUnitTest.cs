@@ -4,6 +4,7 @@ using System.Linq;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
+using AppDirect.WindowsClient.Properties;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using AppDirect.WindowsClient.Updates;
@@ -28,6 +29,13 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
                 new Application {IsLocalApp = false, Id = "AppDirectApplicationId3", Name = "FakeApp3"}
             };
         
+        private readonly List<Application> _suggestedApplications = new List<Application>()
+            {
+                new Application {IsLocalApp = true, Id = "AppDirectApplicationId", Name = "FakeApp4"},
+                new Application {IsLocalApp = false, Id = "AppDirectApplicationId2", Name = "FakeApp5"},
+                new Application {IsLocalApp = false, Id = "AppDirectApplicationId3", Name = "FakeApp6"}
+            };
+
         [TestFixtureSetUp]
         public void SetUpForTests()
         {
@@ -36,6 +44,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             var localStorage = new LocalStorage();
 
             cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
+
+            cachedAppDirectApiMock.SuggestedApps.Returns(_suggestedApplications);
 
             var kernel = ServiceLocator.Kernel;
             kernel.Rebind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
@@ -48,15 +58,17 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             ServiceLocator.LocalStorage.ClearAllStoredData();
             _mainViewModel = new MainViewModel();
             _mainViewModel.InitializeAppsLists();
+            _mainViewModel.SyncAppsWithApi();
         }
         
         #region Constructor Tests
 
         [Test]
-        public void SuggestedApplicationsContainsAllLocalApps()
+        public void SuggestedApplicationsContainsNoLocalApps()
         {
             InitializeTests();
-            Assert.AreEqual(LocalApplications.LocalApplicationsList, _mainViewModel.SuggestedApplications.Select(a => a.Application));
+            var intersect = _mainViewModel.SuggestedApplications.Select(a => a.Application).Intersect(LocalApplications.LocalApplicationsList);
+            Assert.IsEmpty(intersect);
         }
 
         [Test]
