@@ -1,13 +1,12 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Properties;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
-using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.Properties;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -22,7 +21,7 @@ namespace AppDirect.WindowsClient.UI
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private Visibility _updateSpinnerVisibility = Visibility.Hidden;
-        
+
         private Visibility _updateAvailableVisibility = ServiceLocator.LocalStorage.UpdateDownloaded
                                                             ? Visibility.Visible
                                                             : Visibility.Collapsed;
@@ -32,7 +31,7 @@ namespace AppDirect.WindowsClient.UI
                                            : Properties.Resources.GetUpdateString;
 
         private bool _registrationInProgress = false;
-        
+
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
         private bool _isLoggedIn = ServiceLocator.LocalStorage.HasCredentials;
@@ -54,7 +53,7 @@ namespace AppDirect.WindowsClient.UI
                 NotifyPropertyChanged("UpdateString");
             }
         }
-        
+
         public Visibility UpdateSpinnerVisibility
         {
             get { return _updateSpinnerVisibility; }
@@ -80,7 +79,7 @@ namespace AppDirect.WindowsClient.UI
                 NotifyPropertyChanged("UpdateAvailableVisibility");
             }
         }
-        
+
         public Visibility VerifyEmailVisibility
         {
             get
@@ -128,7 +127,7 @@ namespace AppDirect.WindowsClient.UI
 
         public string SuggestedAppsLoadError
         {
-            get { return _suggestedAppsLoadError;}
+            get { return _suggestedAppsLoadError; }
             set
             {
                 _suggestedAppsLoadError = value;
@@ -137,6 +136,7 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public ObservableCollection<ApplicationViewModel> MyApplications { get; set; }
+
         public ObservableCollection<ApplicationViewModel> SuggestedApplications { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -145,7 +145,7 @@ namespace AppDirect.WindowsClient.UI
         {
             LoginViewModel.SetVisibility(IsLoggedIn);
         }
-        
+
         public void SyncAppsWithApi()
         {
             SyncMyApplications();
@@ -209,7 +209,7 @@ namespace AppDirect.WindowsClient.UI
 
                 ServiceLocator.LocalStorage.LastSuggestedApps.RemoveAll(
                     a => ServiceLocator.LocalStorage.AllInstalledApplications.Contains(a));
-               
+
                 MyApplications =
                     new ObservableCollection<ApplicationViewModel>();
                 SuggestedApplications =
@@ -218,7 +218,7 @@ namespace AppDirect.WindowsClient.UI
                 foreach (var installedApps in ServiceLocator.LocalStorage.AllInstalledApplications.Take(MyAppDisplayLimit))
                 {
                     MyApplications.Add(new ApplicationViewModel(installedApps));
-                } 
+                }
 
                 foreach (var lastSuggestedApp in ServiceLocator.LocalStorage.LastSuggestedApps)
                 {
@@ -237,7 +237,7 @@ namespace AppDirect.WindowsClient.UI
                 {
                     apiApps = ServiceLocator.CachedAppDirectApi.MyApps.ToList();
                 }
-                
+
                 var displayedApps = MyApplications.Select(a => a.Application).ToList();
 
                 var newApps = apiApps.Except(displayedApps).ToList();
@@ -277,7 +277,6 @@ namespace AppDirect.WindowsClient.UI
                         ServiceLocator.CachedAppDirectApi.SuggestedApps.Except(
                             ServiceLocator.LocalStorage.AllInstalledApplications).ToList();
 
-
                     apiSuggestedApps.RemoveAll(a => a.Price != null && !a.Price.Contains("Free"));
 
                     var displayedApps = SuggestedApplications.Select(a => a.Application).ToList();
@@ -316,13 +315,11 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (application.IsLocalApp)
                 {
-
                     ServiceLocator.LocalStorage.InstalledLocalApps.Add(application);
                 }
 
                 else
                 {
-
                     ServiceLocator.LocalStorage.InstalledAppDirectApps.Add(application);
                 }
 
@@ -333,7 +330,7 @@ namespace AppDirect.WindowsClient.UI
             }
 
             Helper.PerformInUiThread(() => MyApplications.Add(applicationViewModel));
-            
+
             if (ApplicationAddedNotifier != null)
             {
                 ApplicationAddedNotifier(applicationViewModel, null);
@@ -360,7 +357,7 @@ namespace AppDirect.WindowsClient.UI
             }
 
             Helper.PerformInUiThread(() => MyApplications.Remove(applicationViewModel));
-            
+
             if (ApplicationRemovedNotifier != null)
             {
                 ApplicationRemovedNotifier(applicationViewModel, null);
@@ -443,7 +440,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void ResetUpdateText()
         {
-            UpdateString =  ServiceLocator.LocalStorage.UpdateDownloaded
+            UpdateString = ServiceLocator.LocalStorage.UpdateDownloaded
                                          ? Properties.Resources.InstallUpdateString
                                          : Properties.Resources.GetUpdateString;
         }
