@@ -450,7 +450,7 @@ namespace AppDirect.WindowsClient.UI
             MessageBox.Show(VersionString);
         }
 
-        public void LogInClicked()
+        public void LogInLogOutClicked()
         {
             if (IsLoggedIn)
             {

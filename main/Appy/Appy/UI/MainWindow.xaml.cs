@@ -144,9 +144,9 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void LogInButtonClick(object sender, RoutedEventArgs e)
+        private void LogInLogOutButtonClick(object sender, RoutedEventArgs e)
         {
-            ViewModel.LogInClicked();
+            ViewModel.LogInLogOutClicked();
         }
 
         public void UpdateAvailable(bool updateAvailable)

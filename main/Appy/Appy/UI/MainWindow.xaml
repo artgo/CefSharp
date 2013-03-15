@@ -503,7 +503,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button Name="MyAppsButton" Grid.Column="0" Style="{StaticResource MyAppsButton}" />
-                <Button Name="LogInButton" Click="LogInButtonClick" Grid.Column="1"
+                <Button Name="LogInLogOutButton" Click="LogInLogOutButtonClick" Grid.Column="1"
                         Style="{StaticResource LogInButton}" />
                 <Button Name="AlertsButton" Grid.Column="1" Style="{StaticResource AlertsButton}" Visibility="{Binding VerifyEmailVisibility}" />
                 <Menu Name="SettingsMenu" Background="Transparent" Grid.Column="4" VerticalAlignment="Center"
