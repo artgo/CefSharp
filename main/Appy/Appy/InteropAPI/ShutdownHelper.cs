@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace AppDirect.WindowsClient.InteropAPI
 {
@@ -37,13 +38,8 @@ namespace AppDirect.WindowsClient.InteropAPI
         private void DoShutdown()
         {
             TaskbarApi.Cleanup();
-			Application.Current.Dispatcher.Invoke(new System.Action<Application>((_) => { Application.Current.Shutdown(); }), Application.Current);
-			var ver = System.Environment.OSVersion.Version;
-			if (ver.Major >= 6 && ver.Minor >= 2)	// win8
-			{
-				// force shutdown due to it structs with win8 tablets
-				System.Diagnostics.Process.GetCurrentProcess().Kill();
-			}
+            Application.Current.Dispatcher.Invoke(new System.Action<Application>((_) => Application.Current.Shutdown()), Application.Current);
+            Environment.Exit(0);
         }
 
         public bool Shutdown()
