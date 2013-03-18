@@ -18,9 +18,6 @@
 
 !searchparse /file version.txt '' VERSION_SHORT
 
-; Request application privileges for Windows Vista
-RequestExecutionLevel admin
-
 AutoCloseWindow true
 ;--------------------------------
 

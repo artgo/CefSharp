@@ -27,6 +27,9 @@ InstallDirRegKey HKCU "${REGISTRYPATH}" "Install_Dir"
 ;Languages
 !insertmacro MUI_LANGUAGE "English"
 ;--------------------------------
+; Request application privileges for Windows Vista
+RequestExecutionLevel admin
+
 ;Version Information
 VIProductVersion "${VERSION_SHORT}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "${APPNAME}"
@@ -218,6 +221,9 @@ Function .onInstSuccess
   Exec "${APPEXEPATH}"
 FunctionEnd
 
-Function .onInit
+Function .onInit 
+  Push $4
+  StrCpy $4 0
   !insertmacro CloseApplicationIfRunning
+  Pop $4
 FunctionEnd 
