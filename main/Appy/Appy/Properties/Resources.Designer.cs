@@ -61,7 +61,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Catalist Version: .
+        ///   Looks up a localized string similar to {0} Version: .
         /// </summary>
         internal static string AboutString {
             get {
@@ -75,6 +75,15 @@ namespace AppDirect.WindowsClient.Properties {
         internal static string ApplicationExe {
             get {
                 return ResourceManager.GetString("ApplicationExe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AppDirect Windows Client.
+        /// </summary>
+        internal static string ApplicationName {
+            get {
+                return ResourceManager.GetString("ApplicationName", resourceCulture);
             }
         }
         
@@ -93,6 +102,15 @@ namespace AppDirect.WindowsClient.Properties {
         internal static string CheckingForUpdatesString {
             get {
                 return ResourceManager.GetString("CheckingForUpdatesString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is it okay if {0} closes for a minute while it updates?.
+        /// </summary>
+        internal static string CloseForUpdatesString {
+            get {
+                return ResourceManager.GetString("CloseForUpdatesString", resourceCulture);
             }
         }
         

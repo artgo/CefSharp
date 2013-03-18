@@ -118,16 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutString" xml:space="preserve">
-    <value>Catalist Version: </value>
+    <value>{0} Version: </value>
   </data>
   <data name="ApplicationExe" xml:space="preserve">
     <value>Appy.exe</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>AppDirect Windows Client</value>
   </data>
   <data name="BaseAppStoreUrl" xml:space="preserve">
     <value>https://test.appdirect.com</value>
   </data>
   <data name="CheckingForUpdatesString" xml:space="preserve">
     <value>Checking for updates</value>
+  </data>
+  <data name="CloseForUpdatesString" xml:space="preserve">
+    <value>Is it okay if {0} closes for a minute while it updates?</value>
   </data>
   <data name="CredentialsProblemError" xml:space="preserve">
     <value>Incorrect Username or Password</value>
