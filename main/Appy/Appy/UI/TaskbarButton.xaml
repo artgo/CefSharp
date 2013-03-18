@@ -26,9 +26,9 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border BorderThickness="1" BorderBrush="DimGray">
-                            <Grid>
+                            <Grid ToolTip="{Binding Application.Name}">
                                 <Image Name="Icon" Source="{Binding Application.LocalImagePath}" ></Image>
-                                 <Image Name="HighlightMask" Source="Images\TaskBarHoverMask.png" Visibility="Hidden"/>
+                                <Image Name="HighlightMask" Source="Images\TaskBarHoverMask.png" Visibility="Hidden"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
