@@ -6,10 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows;
 using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.Properties;
 using AppDirect.WindowsClient.Storage;
 
@@ -47,6 +49,7 @@ namespace AppDirect.WindowsClient.Updates
             return false;
         }
 
+
         /// <summary>
         /// Attempts to run updater.  If the process can not be started (Process.Start throws an exception) or the process starts successfully, the value of the UpdateDownloaded switch is set to false
         /// </summary>
@@ -56,17 +59,11 @@ namespace AppDirect.WindowsClient.Updates
         {
             try
             {
-                ProcessStartInfo start = new ProcessStartInfo();
-                start.FileName = UpdaterExeFileName;
-
-                start.WindowStyle = ProcessWindowStyle.Hidden;
-                start.CreateNoWindow = true;
-
-                if (System.Environment.OSVersion.Version.Major >= 6)
-                {
-                    start.Verb = "runas";
-                }
-                Process.Start(start);
+                Process updater = new Process();
+                updater.StartInfo.FileName = UpdaterExeFileName;
+                updater.StartInfo.UseShellExecute = true;
+                updater.Start();
+                
             }
             catch (Exception e)
             {

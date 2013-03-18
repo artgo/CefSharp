@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using AppDirect.WindowsClient.UI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.API
@@ -168,6 +170,50 @@ namespace AppDirect.WindowsClient.API
             {
                 Thread.Sleep(remainingTime);
             }
+        }
+
+        public static bool PerformWhenIdle(Action action, TimeSpan idleTimeRequired, TimeSpan intervalBetweenIdleCheck, TimeSpan timeout)
+        {
+            var startTicks = Environment.TickCount;
+
+            while (Environment.TickCount - startTicks < timeout.TotalMilliseconds)
+            {
+                var idleSeconds = GetIdleSeconds();
+                if (idleSeconds > idleTimeRequired.TotalSeconds)
+                {
+                    try
+                    {
+                        action.Invoke();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        break;
+                    }
+                }
+
+                Thread.Sleep(intervalBetweenIdleCheck);
+            }
+
+            return false;
+        }
+
+        private static int GetIdleSeconds()
+        {
+            int idleTime = 0;
+            LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
+            lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
+            lastInputInfo.dwTime = 0;
+
+            int envTicks = Environment.TickCount;
+
+            if (User32Dll.GetLastInputInfo(ref lastInputInfo))
+            {
+                uint lastInputTick = lastInputInfo.dwTime;
+                idleTime = envTicks - (int)lastInputTick;
+            }
+
+            return ((idleTime > 0) ? (idleTime / 1000) : 0);
         }
     }
 }

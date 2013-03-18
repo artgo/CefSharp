@@ -212,7 +212,7 @@
     <Compile Include="API\CachedAppDirectApi.cs" />
     <Compile Include="UI\MainViewModel.cs" />
     <Compile Include="UI\WaterMarkTextHelper.cs" />
-    <Compile Include="UpdateDownloader.cs" />
+    <Compile Include="UpdateManager.cs" />
     <Compile Include="Updates\Updater.cs" />
   </ItemGroup>
   <ItemGroup>

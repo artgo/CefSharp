@@ -63,6 +63,17 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct LASTINPUTINFO
+    {
+        public static readonly int SizeOf = Marshal.SizeOf(typeof(LASTINPUTINFO));
+
+        [MarshalAs(UnmanagedType.U4)]
+        public UInt32 cbSize;
+        [MarshalAs(UnmanagedType.U4)]
+        public UInt32 dwTime;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct MARGINS
     {
         public MARGINS(int Left, int Right, int Top, int Bottom)
@@ -2185,6 +2196,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         [DllImport(User32DllName, CharSet = CharSet.Auto)]
         public static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll")]
+        public static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
         [DllImport(User32DllName, CharSet = CharSet.Auto)]
         public static extern uint SendMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
