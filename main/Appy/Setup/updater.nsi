@@ -7,7 +7,7 @@
 Name "updater"
 
 ; The file to write
-!define OUTFILE "next.exe"
+!define OUTFILE "updater.exe"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
