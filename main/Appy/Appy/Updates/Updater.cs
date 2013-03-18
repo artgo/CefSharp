@@ -19,7 +19,7 @@ namespace AppDirect.WindowsClient.Updates
 {
     public class Updater
     {
-        public static readonly string UpdaterExeFileName = "next.exe";
+        public static readonly string UpdaterExeFileName = "updater.exe";
         public const double RetryInterval = 15d;
         private const int RetryUpdatesLimit = 3;
 
@@ -60,7 +60,7 @@ namespace AppDirect.WindowsClient.Updates
             try
             {
                 Process updater = new Process();
-                updater.StartInfo.FileName = "kklk.exe";
+                updater.StartInfo.FileName = UpdaterExeFileName;
                 updater.StartInfo.UseShellExecute = true;
                 updater.Start();
                 
