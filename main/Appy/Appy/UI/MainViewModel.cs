@@ -40,7 +40,7 @@ namespace AppDirect.WindowsClient.UI
         {
             get
             {
-                return Properties.Resources.AboutString + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                return String.Format(Resources.AboutString + Assembly.GetExecutingAssembly().GetName().Version, Resources.ApplicationName);
             }
         }
 
@@ -409,7 +409,16 @@ namespace AppDirect.WindowsClient.UI
         {
             if (ServiceLocator.LocalStorage.UpdateDownloaded)
             {
-                ServiceLocator.Updater.InstallUpdates();
+                string message = String.Format(Resources.CloseForUpdatesString, Resources.ApplicationName);
+
+                string caption = Resources.ApplicationName + " Updater";
+
+                var messageBoxResult = MessageBox.Show(message, caption, MessageBoxButton.YesNo);
+
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    ServiceLocator.Updater.InstallUpdates();
+                }
             }
             else
             {

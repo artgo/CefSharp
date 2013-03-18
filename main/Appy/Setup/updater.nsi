@@ -17,6 +17,7 @@ SilentInstall silent
 ;--------------------------------
 
 ; Pages
+RequestExecutionLevel user
 
 ;--------------------------------
 
@@ -36,7 +37,7 @@ SectionEnd
 
 Function .onInit
   Push $4
-  StrCpy $4 1
+  StrCpy $4 0
   !insertmacro CloseApplicationIfRunning
   Pop $4
 FunctionEnd
