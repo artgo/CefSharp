@@ -40,7 +40,7 @@ namespace AppDirect.WindowsClient.UI
         {
             get
             {
-                return Properties.Resources.AboutString + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                return String.Format(Resources.AboutString + Assembly.GetExecutingAssembly().GetName().Version, Resources.ApplicationName);
             }
         }
 
