@@ -1779,7 +1779,35 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
       public int cx;
       public int cy;
       public uint flags;
-    } 
+    }
+
+    public enum ChangeWindowMessageFilterFlags : uint
+    {
+        Add = 1,
+        Remove = 2
+    }
+
+    public enum MessageFilterInfo : uint
+    {
+        None = 0,
+        AlreadyAllowed = 1,
+        AlreadyDisAllowed = 2,
+        AllowedHigher = 3
+    }
+
+    public enum ChangeWindowMessageFilterExAction : uint
+    {
+        Reset = 0,
+        Allow = 1,
+        DisAllow = 2
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CHANGEFILTERSTRUCT
+    {
+        public uint size;
+        public MessageFilterInfo info;
+    }
 
     public enum WindowsHitTestConstants : int
     {
@@ -2316,6 +2344,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         [DllImport(User32DllName)]
         public static extern bool UpdateWindow(IntPtr hWnd);
+
+        [DllImport(User32DllName)]
+        public static extern bool ChangeWindowMessageFilter(uint msg, ChangeWindowMessageFilterFlags flags);
+
+        [DllImport(User32DllName, SetLastError = true)]
+        public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
     }	// class User32Dll
 
     public class Kernel32Dll

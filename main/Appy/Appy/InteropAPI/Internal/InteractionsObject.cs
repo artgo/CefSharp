@@ -117,6 +117,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
             _updateMessageId = NativeDll.GetUpdatePositionMsg();
             _dllUnloadMessageId = NativeDll.GetExitMsg();
+            var availableMessages = new[] {_closeMessageId, _updateMessageId, _dllUnloadMessageId};
 
             var pos = CalculateButtonPosition();
 
@@ -165,6 +166,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 _shutdownStarted = false;
                 _isShutdown = false;
+            }
+
+            foreach (var availableMessage in availableMessages)
+            {
+                var filterStatus = new CHANGEFILTERSTRUCT();
+                filterStatus.size = (uint)Marshal.SizeOf(filterStatus);
+                filterStatus.info = 0;
+                // Allow this window to receive the message
+                User32Dll.ChangeWindowMessageFilterEx(_hwndSource.Handle, availableMessage, ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
             }
 
             NativeDll.InjectExplrorerExe();
