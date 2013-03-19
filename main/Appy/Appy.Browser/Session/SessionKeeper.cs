@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using Gecko;
+using AppDirect.WindowsClient.Browser.Control;
 
 namespace AppDirect.WindowsClient.Browser.Session
 {
@@ -11,7 +11,7 @@ namespace AppDirect.WindowsClient.Browser.Session
     {
         private static readonly TimeSpan TimeBetweenUpdates = TimeSpan.FromMinutes(10);
         private readonly Thread _updaterThread;
-        private readonly GeckoWebBrowser _browser = new GeckoWebBrowser();
+        private readonly WpfCefBrowser _browser = new WpfCefBrowser();
         private readonly string _url = null;
 
         public SessionKeeper(string url)
@@ -43,7 +43,7 @@ namespace AppDirect.WindowsClient.Browser.Session
 
         private void ReloadSession()
         {
-            _browser.Navigate(_url);
+            _browser.NavigateTo(_url);
         }
 
         public void Stop()
