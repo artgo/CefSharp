@@ -2,7 +2,7 @@
 !include "MUI.nsh"
 !include "InstallerShared.nsh"
 
-Name "Uninstaller"
+Name "${AppName}"
 
 ; The file to write
 !define OUTFILE "build_uninstaller.exe"
@@ -18,6 +18,7 @@ OutFile "${OUTFILE}"
 ;Languages
 !insertmacro MUI_LANGUAGE "English"
 
+RequestExecutionLevel user
 
 ; The default installation directory
 InstallDir $EXEDIR
@@ -63,6 +64,8 @@ Section "Uninstall"
 SectionEnd
 
 Function un.onInit
-  Exec "taskkill /f /t /im ${APPEXE}"
-  !insertmacro WaitForDead
-FunctionEnd
+  Push $4
+  StrCpy $4 0
+  !insertmacro CloseApplicationIfRunning
+  Pop $4
+FunctionEnd 
