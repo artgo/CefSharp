@@ -44,6 +44,7 @@ done:
     Abort
   gogogo:
   SendMessage $0 $3 0 0
+  Sleep 1500
   !insertmacro WaitForDead
   ${EndIf}
 !macroend
