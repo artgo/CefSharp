@@ -38,6 +38,6 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Button Name="AppButton" Style="{StaticResource DeskbandButtonStyle}" Click="TaskbarButton_Click">
+    <Button Name="AppButton" Style="{StaticResource DeskbandButtonStyle}" Click="TaskbarButton_Click" PreviewMouseLeftButtonDown ="TaskbarButton_DoubleClick">
     </Button>
 </UserControl>
