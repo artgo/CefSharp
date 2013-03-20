@@ -37,30 +37,17 @@ SectionEnd
 
 ; Uninstaller
 Section "Uninstall"
-  
   ; Remove registry keys
   DeleteRegKey HKCU "${REGSTR}"
   DeleteRegKey HKCU ${REGISTRYPATH}
 
-  ; Remove files and uninstaller
-  Delete "${APPDIR}\ApplicationData\*.*"
-  Delete "${APPDIR}\components\*.*"
-  Delete "${APPDIR}\dictionaries\*.*"
-  Delete "${APPDIR}\*.*"
-  
   ; Remove shortcuts, if any
-  Delete "$SMPROGRAMS\${APPNAME}\*.*"
   Delete "$SMPROGRAMS\${APPNAME}.lnk"
   Delete "$SMSTARTUP\${APPNAME}.lnk"
 
   ; Remove directories used
-  
-  RMDir "$SMPROGRAMS\${APPNAME}"
-  RMDir "${APPDIR}\ApplicationData"
-  RMDir "${APPDIR}\components"
-  RMDir "${APPDIR}\dictionaries"
-  RMDir "${APPDIR}"
-
+  RMDir /r "$SMPROGRAMS\${APPNAME}"
+  RMDir /r "${APPDIR}"
 SectionEnd
 
 Function un.onInit
