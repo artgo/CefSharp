@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,7 +14,6 @@ namespace AppDirect.WindowsClient.Browser.UI
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
             ViewModel = browserViewModel;
-            DataContext = ViewModel;
 
             InitializeComponent();
             if ((ViewModel != null) && (ViewModel.Application != null))
@@ -23,8 +21,9 @@ namespace AppDirect.WindowsClient.Browser.UI
                 browser.StartUrl = ViewModel.Application.UrlString;
             }
 
-            Width = browserViewModel.Application.BrowserWidth ;
+            Width = browserViewModel.Application.BrowserWidth;
             Height = browserViewModel.Application.BrowserHeight;
+            TitleTextBlock.Text = browserViewModel.Application.Name;
         }
 
         protected override void OnClosed(EventArgs e)
