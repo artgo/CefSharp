@@ -16,13 +16,14 @@ namespace AppDirect.WindowsClient.Browser.UI
             ViewModel = browserViewModel;
 
             InitializeComponent();
-
             if ((ViewModel != null) && (ViewModel.Application != null))
             {
-                var url = ViewModel.Application.UrlString;
-                addressTextBox.Text = url;
-                browser.StartUrl = url;
+                browser.StartUrl = ViewModel.Application.UrlString;
             }
+
+            Width = browserViewModel.Application.BrowserWidth;
+            Height = browserViewModel.Application.BrowserHeight;
+            TitleTextBlock.Text = browserViewModel.Application.Name;
         }
 
         protected override void OnClosed(EventArgs e)
@@ -31,11 +32,45 @@ namespace AppDirect.WindowsClient.Browser.UI
             base.OnClosed(e);
         }
 
-        private void addressTextBox_KeyDown_1(object sender, KeyEventArgs e)
+        private void Back_Click(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Return)
+            browser.GoBack();
+        }
+
+        private void Forward_Click(object sender, RoutedEventArgs e)
+        {
+            browser.GoForward();
+        }
+
+        private void Minimize_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void Maximize_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Maximized;
+            Maximize.Visibility = Visibility.Hidden;
+            RestoreDown.Visibility = Visibility.Visible;
+        }
+
+        private void RestoreDown_OnClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Normal;
+            RestoreDown.Visibility = Visibility.Hidden;
+            Maximize.Visibility = Visibility.Visible;
+        }
+
+        public void Close_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
             {
-                browser.NavigateTo(addressTextBox.Text);
+                DragMove();
             }
         }
     }
