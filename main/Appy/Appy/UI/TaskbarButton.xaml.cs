@@ -14,11 +14,10 @@ namespace AppDirect.WindowsClient.UI
     {
         public string Id { get; set; }
 
-        private const int LargeIconSize = 28;
-        private const int SmallIconSize = 18;
+        private const int LargeIconSize = 30;
+        private const int SmallIconSize = 20;
 
-        private const int HorizontalMargin = 6;
-        private const int VerticalMargin = 6;
+        private const int MarginSize = 6;
 
         public EventHandler PinToTaskbarClickNotifier;
         public EventHandler UninstallClickNotifier;
@@ -68,8 +67,8 @@ namespace AppDirect.WindowsClient.UI
                         AppButton.Height = SmallIconSize;
                     }
 
-                    Width = AppButton.Width + HorizontalMargin;
-                    Height = AppButton.Height + VerticalMargin;
+                    Width = AppButton.Width + MarginSize;
+                    Height = AppButton.Height + MarginSize;
                 });
         }
     }
