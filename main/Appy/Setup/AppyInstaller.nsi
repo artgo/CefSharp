@@ -2,7 +2,6 @@
 ;--------------------------------
 !include "MUI.nsh"
 !include "InstallerShared.nsh"
-!include WinMessages.nsh
 ;--------------------------------
 ; The name of the installer
 Name "${APPNAME}"
@@ -27,8 +26,8 @@ InstallDirRegKey HKCU "${REGISTRYPATH}" "Install_Dir"
 ;Languages
 !insertmacro MUI_LANGUAGE "English"
 ;--------------------------------
-; Request application privileges for Windows Vista
-RequestExecutionLevel admin
+; Request application privileges for Windows Vista+
+RequestExecutionLevel user
 
 ;Version Information
 VIProductVersion "${VERSION_SHORT}"
@@ -44,8 +43,8 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION_SHORT}"
 !define MIN_FRA_MINOR "5"
 !define MIN_FRA_BUILD "*"
 !define NETInstaller "dotNetFx35setup.exe"
+
 Section "MS .NET Framework v${MIN_FRA_MAJOR}.${MIN_FRA_MINOR}" SecFramework
-  
  ;Save the variables in case something else is using them
   Push $0
   Push $1
@@ -172,19 +171,14 @@ Section "MS .NET Framework v${MIN_FRA_MAJOR}.${MIN_FRA_MINOR}" SecFramework
   Pop $2
   Pop $1
   Pop $0
- 
 SectionEnd
-
 
 Section "Create directory" Permissions 
    CreateDirectory "$INSTDIR" 
-   AccessControl::EnableFileInheritance "$INSTDIR" 
-   AccessControl::GrantOnFile "$INSTDIR" "(S-1-5-32-545)" "FullAccess" 
 SectionEnd
 
 ; The stuff to install
 Section "Create"
-
   SectionIn RO
   
   SetOutPath $INSTDIR
@@ -208,13 +202,11 @@ Section "Create"
 SectionEnd
 
 Section "Start Menu Shortcuts"
-
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "${UNINSTALLEXEPATH}" "" "${UNINSTALLEXEPATH}" 0
   CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
   CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
   CreateShortCut "$SMSTARTUP\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
-  
 SectionEnd
 
 Function .onInstSuccess
