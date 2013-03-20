@@ -4,11 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             mc:Ignorable="d" 
-             d:DesignHeight="34" d:DesignWidth="34" >
+             mc:Ignorable="d">
     <UserControl.Resources>
-        <sys:Double x:Key="ButtonHeight">28</sys:Double>
-        <sys:Double x:Key="ButtonWidth">28</sys:Double>
         <ContextMenu x:Key="UninstallContextMenu" Style="{StaticResource ContextMenuStyle}">
             <MenuItem Header="Pin to task bar" Style="{StaticResource MenuItem}" IsChecked="{Binding PinnedToTaskbarNotifier}"
                       IsCheckable="True" Click="PinToTaskBarClick" DataContext="{Binding}" />
@@ -16,18 +13,15 @@
                       DataContext="{Binding}" />
         </ContextMenu>
         <Style x:Key="DeskbandButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="Height" Value="{StaticResource ButtonHeight}"/>
-            <Setter Property="Width" Value="{StaticResource ButtonWidth}"/>
-            <Setter Property="Margin" Value="3,3,3,3"></Setter>
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border BorderThickness="1" BorderBrush="DimGray">
                             <Grid ToolTip="{Binding Application.Name}">
-                                <Image Name="Icon" Source="{Binding Application.LocalImagePath}" ></Image>
+                                <Image Name="Icon" Source="{Binding Application.LocalImagePath}"></Image>
                                 <Image Name="HighlightMask" Source="Images\TaskBarHoverMask.png" Visibility="Hidden"/>
                             </Grid>
                         </Border>
