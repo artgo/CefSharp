@@ -89,6 +89,14 @@ namespace AppDirect.WindowsClient.UI
             RegistrationViewControl.Visibility = Visibility.Hidden;
         }
 
+        private void AppButton_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount > 1)
+            {
+                e.Handled = true;
+            }
+        }
+
         private void AppButtonClick(object sender, RoutedEventArgs e)
         {
             Helper.AppButtonClick(sender, e);
@@ -104,29 +112,25 @@ namespace AppDirect.WindowsClient.UI
 
         private void InstallApp_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!e.Handled)
-            {
-                var clickedApp = Helper.GetApplicationFromButtonSender(sender);
+            var clickedApp = Helper.GetApplicationFromButtonSender(sender);
 
-                try
+            try
+            {
+                if (!clickedApp.Application.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
                 {
-                    if (!clickedApp.Application.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
-                    {
-                        ViewModel.LoginViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader, clickedApp.Application.Name);
-                        ViewModel.LoginViewModel.IsVisible = Visibility.Visible;
-                    }
-                    else
-                    {
-                        ViewModel.Install(clickedApp);
-                    }
+                    ViewModel.LoginViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader,
+                                                                             clickedApp.Application.Name);
+                    ViewModel.LoginViewModel.IsVisible = Visibility.Visible;
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message);
+                    ViewModel.Install(clickedApp);
                 }
             }
-
-            e.Handled = true;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         public void UninstallAppClick(object sender, EventArgs e)

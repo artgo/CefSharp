@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.InteropAPI;
 using Application = AppDirect.WindowsClient.Common.API.Application;
@@ -35,6 +36,14 @@ namespace AppDirect.WindowsClient.UI
             Id = applicationViewModel.Application.Id;
 
             ChangeIconSize(iconsSize);
+        }
+
+        private void TaskbarButton_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount > 1)
+            {
+                e.Handled = true;
+            }
         }
 
         private void TaskbarButton_Click(object sender, RoutedEventArgs e)

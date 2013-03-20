@@ -562,7 +562,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Button Style="{StaticResource AppButton}" Click="AppButtonClick" />
+                            <Button Style="{StaticResource AppButton}" Click="AppButtonClick" PreviewMouseLeftButtonDown="AppButton_DoubleClick" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.Resources>
