@@ -1,14 +1,14 @@
 ﻿using System;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests.UI
 {
-    [TestClass]
+    [TestFixture]
     public class TaskbarViewTests
     {
-        [TestMethod]
+        [Test]
         public void Orientation()
         {
             var taskbar = new TaskbarPanel(null);

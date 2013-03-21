@@ -1,10 +1,10 @@
 ﻿using AppDirect.WindowsClient.API;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests.UnitTests
 {
-    [TestClass]
+    [TestFixture]
     public class CachedAppDirectApiUnitTest
     {
         private static ICachedAppDirectApi BuildCachedAppDirectApi()
@@ -19,7 +19,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             return appDirectApi;
         }
 
-        [TestMethod]
+        [Test]
         public void CachedMyAppsCallsMyApps()
         {
             var appDirectApiMock = Substitute.For<IAppDirectApi>();
@@ -28,7 +28,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             var myApps = appDirectApiMock.Received().MyApps;
         }
 
-        [TestMethod]
+        [Test]
         public void CachedSuggestedAppsCallsSuggestedApps()
         {
             var appDirectApiMock = Substitute.For<IAppDirectApi>();
@@ -37,7 +37,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             var myApps = appDirectApiMock.Received().SuggestedApps;
         }
 
-        [TestMethod]
+        [Test]
         public void CachedIsAuthenticatedAppsCallsIsAuthenticated()
         {
             var appDirectApiMock = Substitute.For<IAppDirectApi>();
@@ -46,7 +46,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             var myApps = appDirectApiMock.Received().SuggestedApps;
         }
 
-        [TestMethod]
+        [Test]
         public void CachedAuthenticateCallsAuthenticate()
         {
             var appDirectApiMock = Substitute.For<IAppDirectApi>();
@@ -55,7 +55,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             appDirectApiMock.ReceivedWithAnyArgs().Authenticate("", "");
         }
 
-        [TestMethod]
+        [Test]
         public void CachedUnAuthenticateCallsUnAuthenticate()
         {
             var appDirectApiMock = Substitute.For<IAppDirectApi>();
@@ -64,7 +64,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             appDirectApiMock.ReceivedWithAnyArgs().UnAuthenticate();
         }
 
-        [TestMethod]
+        [Test]
         public void AuthenticationFailsForWrongCredentials()
         {
             var appDirectApi = BuildCachedAppDirectApi();
@@ -72,7 +72,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsFalse(appDirectApi.Authenticate(TestData.TestUsername, "wrong_password"));
         }
 
-        [TestMethod]
+        [Test]
         public void AuthenticationSucceedForRightCredentials()
         {
             var appDirectApi = BuildCachedAppDirectApi();
@@ -80,7 +80,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(appDirectApi.Authenticate(TestData.TestUsername, TestData.TestPassword));
        } 
 
-        [TestMethod]
+        [Test]
         public void MyAppsAreNeverNull()
         {
             var apps = BuildCachedAppDirectApi().MyApps;
@@ -88,7 +88,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsNotNull(apps);
         }
 
-        [TestMethod]
+        [Test]
         public void IsNotAuthenticatedByDefault()
         {
             var authenticated = BuildCachedAppDirectApi().IsAuthenticated;
@@ -96,7 +96,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsFalse(authenticated);
         }
 
-        [TestMethod]
+        [Test]
         public void IsAuthenticatedAfterAuthentication()
         {
             var appDirectApi = BuildCachedAppDirectApiAuthenticated();
@@ -105,7 +105,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(authenticated);
         }
 
-        [TestMethod]
+        [Test]
         public void IsAuthenticatedAfterAuthenticationWithNoApps()
         {
             var appDirectApi = BuildCachedAppDirectApi();
@@ -115,7 +115,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(authenticated);
         }
 
-        [TestMethod]
+        [Test]
         public void SomeMyAppsAreThereAfterAuthentication()
         {
             var appDirectApi = BuildCachedAppDirectApiAuthenticated();
@@ -124,7 +124,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(apps.Count > 0);
         }
 
-        [TestMethod]
+        [Test]
         public void DataIsReturnedForSuggestedApps()
         {
             var apps = BuildCachedAppDirectApi().SuggestedApps;
@@ -132,7 +132,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsNotNull(apps);
         }
 
-        [TestMethod]
+        [Test]
         public void ReturnedSizeForMyAppsIsLessThan11()
         {
             var apps = BuildCachedAppDirectApi().MyApps;
@@ -140,7 +140,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(apps.Count < 11);
         }
 
-        [TestMethod]
+        [Test]
         public void ReturnedSizeForSuggestedAppsIsLessThan11()
         {
             var apps = BuildCachedAppDirectApi().SuggestedApps;

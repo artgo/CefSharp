@@ -1,12 +1,12 @@
 ﻿using AppDirect.WindowsClient.API;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests.UnitTests
 {
-    [TestClass]
+    [TestFixture]
     public class AppDirectApiUnitTest
     {
-        [TestMethod]
+        [Test]
         public void DataIsNullForMyAppsNonAuthenticated()
         {
             var apps = new AppDirectApi().MyApps;
@@ -14,7 +14,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsNull(apps);
         }
 
-        [TestMethod]
+        [Test]
         public void DataIsReturnedForSuggestedApps()
         {
             var apps = new AppDirectApi().SuggestedApps;
@@ -22,13 +22,13 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsNotNull(apps);
         }
 
-        [TestMethod]
+        [Test]
         public void IsAuthenticatedReturnsFalseByDefault()
         {
             Assert.IsFalse(new AppDirectApi().IsAuthenticated);
         }
 
-        [TestMethod]
+        [Test]
         public void IsAuthenticatedReturnsTrueIfAuthenticated()
         {
             var api = new AppDirectApi();
@@ -37,7 +37,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(api.IsAuthenticated);
         }
 
-        [TestMethod]
+        [Test]
         public void IsNotAuthenticatedAfterUnAuthentication()
         {
             var api = new AppDirectApi();
