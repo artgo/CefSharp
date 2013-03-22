@@ -2,11 +2,11 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using AppDirect.WindowsClient.Common.API;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests.UnitTests
 {
-    [TestClass]
+    [TestFixture]
     public class ApplicationUnitTest
     {
         private readonly Application app1 = new Application()
@@ -27,31 +27,31 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Id = "1010"
         };
 
-        [TestMethod]
+        [Test]
         public void EqualsReturnsTrueForIdenticalIds()
         {
             Assert.AreEqual(app1, app2);
         }
 
-        [TestMethod]
+        [Test]
         public void EqualsReturnsFalseForDifferentIds()
         {
             Assert.AreNotEqual(app1, app3);
         }
 
-        [TestMethod]
+        [Test]
         public void GetHashReturnsSameForIdenticalIds()
         {
             Assert.AreEqual(app1.GetHashCode(), app2.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void GetHashReturnsNotSameForDifferentIds()
         {
             Assert.AreNotEqual(app1.GetHashCode(), app3.GetHashCode());
         }
 
-        [TestMethod]
+        [Test]
         public void CopiedApplicationsAreEqual()
         {
             List<Application> localApplications = LocalApplications.LocalApplicationsList;
@@ -64,7 +64,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void CopiedApplicationsHashAreEqual()
         {
             List<Application> localApplications = LocalApplications.LocalApplicationsList;

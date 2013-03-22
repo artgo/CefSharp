@@ -1,12 +1,12 @@
 ﻿using AppDirect.WindowsClient.Storage;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests.UnitTests
 {
-    [TestClass]
+    [TestFixture]
     public class CipherUtilityUnitTest
     {
-        [TestMethod]
+        [Test]
         public void CipherUtilitySymmetric()
         {
             string plaintext = "IamAPl4inTextSTring!@#$%^&*()<>";
