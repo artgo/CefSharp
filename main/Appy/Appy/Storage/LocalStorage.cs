@@ -1,18 +1,17 @@
+using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Xml;
 using System.Xml.Serialization;
-using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Models;
 
 namespace AppDirect.WindowsClient.Storage
 {
     ///<summary>
-    /// Represents the Serializable Data that persists locally 
+    /// Represents the Serializable Data that persists locally
     ///</summary>
     public class LocalStorage
     {
@@ -22,13 +21,18 @@ namespace AppDirect.WindowsClient.Storage
         public static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
 
         public List<Application> InstalledLocalApps { get; set; }
+
         public List<Application> InstalledAppDirectApps { get; set; }
+
         public List<Application> LastSuggestedApps { get; set; }
-        public List<Application> PinnedApps { get; set;}
+
+        public List<Application> PinnedApps { get; set; }
+
+        public bool IsLoadedFromFile { get; set; }
 
         public object Locker = new object();
-   
-        public bool UpdateDownloaded { get; set; }  
+
+        public bool UpdateDownloaded { get; set; }
 
         [XmlIgnore]
         public List<Application> AllInstalledApplications
@@ -47,7 +51,6 @@ namespace AppDirect.WindowsClient.Storage
 
                 return InstalledLocalApps.Concat(InstalledAppDirectApps).ToList();
             }
-           
         }
 
         public List<string> HiddenApps { get; set; }
@@ -63,7 +66,7 @@ namespace AppDirect.WindowsClient.Storage
                        !String.IsNullOrEmpty(LoginInfo.EncryptedPassword) &&
                        !String.IsNullOrEmpty(LoginInfo.Salt) &&
                        LoginInfo.PasswordSetDate.AddDays(DaysBeforePasswordExpires) > DateTime.Now;
-            }                               
+            }
         }
 
         public LocalStorage()
@@ -72,15 +75,17 @@ namespace AppDirect.WindowsClient.Storage
             InstalledAppDirectApps = new List<Application>();
             LastSuggestedApps = new List<Application>();
             PinnedApps = new List<Application>();
+            IsLoadedFromFile = false;
         }
 
         public void LoadStorage()
         {
-            var mySerializer = new XmlSerializer(typeof (LocalStorage));
+            var mySerializer = new XmlSerializer(typeof(LocalStorage));
 
             lock (FileInfo)
             {
                 var localStorage = new LocalStorage();
+
                 // If the file exists, open it.
                 if (FileInfo.Exists)
                 {
@@ -89,12 +94,14 @@ namespace AppDirect.WindowsClient.Storage
                         using (var fileStream = FileInfo.OpenRead())
                         {
                             // Create a new instance of the LocalStorage by deserializing the file.
-                            localStorage = (LocalStorage) mySerializer.Deserialize(fileStream);
+                            localStorage = (LocalStorage)mySerializer.Deserialize(fileStream);
 
                             if (!localStorage.HasCredentials)
                             {
                                 localStorage.ClearLoginCredentials();
                             }
+
+                            IsLoadedFromFile = true;
                         }
                     }
                     catch (InvalidOperationException)
@@ -123,7 +130,7 @@ namespace AppDirect.WindowsClient.Storage
             }
 
             // Create an XmlSerializer for the LocalStorage type.
-            var mySerializer = new XmlSerializer(typeof (LocalStorage));
+            var mySerializer = new XmlSerializer(typeof(LocalStorage));
 
             lock (FileInfo)
             {
@@ -195,7 +202,7 @@ namespace AppDirect.WindowsClient.Storage
 
         public void SetCredentials(string username, string password)
         {
-            LoginInfo = new LoginObject {Salt = CipherUtility.GetNewSalt()};
+            LoginInfo = new LoginObject { Salt = CipherUtility.GetNewSalt() };
             LoginInfo.EncryptedUsername = CipherUtility.Encrypt(username, LoginInfo.Salt);
             LoginInfo.EncryptedPassword = CipherUtility.Encrypt(password, LoginInfo.Salt);
             LoginInfo.PasswordSetDate = DateTime.Now.Date;

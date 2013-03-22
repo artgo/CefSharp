@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
-using AppDirect.WindowsClient.Storage;
+﻿using AppDirect.WindowsClient.Storage;
 using NUnit.Framework;
+using System;
+using System.IO;
 
 namespace AppDirect.WindowsClient.Tests.UnitTests
 {
@@ -47,7 +47,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(File.Exists);
 
             localStorage.LoadStorage();
-            
+
             Assert.AreEqual(LocalApplications.LocalApplicationsList, localStorage.InstalledLocalApps);
         }
 
@@ -67,7 +67,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             string unencryptedUserName = "emailIsUserName@emailme.com";
 
             SaveCredentialsReloadFile(unencryptedPassword, unencryptedUserName, DateTime.Now.AddDays(-29));
-            
+
             Assert.IsTrue(localStorage.HasCredentials);
         }
 
@@ -101,6 +101,21 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             var imagePath = localStorage.SaveAppIcon("http://Not.a.Real.Url", appId);
 
             Assert.AreEqual(String.Empty, imagePath);
+        }
+
+        [Test]
+        public void IsLoadedFromFileFalseWithNoFile()
+        {
+            Assert.IsFalse(localStorage.IsLoadedFromFile);
+        }
+
+        [Test]
+        public void IsLoadedFromFileTrueWithFile()
+        {
+            localStorage.SaveAppSettings();
+            File.Refresh();
+            localStorage.LoadStorage();
+            Assert.IsTrue(localStorage.IsLoadedFromFile);
         }
 
         private void SaveCredentialsReloadFile(string unencryptedPassword, string unencryptedUserName, DateTime passwordSetDate)
