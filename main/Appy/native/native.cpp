@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "native.h"
 #include "consts.h"
-#include <mutex>
-#include <string>
-#include <sstream>
 
 static const int BuffSize = 256;
 
@@ -15,7 +12,7 @@ HMODULE g_hDll = NULL;
 
 // TODO: -1: explode to 
 // Returns Windows version as usually defined in VC headers: targetver.h
-static WORD g_version = 0;
+static volatile WORD g_version = 0;
 
 WORD WinVersion()
 {	
@@ -27,9 +24,16 @@ WORD WinVersion()
 	return g_version;
 }
 
+static volatile bool g_IsWin8Set = false;
+static volatile bool g_IsWin8 = true;
 static bool IsWin8orUp()
 {
-	return (WinVersion() >= _WIN32_WINNT_WIN8);
+	if (!g_IsWin8Set) {
+		g_IsWin8 = (WinVersion() >= _WIN32_WINNT_WIN8);
+		g_IsWin8Set = true;
+	}
+
+	return g_IsWin8;
 }
 
 static HWND tmpTaskbar = NULL;
@@ -157,7 +161,7 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 				g_bInitDone = false;
 				HWND rebarHwnd = FindRebar();	_ASSERT(rebarHwnd);
 				BOOL b = ::RemoveWindowSubclass(rebarHwnd, SubclassRebarProc, 0); _ASSERT(b);
-				if (IsWin8orUp())
+				if (!IsWin8orUp())
 				{
 					HWND taskbar = FindTaskBar();	_ASSERT(taskbar);
 					b = ::RemoveWindowSubclass(taskbar, SubclassTaskbarProc, 0); _ASSERT(b);
@@ -205,7 +209,7 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		case WM_WINDOWPOSCHANGED:
 		{
 			// place on top of task bar
-			HWND theButton = GetAppDirectHwnd();
+			HWND theButton = (HWND)dwRefData;
 			if (theButton)
 			{
 				WINDOWPOS * p = (WINDOWPOS*)lParam;
@@ -223,7 +227,6 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 			break;
 		}
-		default: break;
 	}
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
@@ -275,9 +278,10 @@ NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
 		messages->AppDirectHwnd = GetAppDirectHwnd();
 		g_hDll = ::LoadLibrary(gc_TheDllName); _ASSERT(g_hDll);		// prevent dll from unloading
 		BOOL b = ::SetWindowSubclass(FindRebar(), SubclassRebarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
-		if (IsWin8orUp())
+		if (!IsWin8orUp())
 		{
-			b = ::SetWindowSubclass(FindTaskBar(), SubclassTaskbarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
+			HWND theButton = GetAppDirectHwnd();
+			b = ::SetWindowSubclass(FindTaskBar(), SubclassTaskbarProc, 0, (DWORD_PTR)theButton);	_ASSERT(b);
 		}
 	}
 
