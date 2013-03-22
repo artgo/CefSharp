@@ -48,6 +48,11 @@ namespace AppDirect.WindowsClient
             taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
             TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, taskbarPanel.GetCurrentDimension());
 
+            if (!ServiceLocator.LocalStorage.IsLoadedFromFile)
+            {
+                _mainWindow.Show();
+            }
+
             base.OnStartup(e);
         }
 
