@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace AppDirect.WindowsClient.Browser
 {
-    static class Program
+    internal static class Program
     {
         private static readonly BrowserObject BrowserObject = new BrowserObject();
 
@@ -20,7 +20,7 @@ namespace AppDirect.WindowsClient.Browser
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var appId = ExtractAppId(args);
             try
@@ -30,9 +30,11 @@ namespace AppDirect.WindowsClient.Browser
             catch (Exception e)
             {
                 MessageBox.Show(String.Format(Resources.Failed_to_initialize_browser_error_message, e.Message));
+                return;
             }
 
-            var browserViewModel = BuildBrowserViewModel(appId);
+            var browserViewModelAndApi = BuildBrowserViewModel(appId);
+            var browserViewModel = browserViewModelAndApi.BrowserViewModel;
 
             SessionKeeper sessionKeeper = null;
             if ((browserViewModel != null) && (browserViewModel.Application != null))
@@ -45,11 +47,19 @@ namespace AppDirect.WindowsClient.Browser
                 }
             }
 
-            Window browserWindow = new BrowserWindow(browserViewModel);
+            var browserWindow = new BrowserWindow(browserViewModel);
+            browserViewModelAndApi.MainApplicationCallback.BrowserWindow = browserWindow;
 
             var app = new App(browserWindow);
             app.InitializeComponent();
             app.Run();
+
+            var client = browserViewModelAndApi.MainApplicationClient;
+            if ((client != null) && (client.State == CommunicationState.Opened))
+            {
+                client.BrowserWasClosed();
+                client.Close();
+            }
 
             if (sessionKeeper != null)
             {
@@ -73,15 +83,17 @@ namespace AppDirect.WindowsClient.Browser
             return null;
         }
 
-        private static BrowserViewModel BuildBrowserViewModel(string appId)
+        private static BrowserViewModelAndApi BuildBrowserViewModel(string appId)
         {
-            MainApplicationClient client;
+            MainApplicationClient mainApplicationProxy;
+            MainApplicationCallback mainApplicationCallback;
+
             try
             {
-                var callback = new MainApplicationCallback();
-                var context = new InstanceContext(callback);
+                mainApplicationCallback = new MainApplicationCallback();
+                var context = new InstanceContext(mainApplicationCallback);
                 context.Faulted += ErrorOnServer;
-                client = new MainApplicationClient(context);
+                mainApplicationProxy = new MainApplicationClient(context);
             }
             catch (Exception e)
             {
@@ -93,8 +105,8 @@ namespace AppDirect.WindowsClient.Browser
             IAppDirectSession session;
             try
             {
-                app = (IApplication)client.GetApplicationById(appId);
-                session = (IAppDirectSession)client.GetCurrentSession();
+                app = (IApplication)mainApplicationProxy.GetApplicationById(appId);
+                session = (IAppDirectSession)mainApplicationProxy.GetCurrentSession();
             }
             catch (Exception e)
             {
@@ -122,19 +134,23 @@ namespace AppDirect.WindowsClient.Browser
 
             SetCookies(session);
 
-            var browser = new BrowserViewModel() { Application = app, Session = session };
+            var browserViewModel = new BrowserViewModel() { Application = app, Session = session };
 
-            return browser;
+            var browserAndApi = new BrowserViewModelAndApi()
+                {
+                    BrowserViewModel = browserViewModel,
+                    MainApplicationClient = mainApplicationProxy,
+                    MainApplicationCallback = mainApplicationCallback
+                };
+
+            return browserAndApi;
         }
 
         private static void SetCookies(IAppDirectSession session)
         {
             if (session != null)
             {
-                foreach (var cookie in session.Cookies)
-                {
-                    BrowserObject.SetCookie(cookie);
-                }
+                BrowserObject.SetCookies(session.Cookies);
             }
         }
 

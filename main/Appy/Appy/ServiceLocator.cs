@@ -21,14 +21,14 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<LocalStorage>(); }
         }
 
-        public static BrowserWindowsCommunicator BrowserWindowsCommunicator
+        public static IBrowserWindowsCommunicator BrowserWindowsCommunicator
         {
-            get { return Kernel.Get<BrowserWindowsCommunicator>(); }
+            get { return Kernel.Get<IBrowserWindowsCommunicator>(); }
         }
 
-        public static IpcCommunicator IpcCommunicator
+        public static IIpcCommunicator IpcCommunicator
         {
-            get { return Kernel.Get<IpcCommunicator>(); }
+            get { return Kernel.Get<IIpcCommunicator>(); }
         }
 
         public static Updater Updater
@@ -44,8 +44,8 @@ namespace AppDirect.WindowsClient
             Kernel.Rebind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Rebind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
             Kernel.Rebind<LocalStorage>().ToConstant(new LocalStorage());
-            Kernel.Rebind<BrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator());
-            Kernel.Rebind<IpcCommunicator>().ToConstant(new IpcCommunicator());
+            Kernel.Rebind<IIpcCommunicator>().ToConstant(new IpcCommunicator());
+            Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator(Kernel.Get<IIpcCommunicator>()));
             Kernel.Rebind<Updater>().ToConstant(new Updater());
         }
     }

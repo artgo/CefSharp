@@ -1,5 +1,4 @@
-﻿using System;
-using AppDirect.WindowsClient.InteropAPI;
+﻿using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
 using NUnit.Framework;
 

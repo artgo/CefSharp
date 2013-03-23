@@ -51,7 +51,6 @@ namespace AppDirect.WindowsClient.Browser.Session
             if (_updaterThread.IsAlive)
             {
                 _updaterThread.Abort();
-                _updaterThread.Join();
             }
         }
 

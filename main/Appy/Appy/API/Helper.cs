@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.UI;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using Application = AppDirect.WindowsClient.Common.API.Application;
@@ -84,7 +85,7 @@ namespace AppDirect.WindowsClient.API
                 }
                 else
                 {
-                    ServiceLocator.BrowserWindowsCommunicator.OpenApp(clickedApp.Application);
+                    ServiceLocator.BrowserWindowsCommunicator.OpenOrActivateApp(clickedApp.Application);
                 }
             }
             catch (Exception ex)
@@ -130,46 +131,12 @@ namespace AppDirect.WindowsClient.API
 
         public static void PerformInUiThread(Action action)
         {
-            if (action == null)
-            {
-                throw new ArgumentNullException("action");
-            }
-
-            var currentApplication = System.Windows.Application.Current;
-            if ((currentApplication == null) || (Thread.CurrentThread == currentApplication.Dispatcher.Thread))
-            {
-                action.Invoke();
-            }
-            else
-            {
-                currentApplication.Dispatcher.Invoke(action);
-            }
+            CommonHelper.PerformInUiThread(action);
         }
  
         public static void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn)
         {
-            var startTime = Environment.TickCount;
-
-            if (action == null)
-            {
-                throw new ArgumentNullException("action");
-            }
-
-            if (requiresUiThread)
-            {
-                PerformInUiThread(action);
-            }
-            else
-            {
-                action.Invoke();
-            }
-
-            var remainingTime = minimumMillisecondsBeforeReturn - (Environment.TickCount - startTime);
-
-            if (remainingTime > 0)
-            {
-                Thread.Sleep(remainingTime);
-            }
+            CommonHelper.PerformForMinimumTime(action, requiresUiThread, minimumMillisecondsBeforeReturn);
         }
 
         public static bool PerformWhenIdle(Action action, TimeSpan idleTimeRequired, TimeSpan intervalBetweenIdleCheck, TimeSpan timeout)
