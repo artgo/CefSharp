@@ -39,7 +39,6 @@ namespace AppDirect.WindowsClient
 
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
-            mainViewModel.SyncAppsWithApi();
             _mainWindow = new MainWindow(mainViewModel);
             UpdateManager.Start(_mainWindow);
             AppSessionRefresher.Start(_mainWindow);
