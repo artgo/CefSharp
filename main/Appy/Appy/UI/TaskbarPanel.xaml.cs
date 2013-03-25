@@ -141,16 +141,16 @@ namespace AppDirect.WindowsClient.UI
 
         private void RemoveAppButton(object sender, EventArgs e)
         {
-            var application = sender as ApplicationViewModel;
-            ViewModel.RemovePinnedApp(application);
-            RemoveButton(application);
+            var applicationViewModel = sender as ApplicationViewModel;
+            ViewModel.RemovePinnedApp(applicationViewModel);
+            Helper.PerformInUiThread(() => RemoveButton(applicationViewModel));
         }
 
         private void AddAppButton(object sender, EventArgs e)
         {
             var applicationViewModel = sender as ApplicationViewModel;
             ViewModel.AddPinnedApp(applicationViewModel);
-            AddButton(applicationViewModel);
+            Helper.PerformInUiThread(() => AddButton(applicationViewModel));
         }
 
         private void AppButton_Click(object sender, RoutedEventArgs e)
