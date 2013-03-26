@@ -54,7 +54,7 @@
             </Grid>
         </Grid>
         <Grid Style="{StaticResource ErrorMessageBox}" Name="ErrorMessageBox" VerticalAlignment="Center" HorizontalAlignment="Center" Background="{StaticResource DefaultTextColor}" MaxWidth="260" MaxHeight="200">
-            <Border BorderBrush="{StaticResource ErrorTextBorderColor}" BorderThickness="1"></Border>
+            <Border BorderBrush="{StaticResource AlertTextColor}" BorderThickness="2"></Border>
             <StackPanel>
                 <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" Style="{StaticResource TextStyle}" Margin="20,20,20,20" Foreground="Black" />
                 <Button  Height="30" Width="45" Style="{StaticResource MainButtonStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="ErrorMessageOK_OnClick">OK</Button>
