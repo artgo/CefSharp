@@ -174,9 +174,9 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
-            catch (Exception ex)
+            catch (System.Net.WebException ex)
             {
-                MessageBox.Show(ex.Message);
+                ViewModel.ShowNetworkProblem();
             }
         }
 
@@ -231,6 +231,11 @@ namespace AppDirect.WindowsClient.UI
             {
                 PasswordBox.Focus();
             }
+        }
+
+        private void ErrorMessageOK_OnClick(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ClearErrorMessage();
         }
     }
 }

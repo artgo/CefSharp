@@ -562,7 +562,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Button Style="{StaticResource AppButton}" Click="AppButtonClick" PreviewMouseLeftButtonDown="AppButton_DoubleClick" />
+                            <Button Style="{StaticResource AppButton}" Click="AppButtonClick" PreviewMouseLeftButtonDown="DoubleClickHandler" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <ListBox.Resources>
@@ -593,7 +593,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Button Style="{StaticResource InstallAppButton}" Height="34" Margin="0,0,0,10"
-                                    PreviewMouseLeftButtonDown="InstallApp_DoubleClick" Click="InstallApp_OnClick" />
+                                    PreviewMouseLeftButtonDown="DoubleClickHandler" Click="InstallApp_OnClick" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -608,7 +608,7 @@
             <TextBlock Text="{Binding SuggestedAppsLoadError}" HorizontalAlignment="Left" Margin="75,300,0,0"
                        VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2" />
         </Grid>
-        <controls:LoginView x:Name="LoginViewControl" />
+        <controls:LoginView x:Name="LoginViewControl"/>
         <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden" />
     </Grid>
 </Window>

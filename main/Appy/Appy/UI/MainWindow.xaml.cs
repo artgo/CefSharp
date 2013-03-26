@@ -89,7 +89,7 @@ namespace AppDirect.WindowsClient.UI
             RegistrationViewControl.Visibility = Visibility.Hidden;
         }
 
-        private void AppButton_DoubleClick(object sender, MouseButtonEventArgs e)
+        private void DoubleClickHandler(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount > 1)
             {
@@ -100,14 +100,6 @@ namespace AppDirect.WindowsClient.UI
         private void AppButtonClick(object sender, RoutedEventArgs e)
         {
             Helper.AppButtonClick(sender, e);
-        }
-
-        private void InstallApp_DoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount > 1)
-            {
-                e.Handled = true;
-            }
         }
 
         private void InstallApp_OnClick(object sender, RoutedEventArgs e)
@@ -152,15 +144,7 @@ namespace AppDirect.WindowsClient.UI
         {
             ViewModel.LogInLogOutClicked();
         }
-
-        public void UpdateAvailable(bool updateAvailable)
-        {
-            if (System.Windows.Application.Current != null)
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => ViewModel.UpdateString = Properties.Resources.InstallUpdateString));
-            }
-        }
-
+        
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
             ViewModel.UpdateClick();           

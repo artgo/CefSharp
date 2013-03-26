@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using AppDirect.WindowsClient.Properties;
 
@@ -7,8 +8,9 @@ namespace AppDirect.WindowsClient.UI
     public class LoginViewModel : INotifyPropertyChanged
     {
         private Visibility _isVisible = Visibility.Collapsed;
-        private string _loginFailedMessage = Properties.Resources.CredentialsProblemError;
-        private string _loginHeaderText = Properties.Resources.LoginHeaderLoginRequired;
+        private string _loginFailedMessage = Resources.CredentialsProblemError;
+        private string _loginHeaderText = Resources.LoginHeaderLoginRequired;
+        private string _errorMessage;
 
         public Visibility IsVisible
         {
@@ -45,6 +47,16 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                NotifyPropertyChanged("ErrorMessage");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         
         public void NotifyPropertyChanged(string propertyName)
@@ -63,7 +75,6 @@ namespace AppDirect.WindowsClient.UI
                 {
                     ServiceLocator.LocalStorage.SetCredentials(username, password);
                 }
-                
                 return true;
             }
 
@@ -73,6 +84,16 @@ namespace AppDirect.WindowsClient.UI
         public void SetVisibility(bool isLoggedIn)
         {
             IsVisible = isLoggedIn ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public void ShowNetworkProblem()
+        {
+            ErrorMessage = Resources.NetworkProblemError;
+        }
+
+        public void ClearErrorMessage()
+        {
+            ErrorMessage = String.Empty;
         }
     }
 }

@@ -100,7 +100,7 @@ namespace AppDirect.WindowsClient.Updates
         }
 
         /// <summary>
-        /// Wrap in try catch. Throws exceptions if there are network problems or if the Version file or the update file fail to download and save
+        /// Wrap in try catch. Throws exceptions if there are network problems or if the Version file fails to download and save
         /// </summary>
         /// <param name="currentVersion"></param>
         /// <returns></returns>
