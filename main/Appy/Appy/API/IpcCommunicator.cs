@@ -1,5 +1,4 @@
 ﻿using AppDirect.WindowsClient.Common.API;
-using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 
@@ -38,16 +37,9 @@ namespace AppDirect.WindowsClient.API
         {
             lock (_lockObject)
             {
-                foreach (var mainApplication in _clientsMap)
+                foreach (var valuePair in _clientsMap)
                 {
-                    try
-                    {
-                        mainApplication.Value.Callback.CloseWindow();
-                    }
-                    catch (Exception)
-                    {
-                        // Do nothing for now
-                    }
+                    valuePair.Value.Callback.CloseWindow();
                 }
 
                 _clientsMap.Clear();
