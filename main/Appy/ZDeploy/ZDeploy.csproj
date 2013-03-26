@@ -57,7 +57,7 @@
       <Name>Appy</Name>
     </ProjectReference>
     <ProjectReference Include="..\IntegrationTests\IntegrationTests.csproj">
-      <Project>{93756bdb-e08d-4fd7-954a-c2fad3c2bd8c}</Project>
+      <Project>{31e2a5ee-d1dc-4bd3-a078-a6f95bedea40}</Project>
       <Name>IntegrationTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\UnitTests\UnitTests.csproj">
