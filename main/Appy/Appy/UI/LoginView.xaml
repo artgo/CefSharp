@@ -6,7 +6,9 @@
              mc:Ignorable="d" 
              Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}">
     <UserControl.Resources>
-    
+        <Style x:Key="ErrorMessageBox" TargetType="{x:Type Grid}">
+        
+        </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding IsVisible}" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
         <Rectangle Height="320" Width="670" Fill="{StaticResource LoginPanelColor}">
@@ -43,7 +45,12 @@
                 <Button Name="LoginButton" Margin="0,150,0,0" Content="Log In" Style="{StaticResource LoginButtonDefault}" HorizontalAlignment="Right" VerticalAlignment="Top" Width="72" Height="24" Click="Login"/>
             </Grid>
         </Grid>
-        <TextBlock VerticalAlignment="Bottom" TextWrapping="Wrap" Name="MessageArea" TextAlignment="Center" Margin="5,30,5,10" Style="{StaticResource TextStyle}"/>
+        <Grid Style="{StaticResource ErrorMessageBox}" Name="ErrorMessageBox" VerticalAlignment="Center" HorizontalAlignment="Center" Background="{StaticResource DefaultTextColor}" MaxWidth="260" MaxHeight="200">
+            <Border BorderBrush="{StaticResource ErrorTextBorderColor}" BorderThickness="1"></Border>
+            <StackPanel>
+            <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" Style="{StaticResource TextStyle}" Margin="20,20,20,20" Foreground="Black" />
+            <Button  Height="30" Width="45" Style="{StaticResource MainButtonStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="ErrorMessageOK_OnClick">OK</Button>
+            </StackPanel>
+        </Grid>
     </Grid>
-
 </UserControl>

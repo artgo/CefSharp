@@ -28,7 +28,7 @@ namespace AppDirect.WindowsClient
 
                 if (updateAvailable)
                 {
-                    _mainWindow.UpdateAvailable(true);
+                    Helper.PerformInUiThread(() => _mainWindow.ViewModel.ResetUpdateText());
                     break;
                 }
                 Thread.Sleep(CheckForUpdatesTimeSpan);
@@ -50,7 +50,6 @@ namespace AppDirect.WindowsClient
         public static void Start(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
-
             DownloadUpdateThread.Start();
         }
 

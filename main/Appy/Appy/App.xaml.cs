@@ -31,7 +31,6 @@ namespace AppDirect.WindowsClient
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
             }
 
             ServiceLocator.IpcCommunicator.Start();
