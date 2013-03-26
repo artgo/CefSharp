@@ -24,18 +24,15 @@ namespace AppDirect.WindowsClient.API
                 throw new ArgumentNullException("application");
             }
 
-            (new Thread(() =>
-                {
-                    var browserExists = _ipcCommunicator.ActivateBrowserIfExists(application.Id);
+            var browserExists = _ipcCommunicator.ActivateBrowserIfExists(application.Id);
 
-                    if (!browserExists)
-                    {
-                        var browserWindowProcess = new Process();
-                        browserWindowProcess.StartInfo.FileName = Helper.ApplicationName + BrowserPostfix;
-                        browserWindowProcess.StartInfo.Arguments = AppIdParameterName + "\"" + application.Id + "\"";
-                        browserWindowProcess.Start();
-                    }
-                })).Start();
+            if (!browserExists)
+            {
+                var browserWindowProcess = new Process();
+                browserWindowProcess.StartInfo.FileName = Helper.ApplicationName + BrowserPostfix;
+                browserWindowProcess.StartInfo.Arguments = AppIdParameterName + "\"" + application.Id + "\"";
+                browserWindowProcess.Start();
+            }
         }
 
         public void CloseApp(IApplication application)

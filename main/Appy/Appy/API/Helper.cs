@@ -85,7 +85,9 @@ namespace AppDirect.WindowsClient.API
                 }
                 else
                 {
-                    ServiceLocator.BrowserWindowsCommunicator.OpenOrActivateApp(clickedApp.Application);
+                    (new Thread(() =>
+                        ServiceLocator.BrowserWindowsCommunicator.OpenOrActivateApp(clickedApp.Application)
+                        )).Start();
                 }
             }
             catch (Exception ex)

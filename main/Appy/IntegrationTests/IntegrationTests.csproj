@@ -6,7 +6,7 @@
     <ProjectGuid>{93756BDB-E08D-4FD7-954A-C2FAD3C2BD8C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IntegrationTests</RootNamespace>
+    <RootNamespace>AppDirect.WindowsClient.IntegrationTests</RootNamespace>
     <AssemblyName>IntegrationTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -35,6 +35,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net35\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\packages\NSubstitute.1.5.0.0\lib\NET35\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -46,11 +56,7 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,10 +74,19 @@
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>Appy</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
+      <Project>{e074ea7b-ddf1-4530-a392-94d98e428c2c}</Project>
+      <Name>UnitTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VersionPrint\VersionPrint.csproj">
       <Project>{59be6c04-4181-4fae-af86-c9d1d240f22b}</Project>
       <Name>VersionPrint</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

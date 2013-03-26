@@ -51,6 +51,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\BrowserWindowsCommunicatorTest.cs" />
     <Compile Include="InteropApi\Internal\CoordsPackagerTest.cs" />
     <Compile Include="InteropApi\Internal\InteractionsObjectTest.cs" />
     <Compile Include="InteropApi\Internal\RectWinTest.cs" />
