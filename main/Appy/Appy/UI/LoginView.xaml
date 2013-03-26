@@ -2,12 +2,20 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}">
     <UserControl.Resources>
         <Style x:Key="ErrorMessageBox" TargetType="{x:Type Grid}">
-        
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ErrorMessage}" Value="{x:Static sys:String.Empty}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ErrorMessage}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding IsVisible}" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
@@ -48,8 +56,8 @@
         <Grid Style="{StaticResource ErrorMessageBox}" Name="ErrorMessageBox" VerticalAlignment="Center" HorizontalAlignment="Center" Background="{StaticResource DefaultTextColor}" MaxWidth="260" MaxHeight="200">
             <Border BorderBrush="{StaticResource ErrorTextBorderColor}" BorderThickness="1"></Border>
             <StackPanel>
-            <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" Style="{StaticResource TextStyle}" Margin="20,20,20,20" Foreground="Black" />
-            <Button  Height="30" Width="45" Style="{StaticResource MainButtonStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="ErrorMessageOK_OnClick">OK</Button>
+                <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" Style="{StaticResource TextStyle}" Margin="20,20,20,20" Foreground="Black" />
+                <Button  Height="30" Width="45" Style="{StaticResource MainButtonStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="ErrorMessageOK_OnClick">OK</Button>
             </StackPanel>
         </Grid>
     </Grid>
