@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{31E2A5EE-D1DC-4BD3-A078-A6F95BEDEA40}</ProjectGuid>
+    <ProjectGuid>{E074EA7B-DDF1-4530-A392-94D98E428C2C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AppDirect.WindowsClient.IntegrationTests</RootNamespace>
-    <AssemblyName>IntegrationTests</AssemblyName>
+    <RootNamespace>AppDirect.WindowsClient.Tests</RootNamespace>
+    <AssemblyName>UnitTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,10 +51,23 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\BrowserWindowsCommunicatorTest.cs" />
+    <Compile Include="InteropApi\Internal\CoordsPackagerTest.cs" />
+    <Compile Include="InteropApi\Internal\InteractionsObjectTest.cs" />
+    <Compile Include="InteropApi\Internal\RectWinTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <Compile Include="TestData.cs" />
+    <Compile Include="UI\RegistrationViewTest.cs" />
+    <Compile Include="UI\TaskbarViewTests.cs" />
+    <Compile Include="UnitTests\AppDirectApiUnitTest.cs" />
+    <Compile Include="UnitTests\ApplicationUnitTest.cs" />
+    <Compile Include="UnitTests\CachedAppDirectApiUnitTest.cs" />
+    <Compile Include="UnitTests\CipherUtilityUnitTest.cs" />
+    <Compile Include="UnitTests\HelperTests.cs" />
+    <Compile Include="UnitTests\LocalStorageUnitTest.cs" />
+    <Compile Include="UnitTests\LoginViewModelUnitTest.cs" />
+    <Compile Include="UnitTests\MainViewModelUnitTest.cs" />
+    <Compile Include="UnitTests\ServiceLocatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Appy.Browser\Appy.Browser.csproj">
@@ -68,14 +82,13 @@
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>Appy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
-      <Project>{e074ea7b-ddf1-4530-a392-94d98e428c2c}</Project>
-      <Name>UnitTests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VersionPrint\VersionPrint.csproj">
       <Project>{59be6c04-4181-4fae-af86-c9d1d240f22b}</Project>
       <Name>VersionPrint</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

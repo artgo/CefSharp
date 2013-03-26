@@ -1,6 +1,6 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.Browser.Control;
+using System;
 using System.Threading;
-using AppDirect.WindowsClient.Browser.Control;
 
 namespace AppDirect.WindowsClient.Browser.Session
 {
@@ -9,10 +9,12 @@ namespace AppDirect.WindowsClient.Browser.Session
     /// </summary>
     public class SessionKeeper : IDisposable
     {
-        private static readonly TimeSpan TimeBetweenUpdates = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan TimeBetweenUpdates = TimeSpan.FromMinutes(5);
         private readonly Thread _updaterThread;
         private readonly WpfCefBrowser _browser = new WpfCefBrowser();
         private readonly string _url = null;
+        private volatile bool _stopFlag = false;
+        private readonly ThreadStart _sessionUpdator; 
 
         public SessionKeeper(string url)
         {
@@ -21,14 +23,16 @@ namespace AppDirect.WindowsClient.Browser.Session
                 throw new ArgumentNullException("url");
             }
 
+            _sessionUpdator = KeepUpdatingSession;
             _url = url;
-            _updaterThread = new Thread(KeepUpdatingSession);
+            _updaterThread = new Thread(_sessionUpdator);
         }
 
         public void Start()
         {
-            _updaterThread.Start();
+            _stopFlag = false;
 
+            _updaterThread.Start();
         }
 
         private void KeepUpdatingSession()
@@ -37,7 +41,23 @@ namespace AppDirect.WindowsClient.Browser.Session
             {
                 Thread.Sleep(TimeBetweenUpdates);
 
-                ReloadSession();
+                if (_stopFlag)
+                {
+                    return;
+                }
+
+                try
+                {
+                    ReloadSession();
+                }
+                catch (ThreadAbortException)
+                {
+                    throw;
+                }
+                catch (Exception)
+                {
+                    // Ignore all the rest
+                }
             }
         }
 
@@ -48,10 +68,18 @@ namespace AppDirect.WindowsClient.Browser.Session
 
         public void Stop()
         {
+            _stopFlag = true;
+
             if (_updaterThread.IsAlive)
             {
-                _updaterThread.Abort();
-                _updaterThread.Join();
+                try
+                {
+                    _updaterThread.Abort();
+                }
+                catch (Exception)
+                {
+                    // Ignore termination errors
+                }
             }
         }
 

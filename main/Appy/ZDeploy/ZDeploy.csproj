@@ -52,17 +52,17 @@
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
       <Name>Appy.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Appy.Tests\Appy.Tests.csproj">
-      <Project>{b0c3746c-d7ed-4ddb-8b64-3ab49c462430}</Project>
-      <Name>Appy.Tests</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Appy\Appy.csproj">
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>Appy</Name>
     </ProjectReference>
     <ProjectReference Include="..\IntegrationTests\IntegrationTests.csproj">
-      <Project>{93756bdb-e08d-4fd7-954a-c2fad3c2bd8c}</Project>
+      <Project>{31e2a5ee-d1dc-4bd3-a078-a6f95bedea40}</Project>
       <Name>IntegrationTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
+      <Project>{e074ea7b-ddf1-4530-a392-94d98e428c2c}</Project>
+      <Name>UnitTests</Name>
     </ProjectReference>
     <ProjectReference Include="..\VersionPrint\VersionPrint.csproj">
       <Project>{59be6c04-4181-4fae-af86-c9d1d240f22b}</Project>
@@ -82,9 +82,9 @@ xcopy "$(SolutionDir)Setup\uninstall.exe" "$(SolutionDir)Setup\Appy" /r /y
 "C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\updater.exe"
 rd /S /Q "$(SolutionDir)bin\Result"
 md "$(SolutionDir)bin\Result"
-xcopy "$(SolutionDir)Setup\AppyInstaller.exe" "$(SolutionDir)bin\Result" /r /y
-xcopy "$(SolutionDir)Setup\updater.exe" "$(SolutionDir)bin\Result" /r /y
-xcopy "$(SolutionDir)Setup\version.txt" "$(SolutionDir)bin\Result" /r /y
+move /Y "$(SolutionDir)Setup\AppyInstaller.exe" "$(SolutionDir)bin\Result"
+move /Y "$(SolutionDir)Setup\updater.exe" "$(SolutionDir)bin\Result"
+move /Y "$(SolutionDir)Setup\version.txt" "$(SolutionDir)bin\Result"
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

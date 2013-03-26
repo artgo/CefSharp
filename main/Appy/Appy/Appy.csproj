@@ -149,6 +149,8 @@
     </ApplicationDefinition>
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
     <Compile Include="API\Helper.cs" />
+    <Compile Include="API\IBrowserWindowsCommunicator.cs" />
+    <Compile Include="API\IIpcCommunicator.cs" />
     <Compile Include="API\IpcCommunicator.cs" />
     <Compile Include="InteropAPI\Internal\CoordsPackager.cs" />
     <Compile Include="InteropAPI\Internal\InteractionsObject.cs" />

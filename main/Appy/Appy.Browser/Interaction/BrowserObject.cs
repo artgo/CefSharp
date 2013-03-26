@@ -1,5 +1,6 @@
 ﻿using AppDirect.WindowsClient.Browser.Control;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using Xilium.CefGlue;
@@ -17,7 +18,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
         private const string DefaultId = @"Default";
         private const int RestoreSession = 3;
 
-        public void Load()
+        public void Load(string cachePath, string currentDir)
         {
             try
             {
@@ -36,7 +37,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
                 ErrorAndExit(ex);
             }
 
-            var mainArgs = new CefMainArgs(new string[] {});
+            var mainArgs = new CefMainArgs(new string[] { });
             var cefApp = new AppDirectCefApp();
 
             var exitCode = CefRuntime.ExecuteProcess(mainArgs, cefApp);
@@ -47,12 +48,14 @@ namespace AppDirect.WindowsClient.Browser.Interaction
 
             var cefSettings = new CefSettings
             {
-                // BrowserSubprocessPath = browserSubprocessPath,
+                BrowserSubprocessPath = currentDir + Path.DirectorySeparatorChar + @"cefclient.exe",
                 SingleProcess = false,
                 MultiThreadedMessageLoop = true,
                 LogSeverity = CefLogSeverity.Error,
                 PersistSessionCookies = true,
                 LogFile = "cef.log",
+                CachePath = cachePath,
+                IgnoreCertificateErrors = true
             };
 
             try
@@ -83,6 +86,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
                 // Do nothing for now.
             }
         }
+
         public void Initialize(string appId)
         {
             var safeAppId = string.IsNullOrEmpty(appId) ? DefaultId : appId;
@@ -95,7 +99,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
                 Directory.CreateDirectory(cachePath);
             }
 
-            Load();
+            Load(cachePath, currentDirectory);
 
             ResurrectCookies();
         }
@@ -106,44 +110,46 @@ namespace AppDirect.WindowsClient.Browser.Interaction
 
         private void RestoreBrowserSession()
         {
-//            Guid iid = typeof(nsISessionStore).GUID;
-//            Guid guid = new Guid("59bfaf00-e3d8-4728-b4f0-cc0b9dfb4806");
-//            IntPtr ptr = Xpcom.ServiceManager.GetService(ref iid, ref iid);
-//            nsISessionStore sessionStore = (nsISessionStore)Xpcom.GetObjectForIUnknown(ptr);
-//            sessionStore.RestoreLastSession();
+            //            Guid iid = typeof(nsISessionStore).GUID;
+            //            Guid guid = new Guid("59bfaf00-e3d8-4728-b4f0-cc0b9dfb4806");
+            //            IntPtr ptr = Xpcom.ServiceManager.GetService(ref iid, ref iid);
+            //            nsISessionStore sessionStore = (nsISessionStore)Xpcom.GetObjectForIUnknown(ptr);
+            //            sessionStore.RestoreLastSession();
         }
 
-
-        private class CookieSetTask : CefTask
+        private class CookiesSetTask : CefTask
         {
-            private readonly Cookie _cookie;
+            private readonly IList<Cookie> _cookies;
 
-            internal CookieSetTask(Cookie cookie)
+            internal CookiesSetTask(IList<Cookie> cookies)
             {
-                _cookie = cookie;
+                _cookies = cookies;
             }
 
             protected override void Execute()
             {
-                CefCookieManager.Global.SetCookie("https://" + _cookie.Domain + _cookie.Path, new CefCookie()
+                foreach (var cookie in _cookies)
                 {
-                    Creation = _cookie.TimeStamp,
-                    Domain = _cookie.Domain,
-                    Expires = _cookie.Expires,
-                    HttpOnly = _cookie.HttpOnly,
-                    LastAccess = _cookie.TimeStamp,
-                    Name = _cookie.Name,
-                    Path = _cookie.Path,
-                    Secure = _cookie.Secure,
-                    Value = _cookie.Value
-                });
+                    CefCookieManager.Global.SetCookie("https://" + cookie.Domain + cookie.Path, new CefCookie()
+                    {
+                        Creation = cookie.TimeStamp,
+                        Domain = cookie.Domain,
+                        Expires = cookie.Expires,
+                        HttpOnly = cookie.HttpOnly,
+                        LastAccess = cookie.TimeStamp,
+                        Name = cookie.Name,
+                        Path = cookie.Path,
+                        Secure = cookie.Secure,
+                        Value = cookie.Value
+                    });
+                }
             }
         }
 
-        public void SetCookie(Cookie cookie)
+        public void SetCookies(IList<Cookie> cookies)
         {
-            var cookieTask = new CookieSetTask(cookie);
-            CefRuntime.PostTask(CefThreadId.IO, cookieTask);
+            var cookiesTask = new CookiesSetTask(cookies);
+            CefRuntime.PostTask(CefThreadId.IO, cookiesTask);
         }
     }
 }

@@ -60,6 +60,7 @@ namespace AppDirect.WindowsClient
             if (_instanceMutex != null)
             {
                 _instanceMutex.ReleaseMutex();
+                ServiceLocator.IpcCommunicator.CloseAllClients();
                 ServiceLocator.IpcCommunicator.Exit();
                 UpdateManager.Stop();
                 AppSessionRefresher.Stop();

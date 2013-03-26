@@ -1,27 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Threading;
 using AppDirect.WindowsClient.Common.API;
+using System;
+using System.Diagnostics;
 
 namespace AppDirect.WindowsClient.API
 {
-    public class BrowserWindowsCommunicator
+    public class BrowserWindowsCommunicator : IBrowserWindowsCommunicator
     {
-        private readonly IDictionary<String, IntPtr> _chromiumWindows = new Dictionary<String, IntPtr>();
-
         private static readonly string BrowserPostfix = Helper.BrowserProjectExt + Helper.ExeExt;
         private const string AppIdParameterName = "--appid=";
 
-        public void OpenApp(IApplication a)
+        private readonly IIpcCommunicator _ipcCommunicator;
+
+        public BrowserWindowsCommunicator(IIpcCommunicator ipcCommunicator)
         {
-            var browserWindowProcess = new Process();
-            browserWindowProcess.StartInfo.FileName = Helper.ApplicationName + BrowserPostfix;
-            browserWindowProcess.StartInfo.Arguments = AppIdParameterName + "\"" + a.Id + "\"";
-            browserWindowProcess.Start();
+            _ipcCommunicator = ipcCommunicator;
         }
 
-        public void CloseApp(IApplication a)
+        public void OpenOrActivateApp(IApplication application)
         {
+            if (application == null)
+            {
+                throw new ArgumentNullException("application");
+            }
+
+            var browserExists = _ipcCommunicator.ActivateBrowserIfExists(application.Id);
+
+            if (!browserExists)
+            {
+                var browserWindowProcess = new Process();
+                browserWindowProcess.StartInfo.FileName = Helper.ApplicationName + BrowserPostfix;
+                browserWindowProcess.StartInfo.Arguments = AppIdParameterName + "\"" + application.Id + "\"";
+                browserWindowProcess.Start();
+            }
+        }
+
+        public void CloseApp(IApplication application)
+        {
+            if (application == null)
+            {
+                throw new ArgumentNullException("application");
+            }
+
+            _ipcCommunicator.CloseBrowser(application.Id);
         }
     }
 }

@@ -8,85 +8,77 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AppDirect.WindowsClient.Browser.MainApp {
-    using System.Runtime.Serialization;
-    
-    
+using AppDirect.WindowsClient.Common.API;
+
+namespace AppDirect.WindowsClient.Browser.MainApp
+{
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="CookieVariant", Namespace="http://schemas.datacontract.org/2004/07/System.Net")]
-    public enum CookieVariant : int {
-        
+    [System.Runtime.Serialization.DataContractAttribute(Name = "CookieVariant", Namespace = "http://schemas.datacontract.org/2004/07/System.Net")]
+    public enum CookieVariant : int
+    {
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Unknown = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Plain = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Rfc2109 = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Rfc2965 = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Default = 2,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="MainApp.IMainApplication", CallbackContract=typeof(AppDirect.WindowsClient.Browser.MainApp.IMainApplicationCallback))]
-    public interface IMainApplication {
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMainApplication/GetApplicationById", ReplyAction="http://tempuri.org/IMainApplication/GetApplicationByIdResponse")]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(AppDirect.WindowsClient.Common.API.Application))]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(AppDirect.WindowsClient.Common.API.LocalApplication))]
-        AppDirect.WindowsClient.Common.API.IApplication GetApplicationById(string id);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMainApplication/GetCurrentSession", ReplyAction="http://tempuri.org/IMainApplication/GetCurrentSessionResponse")]
-        [System.ServiceModel.ServiceKnownTypeAttribute(typeof(AppDirect.WindowsClient.Common.API.AppDirectSession))]
-        AppDirect.WindowsClient.Common.API.IAppDirectSession GetCurrentSession();
+    public interface IMainApplicationChannel : IMainApplication, System.ServiceModel.IClientChannel
+    {
     }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IMainApplicationCallback {
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMainApplication/CloseWindow", ReplyAction="http://tempuri.org/IMainApplication/CloseWindowResponse")]
-        void CloseWindow();
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IMainApplicationChannel : AppDirect.WindowsClient.Browser.MainApp.IMainApplication, System.ServiceModel.IClientChannel {
-    }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class MainApplicationClient : System.ServiceModel.DuplexClientBase<AppDirect.WindowsClient.Browser.MainApp.IMainApplication>, AppDirect.WindowsClient.Browser.MainApp.IMainApplication {
-        
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance) : 
-                base(callbackInstance) {
+    public partial class MainApplicationClient : System.ServiceModel.DuplexClientBase<IMainApplication>, IMainApplication
+    {
+        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance) :
+            base(callbackInstance)
+        {
         }
-        
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : 
-                base(callbackInstance, endpointConfigurationName) {
+
+        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) :
+            base(callbackInstance, endpointConfigurationName)
+        {
         }
-        
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : 
-                base(callbackInstance, endpointConfigurationName, remoteAddress) {
+
+        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) :
+            base(callbackInstance, endpointConfigurationName, remoteAddress)
+        {
         }
-        
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(callbackInstance, endpointConfigurationName, remoteAddress) {
+
+        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) :
+            base(callbackInstance, endpointConfigurationName, remoteAddress)
+        {
         }
-        
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(callbackInstance, binding, remoteAddress) {
+
+        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) :
+            base(callbackInstance, binding, remoteAddress)
+        {
         }
-        
-        public AppDirect.WindowsClient.Common.API.IApplication GetApplicationById(string id) {
+
+        public IApplication GetApplicationById(string id)
+        {
             return base.Channel.GetApplicationById(id);
         }
-        
-        public AppDirect.WindowsClient.Common.API.IAppDirectSession GetCurrentSession() {
+
+        public IAppDirectSession GetCurrentSession()
+        {
             return base.Channel.GetCurrentSession();
+        }
+
+        public void BrowserWasClosed()
+        {
+            base.Channel.BrowserWasClosed();
         }
     }
 }

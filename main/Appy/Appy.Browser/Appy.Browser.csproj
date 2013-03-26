@@ -80,6 +80,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="API\BrowserViewModelAndApi.cs" />
     <Compile Include="Control\AppDirectCefApp.cs" />
     <Compile Include="Interaction\Options.cs" />
     <Compile Include="Service References\MainApp\Reference.cs">
