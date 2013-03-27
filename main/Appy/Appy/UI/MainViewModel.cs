@@ -160,7 +160,7 @@ namespace AppDirect.WindowsClient.UI
                 ServiceLocator.LocalStorage.ClearLoginCredentials();
             }
 
-            SyncAppsWithApi();
+            SyncMyApplications();
             IsLoggedIn = false;
         }
 
@@ -226,8 +226,11 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
         }
-
-        private void SyncMyApplications()
+        
+        /// <summary>
+        /// Attempts to sync MyApplications with API. Default behavior ignores exceptions.  Will fail if user is logged in and the API can not be reached.
+        /// </summary>
+        private void SyncMyApplications(bool throwExceptions = false)
         {
             try
             {
@@ -263,11 +266,17 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                if (throwExceptions)
+                {
+                    throw e;
+                }
             }
         }
 
-        private void GetSuggestedApplicationsWithApiCall()
+        /// <summary>
+        /// Attempts to sync SuggestedApplications with API. Default behavior ignores exceptions.  Will fail if the API can not be reached.
+        /// </summary>
+        private void GetSuggestedApplicationsWithApiCall(bool throwExceptions = false)
         {
             try
             {
@@ -302,7 +311,10 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                if (throwExceptions)
+                {
+                    throw e;
+                }
             }
         }
 
@@ -478,7 +490,8 @@ namespace AppDirect.WindowsClient.UI
 
         public void LoginSuccessful(object sender, EventArgs e)
         {
-            SyncAppsWithApi();
+            SyncMyApplications(true);
+            GetSuggestedApplicationsWithApiCall(true);
             IsLoggedIn = true;
         }
     }
