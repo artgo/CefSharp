@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using AppDirect.WindowsClient.API;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using AppDirect.WindowsClient.API;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -40,7 +31,7 @@ namespace AppDirect.WindowsClient.UI
             InitializeComponent();
             SetFocusField();
         }
-        
+
         private void LoginFailed()
         {
             UsernameTextBox.Focus();
@@ -55,7 +46,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 UsernameTextBox.Background = _validColorBrush;
             }
-            
+
             if (LoginFailedMessage.Visibility == Visibility.Visible)
             {
                 PasswordBox.Background = _validColorBrush;
@@ -67,8 +58,8 @@ namespace AppDirect.WindowsClient.UI
         {
             if (e.Key == Key.Return)
             {
-                    UsernameTextBox.Background = _validColorBrush;
-                    LoginButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                UsernameTextBox.Background = _validColorBrush;
+                LoginButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             }
         }
 
@@ -147,7 +138,7 @@ namespace AppDirect.WindowsClient.UI
             ClearLoginFailed();
             CheckUsername();
         }
-        
+
         private void ForgotPassword(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start(Properties.Resources.ForgotPasswordUrlString);
@@ -173,7 +164,6 @@ namespace AppDirect.WindowsClient.UI
                     LoginFailed();
                 }
             }
-
             catch (System.Net.WebException ex)
             {
                 ViewModel.ShowNetworkProblem();
@@ -189,7 +179,7 @@ namespace AppDirect.WindowsClient.UI
             if (emailIsBad)
             {
                 UsernameTextBox.Focus();
-            } 
+            }
             else if (passwordIsBad)
             {
                 PasswordBox.Focus();
@@ -205,13 +195,13 @@ namespace AppDirect.WindowsClient.UI
                 UsernameTextBox.Background = _errorColorBrush;
                 EmailFormatErrorMessage.Visibility = Visibility.Visible;
             }
-           
+
             return !(passwordIsBad || emailIsBad);
         }
 
         private void CancelLoginClick(object sender, RoutedEventArgs e)
         {
-            PasswordBox.Password = string.Empty; 
+            PasswordBox.Password = string.Empty;
             CloseLogin.Invoke(sender, e);
         }
 
