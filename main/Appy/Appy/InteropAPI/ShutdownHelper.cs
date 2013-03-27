@@ -39,7 +39,6 @@ namespace AppDirect.WindowsClient.InteropAPI
         {
             TaskbarApi.Cleanup();
             Application.Current.Dispatcher.Invoke(new System.Action<Application>((_) => Application.Current.Shutdown()), Application.Current);
-            Environment.Exit(0);
         }
 
         public bool Shutdown()
