@@ -88,6 +88,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /home.
+        /// </summary>
+        internal static string AppStorePath {
+            get {
+                return ResourceManager.GetString("AppStorePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://test.appdirect.com.
         /// </summary>
         internal static string BaseAppStoreUrl {
@@ -151,7 +160,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://test.appdirect.com/apps/.
+        ///   Looks up a localized string similar to /apps/.
         /// </summary>
         internal static string InstallAppTarget {
             get {

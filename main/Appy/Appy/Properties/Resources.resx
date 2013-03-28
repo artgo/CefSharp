@@ -126,6 +126,9 @@
   <data name="ApplicationName" xml:space="preserve">
     <value>AppDirect Windows Client</value>
   </data>
+  <data name="AppStorePath" xml:space="preserve">
+    <value>/home</value>
+  </data>
   <data name="BaseAppStoreUrl" xml:space="preserve">
     <value>https://test.appdirect.com</value>
   </data>
@@ -148,7 +151,7 @@
     <value>Check for updates</value>
   </data>
   <data name="InstallAppTarget" xml:space="preserve">
-    <value>https://test.appdirect.com/apps/</value>
+    <value>/apps/</value>
   </data>
   <data name="InstallUpdateString" xml:space="preserve">
     <value>Install updates now</value>
