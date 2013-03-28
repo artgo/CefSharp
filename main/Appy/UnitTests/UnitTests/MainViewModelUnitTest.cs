@@ -56,6 +56,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         private void InitializeTests()
         {
             ServiceLocator.LocalStorage.ClearAllStoredData();
+            ServiceLocator.CachedAppDirectApi.SuggestedApps.Returns(_suggestedApplications);
             _mainViewModel = new MainViewModel();
             _mainViewModel.InitializeAppsLists();
             _mainViewModel.SyncAppsWithApi();
@@ -248,6 +249,16 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             _mainViewModel.UpdateClick();
 
             mockUpdater.Received().InstallUpdates();
+        }
+
+        [Test]
+        public void NoSuggestedAppsNoError()
+        {
+            InitializeTests();
+            ServiceLocator.CachedAppDirectApi.SuggestedApps.Returns(new List<Application>());
+            _mainViewModel.SyncAppsWithApi();
+
+            Assert.IsNull(_mainViewModel.SuggestedApplications.FirstOrDefault(a => !a.Application.IsLocalApp));
         }
         
         #endregion
