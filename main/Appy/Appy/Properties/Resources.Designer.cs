@@ -106,6 +106,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://.
+        /// </summary>
+        internal static string BaseUrlProtocol {
+            get {
+                return ResourceManager.GetString("BaseUrlProtocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking for updates.
         /// </summary>
         internal static string CheckingForUpdatesString {

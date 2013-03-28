@@ -186,4 +186,7 @@
   <data name="VersionFileUrl" xml:space="preserve">
     <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/version.txt</value>
   </data>
+  <data name="BaseUrlProtocol" xml:space="preserve">
+    <value>https://</value>
+  </data>
 </root>

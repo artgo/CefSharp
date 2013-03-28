@@ -29,8 +29,8 @@ namespace AppDirect.WindowsClient.API
         public static readonly int DefaultBrowserWidth = 1000;
         public static readonly int DefaultBrowserHeight = 581;
         public static readonly bool DefaultBrowserResizable = true;
-        public static string BaseAppStoreDomainName = Properties.Resources.BaseAppStoreUrl;
-        public static string BaseAppStoreUrl = @"https://" + BaseAppStoreDomainName;
+        public static readonly string BaseAppStoreDomainName = Properties.Resources.BaseAppStoreUrl;
+        public static readonly string BaseAppStoreUrl = Properties.Resources.BaseUrlProtocol + BaseAppStoreDomainName;
 
         public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
         {
