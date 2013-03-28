@@ -97,7 +97,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://test.appdirect.com.
+        ///   Looks up a localized string similar to test.appdirect.com.
         /// </summary>
         internal static string BaseAppStoreUrl {
             get {

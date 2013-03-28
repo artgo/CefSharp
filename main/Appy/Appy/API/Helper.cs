@@ -29,6 +29,8 @@ namespace AppDirect.WindowsClient.API
         public static readonly int DefaultBrowserWidth = 1000;
         public static readonly int DefaultBrowserHeight = 581;
         public static readonly bool DefaultBrowserResizable = true;
+        public static string BaseAppStoreDomainName = Properties.Resources.BaseAppStoreUrl;
+        public static string BaseAppStoreUrl = @"https://" + BaseAppStoreDomainName;
 
         public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
         {
@@ -78,20 +80,25 @@ namespace AppDirect.WindowsClient.API
             {
                 var clickedApp = GetApplicationFromButtonSender(sender);
 
-                if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.Application.UrlString)))
-                {
-                    MessageBox.Show("Application developer didn't set application's URL");
-                }
-                else
-                {
-                    (new Thread(() =>
-                        ServiceLocator.BrowserWindowsCommunicator.OpenOrActivateApp(clickedApp.Application)
-                        )).Start();
-                }
+                LaunchApp(clickedApp);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        public static void LaunchApp(ApplicationViewModel clickedApp)
+        {
+            if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.Application.UrlString)))
+            {
+                MessageBox.Show("Application developer didn't set application's URL");
+            }
+            else
+            {
+                (new Thread(() =>
+                            ServiceLocator.BrowserWindowsCommunicator.OpenOrActivateApp(clickedApp.Application)
+                    )).Start();
             }
         }
 

@@ -12,10 +12,10 @@ namespace AppDirect.WindowsClient.API
     {
         private const string JSessionIdParamName = "JSESSIONID";
         private const string InitialSessionIdValue = "2E11DE721BAF465953CAFC0407F8F448-n1";
-        private const string DomainName = @"test.appdirect.com";
-        private const string DomainPrefix = @"https://" + DomainName;
+        private static readonly string DomainName = Helper.BaseAppStoreDomainName;
+        private static readonly string DomainPrefix = Helper.BaseAppStoreUrl;
         private const string LoginParams = "id2_hf_0=&_spring_security_remember_me=on&email={0}&password={1}&signin";
-        private const string MyAppsUrl = DomainPrefix + @"/api/account/v1/myapps.json";
+        private static readonly string MyAppsUrl = DomainPrefix + @"/api/account/v1/myapps.json";
         private const string FormContentType = "application/x-www-form-urlencoded";
         private const string JsonAcceptString = "application/json,text/javascript,*/*;q=0.01";
         private const string HtmlAcceptString = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
