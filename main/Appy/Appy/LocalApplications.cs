@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Models;
 
@@ -18,8 +19,8 @@ namespace AppDirect.WindowsClient
             LocalImagePath = "Icons/appStore-Icon.png",
             ImagePath = "Icons/appStore-Icon.png",
             Name = "Browse Apps",
-            UrlString = Properties.Resources.BaseAppStoreUrl,
-            BrowserWidth = 1072,
+            UrlString = Helper.BaseAppStoreUrl + Properties.Resources.AppStorePath,
+            BrowserWidth = 1150,
             BrowserHeight = 830
         };
 

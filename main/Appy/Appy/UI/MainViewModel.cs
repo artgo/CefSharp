@@ -177,7 +177,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                System.Diagnostics.Process.Start(Properties.Resources.InstallAppTarget + applicationViewModel.Application.Id);
+                Helper.LaunchApp(applicationViewModel);
             }
         }
 
