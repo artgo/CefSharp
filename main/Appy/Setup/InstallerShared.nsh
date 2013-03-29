@@ -21,20 +21,6 @@
 AutoCloseWindow true
 ;--------------------------------
 
-!macro WaitForDead
-loop:
-  IntOp $R0 $R0 + 1
-  FindWindow $0 "" "${APPWINDOWCLASSNAME}"
-  StrCmp $0 "0" done
-  StrCmp $R0 "100" message
-  Sleep 200
-  Goto loop
-  message:
-  MessageBox MB_OK "${APPNAME} can't install because there is another version of the application running."
-    Abort
-done:
-!macroend
-
 !macro CloseApplicationIfRunning
   System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
   FindWindow $0 "" "${APPWINDOWCLASSNAME}"
@@ -44,8 +30,7 @@ done:
     Abort
   gogogo:
   SendMessage $0 $3 0 0
-  Sleep 1500
-  !insertmacro WaitForDead
+  ExecCmd::wait $0
   ${EndIf}
 !macroend
 
