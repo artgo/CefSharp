@@ -510,9 +510,9 @@
                 <Menu Name="SettingsMenu" Background="Transparent" Grid.Column="4" VerticalAlignment="Center"
                       HorizontalAlignment="Right" Width="30">
                     <MenuItem Style="{StaticResource TopLevelMenuItem}" SubmenuClosed="Settings_OnSubmenuClosed">
-                        <MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateCheckMenuItem"
+                        <!--<MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateCheckMenuItem"
                                   Header="{Binding UpdateAvailableString}" Visibility="{Binding UpdateAvailableVisibility}">
-                        </MenuItem>
+                        </MenuItem>-->
                         <MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateMenuItem"
                                   Header="{Binding UpdateString}" Click="UpdateButtonOnClick">
                             <MenuItem.Icon>
@@ -609,7 +609,7 @@
             <TextBlock Text="{Binding SuggestedAppsLoadError}" HorizontalAlignment="Left" Margin="75,300,0,0"
                        VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2" />
         </Grid>
-        <controls:LoginView x:Name="LoginViewControl"/>
+        <controls:LoginView x:Name="LoginViewControl" Visibility="Hidden"/>
         <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden" />
     </Grid>
 </Window>
