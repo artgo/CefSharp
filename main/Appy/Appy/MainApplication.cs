@@ -1,83 +1,39 @@
-﻿using System.ServiceModel;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Storage;
+using System.Linq;
+using System.ServiceModel;
 
 namespace AppDirect.WindowsClient
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "MainApplication" in both code and config file together.
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.PerSession)]
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Single, InstanceContextMode = InstanceContextMode.Single)]
     public class MainApplication : IMainApplication
     {
-        private volatile string _id;
-        private readonly IMainApplicationCallback _callback;
+        private readonly IBrowserWindowsCommunicator _browserWindowsCommunicator;
+        private readonly LocalStorage _localStorage;
+        private readonly ILatch _latch;
 
-        public MainApplication()
+        public MainApplication(IBrowserWindowsCommunicator browserWindowsCommunicator, LocalStorage localStorage, ILatch latch)
         {
-            _callback = OperationContext.Current.GetCallbackChannel<IMainApplicationCallback>();
+            _browserWindowsCommunicator = browserWindowsCommunicator;
+            _localStorage = localStorage;
+            _latch = latch;
         }
 
-        public IApplication GetApplicationById(string id)
+        public IInitData Initialized()
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                return null;
-            }
-
-            _id = id;
-
-            ServiceLocator.IpcCommunicator.RegisterClient(id, this);
-
-            return ApplicationById(id);
-        }
-
-        private IApplication ApplicationById(string id)
-        {
-            lock (ServiceLocator.LocalStorage.Locker)
-            {
-                var apps = ServiceLocator.LocalStorage.InstalledLocalApps;
-
-                foreach (var app in apps)
+            var apps = _localStorage.InstalledAppDirectApps.Cast<IApplication>().ToList();
+            var initData = new InitData()
                 {
-                    if (id.Equals(app.Id))
-                    {
-                        return app;
-                    }
-                }
+                    Applications = apps,
+                    Session = ServiceLocator.CachedAppDirectApi.Session
+                };
 
-                apps = ServiceLocator.LocalStorage.InstalledAppDirectApps;
-                foreach (var app in apps)
-                {
-                    if (id.Equals(app.Id))
-                    {
-                        return app;
-                    }
-                }
+            _browserWindowsCommunicator.Start();
 
-                apps = ServiceLocator.LocalStorage.LastSuggestedApps;
-                foreach (var app in apps)
-                {
-                    if (id.Equals(app.Id))
-                    {
-                        return app;
-                    }
-                }
-            }
+            _latch.Unlock();
 
-            return null;
-        }
-
-        public IAppDirectSession GetCurrentSession()
-        {
-            return ServiceLocator.CachedAppDirectApi.Session;
-        }
-
-        public void BrowserWasClosed()
-        {
-            ServiceLocator.IpcCommunicator.RemoveClient(_id);
-        }
-
-        public IMainApplicationCallback Callback
-        {
-            get { return _callback; }
+            return initData;
         }
     }
 }

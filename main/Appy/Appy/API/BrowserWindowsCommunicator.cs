@@ -1,48 +1,61 @@
-﻿using System.Threading;
+﻿using AppDirect.WindowsClient.BrowsersApi;
 using AppDirect.WindowsClient.Common.API;
-using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace AppDirect.WindowsClient.API
 {
     public class BrowserWindowsCommunicator : IBrowserWindowsCommunicator
     {
-        private static readonly string BrowserPostfix = Helper.BrowserProjectExt + Helper.ExeExt;
-        private const string AppIdParameterName = "--appid=";
+        private volatile IBrowsersManagerApi _browserApi;
+        private volatile ICommunicationObject _communicationObject;
+        private readonly ILatch _latch;
 
-        private readonly IIpcCommunicator _ipcCommunicator;
-
-        public BrowserWindowsCommunicator(IIpcCommunicator ipcCommunicator)
+        public BrowserWindowsCommunicator(ILatch latch)
         {
-            _ipcCommunicator = ipcCommunicator;
+            _latch = latch;
         }
 
-        public void OpenOrActivateApp(IApplication application)
+        public void DisplayApplication(IApplication application)
         {
-            if (application == null)
-            {
-                throw new ArgumentNullException("application");
-            }
-
-            var browserExists = _ipcCommunicator.ActivateBrowserIfExists(application.Id);
-
-            if (!browserExists)
-            {
-                var browserWindowProcess = new Process();
-                browserWindowProcess.StartInfo.FileName = Helper.ApplicationName + BrowserPostfix;
-                browserWindowProcess.StartInfo.Arguments = AppIdParameterName + "\"" + application.Id + "\"";
-                browserWindowProcess.Start();
-            }
+            _latch.Wait();
+            _browserApi.DisplayApplication(application);
         }
 
-        public void CloseApp(IApplication application)
+        public void CloseApplication(string appId)
         {
-            if (application == null)
-            {
-                throw new ArgumentNullException("application");
-            }
+            _latch.Wait();
+            _browserApi.CloseApplication(appId);
+        }
 
-            _ipcCommunicator.CloseBrowser(application.Id);
+        public void UpdateSession(IAppDirectSession newSession)
+        {
+            _latch.Wait();
+            _browserApi.UpdateSession(newSession);
+        }
+
+        public void UpdateApplications(IEnumerable<IApplication> applications)
+        {
+            _latch.Wait();
+            _browserApi.UpdateApplications(applications);
+        }
+
+        public void CloaseAllApplicationsAndQuit()
+        {
+            _latch.Wait();
+            _browserApi.CloaseAllApplicationsAndQuit();
+        }
+
+        public virtual void Start()
+        {
+            // We can't instantiate this object in advance, since it tries to connect in constructor.
+            var client = new BrowsersManagerApiClient();
+            _browserApi = client;
+            _communicationObject = client;
+        }
+
+        public void Stop()
+        {
         }
     }
 }

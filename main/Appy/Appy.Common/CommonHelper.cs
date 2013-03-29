@@ -50,5 +50,10 @@ namespace AppDirect.WindowsClient.Common
                 Thread.Sleep(remainingTime);
             }
         }
+
+        public static void GracefulShutdown()
+        {
+            PerformInUiThread(() => System.Windows.Application.Current.Shutdown());
+        }
     }
 }

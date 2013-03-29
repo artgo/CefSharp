@@ -151,7 +151,9 @@
     <Compile Include="API\Helper.cs" />
     <Compile Include="API\IBrowserWindowsCommunicator.cs" />
     <Compile Include="API\IIpcCommunicator.cs" />
+    <Compile Include="API\ILatch.cs" />
     <Compile Include="API\IpcCommunicator.cs" />
+    <Compile Include="API\Latch.cs" />
     <Compile Include="InteropAPI\Internal\CoordsPackager.cs" />
     <Compile Include="InteropAPI\Internal\InteractionsObject.cs" />
     <Compile Include="InteropAPI\Internal\Interop.cs" />
@@ -177,6 +179,11 @@
       <DependentUpon>myapps.xsd</DependentUpon>
     </Compile>
     <Compile Include="Models\LoginObject.cs" />
+    <Compile Include="Service References\BrowsersApi\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
@@ -268,6 +275,22 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Service References\BrowsersApi\AppDirect.WindowsClient.Common.API.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\service.wsdl" />
+    <None Include="Service References\BrowsersApi\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\System.Net.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\pandora.png" />
@@ -450,6 +473,24 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\logoutWhite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\BrowsersApi\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BrowsersApi\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BrowsersApi\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BrowsersApi\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

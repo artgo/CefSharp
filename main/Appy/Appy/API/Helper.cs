@@ -96,9 +96,7 @@ namespace AppDirect.WindowsClient.API
             }
             else
             {
-                (new Thread(() =>
-                            ServiceLocator.BrowserWindowsCommunicator.OpenOrActivateApp(clickedApp.Application)
-                    )).Start();
+                ServiceLocator.BrowserWindowsCommunicator.DisplayApplication(clickedApp.Application);
             }
         }
 
@@ -120,13 +118,11 @@ namespace AppDirect.WindowsClient.API
             {
                 if (localStorage.HasCredentials)
                 {
-                    if (ServiceLocator.CachedAppDirectApi.IsAuthenticated)
-                    {
-                        return true;
-                    }
                     if (ServiceLocator.CachedAppDirectApi.Authenticate(localStorage.LoginInfo.Username,
                                                                        localStorage.LoginInfo.Password))
                     {
+                        ServiceLocator.BrowserWindowsCommunicator.UpdateSession(ServiceLocator.CachedAppDirectApi.Session);
+
                         return true;
                     }
 

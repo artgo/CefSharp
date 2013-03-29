@@ -59,7 +59,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             ServiceLocator.CachedAppDirectApi.SuggestedApps.Returns(_suggestedApplications);
             _mainViewModel = new MainViewModel();
             _mainViewModel.InitializeAppsLists();
-            _mainViewModel.SyncAppsWithApi();
+            _mainViewModel.SyncMyApplications(true, true);
+            _mainViewModel.GetSuggestedApplicationsWithApiCall();
         }
         
         #region Constructor Tests
@@ -193,7 +194,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             SetMyAppsAndLogin(_myApplications);
             var apiApp = _mainViewModel.MyApplications.First(a => !a.Application.IsLocalApp);
             _mainViewModel.MyApplications.Remove(apiApp);
-            _mainViewModel.SyncAppsWithApi();
+            _mainViewModel.SyncMyApplications(true, true);
+            _mainViewModel.GetSuggestedApplicationsWithApiCall();
 
             Assert.IsNotNull(_mainViewModel.MyApplications.FirstOrDefault(a => Equals(a.Application, apiApp.Application)));
         }
@@ -208,9 +210,10 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
             SetMyAppsAndLogin(_myApplications);
 
-            _mainViewModel.SyncAppsWithApi();
+            _mainViewModel.SyncMyApplications(true, true);
+            _mainViewModel.GetSuggestedApplicationsWithApiCall();
 
-            Assert.IsNull(_mainViewModel.MyApplications.FirstOrDefault(a => a.Application == expiredApp));
+            Assert.IsNull(_mainViewModel.MyApplications.FirstOrDefault(a => a.Application.Equals(expiredApp)));
         }
 
         #endregion
@@ -256,7 +259,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             ServiceLocator.CachedAppDirectApi.SuggestedApps.Returns(new List<Application>());
-            _mainViewModel.SyncAppsWithApi();
+            _mainViewModel.SyncMyApplications(true, true);
+            _mainViewModel.GetSuggestedApplicationsWithApiCall();
 
             Assert.IsNull(_mainViewModel.SuggestedApplications.FirstOrDefault(a => !a.Application.IsLocalApp));
         }

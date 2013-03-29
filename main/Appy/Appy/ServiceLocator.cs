@@ -36,16 +36,22 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<Updater>(); }
         }
 
+        public static ILatch BrowserStartupLatch
+        {
+            get { return Kernel.Get<ILatch>(); }
+        }
+
         /// <summary>
         /// Initializes Apis, Loads Local Storage, etc
         /// </summary>
         public static void Initialize()
         {
+            Kernel.Rebind<ILatch>().ToConstant(new Latch());
             Kernel.Rebind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Rebind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
             Kernel.Rebind<LocalStorage>().ToConstant(new LocalStorage());
-            Kernel.Rebind<IIpcCommunicator>().ToConstant(new IpcCommunicator());
-            Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator(Kernel.Get<IIpcCommunicator>()));
+            Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator(Kernel.Get<ILatch>()));
+            Kernel.Rebind<IIpcCommunicator>().ToConstant(new IpcCommunicator(new MainApplication(Kernel.Get<IBrowserWindowsCommunicator>(), Kernel.Get<LocalStorage>(), Kernel.Get<ILatch>())));
             Kernel.Rebind<Updater>().ToConstant(new Updater());
         }
     }

@@ -63,7 +63,7 @@ namespace AppDirect.WindowsClient.Browser.UI
 
         public void Close_OnClick(object sender, RoutedEventArgs e)
         {
-            Close();
+            Hide();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

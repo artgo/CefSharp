@@ -1,4 +1,6 @@
-﻿using AppDirect.WindowsClient.Browser.Control;
+﻿using AppDirect.WindowsClient.Browser.API;
+using AppDirect.WindowsClient.Browser.Control;
+using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Threading;
 
@@ -7,24 +9,23 @@ namespace AppDirect.WindowsClient.Browser.Session
     /// <summary>
     /// Keeping session alive for the duration of object live
     /// </summary>
-    public class SessionKeeper : IDisposable
+    public class SessionKeeper : IDisposable, IStartStop
     {
-        private static readonly TimeSpan TimeBetweenUpdates = TimeSpan.FromMinutes(5);
+        private static readonly TimeSpan TimeBetweenUpdates = TimeSpan.FromMinutes(3);
         private readonly Thread _updaterThread;
-        private readonly WpfCefBrowser _browser = new WpfCefBrowser();
-        private readonly string _url = null;
+        private readonly BrowserWindowsManager _browserWindowsManager;
         private volatile bool _stopFlag = false;
-        private readonly ThreadStart _sessionUpdator; 
+        private readonly ThreadStart _sessionUpdator;
 
-        public SessionKeeper(string url)
+        public SessionKeeper(BrowserWindowsManager browserWindowsManager)
         {
-            if (string.IsNullOrEmpty(url))
+            if (browserWindowsManager == null)
             {
-                throw new ArgumentNullException("url");
+                throw new ArgumentNullException("browserWindowsManager");
             }
 
             _sessionUpdator = KeepUpdatingSession;
-            _url = url;
+            _browserWindowsManager = browserWindowsManager;
             _updaterThread = new Thread(_sessionUpdator);
         }
 
@@ -48,9 +49,13 @@ namespace AppDirect.WindowsClient.Browser.Session
 
                 try
                 {
-                    ReloadSession();
+                    ReloadSessions();
                 }
                 catch (ThreadAbortException)
+                {
+                    throw;
+                }
+                catch (ThreadInterruptedException)
                 {
                     throw;
                 }
@@ -61,9 +66,16 @@ namespace AppDirect.WindowsClient.Browser.Session
             }
         }
 
-        private void ReloadSession()
+        private void ReloadSessions()
         {
-            _browser.NavigateTo(_url);
+            foreach (var app in _browserWindowsManager.Applications)
+            {
+                if ((app != null) && !string.IsNullOrEmpty(app.UrlString))
+                {
+                    var browser = new WpfCefBrowser();
+                    browser.NavigateTo(app.UrlString);
+                }
+            }
         }
 
         public void Stop()

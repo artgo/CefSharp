@@ -17,6 +17,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
         private const string CacheDirectory = @"Cache";
         private const string DefaultId = @"Default";
         private const int RestoreSession = 3;
+        private const string CefClientExe = @"cefclient.exe";
 
         public void Load(string cachePath, string currentDir)
         {
@@ -48,7 +49,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
 
             var cefSettings = new CefSettings
             {
-                BrowserSubprocessPath = currentDir + Path.DirectorySeparatorChar + @"cefclient.exe",
+                BrowserSubprocessPath = currentDir + Path.DirectorySeparatorChar + CefClientExe,
                 SingleProcess = false,
                 MultiThreadedMessageLoop = true,
                 LogSeverity = CefLogSeverity.Error,
@@ -87,12 +88,11 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             }
         }
 
-        public void Initialize(string appId)
+        public void Initialize()
         {
-            var safeAppId = string.IsNullOrEmpty(appId) ? DefaultId : appId;
             var currentDirectory = Environment.CurrentDirectory;
             var cachePath = currentDirectory + Path.DirectorySeparatorChar + CacheDirectory +
-                            Path.DirectorySeparatorChar + safeAppId;
+                            Path.DirectorySeparatorChar + DefaultId;
 
             if (!Directory.Exists(cachePath))
             {

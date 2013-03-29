@@ -14,7 +14,9 @@ namespace AppDirect.WindowsClient.UI
         {
             while (true)
             {
-                _mainWindow.ViewModel.SyncAppsWithApi();
+                _mainWindow.ViewModel.SyncMyApplications(false, true);
+                _mainWindow.ViewModel.GetSuggestedApplicationsWithApiCall();
+
                 Thread.Sleep(RefreshAppsTimeSpan);
             }
         }

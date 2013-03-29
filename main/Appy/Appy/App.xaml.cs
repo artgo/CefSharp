@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
 
@@ -11,8 +12,9 @@ namespace AppDirect.WindowsClient
     /// </summary>
     public partial class App : System.Windows.Application
     {
-        private Mutex _instanceMutex = null;
-        private MainWindow _mainWindow;
+        private volatile Mutex _instanceMutex = null;
+        private volatile MainWindow _mainWindow;
+        private ThreadStart _ipcCommunicatorStart;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -34,8 +36,13 @@ namespace AppDirect.WindowsClient
                 MessageBox.Show(ex.Message);
             }
 
-            ServiceLocator.IpcCommunicator.Start();
             ServiceLocator.LocalStorage.LoadStorage();
+            _ipcCommunicatorStart = ServiceLocator.IpcCommunicator.Start;
+            (new Thread(_ipcCommunicatorStart)).Start();
+            if (ServiceLocator.LocalStorage.HasCredentials)
+            {
+                Helper.Authenticate();
+            }
 
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
@@ -60,12 +67,15 @@ namespace AppDirect.WindowsClient
             if (_instanceMutex != null)
             {
                 _instanceMutex.ReleaseMutex();
-                ServiceLocator.IpcCommunicator.Exit();
+                ServiceLocator.IpcCommunicator.Stop();
                 UpdateManager.Stop();
                 AppSessionRefresher.Stop();
+                ServiceLocator.BrowserWindowsCommunicator.Stop();
             }
 
             base.OnExit(e);
+
+            _ipcCommunicatorStart = null;
         }
 
         private void App_OnDeactivated(object sender, EventArgs e)

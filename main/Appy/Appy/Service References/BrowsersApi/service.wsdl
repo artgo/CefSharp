@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="BrowsersManagerApi" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="AppDirect.WindowsClient.Browser.API.BrowsersManagerApi_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
+        </msb:BinaryEncoding>
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+                </msf:WindowsTransportSecurity>
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256>
+                </sp:Basic256>
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict>
+                </sp:Strict>
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <wsaw:UsingAddressing>
+        </wsaw:UsingAddressing>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/System.Net" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IBrowsersManagerApi_DisplayApplication_InputMessage">
+    <wsdl:part name="parameters" element="tns:DisplayApplication" />
+  </wsdl:message>
+  <wsdl:message name="IBrowsersManagerApi_CloseApplication_InputMessage">
+    <wsdl:part name="parameters" element="tns:CloseApplication" />
+  </wsdl:message>
+  <wsdl:message name="IBrowsersManagerApi_UpdateSession_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateSession" />
+  </wsdl:message>
+  <wsdl:message name="IBrowsersManagerApi_UpdateApplications_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateApplications" />
+  </wsdl:message>
+  <wsdl:message name="IBrowsersManagerApi_CloaseAllApplicationsAndQuit_InputMessage">
+    <wsdl:part name="parameters" element="tns:CloaseAllApplicationsAndQuit" />
+  </wsdl:message>
+  <wsdl:portType name="IBrowsersManagerApi">
+    <wsdl:operation name="DisplayApplication">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/DisplayApplication" message="tns:IBrowsersManagerApi_DisplayApplication_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CloseApplication">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/CloseApplication" message="tns:IBrowsersManagerApi_CloseApplication_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateSession">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/UpdateSession" message="tns:IBrowsersManagerApi_UpdateSession_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateApplications">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/UpdateApplications" message="tns:IBrowsersManagerApi_UpdateApplications_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CloaseAllApplicationsAndQuit">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/CloaseAllApplicationsAndQuit" message="tns:IBrowsersManagerApi_CloaseAllApplicationsAndQuit_InputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AppDirect.WindowsClient.Browser.API.BrowsersManagerApi" type="tns:IBrowsersManagerApi">
+    <wsp:PolicyReference URI="#AppDirect.WindowsClient.Browser.API.BrowsersManagerApi_policy">
+    </wsp:PolicyReference>
+    <soap12:binding transport="http://schemas.microsoft.com/soap/named-pipe" />
+    <wsdl:operation name="DisplayApplication">
+      <soap12:operation soapAction="http://tempuri.org/IBrowsersManagerApi/DisplayApplication" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="CloseApplication">
+      <soap12:operation soapAction="http://tempuri.org/IBrowsersManagerApi/CloseApplication" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateSession">
+      <soap12:operation soapAction="http://tempuri.org/IBrowsersManagerApi/UpdateSession" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateApplications">
+      <soap12:operation soapAction="http://tempuri.org/IBrowsersManagerApi/UpdateApplications" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="CloaseAllApplicationsAndQuit">
+      <soap12:operation soapAction="http://tempuri.org/IBrowsersManagerApi/CloaseAllApplicationsAndQuit" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BrowsersManagerApi">
+    <wsdl:port name="AppDirect.WindowsClient.Browser.API.BrowsersManagerApi" binding="tns:AppDirect.WindowsClient.Browser.API.BrowsersManagerApi">
+      <soap12:address location="net.pipe://localhost/BrowsersManagerApi" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.pipe://localhost/BrowsersManagerApi</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Upn>ubuntudt\artem</Upn>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
