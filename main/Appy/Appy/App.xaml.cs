@@ -19,7 +19,7 @@ namespace AppDirect.WindowsClient
         protected override void OnStartup(StartupEventArgs e)
         {
             bool createdNew;
-            _instanceMutex = new Mutex(true, @"AppDirect.WindowsClient Application Manager Mutex ", out createdNew);
+            _instanceMutex = new Mutex(true, @"AppDirect.WindowsClient Application Manager Mutex", out createdNew);
             if (!createdNew)
             {
                 _instanceMutex = null;
