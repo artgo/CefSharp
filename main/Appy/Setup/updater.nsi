@@ -1,5 +1,6 @@
 !include "InstallerShared.nsh"
 !include "LogicLib.nsh"
+!include "FindProcess.nsh"
 
 ;--------------------------------
 
@@ -43,6 +44,7 @@ Function .onInit
 FunctionEnd
 
 Function .onInstSuccess
+  Sleep 200
   Exec "${APPEXEPATH}"
 FunctionEnd
 

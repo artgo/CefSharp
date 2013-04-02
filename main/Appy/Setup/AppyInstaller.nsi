@@ -2,6 +2,7 @@
 ;--------------------------------
 !include "MUI.nsh"
 !include "InstallerShared.nsh"
+!include "FindProcess.nsh"
 ;--------------------------------
 ; The name of the installer
 Name "${APPNAME}"
@@ -210,6 +211,7 @@ Section "Start Menu Shortcuts"
 SectionEnd
 
 Function .onInstSuccess
+  Sleep 200
   Exec "${APPEXEPATH}"
 FunctionEnd
 
