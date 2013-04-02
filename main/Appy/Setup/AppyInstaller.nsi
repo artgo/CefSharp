@@ -2,6 +2,7 @@
 ;--------------------------------
 !include "MUI.nsh"
 !include "InstallerShared.nsh"
+!include "FindProcess.nsh"
 ;--------------------------------
 ; The name of the installer
 Name "${APPNAME}"
