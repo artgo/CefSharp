@@ -4,6 +4,7 @@ using AppDirect.WindowsClient.Browser.MainApp;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
@@ -13,8 +14,9 @@ namespace AppDirect.WindowsClient.Browser
 {
     internal static class Program
     {
-        private static readonly BrowserObject BrowserObject = new BrowserObject();
-        private static readonly BrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject);
+        private static readonly IBrowserObject BrowserObject = new BrowserObject();
+        private static readonly IUiHelper UiHelper = new UiHelper();
+        private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper);
 
         /// <summary>
         /// The main entry point for the application.
@@ -33,7 +35,7 @@ namespace AppDirect.WindowsClient.Browser
             }
 
             var client = GetSessionAndApplications();
-            var api = new BrowsersManagerApi() {BrowserWindowsManager = BrowserWindowsManager};
+            var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper);
             var apiStarter = new IpcMainWindowStarter(api);
 
             var sessionKeeper = new SessionKeeper(BrowserWindowsManager);

@@ -1,13 +1,11 @@
-﻿using System;
+using System;
 using System.Threading;
 
-namespace AppDirect.WindowsClient.Common
+namespace AppDirect.WindowsClient.Common.UI
 {
-    public class CommonHelper
+    public class UiHelper : IUiHelper
     {
-        private CommonHelper() { }
-
-        public static void PerformInUiThread(Action action)
+        public void PerformInUiThread(Action action)
         {
             if (action == null)
             {
@@ -25,7 +23,7 @@ namespace AppDirect.WindowsClient.Common
             }
         }
 
-        public static void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn)
+        public void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn)
         {
             if (action == null)
             {
@@ -51,7 +49,7 @@ namespace AppDirect.WindowsClient.Common
             }
         }
 
-        public static void GracefulShutdown()
+        public void GracefulShutdown()
         {
             PerformInUiThread(() => System.Windows.Application.Current.Shutdown());
         }

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.InteropAPI.Internal;
 using NUnit.Framework;
+using System;
 
-namespace AppDirect.WindowsClient.InteropAPI.Internal
+namespace AppDirect.WindowsClient.Tests.InteropApi.Internal
 {
     [TestFixture]
     public class CoordsPackagerTest
@@ -10,7 +11,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public void TestPackParamsThrowsOnNullInput()
         {
             var packager = new CoordsPackager();
-            Assert.Throws<ArgumentNullException>(delegate { packager.PackParams(null); });
+            Assert.Throws<ArgumentNullException>(() => packager.PackParams(null));
         }
 
         [Test]

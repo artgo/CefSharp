@@ -11,15 +11,13 @@ namespace AppDirect.WindowsClient.Browser.Interaction
     /// <summary>
     /// Interaction with underlying browser system
     /// </summary>
-    public class BrowserObject
+    public class BrowserObject : IBrowserObject
     {
-        private static readonly long InfiniteDate = (new DateTime(2100, 1, 1)).ToBinary();
         private const string CacheDirectory = @"Cache";
         private const string DefaultId = @"Default";
-        private const int RestoreSession = 3;
         private const string CefClientExe = @"cefclient.exe";
 
-        public void Load(string cachePath, string currentDir)
+        private void Load(string cachePath, string currentDir)
         {
             try
             {
@@ -75,14 +73,14 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             Environment.Exit(1);
         }
 
-        internal void Unload()
+        public void Unload()
         {
             try
             {
                 // Shutdown CEF
                 CefRuntime.Shutdown();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Do nothing for now.
             }
@@ -100,21 +98,6 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             }
 
             Load(cachePath, currentDirectory);
-
-            ResurrectCookies();
-        }
-
-        private void ResurrectCookies()
-        {
-        }
-
-        private void RestoreBrowserSession()
-        {
-            //            Guid iid = typeof(nsISessionStore).GUID;
-            //            Guid guid = new Guid("59bfaf00-e3d8-4728-b4f0-cc0b9dfb4806");
-            //            IntPtr ptr = Xpcom.ServiceManager.GetService(ref iid, ref iid);
-            //            nsISessionStore sessionStore = (nsISessionStore)Xpcom.GetObjectForIUnknown(ptr);
-            //            sessionStore.RestoreLastSession();
         }
 
         private class CookiesSetTask : CefTask

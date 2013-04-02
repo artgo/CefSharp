@@ -1,5 +1,6 @@
-﻿using AppDirect.WindowsClient.Common;
-using AppDirect.WindowsClient.Common.API;
+﻿using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.UI;
+using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
@@ -9,13 +10,30 @@ namespace AppDirect.WindowsClient.Browser.API
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.Single)]
     public class BrowsersManagerApi : IBrowsersManagerApi
     {
-        public BrowserWindowsManager BrowserWindowsManager { get; set; }
+        private readonly IBrowserWindowsManager _browserWindowsManager;
+        private readonly IUiHelper _uiHelper;
+
+        public BrowsersManagerApi(IBrowserWindowsManager browserWindowsManager, IUiHelper uiHelper)
+        {
+            if (browserWindowsManager == null)
+            {
+                throw new ArgumentNullException("browserWindowsManager");
+            }
+
+            if (uiHelper == null)
+            {
+                throw new ArgumentNullException("uiHelper");
+            }
+
+            _browserWindowsManager = browserWindowsManager;
+            _uiHelper = uiHelper;
+        }
 
         public void DisplayApplication(IApplication application)
         {
-            var browserWindow = BrowserWindowsManager.GetOrCreateWindow(application);
+            var browserWindow = _browserWindowsManager.GetOrCreateBrowserWindow(application);
 
-            CommonHelper.PerformInUiThread(() =>
+            _uiHelper.PerformInUiThread(() =>
             {
                 if (!browserWindow.IsVisible)
                 {
@@ -34,26 +52,26 @@ namespace AppDirect.WindowsClient.Browser.API
 
         public void CloseApplication(string appId)
         {
-            var browserWindow = BrowserWindowsManager.GetWindow(appId);
+            var browserWindow = _browserWindowsManager.GetBrowserWindow(appId);
             if (browserWindow != null)
             {
-                CommonHelper.PerformInUiThread(browserWindow.Hide);
+                _uiHelper.PerformInUiThread(browserWindow.Hide);
             }
         }
 
         public void UpdateSession(IAppDirectSession newSession)
         {
-            BrowserWindowsManager.Session = newSession;
+            _browserWindowsManager.Session = newSession;
         }
 
         public void UpdateApplications(IEnumerable<IApplication> applications)
         {
-            BrowserWindowsManager.Applications = applications;
+            _browserWindowsManager.Applications = applications;
         }
 
         public void CloaseAllApplicationsAndQuit()
         {
-            CommonHelper.GracefulShutdown();
+            _uiHelper.GracefulShutdown();
         }
     }
 }

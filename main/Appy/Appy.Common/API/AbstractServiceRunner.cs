@@ -5,7 +5,8 @@ namespace AppDirect.WindowsClient.Common.API
 {
     public abstract class AbstractServiceRunner<T> : IAbstractServiceRunner<T>
     {
-        private readonly ICommunicationObject _host;
+        private volatile bool _started = false;
+        private volatile ICommunicationObject _host;
         private readonly T _service;
 
         protected AbstractServiceRunner(T service)
@@ -16,7 +17,6 @@ namespace AppDirect.WindowsClient.Common.API
             }
 
             _service = service;
-            _host = CreateServiceHost(_service);
         }
 
         protected virtual ICommunicationObject CreateServiceHost(T service)
@@ -26,12 +26,21 @@ namespace AppDirect.WindowsClient.Common.API
 
         public virtual void Start()
         {
+            _host = CreateServiceHost(_service);
             _host.Open();
+            _started = true;
         }
 
         public virtual void Stop()
         {
-            if (_host.State == CommunicationState.Opened)
+            if (!_started)
+            {
+                throw new InvalidOperationException("Service was not started");
+            }
+
+            _started = false;
+
+            if ((_host != null) && (_host.State == CommunicationState.Opened))
             {
                 _host.Close();
             }

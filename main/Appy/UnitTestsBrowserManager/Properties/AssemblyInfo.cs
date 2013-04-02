@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AppDirect.WindowsClient.Common")]
+[assembly: AssemblyTitle("UnitTestsBrowserManager")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("AppDirect Inc.")]
-[assembly: AssemblyProduct("AppDirect.WindowsClient.Common")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("UnitTestsBrowserManager")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,11 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4378581c-dc70-4e21-8543-91be134f8b26")]
-
-[assembly: InternalsVisibleTo("UnitTests")]
-[assembly: InternalsVisibleTo("UnitTestsBrowserManager")]
-[assembly: InternalsVisibleTo("IntegrationTests")]
+[assembly: Guid("576573e5-fdd3-4e55-83c5-addf825b6a4c")]
 
 // Version information for an assembly consists of the following four values:
 //

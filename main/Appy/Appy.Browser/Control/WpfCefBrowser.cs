@@ -460,7 +460,14 @@ namespace AppDirect.WindowsClient.Browser.Control
                 return;
 
             if (width > 0 && height > 0)
+            {
                 _browserHost.WasResized();
+            }
+
+            if (!string.IsNullOrEmpty(StartUrl))
+            {
+                browser.GetMainFrame().LoadUrl(StartUrl);
+            }
 
             // 			mainUiDispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
             // 			{

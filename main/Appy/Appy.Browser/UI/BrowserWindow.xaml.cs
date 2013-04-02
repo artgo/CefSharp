@@ -11,8 +11,15 @@ namespace AppDirect.WindowsClient.Browser.UI
     {
         private BrowserViewModel ViewModel { get; set; }
 
+        public BrowserWindow() { }
+
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
+            if (browserViewModel == null)
+            {
+                throw new ArgumentNullException("browserViewModel");
+            }
+
             ViewModel = browserViewModel;
 
             InitializeComponent();
@@ -24,6 +31,11 @@ namespace AppDirect.WindowsClient.Browser.UI
             Width = browserViewModel.Application.BrowserWidth;
             Height = browserViewModel.Application.BrowserHeight;
             TitleTextBlock.Text = browserViewModel.Application.Name;
+        }
+
+        public virtual void PreInitializeWindow()
+        {
+            browser.NavigateTo(ViewModel.Application.UrlString);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -61,7 +73,7 @@ namespace AppDirect.WindowsClient.Browser.UI
             Maximize.Visibility = Visibility.Visible;
         }
 
-        public void Close_OnClick(object sender, RoutedEventArgs e)
+        private void Close_OnClick(object sender, RoutedEventArgs e)
         {
             Hide();
         }

@@ -13,11 +13,11 @@ namespace AppDirect.WindowsClient.Browser.Session
     {
         private static readonly TimeSpan TimeBetweenUpdates = TimeSpan.FromMinutes(3);
         private readonly Thread _updaterThread;
-        private readonly BrowserWindowsManager _browserWindowsManager;
-        private volatile bool _stopFlag = false;
+        private readonly IBrowserWindowsManager _browserWindowsManager;
         private readonly ThreadStart _sessionUpdator;
+        private volatile bool _stopFlag = false;
 
-        public SessionKeeper(BrowserWindowsManager browserWindowsManager)
+        public SessionKeeper(IBrowserWindowsManager browserWindowsManager)
         {
             if (browserWindowsManager == null)
             {

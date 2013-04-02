@@ -77,10 +77,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="API\ApiData.cs" />
     <Compile Include="API\BrowserWindowsManager.cs" />
+    <Compile Include="API\IBrowserWindowsManager.cs" />
     <Compile Include="API\IpcMainWindowStarter.cs" />
     <Compile Include="Control\AppDirectCefApp.cs" />
+    <Compile Include="Interaction\IBrowserObject.cs" />
     <Compile Include="Service References\MainApp\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
