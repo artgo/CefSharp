@@ -1,20 +1,21 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.Common.UI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
+using AppDirect.WindowsClient.UI;
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using AppDirect.WindowsClient.Common;
-using AppDirect.WindowsClient.UI;
-using AppDirect.WindowsClient.InteropAPI.Internal;
-using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.API
 {
     public class Helper
     {
-        private Helper() {}
+        private Helper()
+        {
+        }
 
         public static readonly AssemblyName AssemblyName = Assembly.GetExecutingAssembly().GetName();
         public static readonly string ApplicationName = AssemblyName.Name;
@@ -31,6 +32,7 @@ namespace AppDirect.WindowsClient.API
         public static readonly bool DefaultBrowserResizable = true;
         public static readonly string BaseAppStoreDomainName = Properties.Resources.BaseAppStoreUrl;
         public static readonly string BaseAppStoreUrl = Properties.Resources.BaseUrlProtocol + BaseAppStoreDomainName;
+        public static readonly IUiHelper UiHelper = new UiHelper();
 
         public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
         {
@@ -46,7 +48,7 @@ namespace AppDirect.WindowsClient.API
             {
                 try
                 {
-                    action(); 
+                    action();
                     return;
                 }
                 catch
@@ -96,9 +98,7 @@ namespace AppDirect.WindowsClient.API
             }
             else
             {
-                (new Thread(() =>
-                            ServiceLocator.BrowserWindowsCommunicator.OpenOrActivateApp(clickedApp.Application)
-                    )).Start();
+                ServiceLocator.BrowserWindowsCommunicator.DisplayApplication(clickedApp.Application);
             }
         }
 
@@ -120,13 +120,11 @@ namespace AppDirect.WindowsClient.API
             {
                 if (localStorage.HasCredentials)
                 {
-                    if (ServiceLocator.CachedAppDirectApi.IsAuthenticated)
-                    {
-                        return true;
-                    }
                     if (ServiceLocator.CachedAppDirectApi.Authenticate(localStorage.LoginInfo.Username,
                                                                        localStorage.LoginInfo.Password))
                     {
+                        ServiceLocator.BrowserWindowsCommunicator.UpdateSession(ServiceLocator.CachedAppDirectApi.Session);
+
                         return true;
                     }
 
@@ -139,12 +137,12 @@ namespace AppDirect.WindowsClient.API
 
         public static void PerformInUiThread(Action action)
         {
-            CommonHelper.PerformInUiThread(action);
+            UiHelper.PerformInUiThread(action);
         }
- 
+
         public static void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn)
         {
-            CommonHelper.PerformForMinimumTime(action, requiresUiThread, minimumMillisecondsBeforeReturn);
+            UiHelper.PerformForMinimumTime(action, requiresUiThread, minimumMillisecondsBeforeReturn);
         }
 
         public static bool PerformWhenIdle(Action action, TimeSpan idleTimeRequired, TimeSpan intervalBetweenIdleCheck, TimeSpan timeout)

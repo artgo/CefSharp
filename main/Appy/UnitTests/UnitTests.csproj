@@ -44,6 +44,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -52,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\BrowserWindowsCommunicatorTest.cs" />
+    <Compile Include="Common\UI\TestUiHelper.cs" />
     <Compile Include="InteropApi\Internal\CoordsPackagerTest.cs" />
     <Compile Include="InteropApi\Internal\InteractionsObjectTest.cs" />
     <Compile Include="InteropApi\Internal\RectWinTest.cs" />
@@ -70,10 +72,6 @@
     <Compile Include="UnitTests\ServiceLocatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Appy.Browser\Appy.Browser.csproj">
-      <Project>{1f6bf7cc-6c7f-40c0-a48e-981d5ca6428a}</Project>
-      <Name>Appy.Browser</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Appy.Common\Appy.Common.csproj">
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
       <Name>Appy.Common</Name>
@@ -90,6 +88,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

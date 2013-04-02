@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Appy.Browser")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("AppDirect Inc.")]
 [assembly: AssemblyProduct("Appy.Browser")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
@@ -40,6 +40,9 @@ using System.Windows;
     // app, or any theme specific resource dictionaries)
 )]
 
+[assembly: InternalsVisibleTo("UnitTests")]
+[assembly: InternalsVisibleTo("UnitTestsBrowserManager")]
+[assembly: InternalsVisibleTo("IntegrationTests")]
 
 // Version information for an assembly consists of the following four values:
 //

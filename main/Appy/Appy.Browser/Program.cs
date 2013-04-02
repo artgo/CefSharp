@@ -3,10 +3,10 @@ using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.MainApp;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
-using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
-using CommandLine;
+using AppDirect.WindowsClient.Common.UI;
 using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
 
@@ -14,7 +14,9 @@ namespace AppDirect.WindowsClient.Browser
 {
     internal static class Program
     {
-        private static readonly BrowserObject BrowserObject = new BrowserObject();
+        private static readonly IBrowserObject BrowserObject = new BrowserObject();
+        private static readonly IUiHelper UiHelper = new UiHelper();
+        private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper);
 
         /// <summary>
         /// The main entry point for the application.
@@ -22,10 +24,9 @@ namespace AppDirect.WindowsClient.Browser
         [STAThread]
         private static void Main(string[] args)
         {
-            var appId = ExtractAppId(args);
             try
             {
-                BrowserObject.Initialize(appId);
+                BrowserObject.Initialize();
             }
             catch (Exception e)
             {
@@ -33,67 +34,41 @@ namespace AppDirect.WindowsClient.Browser
                 return;
             }
 
-            var browserViewModelAndApi = BuildBrowserViewModel(appId);
-            var browserViewModel = browserViewModelAndApi.BrowserViewModel;
+            var client = GetSessionAndApplications();
+            var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper);
+            var apiStarter = new IpcMainWindowStarter(api);
 
-            SessionKeeper sessionKeeper = null;
-            if ((browserViewModel != null) && (browserViewModel.Application != null))
-            {
-                var url = browserViewModel.Application.UrlString;
-                if (!string.IsNullOrEmpty(url))
-                {
-                    sessionKeeper = new SessionKeeper(url);
-                    sessionKeeper.Start();
-                }
-            }
-
-            var browserWindow = new BrowserWindow(browserViewModel);
-            browserViewModelAndApi.MainApplicationCallback.BrowserWindow = browserWindow;
-
-            var app = new App(browserWindow);
-            app.InitializeComponent();
-            app.Run();
-
-            var client = browserViewModelAndApi.MainApplicationClient;
-            if ((client != null) && (client.State == CommunicationState.Opened))
-            {
-                client.BrowserWasClosed();
-                client.Close();
-            }
-
-            if (sessionKeeper != null)
-            {
-                sessionKeeper.Stop();
-            }
-
-            BrowserObject.Unload();
-        }
-
-        private static string ExtractAppId(string[] args)
-        {
-            var options = new Options();
-
-            if ((args != null) && (args.Length > 0) &&
-                (CommandLineParser.Default.ParseArguments(args, options)) &&
-                !string.IsNullOrEmpty(options.AppId))
-            {
-                return options.AppId;
-            }
-
-            return null;
-        }
-
-        private static BrowserViewModelAndApi BuildBrowserViewModel(string appId)
-        {
-            MainApplicationClient mainApplicationProxy;
-            MainApplicationCallback mainApplicationCallback;
+            var sessionKeeper = new SessionKeeper(BrowserWindowsManager);
 
             try
             {
-                mainApplicationCallback = new MainApplicationCallback();
-                var context = new InstanceContext(mainApplicationCallback);
-                context.Faulted += ErrorOnServer;
-                mainApplicationProxy = new MainApplicationClient(context);
+                var app = new App();
+                app.InitializeComponent();
+                sessionKeeper.Start();
+                apiStarter.Start();
+                app.Run();
+            }
+            finally
+            {
+                apiStarter.Stop();
+                sessionKeeper.Stop();
+
+                BrowserObject.Unload();
+
+                if ((client != null) && (client.State == CommunicationState.Opened))
+                {
+                    client.Close();
+                }
+            }
+        }
+
+        private static MainApplicationClient GetSessionAndApplications()
+        {
+            MainApplicationClient mainApplicationClient;
+
+            try
+            {
+                mainApplicationClient = new MainApplicationClient();
             }
             catch (Exception e)
             {
@@ -101,49 +76,38 @@ namespace AppDirect.WindowsClient.Browser
                 return null;
             }
 
-            IApplication app;
+            IEnumerable<IApplication> applications;
             IAppDirectSession session;
             try
             {
-                app = (IApplication)mainApplicationProxy.GetApplicationById(appId);
-                session = (IAppDirectSession)mainApplicationProxy.GetCurrentSession();
+                var data = (IInitData)mainApplicationClient.Initialized();
+                applications = data.Applications;
+                session = data.Session;
             }
             catch (Exception e)
             {
-                MessageBox.Show(String.Format(Resources.Error_getting_data_error_message, appId, e.Message));
+                MessageBox.Show(String.Format(Resources.Error_getting_data_error_message, e.Message));
                 return null;
             }
 
-            if (app == null)
+            if (applications == null)
             {
-                MessageBox.Show(String.Format(Resources.No_app_data_transfered_error_message, appId));
+                MessageBox.Show(String.Format(Resources.No_app_data_transfered_error_message));
                 return null;
             }
 
             if (session == null)
             {
-                MessageBox.Show(String.Format(Resources.No_session_data_transfered_error_message, appId));
-                return null;
-            }
-
-            if (string.IsNullOrEmpty(app.UrlString))
-            {
-                MessageBox.Show(String.Format(Resources.Url_for_the_application_is_empty_error_message, appId));
+                MessageBox.Show(String.Format(Resources.No_session_data_transfered_error_message));
                 return null;
             }
 
             SetCookies(session);
 
-            var browserViewModel = new BrowserViewModel() { Application = app, Session = session };
+            BrowserWindowsManager.Applications = applications;
+            BrowserWindowsManager.Session = session;
 
-            var browserAndApi = new BrowserViewModelAndApi()
-                {
-                    BrowserViewModel = browserViewModel,
-                    MainApplicationClient = mainApplicationProxy,
-                    MainApplicationCallback = mainApplicationCallback
-                };
-
-            return browserAndApi;
+            return mainApplicationClient;
         }
 
         private static void SetCookies(IAppDirectSession session)

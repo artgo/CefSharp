@@ -2,9 +2,7 @@
 
 namespace AppDirect.WindowsClient.API
 {
-    public interface IBrowserWindowsCommunicator
+    public interface IBrowserWindowsCommunicator : IStartStop, IBrowsersManagerApi
     {
-        void OpenOrActivateApp(IApplication application);
-        void CloseApp(IApplication application);
     }
 }

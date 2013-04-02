@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -38,6 +39,9 @@ using System.Windows;
     // app, or any theme specific resource dictionaries)
 )]
 
+[assembly: InternalsVisibleTo("UnitTests")]
+[assembly: InternalsVisibleTo("UnitTestsBrowserManager")]
+[assembly: InternalsVisibleTo("IntegrationTests")]
 
 // Version information for an assembly consists of the following four values:
 //

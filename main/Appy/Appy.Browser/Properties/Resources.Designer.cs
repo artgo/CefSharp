@@ -70,7 +70,7 @@ namespace AppDirect.WindowsClient.Browser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error getting data for application id {0}, error: {1}.
+        ///   Looks up a localized string similar to Error getting data, error: {0}.
         /// </summary>
         internal static string Error_getting_data_error_message {
             get {
@@ -97,7 +97,7 @@ namespace AppDirect.WindowsClient.Browser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No session data transfered for application with id {0}.
+        ///   Looks up a localized string similar to No session data transfered.
         /// </summary>
         internal static string No_session_data_transfered_error_message {
             get {

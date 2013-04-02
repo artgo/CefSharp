@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Error_getting_data_error_message" xml:space="preserve">
-    <value>Error getting data for application id {0}, error: {1}</value>
+    <value>Error getting data, error: {0}</value>
   </data>
   <data name="Url_for_the_application_is_empty_error_message" xml:space="preserve">
     <value>Url for the application with id {0} is empty</value>
   </data>
   <data name="No_session_data_transfered_error_message" xml:space="preserve">
-    <value>No session data transfered for application with id {0}</value>
+    <value>No session data transfered</value>
   </data>
   <data name="No_app_data_transfered_error_message" xml:space="preserve">
     <value>No app data transfered for application with id {0}</value>

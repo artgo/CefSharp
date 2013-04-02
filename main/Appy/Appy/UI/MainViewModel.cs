@@ -1,4 +1,5 @@
 ﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Properties;
 using System;
 using System.Collections.Generic;
@@ -146,12 +147,6 @@ namespace AppDirect.WindowsClient.UI
             LoginViewModel.SetVisibility(IsLoggedIn);
         }
 
-        public void SyncAppsWithApi()
-        {
-            SyncMyApplications();
-            GetSuggestedApplicationsWithApiCall();
-        }
-
         public void Logout()
         {
             lock (ServiceLocator.LocalStorage.Locker)
@@ -230,15 +225,21 @@ namespace AppDirect.WindowsClient.UI
         /// <summary>
         /// Attempts to sync MyApplications with API. Default behavior ignores exceptions.  Will fail if user is logged in and the API can not be reached.
         /// </summary>
-        private void SyncMyApplications(bool throwExceptions = false)
+        public void SyncMyApplications(bool throwExceptions = false, bool forceAuthentication = false)
         {
             try
             {
                 var apiApps = new List<Application>();
 
-                if (Helper.Authenticate())
+                if (forceAuthentication || !ServiceLocator.CachedAppDirectApi.IsAuthenticated)
+                {
+                    Helper.Authenticate();
+                }
+
+                if (ServiceLocator.CachedAppDirectApi.IsAuthenticated)
                 {
                     apiApps = ServiceLocator.CachedAppDirectApi.MyApps.ToList();
+                    ServiceLocator.BrowserWindowsCommunicator.UpdateApplications(apiApps.Cast<IApplication>().ToList());
                 }
 
                 var displayedApps = MyApplications.Select(a => a.Application).ToList();
@@ -276,7 +277,7 @@ namespace AppDirect.WindowsClient.UI
         /// <summary>
         /// Attempts to sync SuggestedApplications with API. Default behavior ignores exceptions.  Will fail if the API can not be reached.
         /// </summary>
-        private void GetSuggestedApplicationsWithApiCall(bool throwExceptions = false)
+        public void GetSuggestedApplicationsWithApiCall(bool throwExceptions = false)
         {
             try
             {

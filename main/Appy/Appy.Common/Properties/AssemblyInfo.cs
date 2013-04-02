@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("AppDirect.WindowsClient.Common")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("AppDirect Inc.")]
 [assembly: AssemblyProduct("AppDirect.WindowsClient.Common")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
@@ -21,6 +21,10 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("4378581c-dc70-4e21-8543-91be134f8b26")]
+
+[assembly: InternalsVisibleTo("UnitTests")]
+[assembly: InternalsVisibleTo("UnitTestsBrowserManager")]
+[assembly: InternalsVisibleTo("IntegrationTests")]
 
 // Version information for an assembly consists of the following four values:
 //

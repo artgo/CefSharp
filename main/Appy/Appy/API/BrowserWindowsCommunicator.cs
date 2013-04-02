@@ -1,48 +1,94 @@
-﻿using System.Threading;
+﻿using AppDirect.WindowsClient.BrowsersApi;
 using AppDirect.WindowsClient.Common.API;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace AppDirect.WindowsClient.API
 {
     public class BrowserWindowsCommunicator : IBrowserWindowsCommunicator
     {
-        private static readonly string BrowserPostfix = Helper.BrowserProjectExt + Helper.ExeExt;
-        private const string AppIdParameterName = "--appid=";
+        private volatile IBrowsersManagerApi _browserApi;
+        private volatile ICommunicationObject _communicationObject;
+        private readonly ILatch _latch;
 
-        private readonly IIpcCommunicator _ipcCommunicator;
-
-        public BrowserWindowsCommunicator(IIpcCommunicator ipcCommunicator)
+        public BrowserWindowsCommunicator(ILatch latch)
         {
-            _ipcCommunicator = ipcCommunicator;
+            _latch = latch;
         }
 
-        public void OpenOrActivateApp(IApplication application)
+        private void WaitAndExecuteWithRetry(Action action)
         {
-            if (application == null)
+            if (action == null)
             {
-                throw new ArgumentNullException("application");
+                throw new ArgumentNullException("action");
             }
 
-            var browserExists = _ipcCommunicator.ActivateBrowserIfExists(application.Id);
+            _latch.Wait();
 
-            if (!browserExists)
+            try
             {
-                var browserWindowProcess = new Process();
-                browserWindowProcess.StartInfo.FileName = Helper.ApplicationName + BrowserPostfix;
-                browserWindowProcess.StartInfo.Arguments = AppIdParameterName + "\"" + application.Id + "\"";
-                browserWindowProcess.Start();
+                action.Invoke();
+            }
+            catch (CommunicationException)
+            {
+                // Restart the communicator and retry
+                Start();
+                action.Invoke();
             }
         }
 
-        public void CloseApp(IApplication application)
+        public void DisplayApplication(IApplication application)
         {
-            if (application == null)
+            WaitAndExecuteWithRetry(() => _browserApi.DisplayApplication(application));
+        }
+
+        public void CloseApplication(string appId)
+        {
+            WaitAndExecuteWithRetry(() => _browserApi.CloseApplication(appId));
+        }
+
+        public void UpdateSession(IAppDirectSession newSession)
+        {
+            WaitAndExecuteWithRetry(() => _browserApi.UpdateSession(newSession));
+        }
+
+        public void UpdateApplications(IEnumerable<IApplication> applications)
+        {
+            WaitAndExecuteWithRetry(() => _browserApi.UpdateApplications(applications));
+        }
+
+        public void CloaseAllApplicationsAndQuit()
+        {
+            WaitAndExecuteWithRetry(() => _browserApi.CloaseAllApplicationsAndQuit());
+        }
+
+        public virtual void Start()
+        {
+            // We can't instantiate this object in advance, since it tries to connect in constructor.
+            _browserApi = CreateBrowsersManagerApiClient();
+            _communicationObject = GetCommunicationObject();
+        }
+
+        protected internal virtual IBrowsersManagerApi CreateBrowsersManagerApiClient()
+        {
+            return new BrowsersManagerApiClient();
+        }
+
+        protected internal virtual ICommunicationObject GetCommunicationObject()
+        {
+            return (ICommunicationObject) _browserApi;
+        }
+
+        public void Stop()
+        {
+            if ((_browserApi == null) || (_communicationObject == null))
             {
-                throw new ArgumentNullException("application");
+                throw new InvalidOperationException("Service was not started");
             }
 
-            _ipcCommunicator.CloseBrowser(application.Id);
+            _browserApi = null;
+            _communicationObject = null;
         }
     }
 }

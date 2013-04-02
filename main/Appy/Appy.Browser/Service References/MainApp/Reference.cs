@@ -9,76 +9,71 @@
 //------------------------------------------------------------------------------
 
 using AppDirect.WindowsClient.Common.API;
+using System.CodeDom.Compiler;
+using System.Diagnostics;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
 
 namespace AppDirect.WindowsClient.Browser.MainApp
 {
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name = "CookieVariant", Namespace = "http://schemas.datacontract.org/2004/07/System.Net")]
+    [GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [DataContractAttribute(Name = "CookieVariant", Namespace = "http://schemas.datacontract.org/2004/07/System.Net")]
     public enum CookieVariant : int
     {
-        [System.Runtime.Serialization.EnumMemberAttribute()]
+        [EnumMemberAttribute()]
         Unknown = 0,
 
-        [System.Runtime.Serialization.EnumMemberAttribute()]
+        [EnumMemberAttribute()]
         Plain = 1,
 
-        [System.Runtime.Serialization.EnumMemberAttribute()]
+        [EnumMemberAttribute()]
         Rfc2109 = 2,
 
-        [System.Runtime.Serialization.EnumMemberAttribute()]
+        [EnumMemberAttribute()]
         Rfc2965 = 3,
 
-        [System.Runtime.Serialization.EnumMemberAttribute()]
+        [EnumMemberAttribute()]
         Default = 2,
     }
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IMainApplicationChannel : IMainApplication, System.ServiceModel.IClientChannel
+    [GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IMainApplicationChannel : IMainApplication, IClientChannel
     {
     }
 
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class MainApplicationClient : System.ServiceModel.DuplexClientBase<IMainApplication>, IMainApplication
+    [DebuggerStepThroughAttribute()]
+    [GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class MainApplicationClient : ClientBase<IMainApplication>, IMainApplication
     {
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance) :
-            base(callbackInstance)
+        public MainApplicationClient()
+            : base()
         {
         }
 
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) :
-            base(callbackInstance, endpointConfigurationName)
+        public MainApplicationClient(string endpointConfigurationName)
+            : base(endpointConfigurationName)
         {
         }
 
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) :
-            base(callbackInstance, endpointConfigurationName, remoteAddress)
+        public MainApplicationClient(string endpointConfigurationName, string remoteAddress)
+            : base(endpointConfigurationName, remoteAddress)
         {
         }
 
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) :
-            base(callbackInstance, endpointConfigurationName, remoteAddress)
+        public MainApplicationClient(string endpointConfigurationName, EndpointAddress remoteAddress)
+            : base(endpointConfigurationName, remoteAddress)
         {
         }
 
-        public MainApplicationClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) :
-            base(callbackInstance, binding, remoteAddress)
+        public MainApplicationClient(Binding binding, EndpointAddress remoteAddress)
+            : base(binding, remoteAddress)
         {
         }
 
-        public IApplication GetApplicationById(string id)
+        public IInitData Initialized()
         {
-            return base.Channel.GetApplicationById(id);
-        }
-
-        public IAppDirectSession GetCurrentSession()
-        {
-            return base.Channel.GetCurrentSession();
-        }
-
-        public void BrowserWasClosed()
-        {
-            base.Channel.BrowserWasClosed();
+            return base.Channel.Initialized();
         }
     }
 }
