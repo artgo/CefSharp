@@ -1,5 +1,6 @@
 ﻿using AppDirect.WindowsClient.BrowsersApi;
 using AppDirect.WindowsClient.Common.API;
+using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 
@@ -16,46 +17,78 @@ namespace AppDirect.WindowsClient.API
             _latch = latch;
         }
 
+        private void WaitAndExecuteWithRetry(Action action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            _latch.Wait();
+
+            try
+            {
+                action.Invoke();
+            }
+            catch (CommunicationException)
+            {
+                // Restart the communicator and retry
+                Start();
+                action.Invoke();
+            }
+        }
+
         public void DisplayApplication(IApplication application)
         {
-            _latch.Wait();
-            _browserApi.DisplayApplication(application);
+            WaitAndExecuteWithRetry(() => _browserApi.DisplayApplication(application));
         }
 
         public void CloseApplication(string appId)
         {
-            _latch.Wait();
-            _browserApi.CloseApplication(appId);
+            WaitAndExecuteWithRetry(() => _browserApi.CloseApplication(appId));
         }
 
         public void UpdateSession(IAppDirectSession newSession)
         {
-            _latch.Wait();
-            _browserApi.UpdateSession(newSession);
+            WaitAndExecuteWithRetry(() => _browserApi.UpdateSession(newSession));
         }
 
         public void UpdateApplications(IEnumerable<IApplication> applications)
         {
-            _latch.Wait();
-            _browserApi.UpdateApplications(applications);
+            WaitAndExecuteWithRetry(() => _browserApi.UpdateApplications(applications));
         }
 
         public void CloaseAllApplicationsAndQuit()
         {
-            _latch.Wait();
-            _browserApi.CloaseAllApplicationsAndQuit();
+            WaitAndExecuteWithRetry(() => _browserApi.CloaseAllApplicationsAndQuit());
         }
 
         public virtual void Start()
         {
             // We can't instantiate this object in advance, since it tries to connect in constructor.
-            var client = new BrowsersManagerApiClient();
-            _browserApi = client;
-            _communicationObject = client;
+            _browserApi = CreateBrowsersManagerApiClient();
+            _communicationObject = GetCommunicationObject();
+        }
+
+        protected internal virtual IBrowsersManagerApi CreateBrowsersManagerApiClient()
+        {
+            return new BrowsersManagerApiClient();
+        }
+
+        protected internal virtual ICommunicationObject GetCommunicationObject()
+        {
+            return (ICommunicationObject) _browserApi;
         }
 
         public void Stop()
         {
+            if ((_browserApi == null) || (_communicationObject == null))
+            {
+                throw new InvalidOperationException("Service was not started");
+            }
+
+            _browserApi = null;
+            _communicationObject = null;
         }
     }
 }
