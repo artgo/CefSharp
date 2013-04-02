@@ -60,6 +60,10 @@
       <Project>{31e2a5ee-d1dc-4bd3-a078-a6f95bedea40}</Project>
       <Name>IntegrationTests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTestsBrowserManager\UnitTestsBrowserManager.csproj">
+      <Project>{d0bcc3fe-0130-4b05-b780-19f1564d8a84}</Project>
+      <Name>UnitTestsBrowserManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UnitTests\UnitTests.csproj">
       <Project>{e074ea7b-ddf1-4530-a392-94d98e428c2c}</Project>
       <Name>UnitTests</Name>

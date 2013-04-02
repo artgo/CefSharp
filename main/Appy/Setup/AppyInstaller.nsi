@@ -211,6 +211,7 @@ Section "Start Menu Shortcuts"
 SectionEnd
 
 Function .onInstSuccess
+  Sleep 200
   Exec "${APPEXEPATH}"
 FunctionEnd
 

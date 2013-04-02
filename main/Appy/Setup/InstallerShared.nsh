@@ -14,8 +14,8 @@
 !define APPWINDOWCLASSNAME "AppDirectTaskbarButtonsWindow"
 !define SYNC_TERM 0x00100001
 !define BROWSERPROCESSNAME "${APPNAME}.Browser.exe"
-!define NATIVEDLLPATH $INSTDIR\native.dll
-!define COMMONDLLPATH $INSTDIR\${APPNAME}.Common.dll
+!define NATIVEDLLPATH "$INSTDIR\native.dll"
+!define COMMONDLLPATH "$INSTDIR\${APPNAME}.Common.dll"
 
 !define COPY64 "/r 64Bit\*.*"
 !define COPY32 "/r 32Bit\*.*"
@@ -42,7 +42,8 @@ AutoCloseWindow true
   System::Call "kernel32::CloseHandle(i r2) i .r1"
   ${EndIf}
 
-  StrCpy $1 0
+  StrCpy $1 0  
+  nsExec::Exec "taskkill /f /im ${APPEXE}"
   nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
   loop:
   IntOp $1 $1 + 1 ;timeout index
