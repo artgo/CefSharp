@@ -1,7 +1,6 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace AppDirect.WindowsClient.Browser.UI
 {
@@ -11,8 +10,6 @@ namespace AppDirect.WindowsClient.Browser.UI
     public partial class BrowserWindow : Window
     {
         private BrowserViewModel ViewModel { get; set; }
-
-        public BrowserWindow() { }
 
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
