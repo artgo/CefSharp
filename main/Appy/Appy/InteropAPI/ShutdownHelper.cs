@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
+using AppDirect.WindowsClient.UI;
 
 namespace AppDirect.WindowsClient.InteropAPI
 {
@@ -35,10 +37,37 @@ namespace AppDirect.WindowsClient.InteropAPI
 
         #endregion Singleton
 
+        public void PerformInUiThread(Action action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            var currentApplication = System.Windows.Application.Current;
+            if ((currentApplication == null) || (Thread.CurrentThread == currentApplication.Dispatcher.Thread))
+            {
+                action.Invoke();
+            }
+            else
+            {
+                currentApplication.Dispatcher.Invoke(action);
+            }
+        }
+
         private void DoShutdown()
         {
             TaskbarApi.Cleanup();
-            Application.Current.Dispatcher.Invoke(new System.Action<Application>((_) => Application.Current.Shutdown()), Application.Current);
+
+            var eventHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+            PerformInUiThread(() => { 
+                Application.Current.Shutdown();
+                eventHandle.Set();
+            });
+
+            eventHandle.WaitOne(TimeSpan.FromMinutes(5.0));
+
+            Environment.Exit(0);
         }
 
         public bool Shutdown()

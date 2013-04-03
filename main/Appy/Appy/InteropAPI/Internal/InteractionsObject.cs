@@ -117,7 +117,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
             _updateMessageId = NativeDll.GetUpdatePositionMsg();
             _dllUnloadMessageId = NativeDll.GetExitMsg();
-            var availableMessages = new[] {_closeMessageId, _updateMessageId, _dllUnloadMessageId};
 
             var pos = CalculateButtonPosition();
 
@@ -136,11 +135,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
                     //| (uint)0x94000C00												// 94000C00 is from the Start button
                     // | (uint)0x0C00U													// BS_
-
                     // popup is prohibiting child style on Win8
                     //| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
                     | (uint)WindowsStyleConstants.WS_VISIBLE							// 10000000
-
                     | (uint)WindowsStyleConstants.WS_CLIPSIBLINGS						// 04000000
                     | (IsWin8OrUp ? (uint)WindowsStyleConstants.WS_CHILD : 0U)		// Since Win8 child can be transparent		0x40000000U
                 );
@@ -168,13 +165,15 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 _isShutdown = false;
             }
 
-            foreach (var availableMessage in availableMessages)
+            if (IsVistaOrUp)
             {
-                var filterStatus = new CHANGEFILTERSTRUCT();
-                filterStatus.size = (uint)Marshal.SizeOf(filterStatus);
-                filterStatus.info = 0;
-                // Allow this window to receive the message
-                User32Dll.ChangeWindowMessageFilterEx(_hwndSource.Handle, availableMessage, ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+                var availableMessages = new[] { _closeMessageId, _updateMessageId, _dllUnloadMessageId };
+
+                foreach (var availableMessage in availableMessages)
+                {
+                    // Allow this window to receive the message
+                    User32Dll.ChangeWindowMessageFilter(availableMessage, ChangeWindowMessageFilterFlags.Add);
+                }
             }
 
             NativeDll.InjectExplrorerExe();
@@ -184,12 +183,17 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             PostPositionToHook();
             UpdatePosition();
 
-            if (IsWin7OrUp &&!IsWin8OrUp && DwmapiDll.DwmIsCompositionEnabled())
+            // Not Windows 8, since we are child window in Windows 8
+            if (IsWin7OrUp && !IsWin8OrUp)
             {
-                var status = Marshal.AllocHGlobal(sizeof(int));
-                Marshal.WriteInt32(status, 1); // true
+                if (DwmapiDll.DwmIsCompositionEnabled())
+                {
+                    var status = Marshal.AllocHGlobal(sizeof(int));
+                    Marshal.WriteInt32(status, 1); // true
 
-                DwmapiDll.DwmSetWindowAttribute(_hwndSource.Handle, DwmWindowAttribute.DWMWA_EXCLUDED_FROM_PEEK, status, sizeof(int));
+                    DwmapiDll.DwmSetWindowAttribute(_hwndSource.Handle, DwmWindowAttribute.DWMWA_EXCLUDED_FROM_PEEK,
+                                                    status, sizeof(int));
+                }
             }
         }
 
