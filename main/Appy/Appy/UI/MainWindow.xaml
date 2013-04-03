@@ -118,7 +118,6 @@
         </Style>
         <Style x:Key="TopLevelMenuItem" TargetType="MenuItem">
             <Setter Property="Foreground" Value="{StaticResource DefaultTextColor}" />
-            <Setter Property="Margin" Value="0" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="MenuItem">
@@ -127,7 +126,10 @@
                                 <ContentPresenter Name="Content"
                                     RecognizesAccessKey="True">
                                     <ContentPresenter.Content>
-                                        <Image Name="Icon" Margin="6,3,6,3" Source="Images/cogGrey.png" Width="16"></Image>
+                                        <Grid>
+                                            <Image Name="Icon" Margin="8,3,10,3" Source="Images/cogGrey.png" Width="16"></Image>
+                                            <Image Name="UpdateBadge" VerticalAlignment="Top" HorizontalAlignment="Right" Source="Images/Notification-Update-Available.png" Width="16" Visibility="Collapsed" ToolTip="Update Available"></Image>
+                                        </Grid>
                                     </ContentPresenter.Content>
                                 </ContentPresenter>
                                 <Popup
@@ -165,6 +167,7 @@
                                 <Setter TargetName="Icon" Property="Source" Value="Images/cogWhite.png " />
                             </Trigger>
                             <DataTrigger Binding="{Binding UpdateAvailable}" Value="True">
+                                <Setter TargetName="UpdateBadge" Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -509,7 +512,7 @@
                         Style="{StaticResource LogInButton}" />
                 <Button Name="AlertsButton" Grid.Column="1" Style="{StaticResource AlertsButton}" Visibility="{Binding VerifyEmailVisibility}" />
                 <Menu Name="SettingsMenu" Background="Transparent" Grid.Column="4" VerticalAlignment="Center"
-                      HorizontalAlignment="Right" Width="30">
+                      HorizontalAlignment="Right">
                     <MenuItem Style="{StaticResource TopLevelMenuItem}" SubmenuClosed="Settings_OnSubmenuClosed">
                         <MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateMenuItem"
                                   Header="{Binding UpdateString}" Click="UpdateButtonOnClick">
@@ -550,10 +553,14 @@
             </Grid>
             <Grid Name="YourApps" Margin="30,60,0,0" Height="235" Width="400" VerticalAlignment="Top"
                           HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="389*"/>
+                    <ColumnDefinition Width="11*"/>
+                </Grid.ColumnDefinitions>
                 <ListBox BorderThickness="0" Background="Transparent"
                                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox"
-                                 ItemsSource="{Binding MyApplications}">
+                                 ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
@@ -571,7 +578,7 @@
                         </Style>
                     </ListBox.Resources>
                 </ListBox>
-                <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,0" Orientation="Horizontal"
+                <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,-5" Orientation="Horizontal"
                                     Grid.ColumnSpan="2">
                     <TextBlock Text="{Binding MyAppsLoadError}" HorizontalAlignment="Left" Margin="0,0,0,0"
                                        VerticalAlignment="Top" Width="345" Height="20" Foreground="White" />
