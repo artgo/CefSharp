@@ -318,9 +318,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Icons\PlusCircle.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Icons\freshbooks.png" />
   </ItemGroup>
   <ItemGroup>
@@ -360,9 +357,6 @@
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
       <Name>Appy.Common</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="AppyIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\Groupon.png" />
@@ -491,6 +485,11 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\Taskbar-Icon-Hover.png" />
+    <Resource Include="UI\Icons\Taskbar-Icon-Normal.png" />
+    <Resource Include="UI\Icons\Taskbar-Icon-Pressed.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

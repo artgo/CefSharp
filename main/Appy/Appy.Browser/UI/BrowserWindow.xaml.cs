@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace AppDirect.WindowsClient.Browser.UI
 {
@@ -15,6 +16,7 @@ namespace AppDirect.WindowsClient.Browser.UI
 
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
+            Title = browserViewModel.Application.Name;
             if (browserViewModel == null)
             {
                 throw new ArgumentNullException("browserViewModel");
@@ -22,6 +24,7 @@ namespace AppDirect.WindowsClient.Browser.UI
 
             ViewModel = browserViewModel;
 
+            DataContext = ViewModel;
             InitializeComponent();
             if ((ViewModel != null) && (ViewModel.Application != null))
             {

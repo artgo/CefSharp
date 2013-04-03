@@ -19,10 +19,13 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Image Name="Icon" Source="Icons/AppIcon.ico"/>
+                        <Image Name="Icon" Source="Icons/Taskbar-Icon-Normal.png"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Icon" Property="Source" Value="Icons/deskIcon-Hover.png"/>
+                                <Setter TargetName="Icon" Property="Source" Value="Icons/Taskbar-Icon-Hover.png"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Icon" Property="Source" Value="Icons/Taskbar-Icon-Pressed.png"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
