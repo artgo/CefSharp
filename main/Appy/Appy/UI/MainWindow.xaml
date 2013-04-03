@@ -125,10 +125,9 @@
                         <Border Name="Border">
                             <Grid>
                                 <ContentPresenter Name="Content"
-                                    Margin="6,3,6,3"
                                     RecognizesAccessKey="True">
                                     <ContentPresenter.Content>
-                                        <Image Name="Icon" Source="Images/cogGrey.png" Width="16"></Image>
+                                        <Image Name="Icon" Margin="6,3,6,3" Source="Images/cogGrey.png" Width="16"></Image>
                                     </ContentPresenter.Content>
                                 </ContentPresenter>
                                 <Popup
@@ -165,6 +164,8 @@
                             <Trigger Property="IsSubmenuOpen" Value="True">
                                 <Setter TargetName="Icon" Property="Source" Value="Images/cogWhite.png " />
                             </Trigger>
+                            <DataTrigger Binding="{Binding UpdateAvailable}" Value="True">
+                            </DataTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -510,9 +511,6 @@
                 <Menu Name="SettingsMenu" Background="Transparent" Grid.Column="4" VerticalAlignment="Center"
                       HorizontalAlignment="Right" Width="30">
                     <MenuItem Style="{StaticResource TopLevelMenuItem}" SubmenuClosed="Settings_OnSubmenuClosed">
-                        <!--<MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateCheckMenuItem"
-                                  Header="{Binding UpdateAvailableString}" Visibility="{Binding UpdateAvailableVisibility}">
-                        </MenuItem>-->
                         <MenuItem Style="{StaticResource SubMenuItem}" Name="UpdateMenuItem"
                                   Header="{Binding UpdateString}" Click="UpdateButtonOnClick">
                             <MenuItem.Icon>
