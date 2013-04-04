@@ -11,10 +11,9 @@ namespace AppDirect.WindowsClient.Browser.UI
     {
         private BrowserViewModel ViewModel { get; set; }
 
-        public BrowserWindow() { }
-
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
+            Title = browserViewModel.Application.Name;
             if (browserViewModel == null)
             {
                 throw new ArgumentNullException("browserViewModel");
@@ -22,6 +21,7 @@ namespace AppDirect.WindowsClient.Browser.UI
 
             ViewModel = browserViewModel;
 
+            DataContext = ViewModel;
             InitializeComponent();
             if ((ViewModel != null) && (ViewModel.Application != null))
             {
