@@ -21,7 +21,7 @@ namespace AppDirect.WindowsClient.API
         private const string HtmlAcceptString = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
         private const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.0 Safari/537.1";
         private const string LoggedInText = @"window.CurrentUser={";
-        private readonly Uri ServiceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FEATURED");
+        private readonly Uri ServiceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FREE");
         private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
         private DateTime _time = DateTime.Now;
         private volatile CookieContainer _context = null;
