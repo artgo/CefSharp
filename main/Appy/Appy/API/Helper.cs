@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common.UI;
+﻿using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
 using System;
@@ -32,7 +33,8 @@ namespace AppDirect.WindowsClient.API
         public static readonly bool DefaultBrowserResizable = true;
         public static readonly string BaseAppStoreDomainName = Properties.Resources.BaseAppStoreUrl;
         public static readonly string BaseAppStoreUrl = Properties.Resources.BaseUrlProtocol + BaseAppStoreDomainName;
-        public static readonly IUiHelper UiHelper = new UiHelper();
+        private static readonly IUiHelper UiHelper = new UiHelper(new NLogLogger("UiHelper"));
+        private static readonly ILogger Log = new NLogLogger("Helper");
 
         public static void RetryAction(Action action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null)
         {
@@ -51,8 +53,10 @@ namespace AppDirect.WindowsClient.API
                     action();
                     return;
                 }
-                catch
+                catch(Exception e)
                 {
+                    Log.ErrorException("Failed to invoke action", e);
+
                     if (catchAction != null)
                     {
                         catchAction();
@@ -159,8 +163,9 @@ namespace AppDirect.WindowsClient.API
                         action.Invoke();
                         return true;
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
+                        Log.ErrorException("Failed to invoke action", e);
                         break;
                     }
                 }

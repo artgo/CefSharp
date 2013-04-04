@@ -10,32 +10,6 @@ SIZE g_RebarOffset;
 HHOOK g_ProgHook = NULL;
 HMODULE g_hDll = NULL;
 
-// TODO: -1: explode to 
-// Returns Windows version as usually defined in VC headers: targetver.h
-static volatile WORD g_version = 0;
-
-WORD WinVersion()
-{	
-	if (!g_version)
-	{
-		DWORD v = ::GetVersion();
-		g_version = MAKEWORD(HIBYTE(v), LOBYTE(v) );
-	}
-	return g_version;
-}
-
-static volatile bool g_IsWin8Set = false;
-static volatile bool g_IsWin8 = true;
-static bool IsWin8orUp()
-{
-	if (!g_IsWin8Set) {
-		g_IsWin8 = (WinVersion() >= _WIN32_WINNT_WIN8);
-		g_IsWin8Set = true;
-	}
-
-	return g_IsWin8;
-}
-
 static HWND tmpTaskbar = NULL;
 
 // look for top-level window with class "Shell_TrayWnd" and process ID=lParam
@@ -91,15 +65,7 @@ HWND GetAppDirectHwnd()
 {
 	static const wchar_t * TheWndCaption = L"AppDirectTaskbarButtonsWindow";
 	HWND appDirectHwnd = NULL;
-	if (!IsWin8orUp())
-	{
-		appDirectHwnd = ::FindWindowEx(NULL, NULL, NULL, TheWndCaption);	
-	}
-	else
-	{	// for Win8 and above we are using child window
-		HWND tb = FindTaskBar();
-		appDirectHwnd = ::FindWindowEx(tb, NULL, NULL, TheWndCaption);
-	}
+	appDirectHwnd = ::FindWindowEx(NULL, NULL, NULL, TheWndCaption);	
 	_ASSERT(appDirectHwnd);
 	return appDirectHwnd;
 }
@@ -161,11 +127,9 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 				g_bInitDone = false;
 				HWND rebarHwnd = FindRebar();	_ASSERT(rebarHwnd);
 				BOOL b = ::RemoveWindowSubclass(rebarHwnd, SubclassRebarProc, 0); _ASSERT(b);
-				if (!IsWin8orUp())
-				{
-					HWND taskbar = FindTaskBar();	_ASSERT(taskbar);
-					b = ::RemoveWindowSubclass(taskbar, SubclassTaskbarProc, 0); _ASSERT(b);
-				}
+
+				HWND taskbar = FindTaskBar();	_ASSERT(taskbar);
+				b = ::RemoveWindowSubclass(taskbar, SubclassTaskbarProc, 0); _ASSERT(b);
 
 				// force repaint rebar by itself
 				b = ::ShowWindow(rebarHwnd, SW_RESTORE);
@@ -278,11 +242,8 @@ NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
 		messages->AppDirectHwnd = GetAppDirectHwnd();
 		g_hDll = ::LoadLibrary(gc_TheDllName); _ASSERT(g_hDll);		// prevent dll from unloading
 		BOOL b = ::SetWindowSubclass(FindRebar(), SubclassRebarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
-		if (!IsWin8orUp())
-		{
-			HWND theButton = GetAppDirectHwnd();
-			b = ::SetWindowSubclass(FindTaskBar(), SubclassTaskbarProc, 0, (DWORD_PTR)theButton);	_ASSERT(b);
-		}
+		HWND theButton = GetAppDirectHwnd();
+		b = ::SetWindowSubclass(FindTaskBar(), SubclassTaskbarProc, 0, (DWORD_PTR)theButton);	_ASSERT(b);
 	}
 
 	return ::CallNextHookEx(NULL, code, wParam, lParam);

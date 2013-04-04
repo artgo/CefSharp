@@ -1,5 +1,6 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Properties;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,8 @@ namespace AppDirect.WindowsClient.UI
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
         private bool _isLoggedIn = ServiceLocator.LocalStorage.HasCredentials;
+
+        private static readonly ILogger _log = new NLogLogger("MainViewModel");
 
         public string VersionString
         {
@@ -267,9 +270,11 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
+                _log.ErrorException("Sync error", e);
+
                 if (throwExceptions)
                 {
-                    throw e;
+                    throw;
                 }
             }
         }
@@ -312,9 +317,11 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
+                _log.ErrorException("Get suggested apps error", e);
+
                 if (throwExceptions)
                 {
-                    throw e;
+                    throw;
                 }
             }
         }

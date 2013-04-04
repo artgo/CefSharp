@@ -1,4 +1,5 @@
 ﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.Log;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,8 @@ namespace AppDirect.WindowsClient.UI
         private readonly SolidColorBrush _errorColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#a32424"));
         private readonly SolidColorBrush _defaultColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#072b35"));
         private readonly SolidColorBrush _validColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#072b35"));
+
+        private static readonly ILogger _log = new NLogLogger("LoginView");
 
         public LoginViewModel ViewModel
         {
@@ -166,6 +169,7 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (System.Net.WebException ex)
             {
+                _log.ErrorException("Connection error", ex);
                 ViewModel.ShowNetworkProblem();
             }
         }

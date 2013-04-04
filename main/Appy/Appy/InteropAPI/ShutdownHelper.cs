@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Windows;
-using AppDirect.WindowsClient.UI;
 
 namespace AppDirect.WindowsClient.InteropAPI
 {
@@ -59,15 +57,7 @@ namespace AppDirect.WindowsClient.InteropAPI
         {
             TaskbarApi.Cleanup();
 
-            var eventHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
-            PerformInUiThread(() => { 
-                Application.Current.Shutdown();
-                eventHandle.Set();
-            });
-
-            eventHandle.WaitOne(TimeSpan.FromMinutes(5.0));
-
-            Environment.Exit(0);
+            PerformInUiThread(() => System.Windows.Application.Current.Shutdown());
         }
 
         public bool Shutdown()

@@ -1,10 +1,18 @@
 using System;
 using System.Threading;
+using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.Common.UI
 {
     public class UiHelper : IUiHelper
     {
+        private readonly ILogger _log;
+
+        public UiHelper(ILogger log)
+        {
+            _log = log;
+        }
+
         public void PerformInUiThread(Action action)
         {
             if (action == null)
@@ -51,7 +59,36 @@ namespace AppDirect.WindowsClient.Common.UI
 
         public void GracefulShutdown()
         {
-            PerformInUiThread(() => System.Windows.Application.Current.Shutdown());
+            _log.Info("Started shutdown");
+            var eventHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+            PerformInUiThread(() =>
+                {
+                    System.Windows.Application.Current.Shutdown();
+                    _log.Info("Application shutdown complete");
+                    eventHandle.Set();
+                });
+
+            eventHandle.WaitOne(TimeSpan.FromSeconds(5.0));
+
+            _log.Info("Shutdown complete");
+            Environment.Exit(0);
+        }
+
+        public void IgnoreException(Action action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            try
+            {
+                action.Invoke();
+            }
+            catch (Exception e)
+            {
+                _log.ErrorException("Invokation failed", e);
+            }
         }
     }
 }

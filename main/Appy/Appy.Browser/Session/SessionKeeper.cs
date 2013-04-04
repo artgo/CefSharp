@@ -3,6 +3,7 @@ using AppDirect.WindowsClient.Browser.Control;
 using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Threading;
+using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.Browser.Session
 {
@@ -16,14 +17,21 @@ namespace AppDirect.WindowsClient.Browser.Session
         private readonly IBrowserWindowsManager _browserWindowsManager;
         private readonly ThreadStart _sessionUpdator;
         private volatile bool _stopFlag = false;
+        private readonly ILogger _log;
 
-        public SessionKeeper(IBrowserWindowsManager browserWindowsManager)
+        public SessionKeeper(IBrowserWindowsManager browserWindowsManager, ILogger log)
         {
             if (browserWindowsManager == null)
             {
                 throw new ArgumentNullException("browserWindowsManager");
             }
 
+            if (log == null)
+            {
+                throw new ArgumentNullException("log");
+            }
+
+            _log = log;
             _sessionUpdator = KeepUpdatingSession;
             _browserWindowsManager = browserWindowsManager;
             _updaterThread = new Thread(_sessionUpdator);
@@ -59,9 +67,9 @@ namespace AppDirect.WindowsClient.Browser.Session
                 {
                     throw;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    // Ignore all the rest
+                    _log.ErrorException("Exception while reloading session", e);
                 }
             }
         }
@@ -88,9 +96,9 @@ namespace AppDirect.WindowsClient.Browser.Session
                 {
                     _updaterThread.Abort();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    // Ignore termination errors
+                    _log.ErrorException("Exception while stopping session keeper", e);
                 }
             }
         }
