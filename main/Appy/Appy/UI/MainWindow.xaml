@@ -614,7 +614,7 @@
             <TextBlock Text="{Binding SuggestedAppsLoadError}" HorizontalAlignment="Left" Margin="75,300,0,0"
                        VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2" />
         </Grid>
-        <controls:LoginView x:Name="LoginViewControl" Visibility="Hidden"/>
+        <controls:LoginView x:Name="LoginViewControl"/>
         <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden" />
     </Grid>
 </Window>
