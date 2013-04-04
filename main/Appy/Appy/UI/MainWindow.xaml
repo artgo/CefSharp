@@ -314,9 +314,10 @@
                                    Width="37" Height="37" Source="{Binding Application.LocalImagePath}" />
                             <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0"
                                    Width="37" Height="37" Source="Images/IconMask.png" />
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"
-                                       FontSize="13" Style="{StaticResource TextStyle}" Width="125"
+                            <Viewbox Grid.Column="1" HorizontalAlignment="Left" Stretch="Uniform" MaxHeight="16" MaxWidth="100">
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left"
                                        Text="{Binding Application.Name}" />
+                            </Viewbox>
                             <Image Name="OnHoverMask" Grid.ColumnSpan="2" Margin="-2,2,0,0" VerticalAlignment="Top"
                                    HorizontalAlignment="Left" Source="Images\AppOnHoverMask.png" Visibility="Hidden" />
                         </Grid>
