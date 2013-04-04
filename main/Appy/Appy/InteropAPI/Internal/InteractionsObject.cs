@@ -127,7 +127,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 );
             hwndSourceParams.PositionX = pos.X;
             hwndSourceParams.PositionY = pos.Y;
-            hwndSourceParams.ParentWindow = (IsWin8OrUp ? _taskbarHwnd : _startButtonHwnd);
+            hwndSourceParams.ParentWindow = _startButtonHwnd;
 
             unchecked
             {
@@ -139,7 +139,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     //| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
                     | (uint)WindowsStyleConstants.WS_VISIBLE							// 10000000
                     | (uint)WindowsStyleConstants.WS_CLIPSIBLINGS						// 04000000
-                    | (IsWin8OrUp ? (uint)WindowsStyleConstants.WS_CHILD : 0U)		// Since Win8 child can be transparent		0x40000000U
                 );
 
                 hwndSourceParams.ExtendedWindowStyle = 0
@@ -183,8 +182,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             PostPositionToHook();
             UpdatePosition();
 
-            // Not Windows 8, since we are child window in Windows 8
-            if (IsWin7OrUp && !IsWin8OrUp)
+            if (IsWin7OrUp)
             {
                 if (DwmapiDll.DwmIsCompositionEnabled())
                 {
@@ -371,7 +369,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 offset = new Point(szStart.Width, 0);
             }
 
-            var offset2 = (IsWin8OrUp ? offset : ScreenFromWpf(offset, _taskbarHwnd));
+            var offset2 = ScreenFromWpf(offset, _taskbarHwnd);
             var flags = (uint)(0
                 | SetWindowPosConstants.SWP_SHOWWINDOW
                 | SetWindowPosConstants.SWP_NOOWNERZORDER
@@ -802,7 +800,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 offset = new Point(szStart.Width, 0);
             }
 
-            var offset2 = IsWin8OrUp ? offset : ScreenFromWpf(offset, NativeDll.FindTaskBar());
+            var offset2 = ScreenFromWpf(offset, NativeDll.FindTaskBar());
 
             PostPositionToHook();
 

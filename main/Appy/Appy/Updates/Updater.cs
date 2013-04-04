@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Properties;
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Windows;
-using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.InteropAPI.Internal;
-using AppDirect.WindowsClient.Properties;
-using AppDirect.WindowsClient.Storage;
 
 namespace AppDirect.WindowsClient.Updates
 {
@@ -22,6 +14,8 @@ namespace AppDirect.WindowsClient.Updates
         public static readonly string UpdaterExeFileName = "updater.exe";
         public const double RetryInterval = 15d;
         private const int RetryUpdatesLimit = 3;
+
+        private static readonly ILogger _log = new NLogLogger("Updater");
 
         public bool GetUpdates(string currentVersion)
         {
@@ -39,8 +33,10 @@ namespace AppDirect.WindowsClient.Updates
 
                     return false;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    _log.ErrorException("Error during checking for updates", e);
+
                     retryCount += 1;
                     Thread.Sleep(TimeSpan.FromMinutes(RetryInterval * retryCount));
                 }
@@ -49,24 +45,23 @@ namespace AppDirect.WindowsClient.Updates
             return false;
         }
 
-
         /// <summary>
         /// Attempts to run updater.  If the process can not be started (Process.Start throws an exception) or the process starts successfully, the value of the UpdateDownloaded switch is set to false
         /// </summary>
-        /// <param name="currentVersion"></param>
         /// <returns></returns>
         public virtual void InstallUpdates()
         {
             try
             {
-                Process updater = new Process();
+                var updater = new Process();
                 updater.StartInfo.FileName = UpdaterExeFileName;
                 updater.StartInfo.UseShellExecute = true;
                 updater.Start();
-                
             }
             catch (Exception e)
             {
+                _log.ErrorException("Error starting updator process", e);
+
                 MessageBox.Show(e.Message);
             }
             finally

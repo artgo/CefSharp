@@ -4,18 +4,19 @@ using AppDirect.WindowsClient.Browser.MainApp;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
-using System.ServiceModel;
 using System.Windows;
 
 namespace AppDirect.WindowsClient.Browser
 {
     internal static class Program
     {
-        private static readonly IBrowserObject BrowserObject = new BrowserObject();
-        private static readonly IUiHelper UiHelper = new UiHelper();
+        private static readonly ILogger _log = new NLogLogger("Browser.Program");
+        private static readonly IBrowserObject BrowserObject = new BrowserObject(new NLogLogger("BrowserObject"));
+        private static readonly IUiHelper UiHelper = new UiHelper(new NLogLogger("UiHelper"));
         private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper);
 
         /// <summary>
@@ -30,39 +31,50 @@ namespace AppDirect.WindowsClient.Browser
             }
             catch (Exception e)
             {
+                _log.ErrorException("Failed to initialize the browser", e);
+
                 MessageBox.Show(String.Format(Resources.Failed_to_initialize_browser_error_message, e.Message));
                 return;
             }
 
-            var client = GetSessionAndApplications();
+            GetSessionAndApplications();
             var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper);
             var apiStarter = new IpcMainWindowStarter(api);
 
-            var sessionKeeper = new SessionKeeper(BrowserWindowsManager);
+            var sessionKeeper = new SessionKeeper(BrowserWindowsManager, new NLogLogger("Browser.SessionKeeper"));
 
             try
             {
                 var app = new App();
                 app.InitializeComponent();
-                sessionKeeper.Start();
-                apiStarter.Start();
-                app.Run();
+                UiHelper.IgnoreException(sessionKeeper.Start);
+
+                bool hadStartException = false;
+                try
+                {
+                    UiHelper.IgnoreException(apiStarter.Start);
+                }
+                catch (Exception e)
+                {
+                    _log.ErrorException("Failed to start server communication", e);
+
+                    hadStartException = true;
+                }
+
+                if (!hadStartException)
+                {
+                    app.Run();
+                }
             }
             finally
             {
-                apiStarter.Stop();
-                sessionKeeper.Stop();
-
-                BrowserObject.Unload();
-
-                if ((client != null) && (client.State == CommunicationState.Opened))
-                {
-                    client.Close();
-                }
+                UiHelper.IgnoreException(apiStarter.Stop);
+                UiHelper.IgnoreException(sessionKeeper.Stop);
+                UiHelper.IgnoreException(BrowserObject.Unload);
             }
         }
 
-        private static MainApplicationClient GetSessionAndApplications()
+        private static void GetSessionAndApplications()
         {
             MainApplicationClient mainApplicationClient;
 
@@ -72,8 +84,10 @@ namespace AppDirect.WindowsClient.Browser
             }
             catch (Exception e)
             {
+                _log.ErrorException("Failed to establish connection with main app", e);
+
                 MessageBox.Show(String.Format(Resources.Communications_can_t_be_established_error_message, e.Message));
-                return null;
+                return;
             }
 
             IEnumerable<IApplication> applications;
@@ -86,28 +100,39 @@ namespace AppDirect.WindowsClient.Browser
             }
             catch (Exception e)
             {
+                _log.ErrorException("Failed to establish connection with main app", e);
+
                 MessageBox.Show(String.Format(Resources.Error_getting_data_error_message, e.Message));
-                return null;
+                return;
             }
 
             if (applications == null)
             {
+                _log.Error("Applications passed to the browser manager were null");
+
                 MessageBox.Show(String.Format(Resources.No_app_data_transfered_error_message));
-                return null;
+                return;
             }
 
             if (session == null)
             {
+                _log.Error("Session passed to the browser manager is null");
+
                 MessageBox.Show(String.Format(Resources.No_session_data_transfered_error_message));
-                return null;
+                return;
             }
 
-            SetCookies(session);
+            try
+            {
+                SetCookies(session);
+            }
+            catch (Exception e)
+            {
+                _log.ErrorException("Failed to set cookies", e);
+            }
 
             BrowserWindowsManager.Applications = applications;
             BrowserWindowsManager.Session = session;
-
-            return mainApplicationClient;
         }
 
         private static void SetCookies(IAppDirectSession session)
@@ -116,12 +141,6 @@ namespace AppDirect.WindowsClient.Browser
             {
                 BrowserObject.SetCookies(session.Cookies);
             }
-        }
-
-        private static void ErrorOnServer(object sender, System.EventArgs e)
-        {
-            MessageBox.Show(e.ToString());
-            throw new Exception();
         }
     }
 }

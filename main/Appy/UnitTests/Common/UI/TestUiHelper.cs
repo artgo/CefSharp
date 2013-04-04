@@ -21,5 +21,10 @@ namespace AppDirect.WindowsClient.Tests.Common.UI
         {
             WasShutdown = true;
         }
+
+        public void IgnoreException(Action action)
+        {
+            action.Invoke();
+        }
     }
 }

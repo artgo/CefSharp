@@ -9,5 +9,7 @@ namespace AppDirect.WindowsClient.Common.UI
         void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn);
 
         void GracefulShutdown();
+
+        void IgnoreException(Action action);
     }
 }

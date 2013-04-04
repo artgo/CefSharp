@@ -1,4 +1,5 @@
 ﻿using AppDirect.WindowsClient.Browser.Control;
+using AppDirect.WindowsClient.Common.Log;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +17,18 @@ namespace AppDirect.WindowsClient.Browser.Interaction
         private const string CacheDirectory = @"Cache";
         private const string DefaultId = @"Default";
         private const string CefClientExe = @"cefclient.exe";
+
+        private readonly ILogger _log;
+
+        public BrowserObject(ILogger log)
+        {
+            if (log == null)
+            {
+                throw new ArgumentNullException("log");
+            }
+
+            _log = log;
+        }
 
         private void Load(string cachePath, string currentDir)
         {
@@ -67,8 +80,10 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             }
         }
 
-        private static void ErrorAndExit(Exception ex)
+        private void ErrorAndExit(Exception ex)
         {
+            _log.ErrorException("Error during browser initialization", ex);
+
             MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             Environment.Exit(1);
         }
@@ -80,9 +95,9 @@ namespace AppDirect.WindowsClient.Browser.Interaction
                 // Shutdown CEF
                 CefRuntime.Shutdown();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // Do nothing for now.
+                _log.ErrorException("Error during browser shutdown", e);
             }
         }
 

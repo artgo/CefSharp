@@ -1,4 +1,5 @@
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Models;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace AppDirect.WindowsClient.Storage
         private const int DaysBeforePasswordExpires = 30;
         private static readonly string DefaultFileLocation = string.Empty;
         public static readonly FileInfo FileInfo = new FileInfo(Environment.SpecialFolder.ApplicationData + FileName);
+        private static readonly ILogger _log = new NLogLogger("LocalStorage");
 
         public List<Application> InstalledLocalApps { get; set; }
 
@@ -104,11 +106,13 @@ namespace AppDirect.WindowsClient.Storage
                             IsLoadedFromFile = true;
                         }
                     }
-                    catch (InvalidOperationException)
+                    catch (InvalidOperationException e)
                     {
+                        _log.ErrorException("Invalid operation", e);
                     }
-                    catch (XmlException)
+                    catch (XmlException e)
                     {
+                        _log.ErrorException("XML format issue", e);
                     }
                 }
 
@@ -166,8 +170,9 @@ namespace AppDirect.WindowsClient.Storage
                         client.DownloadFile(imageUrl, imageFile.FullName);
                     }
                 }
-                catch (WebException)
+                catch (WebException e)
                 {
+                    _log.ErrorException("File download error", e);
                     imageFile.Delete();
                     return DefaultFileLocation;
                 }

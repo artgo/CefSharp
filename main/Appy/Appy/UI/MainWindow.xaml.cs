@@ -1,19 +1,12 @@
+using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.InteropAPI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Net;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
-using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.InteropAPI;
-using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -24,7 +17,10 @@ namespace AppDirect.WindowsClient.UI
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
         public EventHandler PinToTaskbarClickNotifier;
+
         public MainViewModel ViewModel { get; set; }
+
+        private static readonly ILogger _log = new NLogLogger("MainWindow");
 
         public MainWindow(MainViewModel mainViewModel)
         {
@@ -35,6 +31,8 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
+                _log.ErrorException("Error setting context", e);
+
                 MessageBox.Show(e.Message);
             }
 
@@ -53,7 +51,7 @@ namespace AppDirect.WindowsClient.UI
 
             RegistrationViewControl.ClosePanel += Registration_Close;
         }
-        
+
         public void SetPosition()
         {
             switch (TaskbarApi.Instance.TaskbarPosition)
@@ -62,14 +60,17 @@ namespace AppDirect.WindowsClient.UI
                     Left = SystemParameters.WorkArea.Left;
                     Top = SystemParameters.WorkArea.Bottom - Height;
                     break;
+
                 case TaskbarPosition.Left:
                     Left = SystemParameters.WorkArea.Left;
                     Top = SystemParameters.WorkArea.Top;
                     break;
+
                 case TaskbarPosition.Right:
                     Left = SystemParameters.WorkArea.Right - Width;
                     Top = SystemParameters.WorkArea.Top;
                     break;
+
                 case TaskbarPosition.Top:
                     Left = SystemParameters.WorkArea.Left;
                     Top = SystemParameters.WorkArea.Top;
@@ -121,6 +122,8 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception ex)
             {
+                _log.ErrorException("Error during installation of app", ex);
+
                 MessageBox.Show(ex.Message);
             }
         }
@@ -136,6 +139,8 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception ex)
             {
+                _log.ErrorException("Error during uninstallation of app", ex);
+
                 MessageBox.Show(ex.Message);
             }
         }
@@ -144,18 +149,18 @@ namespace AppDirect.WindowsClient.UI
         {
             ViewModel.LogInLogOutClicked();
         }
-        
+
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
-            ViewModel.UpdateClick();           
+            ViewModel.UpdateClick();
         }
-        
+
         private void MainWindow_OnClosing(object o, CancelEventArgs e)
         {
             Process[] processes = Process.GetProcessesByName(Helper.ApplicationName + Helper.BrowserProjectExt);
             foreach (Process process in processes)
             {
-                Helper.RetryAction(() =>process.Kill(), 5, TimeSpan.FromMilliseconds(500));
+                Helper.RetryAction(() => process.Kill(), 5, TimeSpan.FromMilliseconds(500));
             }
         }
 
@@ -166,7 +171,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void PinToTaskBarClick(object sender, RoutedEventArgs e)
         {
-            PinToTaskbarClickNotifier.Invoke(sender,e);
+            PinToTaskbarClickNotifier.Invoke(sender, e);
         }
 
         private void Settings_OnSubmenuClosed(object sender, RoutedEventArgs e)
@@ -180,4 +185,3 @@ namespace AppDirect.WindowsClient.UI
         }
     }
 }
-    

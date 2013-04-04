@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows;
 using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
 
@@ -15,6 +16,7 @@ namespace AppDirect.WindowsClient
         private volatile Mutex _instanceMutex = null;
         private volatile MainWindow _mainWindow;
         private ThreadStart _ipcCommunicatorStart;
+        private readonly ILogger _log = new NLogLogger("MainApp");
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -22,8 +24,10 @@ namespace AppDirect.WindowsClient
             _instanceMutex = new Mutex(true, @"AppDirect.WindowsClient Application Manager Mutex", out createdNew);
             if (!createdNew)
             {
+                _log.Info("Instance already exists, exit.");
                 _instanceMutex = null;
                 Current.Shutdown();
+                Environment.Exit(0);
                 return;
             }
 
@@ -33,6 +37,7 @@ namespace AppDirect.WindowsClient
             }
             catch (Exception ex)
             {
+                _log.ErrorException("Failed to initialize", ex);
                 MessageBox.Show(ex.Message);
             }
 
@@ -41,7 +46,7 @@ namespace AppDirect.WindowsClient
             (new Thread(_ipcCommunicatorStart)).Start();
             if (ServiceLocator.LocalStorage.HasCredentials)
             {
-                Helper.Authenticate();
+                Helper.RetryAction(() => Helper.Authenticate(), 3, TimeSpan.FromSeconds(2));
             }
 
             var mainViewModel = new MainViewModel();
@@ -66,16 +71,18 @@ namespace AppDirect.WindowsClient
         {
             if (_instanceMutex != null)
             {
-                _instanceMutex.ReleaseMutex();
-                ServiceLocator.IpcCommunicator.Stop();
-                UpdateManager.Stop();
-                AppSessionRefresher.Stop();
-                ServiceLocator.BrowserWindowsCommunicator.Stop();
+                ServiceLocator.UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
+                ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Stop);
+                ServiceLocator.UiHelper.IgnoreException(ServiceLocator.IpcCommunicator.Stop);
+                ServiceLocator.UiHelper.IgnoreException(UpdateManager.Stop);
+                ServiceLocator.UiHelper.IgnoreException(AppSessionRefresher.Stop);
             }
 
             base.OnExit(e);
 
             _ipcCommunicatorStart = null;
+
+            Environment.Exit(0);
         }
 
         private void App_OnDeactivated(object sender, EventArgs e)

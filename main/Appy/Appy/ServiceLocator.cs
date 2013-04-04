@@ -1,4 +1,6 @@
 ﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.Updates;
 using Ninject;
@@ -36,6 +38,11 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<Updater>(); }
         }
 
+        public static IUiHelper UiHelper
+        {
+            get { return Kernel.Get<IUiHelper>(); }
+        }
+
         public static ILatch BrowserStartupLatch
         {
             get { return Kernel.Get<ILatch>(); }
@@ -46,6 +53,7 @@ namespace AppDirect.WindowsClient
         /// </summary>
         public static void Initialize()
         {
+            Kernel.Rebind<IUiHelper>().ToConstant(new UiHelper(new NLogLogger("UiHelper")));
             Kernel.Rebind<ILatch>().ToConstant(new Latch());
             Kernel.Rebind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Rebind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
