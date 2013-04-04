@@ -9,6 +9,8 @@ namespace AppDirect.WindowsClient.Browser.UI
     /// </summary>
     public partial class BrowserWindow : Window
     {
+        private Rect _restoreLocation;
+
         private BrowserViewModel ViewModel { get; set; }
 
         public BrowserWindow(BrowserViewModel browserViewModel)
@@ -61,14 +63,23 @@ namespace AppDirect.WindowsClient.Browser.UI
 
         private void Maximize_OnClick(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Maximized;
+            _restoreLocation = new Rect { Width = Width, Height = Height, X = Left, Y = Top };
+            Height = SystemParameters.WorkArea.Height + OuterBorder.BorderThickness.Top + OuterBorder.BorderThickness.Bottom;
+            Width = SystemParameters.WorkArea.Width + OuterBorder.BorderThickness.Right + OuterBorder.BorderThickness.Left;
+            Left = SystemParameters.WorkArea.Left - OuterBorder.BorderThickness.Left;
+            Top = SystemParameters.WorkArea.Top - OuterBorder.BorderThickness.Top;
+
             Maximize.Visibility = Visibility.Hidden;
             RestoreDown.Visibility = Visibility.Visible;
         }
 
         private void RestoreDown_OnClick(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Normal;
+            Height = _restoreLocation.Height;
+            Width = _restoreLocation.Width;
+            Left = _restoreLocation.X;
+            Top = _restoreLocation.Y;
+
             RestoreDown.Visibility = Visibility.Hidden;
             Maximize.Visibility = Visibility.Visible;
         }
