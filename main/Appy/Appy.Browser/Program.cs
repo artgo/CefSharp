@@ -52,7 +52,7 @@ namespace AppDirect.WindowsClient.Browser
                 bool hadStartException = false;
                 try
                 {
-                    UiHelper.IgnoreException(apiStarter.Start);
+                    apiStarter.Start();
                 }
                 catch (Exception e)
                 {

@@ -110,12 +110,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)Appy.Common.dll" "$(SolutionDir)Setup\Appy" /y /i /r
+xcopy "$(TargetDir)NLog.dll" "$(SolutionDir)Setup\Appy" /y /i /r
+xcopy "$(TargetDir)NLog.config" "$(SolutionDir)Setup\Appy" /y /i /r
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
