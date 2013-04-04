@@ -495,6 +495,9 @@
     <Resource Include="UI\Icons\Taskbar-Icon-Normal.png" />
     <Resource Include="UI\Icons\Taskbar-Icon-Pressed.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Notification-Update-Available.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)Appy.exe" "$(SolutionDir)Setup\Appy" /y /i /r

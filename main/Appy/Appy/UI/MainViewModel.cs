@@ -23,17 +23,9 @@ namespace AppDirect.WindowsClient.UI
         private string _myAppsLoadError = String.Empty;
         private string _suggestedAppsLoadError = String.Empty;
         private Visibility _updateSpinnerVisibility = Visibility.Hidden;
-
-        private Visibility _updateAvailableVisibility = ServiceLocator.LocalStorage.UpdateDownloaded
-                                                            ? Visibility.Visible
-                                                            : Visibility.Collapsed;
-
-        private string _updateString = ServiceLocator.LocalStorage.UpdateDownloaded
-                                           ? Properties.Resources.InstallUpdateString
-                                           : Properties.Resources.GetUpdateString;
-
+        private string _updateString = Properties.Resources.GetUpdateString;
+        private bool _updateAvailable = false;
         private bool _registrationInProgress = false;
-
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
         private bool _isLoggedIn = ServiceLocator.LocalStorage.HasCredentials;
@@ -74,13 +66,13 @@ namespace AppDirect.WindowsClient.UI
             set { NotifyPropertyChanged("UpdateAvailableString"); }
         }
 
-        public Visibility UpdateAvailableVisibility
+        public bool UpdateAvailable
         {
-            get { return _updateAvailableVisibility; }
+            get { return _updateAvailable; }
             set
             {
-                _updateAvailableVisibility = value;
-                NotifyPropertyChanged("UpdateAvailableVisibility");
+                _updateAvailable = value;
+                NotifyPropertyChanged("UpdateAvailable");
             }
         }
 
@@ -463,7 +455,7 @@ namespace AppDirect.WindowsClient.UI
                 {
                     UpdateString = updateAvailable ? Resources.InstallUpdateString : Resources.NoUpdateFoundString;
                     UpdateSpinnerVisibility = Visibility.Hidden;
-                    UpdateAvailableVisibility = updateAvailable ? Visibility.Visible : Visibility.Collapsed;
+                    UpdateAvailable = updateAvailable;
                 });
         }
 

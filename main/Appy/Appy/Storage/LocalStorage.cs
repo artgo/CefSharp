@@ -121,7 +121,6 @@ namespace AppDirect.WindowsClient.Storage
                 InstalledAppDirectApps = localStorage.InstalledAppDirectApps ?? new List<Application>();
                 LastSuggestedApps = localStorage.LastSuggestedApps ?? new List<Application>();
                 PinnedApps = localStorage.PinnedApps ?? new List<Application>();
-                UpdateDownloaded = localStorage.UpdateDownloaded;
             }
         }
 
