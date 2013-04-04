@@ -40,7 +40,7 @@
                                                 Height="32" Click="GoToRegistrationClick" />
             </Grid>
             <Line Grid.Column="1" X1="0" Y1="-3" X2="0" Y2="168" Stroke="{StaticResource MiddleBarColor}" StrokeThickness=".5" />
-            <Grid Grid.Column="1" Margin="20,0,32,0" Width="180" HorizontalAlignment="Left">
+            <Grid Grid.Column="1" Margin="20,0,32,0" Width="180" HorizontalAlignment="Left" FocusManager.IsFocusScope="True">
                 <TextBlock Name="ReturningCustomerLabel" Style="{StaticResource TextStyleBold}" FontSize="13" Text="Existing Customer" Margin="0,0,0,214"/>
                 <TextBlock x:Name="LoginFailedMessage" Style="{StaticResource TextStyle}" Margin="0,20,0,0" HorizontalAlignment="Left" Foreground="{StaticResource ErrorTextColor}" FontSize="11" Text="{Binding LoginFailedMessage}" Visibility="Hidden"/>
                 <TextBox Name="UsernameTextBox" Style="{DynamicResource TextBoxWaterEmail}"

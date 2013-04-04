@@ -20,6 +20,7 @@ namespace AppDirect.WindowsClient
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            var startTicks = Environment.TickCount;
             bool createdNew;
             _instanceMutex = new Mutex(true, @"AppDirect.WindowsClient Application Manager Mutex", out createdNew);
             if (!createdNew)
@@ -28,7 +29,6 @@ namespace AppDirect.WindowsClient
                 _instanceMutex = null;
                 Current.Shutdown();
                 Environment.Exit(0);
-                return;
             }
 
             try
@@ -43,11 +43,7 @@ namespace AppDirect.WindowsClient
 
             ServiceLocator.LocalStorage.LoadStorage();
             _ipcCommunicatorStart = ServiceLocator.IpcCommunicator.Start;
-            (new Thread(_ipcCommunicatorStart)).Start();
-            if (ServiceLocator.LocalStorage.HasCredentials)
-            {
-                Helper.RetryAction(() => Helper.Authenticate(), 3, TimeSpan.FromSeconds(2));
-            }
+            new Thread(_ipcCommunicatorStart).Start();
 
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
@@ -65,6 +61,11 @@ namespace AppDirect.WindowsClient
             }
 
             base.OnStartup(e);
+            var stopTicks = Environment.TickCount;
+
+            _log.Debug("Application startup completed in " + (stopTicks - startTicks) + "ms.");
+
+            Console.WriteLine("Application startup completed in " + (stopTicks - startTicks) + "ms.");
         }
 
         protected override void OnExit(ExitEventArgs e)
