@@ -71,7 +71,6 @@ namespace AppDirect.WindowsClient.Browser.API
 
         public void CloaseAllApplicationsAndQuit()
         {
-            MessageBox.Show("Should exit");
             _uiHelper.GracefulShutdown();
         }
     }
