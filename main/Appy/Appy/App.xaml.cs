@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Windows;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
+using System;
+using System.Threading;
+using System.Windows;
 
 namespace AppDirect.WindowsClient
 {
@@ -54,6 +54,8 @@ namespace AppDirect.WindowsClient
             var taskbarPanel = new TaskbarPanel(_mainWindow);
             taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
             TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, taskbarPanel.GetCurrentDimension());
+
+            ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start);
 
             if (!ServiceLocator.LocalStorage.IsLoadedFromFile)
             {

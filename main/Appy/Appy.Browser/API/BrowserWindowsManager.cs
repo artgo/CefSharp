@@ -1,10 +1,10 @@
-﻿using System.Threading;
-using AppDirect.WindowsClient.Browser.Interaction;
+﻿using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace AppDirect.WindowsClient.Browser.API
 {
@@ -71,9 +71,20 @@ namespace AppDirect.WindowsClient.Browser.API
             {
                 _session = value;
 
-                if (_session != null)
+                if ((_session != null) && (_session.Cookies.Count > 0))
                 {
                     _browserObject.SetCookies(_session.Cookies);
+
+                    IEnumerable<BrowserWindow> windows;
+                    lock (_lockObject)
+                    {
+                        windows = new List<BrowserWindow>(_browserWindows.Values);
+                    }
+
+                    foreach (var browserWindow in windows)
+                    {
+                        browserWindow.SetSession(_session);
+                    }
                 }
             }
         }

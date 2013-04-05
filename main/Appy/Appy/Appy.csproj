@@ -151,6 +151,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="API\BrowsersManagerApiServiceBuilder.cs" />
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
     <Compile Include="API\Helper.cs" />
     <Compile Include="API\IBrowserWindowsCommunicator.cs" />

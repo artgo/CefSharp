@@ -26,5 +26,9 @@ namespace AppDirect.WindowsClient.Tests.Common.UI
         {
             action.Invoke();
         }
+
+        public void Sleep(int milliseconds)
+        {
+        }
     }
 }

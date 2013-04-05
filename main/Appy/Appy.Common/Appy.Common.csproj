@@ -80,9 +80,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\AbstractServiceClient.cs" />
     <Compile Include="API\AbstractServiceRunner.cs" />
     <Compile Include="API\AppDirectSession.cs" />
     <Compile Include="API\Application.cs" />
+    <Compile Include="API\IAbstractServiceClient.cs" />
     <Compile Include="API\IAbstractServiceRunner.cs" />
     <Compile Include="API\IAppDirectSession.cs" />
     <Compile Include="API\IApplication.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="API\IMainApplication.cs" />
     <Compile Include="API\IBrowsersManagerApi.cs" />
     <Compile Include="API\InitData.cs" />
+    <Compile Include="API\IServiceBuilder.cs" />
     <Compile Include="API\IStartStop.cs" />
     <Compile Include="API\LocalApplication.cs" />
     <Compile Include="Log\ILogger.cs" />

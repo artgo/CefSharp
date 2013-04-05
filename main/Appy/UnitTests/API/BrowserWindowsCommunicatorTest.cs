@@ -1,5 +1,7 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using NSubstitute;
 using NUnit.Framework;
 using System;
@@ -11,60 +13,29 @@ namespace AppDirect.WindowsClient.Tests.API
     [TestFixture]
     public class BrowserWindowsCommunicatorTest
     {
-        private volatile ILatch _latch = null;
-        private volatile IBrowsersManagerApi _browserApi = null;
-        private volatile ICommunicationObject _communicationObject = null;
-        private volatile TestBrowserWindowsCommunicator _browserWindowsCommunicator = null;
-
-        private class TestBrowserWindowsCommunicator : BrowserWindowsCommunicator
-        {
-            private readonly IBrowsersManagerApi _browserApi = null;
-            private readonly ICommunicationObject _communicationObject = null;
-
-            public int CreateBrowsersManagerApiClientTimesCalled = 0;
-            public int GetCommunicationObjectTimesCalled = 0;
-
-            public TestBrowserWindowsCommunicator(ILatch latch, IBrowsersManagerApi browserApi, ICommunicationObject communicationObject)
-                : base(latch)
-            {
-                _browserApi = browserApi;
-                _communicationObject = communicationObject;
-            }
-
-            protected internal override IBrowsersManagerApi CreateBrowsersManagerApiClient()
-            {
-                CreateBrowsersManagerApiClientTimesCalled++;
-                return _browserApi;
-            }
-
-            protected internal override ICommunicationObject GetCommunicationObject()
-            {
-                GetCommunicationObjectTimesCalled++;
-                return _communicationObject;
-            }
-        }
+        private volatile IServiceBuilder<IBrowsersManagerApi> _serviceStarter;
+        private volatile IUiHelper _uiHelper;
+        private volatile ILogger _log;
+        private volatile ICommunicationObject _communicationObject;
+        private volatile IBrowsersManagerApi _browserApi;
+        private volatile BrowserWindowsCommunicator _browserWindowsCommunicator;
 
         [SetUp]
         public void Init()
         {
-            _latch = Substitute.For<ILatch>();
             _browserApi = Substitute.For<IBrowsersManagerApi, ICommunicationObject>();
+            _serviceStarter = Substitute.For<IServiceBuilder<IBrowsersManagerApi>>();
+            _serviceStarter.CreateServiceAndTryToConnect().Returns(_browserApi);
+            _uiHelper = Substitute.For<IUiHelper>();
+            _log = Substitute.For<ILogger>();
             _communicationObject = (ICommunicationObject)_browserApi;
-            _browserWindowsCommunicator = new TestBrowserWindowsCommunicator(_latch, _browserApi, _communicationObject);
+            _browserWindowsCommunicator = new BrowserWindowsCommunicator(_serviceStarter, _uiHelper, _log);
         }
 
         [Test]
         public void TestStopThrowsIfNeverStarted()
         {
             Assert.Throws<InvalidOperationException>(() => _browserWindowsCommunicator.Stop());
-        }
-
-        [Test]
-        public void TestDisplayApplicationCallsLatchWait()
-        {
-            _browserWindowsCommunicator.Start();
-            _browserWindowsCommunicator.DisplayApplication(new Application());
-            _latch.Received().Wait();
         }
 
         [Test]
@@ -98,44 +69,6 @@ namespace AppDirect.WindowsClient.Tests.API
             _browserWindowsCommunicator.Start();
             _browserWindowsCommunicator.DisplayApplication(new Application());
             _browserApi.ReceivedWithAnyArgs(2).DisplayApplication(null);
-        }
-
-        [Test]
-        public void TestIfRemoteThrowsWeCallCreateBrowsersManagerApiClient()
-        {
-            var thrownAlready = false;
-            _browserApi
-                .When(x => x.DisplayApplication(Arg.Any<IApplication>()))
-                .Do(x =>
-                {
-                    if (!thrownAlready)
-                    {
-                        thrownAlready = true;
-                        throw new CommunicationException();
-                    }
-                });
-            _browserWindowsCommunicator.Start();
-            _browserWindowsCommunicator.DisplayApplication(new Application());
-            Assert.AreEqual(2, _browserWindowsCommunicator.CreateBrowsersManagerApiClientTimesCalled);
-        }
-
-        [Test]
-        public void TestIfRemoteThrowsWeCallGetCommunicationObject()
-        {
-            var thrownAlready = false;
-            _browserApi
-                .When(x => x.DisplayApplication(Arg.Any<IApplication>()))
-                .Do(x =>
-                {
-                    if (!thrownAlready)
-                    {
-                        thrownAlready = true;
-                        throw new CommunicationException();
-                    }
-                });
-            _browserWindowsCommunicator.Start();
-            _browserWindowsCommunicator.DisplayApplication(new Application());
-            Assert.AreEqual(2, _browserWindowsCommunicator.GetCommunicationObjectTimesCalled);
         }
 
         [Test]

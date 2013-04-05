@@ -1998,6 +1998,37 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         WS_CHILDWINDOW = (WS_CHILD)
     }
 
+    [Flags]
+    public enum ExtendedWindowsStyleConstants : int
+    {
+        WS_EX_DLGMODALFRAME = 0x00000001,
+        WS_EX_NOPARENTNOTIFY = 0x00000004,
+        WS_EX_TOPMOST = 0x00000008,
+        WS_EX_ACCEPTFILES = 0x00000010,
+        WS_EX_TRANSPARENT = 0x00000020,
+        WS_EX_MDICHILD = 0x00000040,
+        WS_EX_TOOLWINDOW = 0x00000080,
+        WS_EX_WINDOWEDGE = 0x00000100,
+        WS_EX_CLIENTEDGE = 0x00000200,
+        WS_EX_CONTEXTHELP = 0x00000400,
+        WS_EX_RIGHT = 0x00001000,
+        WS_EX_LEFT = 0x00000000,
+        WS_EX_RTLREADING = 0x00002000,
+        WS_EX_LTRREADING = 0x00000000,
+        WS_EX_LEFTSCROLLBAR = 0x00004000,
+        WS_EX_RIGHTSCROLLBAR = 0x00000000,
+        WS_EX_CONTROLPARENT = 0x00010000,
+        WS_EX_STATICEDGE = 0x00020000,
+        WS_EX_APPWINDOW = 0x00040000,
+        WS_EX_OVERLAPPEDWINDOW = (WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE),
+        WS_EX_PALETTEWINDOW = (WS_EX_WINDOWEDGE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST),
+        WS_EX_LAYERED = 0x00080000,
+        WS_EX_NOINHERITLAYOUT = 0x00100000, // Disable inheritence of mirroring by children
+        WS_EX_LAYOUTRTL = 0x00400000, // Right to left mirroring
+        WS_EX_COMPOSITED = 0x02000000,
+        WS_EX_NOACTIVATE = 0x08000000
+    }
+
     public enum SysCommands : int
     {
         SC_SIZE = 0xF000,
@@ -2016,20 +2047,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         SC_TASKLIST = 0xF130,
         SC_SCREENSAVE = 0xF140,
         SC_HOTKEY = 0xF150,
-        //#if(WINVER >= 0x0400) //Win95
         SC_DEFAULT = 0xF160,
         SC_MONITORPOWER = 0xF170,
         SC_CONTEXTHELP = 0xF180,
         SC_SEPARATOR = 0xF00F,
-        //#endif /* WINVER >= 0x0400 */
-
-        //#if(WINVER >= 0x0600) //Vista
         SCF_ISSECURE = 0x00000001,
-        //#endif /* WINVER >= 0x0600 */
-
-        /*
-          * Obsolete names
-          */
         SC_ICON = SC_MINIMIZE,
         SC_ZOOM = SC_MAXIMIZE,
     }

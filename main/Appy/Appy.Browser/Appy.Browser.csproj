@@ -87,7 +87,10 @@
     </Page>
     <Compile Include="API\BrowserWindowsManager.cs" />
     <Compile Include="API\IBrowserWindowsManager.cs" />
+    <Compile Include="API\IMainApplicationServiceClient.cs" />
     <Compile Include="API\IpcMainWindowStarter.cs" />
+    <Compile Include="API\MainApplicationClientServiceStarter.cs" />
+    <Compile Include="API\MainApplicationServiceClient.cs" />
     <Compile Include="Control\AppDirectCefApp.cs" />
     <Compile Include="Interaction\IBrowserObject.cs" />
     <Compile Include="Service References\MainApp\Reference.cs">

@@ -129,24 +129,23 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             hwndSourceParams.PositionY = pos.Y;
             hwndSourceParams.ParentWindow = _startButtonHwnd;
 
-            unchecked
-            {
-                hwndSourceParams.WindowStyle = (int)(0													// TODO: -2 consts from magic numbers
+            // 94000C00 is from the Start button
+            hwndSourceParams.WindowStyle = (int)(0
+                // popup is prohibiting child style on Win8
+                //| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
+                | (uint)WindowsStyleConstants.WS_VISIBLE							// 10000000
+                | (uint)WindowsStyleConstants.WS_CLIPSIBLINGS						// 04000000
+                | (uint)WindowsStyleConstants.RBS_BANDBORDERS                       // 00000400
+                | (uint)WindowsStyleConstants.RBS_FIXEDORDER                        // 00000800
+            );
 
-                    //| (uint)0x94000C00												// 94000C00 is from the Start button
-                    // | (uint)0x0C00U													// BS_
-                    // popup is prohibiting child style on Win8
-                    //| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
-                    | (uint)WindowsStyleConstants.WS_VISIBLE							// 10000000
-                    | (uint)WindowsStyleConstants.WS_CLIPSIBLINGS						// 04000000
-                );
+            // 00080088 is from the Start button
+            hwndSourceParams.ExtendedWindowStyle = 0
+                | (int)ExtendedWindowsStyleConstants.WS_EX_TOOLWINDOW               //0x00000080
+                | (int)ExtendedWindowsStyleConstants.WS_EX_LAYERED                  //0x00080000
+                | (int)ExtendedWindowsStyleConstants.WS_EX_TOPMOST                  //0x00000008
+            ;
 
-                hwndSourceParams.ExtendedWindowStyle = 0
-                    | 0x00080088														// 00080088 is from the Start button
-                    | 0x00080000														// WS_EX_LAYERED
-                    | 0x00000008														// WS_EX_TOPMOST
-                ;
-            }
             hwndSourceParams.UsesPerPixelOpacity = true;		// set the WS_EX_LAYERED extended window style
             _hwndSource = new HwndSource(hwndSourceParams) {RootVisual = wnd};
 

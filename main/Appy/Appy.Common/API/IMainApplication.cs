@@ -1,11 +1,18 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace AppDirect.WindowsClient.Common.API
 {
     [ServiceContract(SessionMode = SessionMode.Allowed)]
     public interface IMainApplication
     {
+        [OperationContract(IsOneWay = true)]
+        void Initialized();
+
         [OperationContract]
-        IInitData Initialized();
+        IAppDirectSession GetSession();
+
+        [OperationContract]
+        IEnumerable<IApplication> GetMyApps();
     }
 }

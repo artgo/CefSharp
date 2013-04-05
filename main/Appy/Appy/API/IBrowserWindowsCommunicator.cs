@@ -2,7 +2,7 @@
 
 namespace AppDirect.WindowsClient.API
 {
-    public interface IBrowserWindowsCommunicator : IStartStop, IBrowsersManagerApi
+    public interface IBrowserWindowsCommunicator : IAbstractServiceClient<IBrowsersManagerApi>, IBrowsersManagerApi
     {
     }
 }

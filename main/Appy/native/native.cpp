@@ -133,13 +133,13 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 
 				// force repaint rebar by itself
 				b = ::ShowWindow(rebarHwnd, SW_RESTORE);
-
-				delete messages;
 				
 				HWND theButton = GetAppDirectHwnd();
 				_ASSERT(g_hDll);
-				UINT exitMsgId = GetExitMsg();
-				b = ::PostMessage(theButton, exitMsgId, 0, (LPARAM)g_hDll);	_ASSERT(b);
+				b = ::PostMessage(theButton, messages->ExitMessage, 0, (LPARAM)g_hDll);	_ASSERT(b);
+
+				delete messages;
+
 				g_hDll = NULL;
 			}
 
@@ -249,7 +249,7 @@ NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
 	return ::CallNextHookEx(NULL, code, wParam, lParam);
 }
 
-HHOOK ExplorerHook = NULL;
+volatile HHOOK ExplorerHook = NULL;
 void InjectExplrorerExe()
 {
 	// install hooks in the explorer process: 
@@ -269,7 +269,7 @@ void DetachHooks()
 {
 	if (ExplorerHook)
 	{
-		BOOL b = ::UnhookWindowsHookEx(ExplorerHook);	_ASSERT(b);
+		BOOL b = ::UnhookWindowsHookEx(ExplorerHook); _ASSERT(b);
 		ExplorerHook = NULL;
 		HWND reb = FindRebar();	_ASSERT(reb);
 		::PostMessage(reb, GetExitMsg(), 0, 0);

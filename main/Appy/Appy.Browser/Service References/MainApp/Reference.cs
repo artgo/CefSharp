@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using AppDirect.WindowsClient.Common.API;
 using System.CodeDom.Compiler;
 using System.Diagnostics;
@@ -71,9 +72,19 @@ namespace AppDirect.WindowsClient.Browser.MainApp
         {
         }
 
-        public IInitData Initialized()
+        public void Initialized()
         {
-            return base.Channel.Initialized();
+            base.Channel.Initialized();
+        }
+
+        public IAppDirectSession GetSession()
+        {
+            return base.Channel.GetSession();
+        }
+
+        public IEnumerable<IApplication> GetMyApps()
+        {
+            return base.Channel.GetMyApps();
         }
     }
 }

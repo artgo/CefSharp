@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AppDirect.WindowsClient.Common.API;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -9,11 +9,12 @@ namespace AppDirect.WindowsClient.API
     /// </summary>
     public class CachedAppDirectApi : ICachedAppDirectApi
     {
-        private readonly IAppDirectApi _appDirectApi;
         private const int MaxApps = 25;
-        private IList<Application> _suggestedApps;
-        private IList<Application> _myApps;
         private static readonly Regex IdFromUrl = new Regex(@"\d+$");
+        private readonly IAppDirectApi _appDirectApi;
+
+        private volatile IList<Application> _suggestedApps;
+        private volatile IList<Application> _myApps;
 
         public CachedAppDirectApi(IAppDirectApi appDirectApi)
         {
@@ -24,8 +25,8 @@ namespace AppDirect.WindowsClient.API
         {
             get
             {
-                MyappsMyapp[] myApps = _appDirectApi.MyApps;
-                
+                var myApps = _appDirectApi.MyApps;
+
                 if (_myApps == null)
                 {
                     _myApps = ConvertList(new List<Application>(), myApps);
@@ -46,13 +47,15 @@ namespace AppDirect.WindowsClient.API
             {
                 if (_suggestedApps == null)
                 {
-
-                    WebApplicationsListApplication[] suggestedApps = _appDirectApi.SuggestedApps;
-                return ConvertList(new List<Application>(), suggestedApps);
+                    var suggestedApps = _appDirectApi.SuggestedApps;
+                    return ConvertList(new List<Application>(), suggestedApps);
                 }
                 return _suggestedApps;
             }
-            set { _suggestedApps = value; }
+            set
+            {
+                _suggestedApps = value;
+            }
         }
 
         public AppDirectSession Session
@@ -77,7 +80,7 @@ namespace AppDirect.WindowsClient.API
 
         private static IList<Application> ConvertList(IList<Application> appList, IEnumerable<WebApplicationsListApplication> apiAppList)
         {
-            int appN = 0;
+            var appN = 0;
 
             if (apiAppList == null)
             {
@@ -96,17 +99,18 @@ namespace AppDirect.WindowsClient.API
                         IsLocalApp = false,
                         Price = applicationsApplication.StartingPrice
                     };
-                   
+
                 appList.Add(app);
                 if (++appN >= MaxApps)
                 {
                     break;
                 }
             }
+
             return appList;
         }
 
-        private static IList<Application> ConvertList(IList<Application> appList, MyappsMyapp[] myApps)
+        private static IList<Application> ConvertList(IList<Application> appList, IEnumerable<MyappsMyapp> myApps)
         {
             if (myApps == null)
             {
@@ -127,6 +131,7 @@ namespace AppDirect.WindowsClient.API
                 };
                 appList.Add(app);
             }
+
             return appList;
         }
 

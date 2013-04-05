@@ -1,6 +1,5 @@
 ﻿using AppDirect.WindowsClient.Common.API;
 using System.Diagnostics;
-using System.Threading;
 
 namespace AppDirect.WindowsClient.API
 {

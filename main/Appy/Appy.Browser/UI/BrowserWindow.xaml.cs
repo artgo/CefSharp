@@ -1,3 +1,4 @@
+using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -23,19 +24,31 @@ namespace AppDirect.WindowsClient.Browser.UI
 
             DataContext = ViewModel;
             InitializeComponent();
-            if ((ViewModel != null) && (ViewModel.Application != null))
+            if (browserViewModel.Application != null)
             {
-                browser.StartUrl = ViewModel.Application.UrlString;
-            }
+                if ((browserViewModel.Session != null) && (browserViewModel.Session.Cookies.Count > 0))
+                {
+                    browser.StartUrl = browserViewModel.Application.UrlString;
+                }
 
-            Width = browserViewModel.Application.BrowserWidth;
-            Height = browserViewModel.Application.BrowserHeight;
-            TitleTextBlock.Text = browserViewModel.Application.Name;
+                Width = browserViewModel.Application.BrowserWidth;
+                Height = browserViewModel.Application.BrowserHeight;
+                TitleTextBlock.Text = browserViewModel.Application.Name;
+            }
         }
 
         public virtual void PreInitializeWindow()
         {
-            browser.NavigateTo(ViewModel.Application.UrlString);
+            if ((ViewModel.Session != null) && (ViewModel.Session.Cookies.Count > 0))
+            {
+                browser.NavigateTo(ViewModel.Application.UrlString);
+            }
+        }
+
+        public void SetSession(IAppDirectSession session)
+        {
+            ViewModel.Session = session;
+            PreInitializeWindow();
         }
 
         protected override void OnClosed(EventArgs e)
