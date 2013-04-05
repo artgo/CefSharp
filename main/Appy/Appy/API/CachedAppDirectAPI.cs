@@ -10,7 +10,7 @@ namespace AppDirect.WindowsClient.API
     public class CachedAppDirectApi : ICachedAppDirectApi
     {
         private readonly IAppDirectApi _appDirectApi;
-        private const int MaxApps = 15;
+        private const int MaxApps = 25;
         private IList<Application> _suggestedApps;
         private IList<Application> _myApps;
         private static readonly Regex IdFromUrl = new Regex(@"\d+$");
