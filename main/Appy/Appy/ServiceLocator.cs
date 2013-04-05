@@ -11,7 +11,9 @@ namespace AppDirect.WindowsClient
     {
         public static readonly IKernel Kernel = new StandardKernel();
 
-        private ServiceLocator() {}
+        private ServiceLocator()
+        {
+        }
 
         public static ICachedAppDirectApi CachedAppDirectApi
         {
@@ -43,23 +45,17 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<IUiHelper>(); }
         }
 
-        public static ILatch BrowserStartupLatch
-        {
-            get { return Kernel.Get<ILatch>(); }
-        }
-
         /// <summary>
         /// Initializes Apis, Loads Local Storage, etc
         /// </summary>
         public static void Initialize()
         {
             Kernel.Rebind<IUiHelper>().ToConstant(new UiHelper(new NLogLogger("UiHelper")));
-            Kernel.Rebind<ILatch>().ToConstant(new Latch());
             Kernel.Rebind<IAppDirectApi>().ToConstant(new AppDirectApi());
             Kernel.Rebind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(Kernel.Get<IAppDirectApi>()));
             Kernel.Rebind<LocalStorage>().ToConstant(new LocalStorage());
-            Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator(Kernel.Get<ILatch>()));
-            Kernel.Rebind<IIpcCommunicator>().ToConstant(new IpcCommunicator(new MainApplication(Kernel.Get<IBrowserWindowsCommunicator>(), Kernel.Get<LocalStorage>(), Kernel.Get<ILatch>())));
+            Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator(new BrowsersManagerApiServiceBuilder(), Kernel.Get<IUiHelper>(), new NLogLogger("BrowserWindowsCommunicator")));
+            Kernel.Rebind<IIpcCommunicator>().ToConstant(new IpcCommunicator(new MainApplication(Kernel.Get<LocalStorage>(), Kernel.Get<IBrowserWindowsCommunicator>())));
             Kernel.Rebind<Updater>().ToConstant(new Updater());
         }
     }

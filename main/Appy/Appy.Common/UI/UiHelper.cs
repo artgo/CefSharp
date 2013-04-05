@@ -90,5 +90,10 @@ namespace AppDirect.WindowsClient.Common.UI
                 _log.ErrorException("Invokation failed", e);
             }
         }
+
+        public void Sleep(int milliseconds)
+        {
+            Thread.Sleep(milliseconds);
+        }
     }
 }

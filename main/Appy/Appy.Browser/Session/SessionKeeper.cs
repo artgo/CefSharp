@@ -1,9 +1,9 @@
 ﻿using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Control;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
 using System;
 using System.Threading;
-using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.Browser.Session
 {
@@ -16,11 +16,17 @@ namespace AppDirect.WindowsClient.Browser.Session
         private readonly Thread _updaterThread;
         private readonly IBrowserWindowsManager _browserWindowsManager;
         private readonly ThreadStart _sessionUpdator;
-        private volatile bool _stopFlag = false;
+        private readonly MainApplicationServiceClient _mainAppClient;
         private readonly ILogger _log;
+        private volatile bool _stopFlag = false;
 
-        public SessionKeeper(IBrowserWindowsManager browserWindowsManager, ILogger log)
+        public SessionKeeper(MainApplicationServiceClient mainAppClient, IBrowserWindowsManager browserWindowsManager, ILogger log)
         {
+            if (mainAppClient == null)
+            {
+                throw new ArgumentNullException("mainAppClient");
+            }
+
             if (browserWindowsManager == null)
             {
                 throw new ArgumentNullException("browserWindowsManager");
@@ -31,6 +37,7 @@ namespace AppDirect.WindowsClient.Browser.Session
                 throw new ArgumentNullException("log");
             }
 
+            _mainAppClient = mainAppClient;
             _log = log;
             _sessionUpdator = KeepUpdatingSession;
             _browserWindowsManager = browserWindowsManager;
@@ -76,6 +83,12 @@ namespace AppDirect.WindowsClient.Browser.Session
 
         private void ReloadSessions()
         {
+            var session = _mainAppClient.GetSession();
+            _browserWindowsManager.Session = session;
+
+            var apps = _mainAppClient.GetMyApps();
+            _browserWindowsManager.Applications = apps;
+
             foreach (var app in _browserWindowsManager.Applications)
             {
                 if ((app != null) && !string.IsNullOrEmpty(app.UrlString))

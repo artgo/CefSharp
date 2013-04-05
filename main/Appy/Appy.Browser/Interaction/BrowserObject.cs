@@ -63,7 +63,7 @@ namespace AppDirect.WindowsClient.Browser.Interaction
                 BrowserSubprocessPath = currentDir + Path.DirectorySeparatorChar + CefClientExe,
                 SingleProcess = false,
                 MultiThreadedMessageLoop = true,
-                LogSeverity = CefLogSeverity.Error,
+                LogSeverity = CefLogSeverity.Verbose,
                 PersistSessionCookies = true,
                 LogFile = "cef.log",
                 CachePath = cachePath,

@@ -11,5 +11,7 @@ namespace AppDirect.WindowsClient.Common.UI
         void GracefulShutdown();
 
         void IgnoreException(Action action);
+
+        void Sleep(int milliseconds);
     }
 }
