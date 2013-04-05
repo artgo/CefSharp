@@ -62,6 +62,7 @@ namespace AppDirect.WindowsClient.Browser.UI
         private void Maximize_OnClick(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Maximized;
+
             Maximize.Visibility = Visibility.Hidden;
             RestoreDown.Visibility = Visibility.Visible;
         }
@@ -69,6 +70,7 @@ namespace AppDirect.WindowsClient.Browser.UI
         private void RestoreDown_OnClick(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Normal;
+
             RestoreDown.Visibility = Visibility.Hidden;
             Maximize.Visibility = Visibility.Visible;
         }
@@ -83,6 +85,14 @@ namespace AppDirect.WindowsClient.Browser.UI
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
+            }
+        }
+
+        private void UIElement_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount >= 2)
+            {
+                WindowState = WindowState.Maximized;
             }
         }
     }

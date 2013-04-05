@@ -47,6 +47,7 @@ namespace AppDirect.WindowsClient.Browser.API
 
                 browserWindow.Activate();
                 browserWindow.Topmost = true;
+                browserWindow.Topmost = false;
                 browserWindow.Focus();
             });
         }
