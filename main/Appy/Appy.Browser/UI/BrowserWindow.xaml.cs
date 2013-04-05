@@ -9,8 +9,6 @@ namespace AppDirect.WindowsClient.Browser.UI
     /// </summary>
     public partial class BrowserWindow : Window
     {
-        private Rect _restoreLocation;
-
         private BrowserViewModel ViewModel { get; set; }
 
         public BrowserWindow(BrowserViewModel browserViewModel)
@@ -63,11 +61,7 @@ namespace AppDirect.WindowsClient.Browser.UI
 
         private void Maximize_OnClick(object sender, RoutedEventArgs e)
         {
-            _restoreLocation = new Rect { Width = Width, Height = Height, X = Left, Y = Top };
-            Height = SystemParameters.WorkArea.Height + OuterBorder.BorderThickness.Top + OuterBorder.BorderThickness.Bottom;
-            Width = SystemParameters.WorkArea.Width + OuterBorder.BorderThickness.Right + OuterBorder.BorderThickness.Left;
-            Left = SystemParameters.WorkArea.Left - OuterBorder.BorderThickness.Left;
-            Top = SystemParameters.WorkArea.Top - OuterBorder.BorderThickness.Top;
+            WindowState = WindowState.Maximized;
 
             Maximize.Visibility = Visibility.Hidden;
             RestoreDown.Visibility = Visibility.Visible;
@@ -75,10 +69,7 @@ namespace AppDirect.WindowsClient.Browser.UI
 
         private void RestoreDown_OnClick(object sender, RoutedEventArgs e)
         {
-            Height = _restoreLocation.Height;
-            Width = _restoreLocation.Width;
-            Left = _restoreLocation.X;
-            Top = _restoreLocation.Y;
+            WindowState = WindowState.Normal;
 
             RestoreDown.Visibility = Visibility.Hidden;
             Maximize.Visibility = Visibility.Visible;
@@ -94,6 +85,14 @@ namespace AppDirect.WindowsClient.Browser.UI
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
+            }
+        }
+
+        private void UIElement_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount >= 2)
+            {
+                WindowState = WindowState.Maximized;
             }
         }
     }
