@@ -16,6 +16,7 @@
 !define BROWSERPROCESSNAME "${APPNAME}.Browser.exe"
 !define NATIVEDLLPATH "$INSTDIR\native.dll"
 !define COMMONDLLPATH "$INSTDIR\${APPNAME}.Common.dll"
+!define BROWSERCACHEPATH "$INSTDIR\CACHE"
 
 !define COPY64 "/r 64Bit\*.*"
 !define COPY32 "/r 32Bit\*.*"
@@ -45,37 +46,47 @@ AutoCloseWindow true
   StrCpy $1 0  
   nsExec::Exec "taskkill /f /im ${APPEXE}"
   nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
-  loop:
-  IntOp $1 $1 + 1 ;timeout index
-  ${FindProcess} BROWSERPROCESSNAME $0 ;sets $0 to 1 if process is found
-  StrCmp $0 "0" end1 continue
-  continue:
-  Sleep 200
-  StrCmp $1 "25" error loop ;try for 5 seconds
+  loop1:
+	IntOp $1 $1 + 1 ;timeout index
+	${FindProcess} BROWSERPROCESSNAME $0 ;sets $0 to 1 if process is found
+	StrCmp $0 "0" end1 continue
+	continue:
+	sleep 200
+	StrCmp $1 "25" error loop1 ;try for 5 seconds
   end1:
   
   StrCpy $1 0
-  loop1:
-  IntOp $1 $1 + 1 ;timeout index
-  IfFileExists ${NATIVEDLLPATH} deleteFile end2
+  loop2:
+	IntOp $1 $1 + 1 ;timeout index
+	IfFileExists ${NATIVEDLLPATH} deleteFile end2
 	deleteFile:
-	Delete ${NATIVEDLLPATH} 
-    sleep 500
-  StrCmp $1 "10" error loop1 ;try for 5 seconds
+	  Delete ${NATIVEDLLPATH} 
+      sleep 200
+	  StrCmp $1 "50" error loop2 ;try for 5 seconds
   end2:
   
   StrCpy $1 0
-  loop2:
-  IntOp $1 $1 + 1 ;timeout index
-  IfFileExists ${COMMONDLLPATH} deleteFile1 finalEnd
+  loop3:
+	IntOp $1 $1 + 1 ;timeout index
+	IfFileExists ${COMMONDLLPATH} deleteFile1 end3
 	deleteFile1:
-	Delete ${COMMONDLLPATH} 
-    sleep 500
-  StrCmp $1 "10" error loop2 ;try for 5 seconds
+	  Delete ${COMMONDLLPATH} 
+	  sleep 200
+      StrCmp $1 "50" error loop3 ;try for 5 seconds
+  end3:
+  
+  StrCpy $1 0
+  loop4:
+    IntOp $1 $1 + 1 ;timeout index
+    IfFileExists ${BROWSERCACHEPATH} deleteCache finalEnd
+	deleteCache:
+	  RMDir /r "${BROWSERCACHEPATH}" 
+      sleep 200
+      StrCmp $1 "50" error loop4 ;try for 5 seconds
 
   error:
     MessageBox MB_OK "${APPNAME} can not update because the application is currently running or is in a faulted state.  Please uninstall the application before proceeding."
-		Abort
+	  Abort
 
   finalEnd:
 !macroend
