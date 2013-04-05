@@ -10,7 +10,7 @@ namespace AppDirect.WindowsClient.API
     public class CachedAppDirectApi : ICachedAppDirectApi
     {
         private readonly IAppDirectApi _appDirectApi;
-        private const int MaxApps = 10;
+        private const int MaxApps = 25;
         private IList<Application> _suggestedApps;
         private IList<Application> _myApps;
         private static readonly Regex IdFromUrl = new Regex(@"\d+$");
@@ -75,16 +75,16 @@ namespace AppDirect.WindowsClient.API
             get { return _appDirectApi.IsAuthenticated; }
         }
 
-        private static IList<Application> ConvertList(IList<Application> appList, IEnumerable<WebApplicationsListApplication> myApps)
+        private static IList<Application> ConvertList(IList<Application> appList, IEnumerable<WebApplicationsListApplication> apiAppList)
         {
             int appN = 0;
 
-            if (myApps == null)
+            if (apiAppList == null)
             {
                 return appList;
             }
 
-            foreach (var applicationsApplication in myApps)
+            foreach (var applicationsApplication in apiAppList)
             {
                 var app = new Application
                     {
