@@ -10,72 +10,6 @@
         Closing="MainWindow_OnClosing"
         ShowInTaskbar="False">
     <Window.Resources>
-        <Style TargetType="ProgressBar" x:Key="SpinnerProgress">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ProgressBar">
-                        <Grid>
-                            <ProgressBar x:Name="pgBar" Value="{TemplateBinding Value}" Visibility="Collapsed" IsIndeterminate="{TemplateBinding IsIndeterminate}" Background="{StaticResource MenuItemColor}" />
-                            <TextBox Background="Red" Text="{Binding ElementName=pgBar, Path=Value}">
-                                <TextBox.Style>
-                                    <Style TargetType="{x:Type TextBox}">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="TextBox">
-                                                    <Grid>
-                                                        <Grid Width="50" Height="50" x:Name="mainGrid">
-                                                            <Grid.RenderTransform>
-                                                                <RotateTransform Angle="0" CenterX="25" CenterY="25" />
-                                                            </Grid.RenderTransform>
-                                                            <Grid.Triggers>
-                                                                <EventTrigger RoutedEvent="Grid.Loaded">
-                                                                    <BeginStoryboard>
-                                                                        <Storyboard RepeatBehavior="Forever">
-                                                                            <DoubleAnimation From="0" To="360" Duration="00:00:00.750" Storyboard.TargetName="mainGrid" Storyboard.TargetProperty="(Grid.RenderTransform).(RotateTransform.Angle)" />
-                                                                        </Storyboard>
-                                                                    </BeginStoryboard>
-                                                                </EventTrigger>
-                                                            </Grid.Triggers>
-                                                            <Border x:Name="spinnerMask" BorderThickness="6" CornerRadius="25" BorderBrush="White" />
-                                                            <Rectangle>
-                                                                <Rectangle.OpacityMask>
-                                                                    <VisualBrush Visual="{Binding ElementName=spinnerMask}" />
-                                                                </Rectangle.OpacityMask>
-                                                                <Rectangle.Fill>
-                                                                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                                                        <GradientStop Color="#dfdfdf" Offset="0" />
-                                                                        <GradientStop Color="#bdbdbd" Offset="0.198" />
-                                                                        <GradientStop Color="#9f9f9f" Offset="0.4" />
-                                                                        <GradientStop Color="#9f9f9f" Offset="0.6" />
-                                                                        <GradientStop Color="#bdbdbd" Offset="0.891" />
-                                                                        <GradientStop Color="#dfdfdf" Offset="1" />
-                                                                    </LinearGradientBrush>
-                                                                </Rectangle.Fill>
-                                                            </Rectangle>
-                                                            <Rectangle Fill="#dfdfdf">
-                                                                <Rectangle.OpacityMask>
-                                                                    <VisualBrush Visual="{Binding ElementName=spinnerMask}" />
-                                                                </Rectangle.OpacityMask>
-                                                                <Rectangle.Clip>
-                                                                    <RectangleGeometry Rect="0,0,50,25" />
-                                                                </Rectangle.Clip>
-                                                            </Rectangle>
-                                                        </Grid>
-                                                    </Grid>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-                            <Grid.RenderTransform>
-                                <ScaleTransform ScaleX="0.4" ScaleY="0.4" />
-                            </Grid.RenderTransform>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
         <ContextMenu x:Key="UninstallContextMenu" Style="{StaticResource ContextMenuStyle}">
             <MenuItem Header="Pin to task bar" Style="{StaticResource MenuItem}" IsChecked="{Binding PinnedToTaskbarNotifier}"
                       IsCheckable="True" Click="PinToTaskBarClick" DataContext="{Binding}" />
@@ -520,7 +454,7 @@
                                 <Grid>
                                     <Image Source="Images/wrench.png" Width="12" />
                                     <Grid Background="{StaticResource MenuItemHoverColor}" Visibility="{Binding UpdateSpinnerVisibility}">
-                                        <ProgressBar Margin="3,0,0,0" Name ="Spinner" Style="{StaticResource SpinnerProgress}"></ProgressBar>
+                                        <ProgressBar Margin="3,0,0,0" Name ="Spinner" Style="{StaticResource SpinnerProgress}"/>
                                     </Grid>
                                 </Grid>
                             </MenuItem.Icon>
