@@ -6,14 +6,12 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using AppDirect.WindowsClient.Common.API;
 using Xilium.CefGlue;
 
 namespace AppDirect.WindowsClient.Browser.Control
 {
     public class WpfCefBrowser : ContentControl, IDisposable
     {
-        private const string AboutBlank = "about:blank";
         private bool _disposed;
         private bool _created;
 
@@ -32,8 +30,8 @@ namespace AppDirect.WindowsClient.Browser.Control
 
         public WpfCefBrowser()
         {
-           StartUrl = AboutBlank;
- 
+            StartUrl = "about:blank";
+
             KeyboardNavigation.SetAcceptsReturn(this, true);
             _mainUiDispatcher = Dispatcher.CurrentDispatcher;
         }
@@ -140,7 +138,7 @@ namespace AppDirect.WindowsClient.Browser.Control
                             _cefClient = new WpfCefClient(this);
 
                             // This is the first time the window is being rendered, so create it.
-                            CefBrowserHost.CreateBrowser(windowInfo, _cefClient, settings, !string.IsNullOrEmpty(StartUrl) ? StartUrl : AboutBlank);
+                            CefBrowserHost.CreateBrowser(windowInfo, _cefClient, settings, !string.IsNullOrEmpty(StartUrl) ? StartUrl : "about:blank");
 
                             _created = true;
                         }
@@ -460,14 +458,7 @@ namespace AppDirect.WindowsClient.Browser.Control
                 return;
 
             if (width > 0 && height > 0)
-            {
                 _browserHost.WasResized();
-            }
-
-            if (!string.IsNullOrEmpty(StartUrl))
-            {
-                browser.GetMainFrame().LoadUrl(StartUrl);
-            }
 
             // 			mainUiDispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
             // 			{
