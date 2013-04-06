@@ -1,17 +1,13 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Net;
-using System.Web.UI.WebControls;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using System;
+using System.ComponentModel;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using AppDirect.WindowsClient.Models;
-using Button = System.Web.UI.WebControls.Button;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -23,7 +19,7 @@ namespace AppDirect.WindowsClient.UI
         public EventHandler RegistrationClick;
         public EventHandler CloseLogin;
         public EventHandler LoginSuccessfulNotifier;
-        
+
         private readonly SolidColorBrush _errorColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#a32424"));
         private readonly SolidColorBrush _defaultColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#072b35"));
         private readonly SolidColorBrush _validColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#072b35"));
@@ -172,7 +168,7 @@ namespace AppDirect.WindowsClient.UI
             loginBW.DoWork += LoginTask;
             loginBW.RunWorkerCompleted += LoginComplete;
 
-            var loginArgs = new LoginCredentials() {UserName = UsernameTextBox.Text, Password = PasswordBox.Password};
+            var loginArgs = new LoginCredentials() { UserName = UsernameTextBox.Text, Password = PasswordBox.Password };
 
             loginBW.RunWorkerAsync(loginArgs);
         }
@@ -187,12 +183,12 @@ namespace AppDirect.WindowsClient.UI
         {
             ViewModel.LoginInProgress = false;
 
-            if (e.Error != null && e.Error.GetType() == typeof (WebException))
+            if (e.Error != null && e.Error.GetType() == typeof(WebException))
             {
                 _log.ErrorException("Connection error", e.Error);
                 ViewModel.ShowNetworkProblem();
             }
-            else if ((bool) e.Result)
+            else if ((bool)e.Result)
             {
                 LoginFailedMessage.Visibility = Visibility.Hidden;
                 LoginSuccessfulNotifier.Invoke(sender, e);
