@@ -17,6 +17,16 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="LoginInProgressStyle" TargetType="{x:Type Grid}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding LoginInProgress}" Value="true">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding LoginInProgress}" Value="false">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid Visibility="{Binding IsVisible}" Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,0" Background="{StaticResource LeftPanelColor}">
         <Rectangle Height="320" Width="670" Fill="{StaticResource LoginPanelColor}">
@@ -59,6 +69,11 @@
                 <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" Style="{StaticResource TextStyle}" Margin="20,20,20,20" Foreground="Black" />
                 <Button  Height="30" Width="45" Style="{StaticResource MainButtonStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="ErrorMessageOK_OnClick">OK</Button>
             </StackPanel>
+        </Grid>
+        <Grid Name="LoginInProgressPanel" Style="{StaticResource LoginInProgressStyle}">
+            <Rectangle Height="{StaticResource WindowHeight}" Width="{StaticResource WindowWidth}" Fill="{StaticResource TextFieldFocusColor}" Opacity=".8">
+            </Rectangle>
+            <ProgressBar Height="50" Width="50" Margin="30,30,0,0" Name ="Spinner" Style="{StaticResource SpinnerProgress}"/>
         </Grid>
     </Grid>
 </UserControl>

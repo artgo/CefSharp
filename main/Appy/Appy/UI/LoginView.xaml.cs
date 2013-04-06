@@ -1,4 +1,8 @@
-﻿using AppDirect.WindowsClient.API;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Net;
+using System.Web.UI.WebControls;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using System;
 using System.Windows;
@@ -6,6 +10,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using AppDirect.WindowsClient.Models;
+using Button = System.Web.UI.WebControls.Button;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -17,12 +23,18 @@ namespace AppDirect.WindowsClient.UI
         public EventHandler RegistrationClick;
         public EventHandler CloseLogin;
         public EventHandler LoginSuccessfulNotifier;
-
+        
         private readonly SolidColorBrush _errorColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#a32424"));
         private readonly SolidColorBrush _defaultColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#072b35"));
         private readonly SolidColorBrush _validColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#072b35"));
 
         private static readonly ILogger _log = new NLogLogger("LoginView");
+
+        private class LoginCredentials
+        {
+            public string UserName;
+            public string Password;
+        }
 
         public LoginViewModel ViewModel
         {
@@ -154,23 +166,41 @@ namespace AppDirect.WindowsClient.UI
                 return;
             }
 
-            try
+            ViewModel.LoginInProgress = true;
+
+            BackgroundWorker loginBW = new BackgroundWorker();
+            loginBW.DoWork += LoginTask;
+            loginBW.RunWorkerCompleted += LoginComplete;
+
+            var loginArgs = new LoginCredentials() {UserName = UsernameTextBox.Text, Password = PasswordBox.Password};
+
+            loginBW.RunWorkerAsync(loginArgs);
+        }
+
+        private void LoginTask(object sender, DoWorkEventArgs e)
+        {
+            var loginCredentials = (LoginCredentials)e.Argument;
+            e.Result = Helper.Login(loginCredentials.UserName, loginCredentials.Password);
+        }
+
+        private void LoginComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            ViewModel.LoginInProgress = false;
+
+            if (e.Error != null && e.Error.GetType() == typeof (WebException))
             {
-                if (ViewModel.Login(UsernameTextBox.Text, PasswordBox.Password))
-                {
-                    LoginFailedMessage.Visibility = Visibility.Hidden;
-                    LoginSuccessfulNotifier.Invoke(sender, e);
-                    CloseLogin.Invoke(sender, e);
-                }
-                else
-                {
-                    LoginFailed();
-                }
-            }
-            catch (System.Net.WebException ex)
-            {
-                _log.ErrorException("Connection error", ex);
+                _log.ErrorException("Connection error", e.Error);
                 ViewModel.ShowNetworkProblem();
+            }
+            else if ((bool) e.Result)
+            {
+                LoginFailedMessage.Visibility = Visibility.Hidden;
+                LoginSuccessfulNotifier.Invoke(sender, e);
+                CloseLogin.Invoke(sender, e);
+            }
+            else
+            {
+                LoginFailed();
             }
         }
 

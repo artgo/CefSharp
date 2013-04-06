@@ -40,6 +40,9 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         [Test]
         public void AuthenticateReturnsTrueForValidCredentials()
         {
+            var browserMock = Substitute.For<IBrowserWindowsCommunicator>();
+            ServiceLocator.Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(browserMock);
+
             ServiceLocator.LocalStorage.SetCredentials(Username, Password);
             Assert.IsTrue(Helper.Authenticate());
         }
@@ -47,6 +50,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         [Test]
         public void AuthenticateReturnsFalseForInvalidCredentials()
         {
+            var browserMock = Substitute.For<IBrowserWindowsCommunicator>();
+            ServiceLocator.Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(browserMock);
             ServiceLocator.LocalStorage.SetCredentials(UsernameBad, PasswordBad);
             Assert.IsFalse(Helper.Authenticate());
         }
@@ -95,6 +100,56 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             var test = false;
             Helper.PerformWhenIdle(() => { test = true; }, TimeSpan.FromMinutes(1), TimeSpan.FromMilliseconds(1), TimeSpan.FromMilliseconds(2));
             Assert.IsFalse(test);
+        }
+
+        [Test]
+        public void LoginReturnsTrueForValidLogin()
+        {
+            Assert.IsTrue(Helper.Login(Username, Password));
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
+        }
+
+        [Test]
+        public void LoginReturnsFalseForInvalidLogin()
+        {
+            Assert.IsFalse(Helper.Login(Username, PasswordBad));
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, PasswordBad);
+        }
+
+        [Test]
+        public void ValidUsernameIsStored()
+        {
+            Helper.Login(Username, Password);
+            Assert.AreEqual(Username, ServiceLocator.LocalStorage.LoginInfo.Username);
+
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
+        }
+
+        [Test]
+        public void ValidPasswordIsStored()
+        {
+            Helper.Login(Username, Password);
+            Assert.AreEqual(Password, ServiceLocator.LocalStorage.LoginInfo.Password);
+
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
+        }
+
+        [Test]
+        public void PasswordSetDateIsStored()
+        {
+            Helper.Login(Username, Password);
+            Assert.AreEqual(DateTime.Now.Date, ServiceLocator.LocalStorage.LoginInfo.PasswordSetDate.Date);
+
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, Password);
+        }
+
+        [Test]
+        public void IncorrectLoginIsNotStored()
+        {
+            Helper.Login(Username, PasswordBad);
+            Assert.IsNull(ServiceLocator.LocalStorage.LoginInfo);
+
+            ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, PasswordBad);
         }
         
         //Should be moved to Integration Tests

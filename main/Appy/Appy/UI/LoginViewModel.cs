@@ -11,6 +11,7 @@ namespace AppDirect.WindowsClient.UI
         private string _loginFailedMessage = Resources.CredentialsProblemError;
         private string _loginHeaderText = Resources.LoginHeaderLoginRequired;
         private string _errorMessage;
+        private bool _loginInProgress;
 
         public Visibility IsVisible
         {
@@ -57,6 +58,16 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        public bool LoginInProgress
+        {
+            get { return _loginInProgress; }
+            set
+            {
+                _loginInProgress = value;
+                NotifyPropertyChanged("LoginInProgress");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         
         public void NotifyPropertyChanged(string propertyName)
@@ -65,20 +76,6 @@ namespace AppDirect.WindowsClient.UI
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-        }
-
-        public bool Login(string username, string password)
-        {
-            if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
-            {
-                lock (ServiceLocator.LocalStorage.Locker)
-                {
-                    ServiceLocator.LocalStorage.SetCredentials(username, password);
-                }
-                return true;
-            }
-
-            return false;
         }
 
         public void SetVisibility(bool isLoggedIn)

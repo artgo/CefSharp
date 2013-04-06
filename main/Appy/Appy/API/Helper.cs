@@ -112,6 +112,20 @@ namespace AppDirect.WindowsClient.API
             return clickedApp;
         }
 
+        public static bool Login(string username, string password)
+        {
+            if (ServiceLocator.CachedAppDirectApi.Authenticate(username, password))
+            {
+                lock (ServiceLocator.LocalStorage.Locker)
+                {
+                    ServiceLocator.LocalStorage.SetCredentials(username, password);
+                }
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// MUST BE WRAPPED IN TRY-CATCH Throws exceptions for network errors or API Errors
         /// </summary>
