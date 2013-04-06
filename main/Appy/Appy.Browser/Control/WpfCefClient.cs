@@ -7,9 +7,9 @@ namespace AppDirect.WindowsClient.Browser.Control
     {
         private WpfCefBrowser _owner;
 
-        private readonly WpfCefLifeSpanHandler _lifeSpanHandler;
-        private readonly WpfCefDisplayHandler _displayHandler;
-        private readonly WpfCefRenderHandler _renderHandler;
+        private WpfCefLifeSpanHandler _lifeSpanHandler;
+        private WpfCefDisplayHandler _displayHandler;
+        private WpfCefRenderHandler _renderHandler;
 
         public WpfCefClient(WpfCefBrowser owner)
         {
