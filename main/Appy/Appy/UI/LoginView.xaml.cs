@@ -26,12 +26,6 @@ namespace AppDirect.WindowsClient.UI
 
         private static readonly ILogger _log = new NLogLogger("LoginView");
 
-        private class LoginCredentials
-        {
-            public string UserName;
-            public string Password;
-        }
-
         public LoginViewModel ViewModel
         {
             get { return DataContext as LoginViewModel; }
@@ -168,21 +162,18 @@ namespace AppDirect.WindowsClient.UI
             loginBW.DoWork += LoginTask;
             loginBW.RunWorkerCompleted += LoginComplete;
 
-            var loginArgs = new LoginCredentials() { UserName = UsernameTextBox.Text, Password = PasswordBox.Password };
+            ServiceLocator.LocalStorage.SetCredentials(UsernameTextBox.Text, PasswordBox.Password);
 
-            loginBW.RunWorkerAsync(loginArgs);
+            loginBW.RunWorkerAsync();
         }
 
         private void LoginTask(object sender, DoWorkEventArgs e)
         {
-            var loginCredentials = (LoginCredentials)e.Argument;
-            e.Result = Helper.Login(loginCredentials.UserName, loginCredentials.Password);
+            e.Result = Helper.Authenticate();
         }
 
         private void LoginComplete(object sender, RunWorkerCompletedEventArgs e)
         {
-            ViewModel.LoginInProgress = false;
-
             if (e.Error != null && e.Error.GetType() == typeof(WebException))
             {
                 _log.ErrorException("Connection error", e.Error);
@@ -198,6 +189,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 LoginFailed();
             }
+
+            ViewModel.LoginInProgress = false;
         }
 
         private bool ValidateRequiredFields()
