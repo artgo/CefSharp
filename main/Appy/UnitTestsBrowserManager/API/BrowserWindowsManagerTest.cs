@@ -32,6 +32,7 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         public void TestSettingNotNullSessionCallsBrowserObjectSetCookies()
         {
             var cookies = new List<Cookie>();
+            cookies.Add(new Cookie("1", "2"));
             var session = new AppDirectSession() { Cookies = cookies };
             _browserWindowsManager.Session = session;
             _browserObject.Received().SetCookies(cookies);

@@ -12,28 +12,42 @@ namespace AppDirect.WindowsClient.Browser.UI
     {
         private BrowserViewModel ViewModel { get; set; }
 
+        public BrowserWindow() {}
+
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
-            Title = browserViewModel.Application.Name;
             if (browserViewModel == null)
             {
                 throw new ArgumentNullException("browserViewModel");
             }
 
             ViewModel = browserViewModel;
-
             DataContext = ViewModel;
+
             InitializeComponent();
+
             if (browserViewModel.Application != null)
             {
-                if ((browserViewModel.Session != null) && (browserViewModel.Session.Cookies.Count > 0))
+                if ((browserViewModel.Session != null) && (browserViewModel.Session.Cookies.Count > 0) && !string.IsNullOrEmpty(browserViewModel.Application.UrlString))
                 {
                     browser.StartUrl = browserViewModel.Application.UrlString;
                 }
 
-                Width = browserViewModel.Application.BrowserWidth;
-                Height = browserViewModel.Application.BrowserHeight;
-                TitleTextBlock.Text = browserViewModel.Application.Name;
+                if (!string.IsNullOrEmpty(browserViewModel.Application.Name))
+                {
+                    Title = browserViewModel.Application.Name;
+                    TitleTextBlock.Text = browserViewModel.Application.Name;
+                }
+
+                if (browserViewModel.Application.BrowserWidth > 0)
+                {
+                    Width = browserViewModel.Application.BrowserWidth;
+                }
+
+                if (browserViewModel.Application.BrowserHeight > 0)
+                {
+                    Height = browserViewModel.Application.BrowserHeight;
+                }
             }
         }
 
