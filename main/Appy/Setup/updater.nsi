@@ -14,7 +14,7 @@ Name "updater"
 ;--------------------------------
 
 ; The file to write
-!define OUTFILE "AppyUpdater.exe"
+!define OUTFILE "updater.exe"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
