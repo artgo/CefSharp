@@ -1,4 +1,5 @@
 !include "InstallerShared.nsh"
+!include "MUI.nsh"
 !include "LogicLib.nsh"
 !include "FindProcess.nsh"
 
@@ -7,20 +8,27 @@
 ; The name of the installer
 Name "updater"
 
+;--------------------------------
+;Replace Default Installer Icon
+!define MUI_ICON "${INSTALLERICON}"
+;--------------------------------
+
 ; The file to write
-!define OUTFILE "updater.exe"
+!define OUTFILE "AppyUpdater.exe"
 OutFile "${OUTFILE}"
 
 ; The default installation directory
 InstallDir "${APPDIR}"
-
-SilentInstall silent
 ;--------------------------------
-
-; Pages
+;Languages
+!insertmacro MUI_LANGUAGE "English"
+;--------------------------------
+;File Details
+VIAddVersionKey "FileDescription" "${APPNAME} Updater"
+;--------------------------------
 RequestExecutionLevel user
-
 ;--------------------------------
+SilentInstall silent
 
 ; The stuff to install
 Section "Create"

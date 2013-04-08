@@ -17,6 +17,10 @@ OutFile "${OUTFILE}"
 ;--------------------------------
 ;Languages
 !insertmacro MUI_LANGUAGE "English"
+;--------------------------------
+;File Details
+VIAddVersionKey "FileDescription" "${APPNAME} Uninstaller"
+;--------------------------------
 
 RequestExecutionLevel user
 

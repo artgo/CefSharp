@@ -1,9 +1,7 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
-using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.InteropAPI.Internal;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.UI;
+using System;
+using System.Threading;
 
 namespace AppDirect.WindowsClient
 {
@@ -20,21 +18,25 @@ namespace AppDirect.WindowsClient
 
         private static void ManageUpdate()
         {
-            Thread.Sleep(DelayAfterStartup);
-
-            while (!ServiceLocator.LocalStorage.UpdateDownloaded)
+            while (true)
             {
-                bool updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
+                Thread.Sleep(DelayAfterStartup);
 
-                if (updateAvailable)
+                while (!ServiceLocator.LocalStorage.UpdateDownloaded)
                 {
-                    Helper.PerformInUiThread(() => _mainWindow.ViewModel.ResetUpdateText());
-                    break;
-                }
-                Thread.Sleep(CheckForUpdatesTimeSpan);
-            }
+                    bool updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
 
-            InstallUpdateOnIdle();
+                    if (updateAvailable)
+                    {
+                        Helper.PerformInUiThread(() => _mainWindow.ViewModel.ResetUpdateText());
+                        break;
+                    }
+
+                    Thread.Sleep(CheckForUpdatesTimeSpan);
+                }
+
+                InstallUpdateOnIdle();
+            }
         }
 
         private static void InstallUpdateOnIdle()
