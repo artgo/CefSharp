@@ -20,8 +20,7 @@ namespace AppDirect.WindowsClient.UI
     {
         public LoginViewModel LoginViewModel = new LoginViewModel();
         private const int MyAppDisplayLimit = 10;
-        private string _myAppsLoadError = String.Empty;
-        private string _suggestedAppsLoadError = String.Empty;
+        private string _message = String.Empty;
         private Visibility _updateSpinnerVisibility = Visibility.Hidden;
         private string _updateString = Properties.Resources.GetUpdateString;
         private bool _updateAvailable = false;
@@ -106,28 +105,18 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public string MyAppsLoadError
+        public string Message
         {
-            get { return _myAppsLoadError; }
+            get { return _message; }
             set
             {
-                if (_myAppsLoadError == value)
+                if (_message == value)
                 {
                     return;
                 }
 
-                _myAppsLoadError = value;
-                NotifyPropertyChanged("MyAppsLoadError");
-            }
-        }
-
-        public string SuggestedAppsLoadError
-        {
-            get { return _suggestedAppsLoadError; }
-            set
-            {
-                _suggestedAppsLoadError = value;
-                NotifyPropertyChanged("SuggestedAppsLoadError");
+                _message = value;
+                NotifyPropertyChanged("Message");
             }
         }
 
@@ -466,9 +455,9 @@ namespace AppDirect.WindowsClient.UI
                                          : Properties.Resources.GetUpdateString;
         }
 
-        public void ShowAboutDialog()
+        public void GetAboutDialog()
         {
-            MessageBox.Show(VersionString);
+            Message = VersionString;
         }
 
         public void LogInLogOutClicked()

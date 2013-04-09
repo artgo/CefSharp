@@ -181,7 +181,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            ViewModel.ShowAboutDialog();
+            ViewModel.GetAboutDialog();
         }
     }
 }
