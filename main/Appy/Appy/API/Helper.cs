@@ -67,7 +67,7 @@ namespace AppDirect.WindowsClient.API
                         throw;
                     }
 
-                    Thread.Sleep(accumulatingTimeSpan);
+                    ServiceLocator.UiHelper.Sleep(accumulatingTimeSpan);
                     accumulatingTimeSpan += retryInterval;
                 }
 

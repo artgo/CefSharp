@@ -33,7 +33,7 @@ namespace AppDirect.WindowsClient
                         break;
                     }
 
-                    Thread.Sleep(CheckForUpdatesTimeSpan);
+                    ServiceLocator.UiHelper.Sleep(CheckForUpdatesTimeSpan);
                 }
 
                 ServiceLocator.UiHelper.IgnoreException(InstallUpdateOnIdle);

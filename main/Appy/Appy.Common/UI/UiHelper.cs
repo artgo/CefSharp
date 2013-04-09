@@ -119,5 +119,10 @@ namespace AppDirect.WindowsClient.Common.UI
         {
             Thread.Sleep(milliseconds);
         }
+
+        public void Sleep(TimeSpan sleepTime)
+        {
+            Thread.Sleep(sleepTime);
+        }
     }
 }
