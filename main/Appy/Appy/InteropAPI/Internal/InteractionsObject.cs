@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -156,8 +155,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL);
 
-            //MessageBox.Show("Taskbar HWND: " + _taskbarHwnd);
-
             DoChangeWidth(_buttonsWidth, true);
 
             lock (_lockObject)
@@ -230,6 +227,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 _rebarHwnd = NativeDll.FindRebar();
                 _taskbarHwnd = FindTaskBar();
+
+                // Start button musto go after taskbar
                 _startButtonHwnd = FindStartButton();
             }
         }
@@ -629,13 +628,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         }
 
         // return one of 4 possible edge
-        private TaskbarPosition GetTaskbarEdge(HWND taskBar, ref MonitorInfo monitorInfo, ref HMONITOR hMonitor, ref RectWin taskbarRect)
+        private TaskbarPosition GetTaskbarEdge(HWND taskBar, ref RectWin taskbarRect)
         {
-            //if (!User32Dll.IsWindow(taskBar))
-            //{
-            //    throw new InteropException("TaskBar must not be a window");
-            //}
-
             var appbar = new APPBARDATA() { hWnd = taskBar };
             appbar.cbSize = (uint)Marshal.SizeOf(appbar);
             Shell32Dll.SHAppBarMessage((uint)AppBarMessages.ABM_GETTASKBARPOS, ref appbar);
@@ -649,24 +643,20 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private TaskbarPosition GetTaskbarEdge()
         {
-            MonitorInfo mi = new MonitorInfo();
-            RectWin r = new RectWin();
-            HMONITOR monitor = NULL;
-            return GetTaskbarEdge(_taskbarHwnd, ref mi, ref monitor, ref r);
+            RectWin taskbarRect = new RectWin();
+            return GetTaskbarEdge(_taskbarHwnd, ref taskbarRect);
         }
 
         private RectWin GetTaskbarRect()
         {
-            MonitorInfo mi = new MonitorInfo();
             RectWin taskbarRect = new RectWin();
-            HMONITOR monitor = NULL;
-            GetTaskbarEdge(_taskbarHwnd, ref mi, ref monitor, ref taskbarRect);
+            GetTaskbarEdge(_taskbarHwnd, ref taskbarRect);
             return taskbarRect;
         }
 
         private DWORD GetTaskbarThread()
         {
-            return User32Dll.GetWindowThreadProcessId(NativeDll.FindTaskBar(), IntPtr.Zero);
+            return User32Dll.GetWindowThreadProcessId(_taskbarHwnd, IntPtr.Zero);
         }
 
         private HWND _foundStartButtonHwnd = NULL;
@@ -691,7 +681,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _foundStartButtonHwnd = NULL;
             if (!IsVistaOrUp)
             {
-                _foundStartButtonHwnd = User32Dll.FindWindowEx(NativeDll.FindTaskBar(), NULL, StartButtonClass, null);
+                _foundStartButtonHwnd = User32Dll.FindWindowEx(_taskbarHwnd, NULL, StartButtonClass, null);
             }
             else
             {
@@ -706,16 +696,14 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private System.Drawing.Size GetButtonsWindowSize(bool firstTime = false)
         {
-            var mi = new MonitorInfo();
-            var taskbarRect = new RectWin();
-            HMONITOR monitor = NULL;
-
             if (firstTime)
             {
                 _buttonsWindowSize = new System.Drawing.Size(DefaultStartButtonWidth, DefaultStartButtonHeight);
             }
 
-            var edge = GetTaskbarEdge(_taskbarHwnd, ref mi, ref monitor, ref taskbarRect);
+            var taskbarRect = new RectWin();
+            var edge = GetTaskbarEdge(_taskbarHwnd, ref taskbarRect);
+
             if (!IsWin8OrUp)
             {
                 var startButtonRect = GetStartButtonRect();
@@ -738,7 +726,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     }
                 }
             }
-            else	// Windows 8
+            else // Windows 8
             {
                 if (edge.IsVertical())
                 {
