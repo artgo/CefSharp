@@ -91,9 +91,38 @@ namespace AppDirect.WindowsClient.Common.UI
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="action"></param>
+        /// <returns>Default if fails</returns>
+        public T IgnoreException<T>(Func<T> action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            try
+            {
+                return action.Invoke();
+            }
+            catch (Exception e)
+            {
+                _log.ErrorException("Invokation failed", e);
+                return default(T);
+            }
+        }
+
         public void Sleep(int milliseconds)
         {
             Thread.Sleep(milliseconds);
+        }
+
+        public void Sleep(TimeSpan sleepTime)
+        {
+            Thread.Sleep(sleepTime);
         }
     }
 }

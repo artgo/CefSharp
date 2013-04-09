@@ -13,5 +13,7 @@ namespace AppDirect.WindowsClient.Common.UI
         void IgnoreException(Action action);
 
         void Sleep(int milliseconds);
+
+        void Sleep(TimeSpan sleepTime);
     }
 }

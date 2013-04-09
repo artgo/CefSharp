@@ -1,4 +1,6 @@
-﻿using AppDirect.WindowsClient.Common.Log;
+﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Properties;
 using System;
 using System.Diagnostics;
@@ -12,37 +14,21 @@ namespace AppDirect.WindowsClient.Updates
     public class Updater
     {
         public static readonly string UpdaterExeFileName = "updater.exe";
-        public const double RetryInterval = 15d;
-        private const int RetryUpdatesLimit = 3;
 
         private static readonly ILogger _log = new NLogLogger("Updater");
 
-        public bool GetUpdates(string currentVersion)
+        public bool GetUpdates(string currentVersion, int tryAttempts = 3, int retryIntervalMinutes = 15)
         {
-            int retryCount = 0;
-            while (retryCount < RetryUpdatesLimit)
+            var updatesAvailable = Helper.RetryAction<bool>(() => CheckVersionGetUpdates(currentVersion),
+                                                            tryAttempts, TimeSpan.FromMinutes(retryIntervalMinutes),
+                                                            null, false);
+            if (updatesAvailable)
             {
-                try
-                {
-                    if (CheckVersionGetUpdates(currentVersion))
-                    {
-                        ServiceLocator.LocalStorage.UpdateDownloaded = true;
-                        ServiceLocator.LocalStorage.SaveAppSettings();
-                        return true;
-                    }
-
-                    return false;
-                }
-                catch (Exception e)
-                {
-                    _log.ErrorException("Error during checking for updates", e);
-
-                    retryCount += 1;
-                    Thread.Sleep(TimeSpan.FromMinutes(RetryInterval * retryCount));
-                }
+                ServiceLocator.LocalStorage.UpdateDownloaded = true;
+                ServiceLocator.LocalStorage.SaveAppSettings();
             }
 
-            return false;
+            return updatesAvailable;
         }
 
         /// <summary>
@@ -61,8 +47,6 @@ namespace AppDirect.WindowsClient.Updates
             catch (Exception e)
             {
                 _log.ErrorException("Error starting updator process", e);
-
-                MessageBox.Show(e.Message);
             }
             finally
             {

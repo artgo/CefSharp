@@ -8,7 +8,7 @@
 Name "${APPNAME}"
 ;--------------------------------
 ;Replace Default Installer Icon
-!define MUI_ICON "${APPICON}"
+!define MUI_ICON "${INSTALLERICON}"
 ;--------------------------------
 ; The file to write
 !define OUTFILE "${APPNAME}Installer.exe"
@@ -27,18 +27,11 @@ InstallDirRegKey HKCU "${REGISTRYPATH}" "Install_Dir"
 ;Languages
 !insertmacro MUI_LANGUAGE "English"
 ;--------------------------------
+;File Details
+VIAddVersionKey "FileDescription" "${APPNAME} Installer"
+;--------------------------------
 ; Request application privileges for Windows Vista+
 RequestExecutionLevel user
-
-;Version Information
-VIProductVersion "${VERSION_SHORT}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "${APPNAME}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "${COMPANYDISPLAYNAME}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "${COMPANYDISPLAYNAME}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${APPNAME} Installer"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION_SHORT}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION_SHORT}"
-;--------------------------------
 
 !define MIN_FRA_MAJOR "3"
 !define MIN_FRA_MINOR "5"
@@ -205,9 +198,9 @@ SectionEnd
 Section "Start Menu Shortcuts"
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "${UNINSTALLEXEPATH}" "" "${UNINSTALLEXEPATH}" 0
-  CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
-  CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
-  CreateShortCut "$SMSTARTUP\${APPNAME}.lnk" "${APPEXEPATH}" "" "$INSTDIR\${APPICON}" 0
+  CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "${APPEXEPATH}" "" "${APPEXEPATH}" 0
+  CreateShortCut "$SMPROGRAMS\${APPNAME}.lnk" "${APPEXEPATH}" "" "${APPEXEPATH}" 0
+  CreateShortCut "$SMSTARTUP\${APPNAME}.lnk" "${APPEXEPATH}" "" "${APPEXEPATH}" 0
 SectionEnd
 
 Function .onInstSuccess
