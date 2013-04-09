@@ -449,7 +449,7 @@ namespace AppDirect.WindowsClient.UI
             var updateAvailable = false;
 
             const int millisecondsToDisplayCheckingString = 1000;
-            Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion); }, false, millisecondsToDisplayCheckingString);
+            Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion, 1, 0); }, false, millisecondsToDisplayCheckingString);
 
             Helper.PerformInUiThread(() =>
                 {

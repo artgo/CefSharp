@@ -75,6 +75,57 @@ namespace AppDirect.WindowsClient.API
             } while (tryAttemptsRemaining > 0);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="ReturnType"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="numberOfTries"></param>
+        /// <param name="retryInterval"></param>
+        /// <param name="catchAction"></param>
+        /// <param name="throwExceptions"></param>
+        /// <returns>Default if fails</returns>
+        public static ReturnType RetryAction<ReturnType>(Func<ReturnType> action, int numberOfTries, TimeSpan retryInterval, Action catchAction = null, bool throwExceptions = true)
+        {
+            var tryAttemptsRemaining = numberOfTries;
+            var accumulatingTimeSpan = retryInterval;
+
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            do
+            {
+                try
+                {
+                    var result = action();
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    Log.ErrorException("Failed to invoke action", e);
+
+                    if (catchAction != null)
+                    {
+                        catchAction();
+                    }
+
+                    if (tryAttemptsRemaining <= 1 && throwExceptions)
+                    {
+                        throw;
+                    }
+                    
+                    Thread.Sleep(accumulatingTimeSpan);
+                    accumulatingTimeSpan += retryInterval;
+                }
+
+                tryAttemptsRemaining--;
+            } while (tryAttemptsRemaining > 0);
+
+            return default(ReturnType);
+        }
+
         public static ApplicationViewModel GetApplicationFromButtonSender(object sender)
         {
             return ((Button)sender).DataContext as ApplicationViewModel;
