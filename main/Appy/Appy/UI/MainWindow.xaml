@@ -72,13 +72,13 @@
                                     IsOpen="{TemplateBinding IsSubmenuOpen}"
                                     AllowsTransparency="True"
                                     Focusable="False"
-                                    PopupAnimation="Fade" VerticalOffset="20" HorizontalOffset="35">
+                                    PopupAnimation="Fade" VerticalOffset="15" HorizontalOffset="40">
                                     <Border Name="SubmenuBorder" SnapsToDevicePixels="True"
                                             Background="{StaticResource MenuItemColor}"
                                             BorderBrush="Transparent"
-                                            BorderThickness="5">
+                                            BorderThickness="10">
                                         <Border.Effect>
-                                            <DropShadowEffect Color="Black" BlurRadius="5" ></DropShadowEffect>
+                                            <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="0" />
                                         </Border.Effect>
                                         <StackPanel Margin="0,3,0,3" IsItemsHost="True"
                                                     KeyboardNavigation.DirectionalNavigation="Cycle" />
@@ -170,7 +170,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid Style="{StaticResource TopPanelGridStyle}">
+                        <Grid Style="{StaticResource TopPanelGridStyle}" Background="Transparent">
                             <StackPanel Style="{StaticResource TopPanelStackPanelStyle}" Margin="6,2,0,0" HorizontalAlignment="Center">
                                 <Image Name="LogInImage" VerticalAlignment="Bottom" Margin="0,0,5,0"
                                        HorizontalAlignment="Center" Source="Images/logout.png" Width="12" />
@@ -328,10 +328,8 @@
         </Style>
         <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
             <Grid Height="230" VerticalAlignment="Top">
-                <Border BorderThickness="1">
-                    <Border.Background>
-                        <ImageBrush ImageSource="Images/ScrollBarBackground.png" />
-                    </Border.Background>
+                <Border BorderThickness="1" Background="Transparent">
+                    <Rectangle Width="1" Height="230" Fill="#383c44"></Rectangle>
                 </Border>
                 <Track Name="PART_Track" Grid.Row="0" IsDirectionReversed="true">
                     <Track.Thumb>
@@ -512,11 +510,6 @@
                         </Style>
                     </ListBox.Resources>
                 </ListBox>
-                <StackPanel Name="ErrorLoadingYourApps" Margin="0,240,0,-5" Orientation="Horizontal"
-                                    Grid.ColumnSpan="2">
-                    <TextBlock Text="{Binding MyAppsLoadError}" HorizontalAlignment="Left" Margin="0,0,0,0"
-                                       VerticalAlignment="Top" Width="345" Height="20" Foreground="White" />
-                </StackPanel>
             </Grid>
             <Grid Name="SuggestedAppsGrid" Grid.Column="1" Margin="0,0,0,0">
                 <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="13" Padding="0"
@@ -545,10 +538,9 @@
                     </Rectangle.Effect>
                 </Rectangle>
             </Grid>
-            <TextBlock Text="{Binding SuggestedAppsLoadError}" HorizontalAlignment="Left" Margin="75,300,0,0"
-                       VerticalAlignment="Top" Width="368" Height="20" Foreground="White" Grid.ColumnSpan="2" />
+            <controls:CustomMessageBox x:Name="MessageBoxGrid" DataContext="{Binding}"/>
         </Grid>
         <controls:LoginView x:Name="LoginViewControl"/>
-        <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden" />
+        <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden"/>
     </Grid>
 </Window>

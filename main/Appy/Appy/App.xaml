@@ -741,18 +741,21 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContextMenu">
-                        <Border
-                            Name="Border"
-                            BorderBrush="Transparent"
-                            BorderThickness="5">
+                        <Border 
+          Name="Border"
+          Background="{StaticResource MenuItemColor}"
+          BorderBrush="Transparent"
+          BorderThickness="10" >
                             <Border.Effect>
-                                <DropShadowEffect Color="Black" BlurRadius="5" ></DropShadowEffect>
-                            </Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="0" /></Border.Effect>
                             <StackPanel IsItemsHost="True"
-                                        Margin="0,3,0,3"
-                                        KeyboardNavigation.DirectionalNavigation="Cycle" 
-                            Background="{StaticResource MenuItemColor}"/>
+                      KeyboardNavigation.DirectionalNavigation="Cycle"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasDropShadow" Value="true">
+                                <Setter TargetName="Border" Property="Padding" Value="0,3,0,3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
