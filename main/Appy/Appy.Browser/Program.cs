@@ -11,6 +11,7 @@ namespace AppDirect.WindowsClient.Browser
 {
     internal static class Program
     {
+        private static readonly UnhandledExceptionEventHandler ExceptionHandler = CurrentDomainOnUnhandledException;
         private static readonly ILogger Log = new NLogLogger("Browser.Program");
         private static readonly IBrowserObject BrowserObject = new BrowserObject(new NLogLogger("BrowserObject"));
         private static readonly IUiHelper UiHelper = new UiHelper(new NLogLogger("UiHelper"));
@@ -22,6 +23,9 @@ namespace AppDirect.WindowsClient.Browser
         [STAThread]
         private static void Main(string[] args)
         {
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += ExceptionHandler;
+
             try
             {
                 BrowserObject.Initialize();
@@ -76,6 +80,11 @@ namespace AppDirect.WindowsClient.Browser
                 UiHelper.IgnoreException(sessionKeeper.Stop);
                 UiHelper.IgnoreException(BrowserObject.Unload);
             }
+        }
+
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+        {
+            Log.ErrorException("Exception during runtime", unhandledExceptionEventArgs.ExceptionObject as Exception);
         }
 
         private static bool InitializeClient(MainApplicationServiceClient mainAppClient)

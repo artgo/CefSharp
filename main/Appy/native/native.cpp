@@ -30,7 +30,8 @@ static BOOL CALLBACK TaskBarEnumFunc(HWND hwnd, LPARAM lParam)
 
 NATIVE_API HWND FindTaskBar()
 {
-	return FindTaskBar(GetExplorerProcess());
+	return ::FindWindow(L"Shell_TrayWnd", NULL);
+	//return FindTaskBar(GetExplorerProcess());
 }
 
 // Find the taskbar window for the given process

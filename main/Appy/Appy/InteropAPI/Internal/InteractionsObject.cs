@@ -1,6 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using System.Windows;
+using Microsoft.Win32;
 using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Controls;
@@ -9,6 +9,7 @@ using DWORD = System.UInt32;
 using HMONITOR = System.IntPtr;
 using HWND = System.IntPtr;
 using LPARAM = System.IntPtr;
+using Point = System.Drawing.Point;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
@@ -155,6 +156,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL);
 
+            //MessageBox.Show("Taskbar HWND: " + _taskbarHwnd);
+
             DoChangeWidth(_buttonsWidth, true);
 
             lock (_lockObject)
@@ -179,6 +182,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _taskbarPosition = GetTaskbarEdge();
 
             PostPositionToHook();
+
             UpdatePosition();
 
             if (IsWin7OrUp)
@@ -215,12 +219,17 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return Comctl32Dll.DefSubclassProc(hWnd, uMsg, wParam, lParam);
         }
 
+        private HWND FindTaskBar()
+        {
+            return User32Dll.FindWindow("Shell_TrayWnd", null);
+        }
+
         private void UpdateHandles()
         {
             lock (_lockObject)
             {
                 _rebarHwnd = NativeDll.FindRebar();
-                _taskbarHwnd = NativeDll.FindTaskBar();
+                _taskbarHwnd = FindTaskBar();
                 _startButtonHwnd = FindStartButton();
             }
         }
@@ -581,26 +590,40 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         /// <summary>
         /// Eject our native dll from explorer process
         /// </summary>
-        /// <param name="DllHandle">HANDLE of dll inside explorer process</param>
-        private void EjectNativeDll(IntPtr DllHandle)
+        /// <param name="dllHandle">HANDLE of dll inside explorer process</param>
+        private void EjectNativeDll(IntPtr dllHandle)
         {
-            System.Diagnostics.Debug.Assert(DllHandle != IntPtr.Zero, "DllHandle");
+            if (dllHandle == NULL)
+            {
+                throw new ArgumentNullException("dllHandle");
+            }
+
             uint pid;
             User32Dll.GetWindowThreadProcessId(_taskbarHwnd, out pid);
-            IntPtr hExplorerProcess = Kernel32Dll.OpenProcess(0
+            var hExplorerProcess = Kernel32Dll.OpenProcess(0
                 | ProcessAccessFlags.CreateThread
                 | ProcessAccessFlags.QueryInformation
                 | ProcessAccessFlags.VMOperation
                 | ProcessAccessFlags.VMRead
                 | ProcessAccessFlags.VMWrite
                 , false, pid);
-            if (hExplorerProcess == IntPtr.Zero) throw new Exception("Cannot get Explorer.exe handle");
 
-            IntPtr k = Kernel32Dll.LoadLibrary("Kernel32.dll");
-            IntPtr fl = Kernel32Dll.GetProcAddress(k, "FreeLibrary");
+            if (hExplorerProcess == NULL)
+            {
+                throw new Exception("Cannot get Explorer.exe handle");
+            }
+
+            var k = Kernel32Dll.LoadLibrary("Kernel32.dll");
+            var fl = Kernel32Dll.GetProcAddress(k, "FreeLibrary");
+
             uint ThreadId;
-            IntPtr hNewThread = Kernel32Dll.CreateRemoteThread(hExplorerProcess, IntPtr.Zero, 0, fl, DllHandle, 0, out ThreadId);
-            if (hNewThread == IntPtr.Zero) throw new Exception("hNewThread");
+            var hNewThread = Kernel32Dll.CreateRemoteThread(hExplorerProcess, IntPtr.Zero, 0, fl, dllHandle, 0, out ThreadId);
+
+            if (hNewThread == NULL)
+            {
+                throw new Exception("hNewThread");
+            }
+
             Kernel32Dll.CloseHandle(hExplorerProcess);
             Kernel32Dll.CloseHandle(hNewThread);
         }
@@ -608,32 +631,19 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         // return one of 4 possible edge
         private TaskbarPosition GetTaskbarEdge(HWND taskBar, ref MonitorInfo monitorInfo, ref HMONITOR hMonitor, ref RectWin taskbarRect)
         {
-            if (!User32Dll.IsWindow(taskBar))
-            {
-                throw new InteropException("TaskBar must not be a window");
-            }
+            //if (!User32Dll.IsWindow(taskBar))
+            //{
+            //    throw new InteropException("TaskBar must not be a window");
+            //}
 
-            APPBARDATA appbar = new APPBARDATA() { hWnd = taskBar };
+            var appbar = new APPBARDATA() { hWnd = taskBar };
             appbar.cbSize = (uint)Marshal.SizeOf(appbar);
             Shell32Dll.SHAppBarMessage((uint)AppBarMessages.ABM_GETTASKBARPOS, ref appbar);
             if (taskbarRect != null)
             {
                 taskbarRect = new RectWin(appbar.rc);
             }
-            if (hMonitor != NULL)
-            {
-                monitorInfo.Size = Marshal.SizeOf(typeof(MonitorInfo));
-                HMONITOR monitor = User32Dll.MonitorFromRect(ref appbar.rc, MonitorConstants.MONITOR_DEFAULTTONEAREST);
-                bool result = User32Dll.GetMonitorInfo(monitor, ref monitorInfo);
-                if (!result)
-                {
-                    throw new InteropException("Can't get monitor info");
-                }
-                if (hMonitor != null)
-                {
-                    hMonitor = monitor;
-                }
-            }
+
             return (TaskbarPosition)appbar.uEdge;
         }
 
@@ -696,10 +706,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private System.Drawing.Size GetButtonsWindowSize(bool firstTime = false)
         {
-            // TODO: -2 save/load
-            // TODO: -2 accomodate to the Taskbar actual size
-            MonitorInfo mi = new MonitorInfo();
-            RectWin taskbarRect = new RectWin();
+            var mi = new MonitorInfo();
+            var taskbarRect = new RectWin();
             HMONITOR monitor = NULL;
 
             if (firstTime)
@@ -707,10 +715,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 _buttonsWindowSize = new System.Drawing.Size(DefaultStartButtonWidth, DefaultStartButtonHeight);
             }
 
-            TaskbarPosition edge = GetTaskbarEdge(_taskbarHwnd, ref mi, ref monitor, ref taskbarRect);
+            var edge = GetTaskbarEdge(_taskbarHwnd, ref mi, ref monitor, ref taskbarRect);
             if (!IsWin8OrUp)
             {
-                RectWin startButtonRect = GetStartButtonRect();
+                var startButtonRect = GetStartButtonRect();
 
                 if (edge.IsVertical())
                 {
@@ -719,15 +727,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                         _buttonsWindowSize.Height = startButtonRect.Height;
                     }
                     _buttonsWindowSize.Width = taskbarRect.Width;
-
-                    // vertical taskbar
-                    //s2.Height = DefaultStartButtonHeight;
-
-                    // TODO: -2 implement code block bellow if we need some locig for small icons
-                    //if (IsTaskbarSmallIcons())
-                    //{
-                    //	s2.Height =
-                    //}
                 }
                 else
                 {
@@ -739,7 +738,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     }
                 }
             }
-            else	// win8, 9, ...
+            else	// Windows 8
             {
                 if (edge.IsVertical())
                 {
@@ -789,6 +788,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             // reposition the window
             var szStart = GetStartButtonRect();
+
             System.Drawing.Point offset;
             if (_taskbarPosition.IsVertical())
             {
@@ -799,7 +799,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 offset = new Point(szStart.Width, 0);
             }
 
-            var offset2 = ScreenFromWpf(offset, NativeDll.FindTaskBar());
+            var offset2 = ScreenFromWpf(offset, _taskbarHwnd);
 
             PostPositionToHook();
 
@@ -826,14 +826,18 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private Point ScreenFromWpf(Point local, IntPtr hwnd)
         {
-            var p = new POINT() { x = local.X, y = local.Y };
-            int diff = User32Dll.MapWindowPoints(hwnd, IntPtr.Zero, ref p, 1);
-            if (diff == 0 && Kernel32Dll.GetLastError() != 0)
+            var p = new Point() { X = local.X, Y = local.Y};
+            var ok = User32Dll.ClientToScreen(hwnd, ref p);
+            if (!ok)
             {
-                throw new InteropException("Error converting points");
+                var err = Kernel32Dll.GetLastError();
+                if (err != 0)
+                {
+                    throw new InteropException("Error converting points + " + err);
+                }
             }
 
-            return new Point(p.x, p.y);
+            return p;
         }
     }
 }
