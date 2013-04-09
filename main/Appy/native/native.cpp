@@ -10,37 +10,9 @@ SIZE g_RebarOffset;
 HHOOK g_ProgHook = NULL;
 HMODULE g_hDll = NULL;
 
-static HWND tmpTaskbar = NULL;
-
-// look for top-level window with class "Shell_TrayWnd" and process ID=lParam
-static BOOL CALLBACK TaskBarEnumFunc(HWND hwnd, LPARAM lParam)
-{
-	DWORD process;
-	::GetWindowThreadProcessId(hwnd, &process);
-	if (process != lParam) return TRUE;
-
-	wchar_t s[BuffSize];
-	::GetClassName(hwnd, s, BuffSize);
-
-	if (_wcsnicmp(s, L"Shell_TrayWnd", BuffSize) != 0)	return TRUE;
-	
-	tmpTaskbar = hwnd;
-	return FALSE;
-}
-
 NATIVE_API HWND FindTaskBar()
 {
-	return FindTaskBar(GetExplorerProcess());
-}
-
-// Find the taskbar window for the given process
-// Perform system call every time
-HWND FindTaskBar(DWORD process)
-{
-	tmpTaskbar = NULL;
-	::EnumWindows(TaskBarEnumFunc, process);	// changing tmpTaskbar
-	_ASSERT(tmpTaskbar);
-	return tmpTaskbar;
+	return ::FindWindow(L"Shell_TrayWnd", NULL);
 }
 
 static bool IsVertical()

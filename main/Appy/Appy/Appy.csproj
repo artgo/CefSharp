@@ -263,6 +263,9 @@
     <None Include="apps_list.xss">
       <DependentUpon>apps_list.xsd</DependentUpon>
     </None>
+    <None Include="Appy.exe.nlog">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="myapps.xsc">
       <DependentUpon>myapps.xsd</DependentUpon>
     </None>
@@ -504,6 +507,7 @@
     <PostBuildEvent>xcopy "$(TargetDir)Appy.exe" "$(SolutionDir)Setup\Appy" /y /i /r
 xcopy "$(TargetDir)Appy.exe.config" "$(SolutionDir)Setup\Appy" /y /i /r
 xcopy "$(TargetDir)Ninject.dll" "$(SolutionDir)Setup\Appy" /y /i /r
+xcopy "$(TargetDir)Appy.exe.nlog" "$(SolutionDir)Setup\Appy" /y /i /r
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
