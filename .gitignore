@@ -54,3 +54,5 @@ _ReSharper*/
 *.xap
 [Cc]lient[Bb]in/
 *.cd
+*.psess
+*.vsp
