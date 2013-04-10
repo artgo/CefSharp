@@ -141,7 +141,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         }
 
         [Test]
-        public void ReturnedSizeForSuggestedAppsIsLessThanOrEqualToMax()
+        public void ReturnedSizeForSuggestedAppsIsLessThanOrEqualTo25()
         {
             var apps = BuildCachedAppDirectApi().SuggestedApps;
 

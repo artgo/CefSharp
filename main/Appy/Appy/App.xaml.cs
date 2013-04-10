@@ -58,7 +58,7 @@ namespace AppDirect.WindowsClient
 
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
-            var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch);
+            var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"));
 
             taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
 

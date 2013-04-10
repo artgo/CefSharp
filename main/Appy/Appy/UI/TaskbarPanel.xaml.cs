@@ -17,7 +17,7 @@ namespace AppDirect.WindowsClient.UI
     {
         private const int MainIconLargeSize = 30;
         private const int MainIconSmallSize = 20;
-        private static readonly ILogger _log = new NLogLogger("TaskbarPanel");
+        private static volatile ILogger _log;
         private MainWindow _applicationWindow;
 
         public const int DeskbandInitialSize = 40;
@@ -37,8 +37,9 @@ namespace AppDirect.WindowsClient.UI
         public TaskbarIconsSize CurrentIconSize { get; set; }
         public TaskbarPanelViewModel ViewModel { get; set; }
 
-        public TaskbarPanel(ILatch latch)
+        public TaskbarPanel(ILatch latch, ILogger logger)
         {
+            _log = logger;
             InitializeComponent();
             InitializeMainWindowLatch = latch;
 
