@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
@@ -81,12 +80,12 @@ namespace AppDirect.WindowsClient
             base.OnStartup(e);
             var stopTicks = Environment.TickCount;
 
-            _log.Debug("Application startup completed in " + (stopTicks - startTicks) + "ms.");
+            (new Thread(() => _log.Debug("Application startup completed in " + (stopTicks - startTicks) + "ms."))).Start();
         }
 
         private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
         {
-            ServiceLocator.UiHelper.PerformInUiThread(()=> _mainWindow = new MainWindow(mainViewModel, taskbarPanel));
+            ServiceLocator.UiHelper.PerformInUiThread(() => _mainWindow = new MainWindow(mainViewModel, taskbarPanel));
             UpdateManager.Start(_mainWindow);
             AppSessionRefresher.Start(_mainWindow);
             taskbarPanel.ApplicationWindow = _mainWindow;
@@ -94,7 +93,7 @@ namespace AppDirect.WindowsClient
 
             if (!ServiceLocator.LocalStorage.IsLoadedFromFile)
             {
-                ServiceLocator.UiHelper.PerformInUiThread(()=> _mainWindow.Show());
+                ServiceLocator.UiHelper.PerformInUiThread(() => _mainWindow.Show());
             }
         }
 
@@ -124,7 +123,10 @@ namespace AppDirect.WindowsClient
 
         private void App_OnDeactivated(object sender, EventArgs e)
         {
-            _mainWindow.Hide();
+            if (_mainWindow != null)
+            {
+                _mainWindow.Hide();
+            }
         }
     }
 }

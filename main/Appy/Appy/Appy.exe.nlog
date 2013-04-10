@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <targets>
-    <target name="logfile" xsi:type="File" fileName="app.log" layout="${longdate} ${callsite} ${level} ${message}"/>
+    <target name="logfile" xsi:type="File" fileName="app.log" layout="${longdate} ${callsite} ${level} ${message} ${exception:maxInnerExceptionLevel=20}"/>
     <target xsi:type="EventLog"
        name="event"
        layout="${message}"

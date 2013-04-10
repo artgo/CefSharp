@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Models;
-using AppDirect.WindowsClient.Properties;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using AppDirect.WindowsClient.Updates;
-using NUnit.Framework;
 using NSubstitute;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AppDirect.WindowsClient.Tests.UnitTests
 {
@@ -17,10 +14,9 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
     public class MainViewModelUnitTest
     {
         private volatile MainViewModel _mainViewModel;
-        
+
         private const string Username = TestData.TestUsername;
         private const string Password = TestData.TestPassword;
-        private const string BadPassword = "BadPassword";
 
         private readonly List<Application> _myApplications = new List<Application>()
             {
@@ -28,7 +24,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
                 new Application {IsLocalApp = false, Id = "AppDirectApplicationId2", Name = "FakeApp2"},
                 new Application {IsLocalApp = false, Id = "AppDirectApplicationId3", Name = "FakeApp3"}
             };
-        
+
         private readonly List<Application> _suggestedApplications = new List<Application>()
             {
                 new Application {IsLocalApp = true, Id = "AppDirectApplicationId", Name = "FakeApp4"},
@@ -52,9 +48,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             kernel.Rebind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
             kernel.Rebind<LocalStorage>().ToConstant(localStorage);
             kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(browserMock);
-
         }
-        
+
         private void InitializeTests()
         {
             ServiceLocator.LocalStorage.ClearAllStoredData();
@@ -64,7 +59,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             _mainViewModel.SyncMyApplications(true, true);
             _mainViewModel.GetSuggestedApplicationsWithApiCall();
         }
-        
+
         #region Constructor Tests
 
         [Test]
@@ -82,7 +77,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.AreEqual(LocalApplications.AppStoreApp, _mainViewModel.MyApplications[0].Application);
         }
 
-        #endregion
+        #endregion Constructor Tests
+
         #region Install Test
 
         [Test]
@@ -120,7 +116,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsFalse(ServiceLocator.LocalStorage.LastSuggestedApps.Contains(app.Application));
         }
 
-        #endregion
+        #endregion Install Test
+
         #region Uninstall Tests
 
         [Test]
@@ -151,7 +148,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsFalse(ServiceLocator.LocalStorage.InstalledLocalApps.Contains(app.Application));
         }
 
-        #endregion
+        #endregion Uninstall Tests
+
         #region Login Tests
 
         [Test]
@@ -162,7 +160,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsTrue(ServiceLocator.LocalStorage.InstalledAppDirectApps.Contains(_myApplications[0]));
         }
 
-        #endregion
+        #endregion Login Tests
+
         #region Log Out Tests
 
         [Test]
@@ -187,7 +186,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsEmpty(ServiceLocator.LocalStorage.InstalledAppDirectApps);
         }
 
-        #endregion
+        #endregion Log Out Tests
+
         #region SyncAppsWithApi Tests
 
         [Test]
@@ -218,7 +218,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             Assert.IsNull(_mainViewModel.MyApplications.FirstOrDefault(a => a.Application.Equals(expiredApp)));
         }
 
-        #endregion
+        #endregion SyncAppsWithApi Tests
+
         #region Checking For Updates Tests
 
         [Test]
@@ -266,9 +267,9 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
             Assert.IsNull(_mainViewModel.SuggestedApplications.FirstOrDefault(a => !a.Application.IsLocalApp));
         }
-        
-        #endregion
-        
+
+        #endregion Checking For Updates Tests
+
         private void SetMyAppsAndLogin(List<Application> myApps)
         {
             InitializeTests();
