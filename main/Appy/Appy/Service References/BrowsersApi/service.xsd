@@ -29,7 +29,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="CloaseAllApplicationsAndQuit">
+  <xs:element name="CloseAllApplicationsAndQuit">
     <xs:complexType>
       <xs:sequence />
     </xs:complexType>

@@ -253,7 +253,6 @@ Global
 		{7FB78D60-D4D1-4EF3-8004-43C2ED7B2280}.Release_Windows|x64.ActiveCfg = Release|Any CPU
 		{7FB78D60-D4D1-4EF3-8004-43C2ED7B2280}.Release_Windows|x86.ActiveCfg = Release|Any CPU
 		{7FB78D60-D4D1-4EF3-8004-43C2ED7B2280}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FB78D60-D4D1-4EF3-8004-43C2ED7B2280}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7FB78D60-D4D1-4EF3-8004-43C2ED7B2280}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7FB78D60-D4D1-4EF3-8004-43C2ED7B2280}.Release|Win32.ActiveCfg = Release|Any CPU
 		{7FB78D60-D4D1-4EF3-8004-43C2ED7B2280}.Release|x64.ActiveCfg = Release|Any CPU

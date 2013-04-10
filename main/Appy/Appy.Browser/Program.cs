@@ -106,16 +106,18 @@ namespace AppDirect.WindowsClient.Browser
                 return false;
             }
 
-            try
+            var hadException = true;
+            while(hadException)
             {
-                mainAppClient.Initialized();
-            }
-            catch (Exception e)
-            {
-                Log.ErrorException("Failed to establish connection with main app", e);
-
-                MessageBox.Show(String.Format(Resources.Error_getting_data_error_message, e.Message));
-                return false;
+                try
+                {
+                    mainAppClient.Initialized();
+                    hadException = false;
+                }
+                catch (Exception e)
+                {
+                    Log.ErrorException("Failed to establish connection with main app", e);
+                }
             }
 
             return true;

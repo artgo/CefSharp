@@ -151,11 +151,6 @@ namespace AppDirect.WindowsClient.UI
 
         private void MainWindow_OnClosing(object o, CancelEventArgs e)
         {
-            Process[] processes = Process.GetProcessesByName(Helper.ApplicationName + Helper.BrowserProjectExt);
-            foreach (Process process in processes)
-            {
-                Helper.RetryAction(() => process.Kill(), 5, TimeSpan.FromMilliseconds(500));
-            }
         }
 
         private void Login_OnRegistrationClick(object o, EventArgs e)
