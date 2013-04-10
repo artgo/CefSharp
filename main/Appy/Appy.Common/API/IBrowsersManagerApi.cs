@@ -19,6 +19,6 @@ namespace AppDirect.WindowsClient.Common.API
         void UpdateApplications(IEnumerable<IApplication> applications);
 
         [OperationContract(IsOneWay = true)]
-        void CloaseAllApplicationsAndQuit();
+        void CloseAllApplicationsAndQuit();
     }
 }

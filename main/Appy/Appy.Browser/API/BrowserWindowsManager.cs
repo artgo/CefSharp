@@ -141,5 +141,23 @@ namespace AppDirect.WindowsClient.Browser.API
                 return _browserWindows[applicationId];
             }
         }
+
+        public void CloseAllWindows()
+        {
+            IEnumerable<BrowserWindow> windows;
+            lock (_lockObject)
+            {
+                windows = new List<BrowserWindow>(_browserWindows.Values);
+                _browserWindows.Clear();
+            }
+
+            _uiHelper.PerformInUiThread(() =>
+                {
+                    foreach (var browserWindow in windows)
+                    {
+                        browserWindow.Close();
+                    }
+                });
+        }
     }
 }

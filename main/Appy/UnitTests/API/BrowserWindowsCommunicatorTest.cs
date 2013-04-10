@@ -81,11 +81,11 @@ namespace AppDirect.WindowsClient.Tests.API
         }
 
         [Test]
-        public void TestCloaseAllApplicationsAndQuitCallsCloaseAllApplicationsAndQuit()
+        public void TestCloseAllApplicationsAndQuitCallsCloseAllApplicationsAndQuit()
         {
             _browserWindowsCommunicator.Start();
-            _browserWindowsCommunicator.CloaseAllApplicationsAndQuit();
-            _browserApi.Received().CloaseAllApplicationsAndQuit();
+            _browserWindowsCommunicator.CloseAllApplicationsAndQuit();
+            _browserApi.Received().CloseAllApplicationsAndQuit();
         }
 
         [Test]

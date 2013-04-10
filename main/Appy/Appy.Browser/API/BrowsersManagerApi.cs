@@ -71,8 +71,9 @@ namespace AppDirect.WindowsClient.Browser.API
             _browserWindowsManager.Applications = applications;
         }
 
-        public void CloaseAllApplicationsAndQuit()
+        public void CloseAllApplicationsAndQuit()
         {
+            _browserWindowsManager.CloseAllWindows();
             _uiHelper.GracefulShutdown();
         }
     }

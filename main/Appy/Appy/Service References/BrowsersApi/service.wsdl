@@ -54,8 +54,8 @@
   <wsdl:message name="IBrowsersManagerApi_UpdateApplications_InputMessage">
     <wsdl:part name="parameters" element="tns:UpdateApplications" />
   </wsdl:message>
-  <wsdl:message name="IBrowsersManagerApi_CloaseAllApplicationsAndQuit_InputMessage">
-    <wsdl:part name="parameters" element="tns:CloaseAllApplicationsAndQuit" />
+  <wsdl:message name="IBrowsersManagerApi_CloseAllApplicationsAndQuit_InputMessage">
+    <wsdl:part name="parameters" element="tns:CloseAllApplicationsAndQuit" />
   </wsdl:message>
   <wsdl:portType name="IBrowsersManagerApi">
     <wsdl:operation name="DisplayApplication">
@@ -70,8 +70,8 @@
     <wsdl:operation name="UpdateApplications">
       <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/UpdateApplications" message="tns:IBrowsersManagerApi_UpdateApplications_InputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="CloaseAllApplicationsAndQuit">
-      <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/CloaseAllApplicationsAndQuit" message="tns:IBrowsersManagerApi_CloaseAllApplicationsAndQuit_InputMessage" />
+    <wsdl:operation name="CloseAllApplicationsAndQuit">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/CloseAllApplicationsAndQuit" message="tns:IBrowsersManagerApi_CloseAllApplicationsAndQuit_InputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="AppDirect.WindowsClient.Browser.API.BrowsersManagerApi" type="tns:IBrowsersManagerApi">
@@ -102,8 +102,8 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
-    <wsdl:operation name="CloaseAllApplicationsAndQuit">
-      <soap12:operation soapAction="http://tempuri.org/IBrowsersManagerApi/CloaseAllApplicationsAndQuit" style="document" />
+    <wsdl:operation name="CloseAllApplicationsAndQuit">
+      <soap12:operation soapAction="http://tempuri.org/IBrowsersManagerApi/CloseAllApplicationsAndQuit" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

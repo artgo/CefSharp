@@ -84,11 +84,11 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         }
 
         [Test]
-        public void TestCloaseAllApplicationsAndQuitCallsShutdown()
+        public void TestCloseAllApplicationsAndQuitCallsShutdown()
         {
             _uiHelper = Substitute.For<IUiHelper>();
             _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
-            _browsersManagerApi.CloaseAllApplicationsAndQuit();
+            _browsersManagerApi.CloseAllApplicationsAndQuit();
             _uiHelper.Received().GracefulShutdown();
         }
     }

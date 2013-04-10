@@ -91,9 +91,9 @@ namespace AppDirect.WindowsClient.BrowsersApi
             base.Channel.UpdateApplications(applications);
         }
 
-        public void CloaseAllApplicationsAndQuit()
+        public void CloseAllApplicationsAndQuit()
         {
-            base.Channel.CloaseAllApplicationsAndQuit();
+            base.Channel.CloseAllApplicationsAndQuit();
         }
     }
 }

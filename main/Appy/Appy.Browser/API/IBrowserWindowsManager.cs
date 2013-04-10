@@ -13,5 +13,7 @@ namespace AppDirect.WindowsClient.Browser.API
         BrowserWindow GetOrCreateBrowserWindow(IApplication application);
 
         BrowserWindow GetBrowserWindow(string applicationId);
+
+        void CloseAllWindows();
     }
 }

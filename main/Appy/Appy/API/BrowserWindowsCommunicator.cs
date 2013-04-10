@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common.API;
+﻿using System;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using System.Collections.Generic;
@@ -32,9 +33,9 @@ namespace AppDirect.WindowsClient.API
             MakeSureExecuteAction(() => Service.UpdateApplications(applications));
         }
 
-        public void CloaseAllApplicationsAndQuit()
+        public void CloseAllApplicationsAndQuit()
         {
-            MakeSureExecuteAction(() => Service.CloaseAllApplicationsAndQuit());
+            MakeSureExecuteAction(() => Service.CloseAllApplicationsAndQuit());
         }
     }
 }

@@ -10,6 +10,11 @@ namespace AppDirect.WindowsClient.Common.UI
 
         public UiHelper(ILogger log)
         {
+            if (log == null)
+            {
+                throw new ArgumentNullException("log");
+            }
+
             _log = log;
         }
 
@@ -60,15 +65,11 @@ namespace AppDirect.WindowsClient.Common.UI
         public void GracefulShutdown()
         {
             _log.Info("Started shutdown");
-            var eventHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
             PerformInUiThread(() =>
                 {
                     System.Windows.Application.Current.Shutdown();
                     _log.Info("Application shutdown complete");
-                    eventHandle.Set();
                 });
-
-            eventHandle.WaitOne(TimeSpan.FromSeconds(5.0));
 
             _log.Info("Shutdown complete");
             Environment.Exit(0);
