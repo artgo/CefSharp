@@ -46,10 +46,12 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             cachedAppDirectApiMock.Authenticate(Username, Password).Returns(true);
 
             cachedAppDirectApiMock.SuggestedApps.Returns(_suggestedApplications);
+            var browserMock = Substitute.For<IBrowserWindowsCommunicator>();
 
             var kernel = ServiceLocator.Kernel;
             kernel.Rebind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
             kernel.Rebind<LocalStorage>().ToConstant(localStorage);
+            kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(browserMock);
 
         }
         
@@ -272,7 +274,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             InitializeTests();
             ServiceLocator.CachedAppDirectApi.MyApps.Returns(myApps);
             ServiceLocator.LocalStorage.SetCredentials(Username, Password);
-            _mainViewModel.LoginSuccessful(null,null);
+            _mainViewModel.LoginSuccessful(null, null);
+            ServiceLocator.CachedAppDirectApi.IsAuthenticated.Returns(_mainViewModel.IsLoggedIn);
         }
 
         private ApplicationViewModel CallInstallApp()

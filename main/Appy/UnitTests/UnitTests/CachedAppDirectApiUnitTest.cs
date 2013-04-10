@@ -141,11 +141,11 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         }
 
         [Test]
-        public void ReturnedSizeForSuggestedAppsIsLessThan11()
+        public void ReturnedSizeForSuggestedAppsIsLessThanOrEqualToMax()
         {
             var apps = BuildCachedAppDirectApi().SuggestedApps;
 
-            Assert.IsTrue(apps.Count < 11);
+            Assert.IsTrue(apps.Count <= 25);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using AppDirect.WindowsClient.Common.Log;
+﻿using System.ComponentModel;
+using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
 using System;
@@ -17,6 +19,7 @@ namespace AppDirect.WindowsClient
         private volatile Mutex _instanceMutex = null;
         private volatile MainWindow _mainWindow;
         private volatile ThreadStart _ipcCommunicatorStart;
+        private volatile ILatch _mainWindowReadyLatch = new Latch();
 
         public App()
         {
@@ -55,11 +58,8 @@ namespace AppDirect.WindowsClient
 
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
-            _mainWindow = new MainWindow(mainViewModel);
-            UpdateManager.Start(_mainWindow);
-            AppSessionRefresher.Start(_mainWindow);
+            var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch);
 
-            var taskbarPanel = new TaskbarPanel(_mainWindow);
             taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
 
             try
@@ -75,15 +75,27 @@ namespace AppDirect.WindowsClient
 
             ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start);
 
-            if (!ServiceLocator.LocalStorage.IsLoadedFromFile)
-            {
-                _mainWindow.Show();
-            }
+            var thread = new Thread(() => InitializeMainWindow(mainViewModel, taskbarPanel));
+            thread.Start();
 
             base.OnStartup(e);
             var stopTicks = Environment.TickCount;
 
             _log.Debug("Application startup completed in " + (stopTicks - startTicks) + "ms.");
+        }
+
+        private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
+        {
+            ServiceLocator.UiHelper.PerformInUiThread(()=> _mainWindow = new MainWindow(mainViewModel, taskbarPanel));
+            UpdateManager.Start(_mainWindow);
+            AppSessionRefresher.Start(_mainWindow);
+            taskbarPanel.ApplicationWindow = _mainWindow;
+            _mainWindowReadyLatch.Unlock();
+
+            if (!ServiceLocator.LocalStorage.IsLoadedFromFile)
+            {
+                ServiceLocator.UiHelper.PerformInUiThread(()=> _mainWindow.Show());
+            }
         }
 
         private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
