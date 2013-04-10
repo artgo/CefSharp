@@ -254,11 +254,13 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
-                _log.ErrorException("Sync error", e);
-
                 if (throwExceptions)
                 {
                     throw;
+                }
+                else
+                {
+                    _log.ErrorException("Sync error", e);
                 }
             }
         }
@@ -301,11 +303,13 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
-                _log.ErrorException("Get suggested apps error", e);
-
                 if (throwExceptions)
                 {
                     throw;
+                }
+                else
+                {
+                    _log.ErrorException("Get suggested apps error", e);
                 }
             }
         }
@@ -488,7 +492,7 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _log.ErrorException(ex.Message, ex);
                 Message = Properties.Resources.ErrorGettingMyApps;
             }
             
