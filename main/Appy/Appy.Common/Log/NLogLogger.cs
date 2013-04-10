@@ -6,26 +6,88 @@ namespace AppDirect.WindowsClient.Common.Log
 {
     public class NLogLogger : ILogger
     {
-        private readonly Logger _log;
+        private readonly object _syncObject = new object();
+        private readonly ILogInitializer _logInitializer;
+        private volatile Logger _log = null;
+
+        private class CurrentLogInitilizer : ILogInitializer
+        {
+            public Logger CreateLogger()
+            {
+                return GetCurrentLogger();
+            }
+        }
+
+        private class NamedLogInitilizer : ILogInitializer
+        {
+            private readonly string _loggerName;
+
+            internal NamedLogInitilizer(string loggerName)
+            {
+                _loggerName = loggerName;
+            }
+
+            public Logger CreateLogger()
+            {
+                return LogManager.GetLogger(_loggerName);
+            }
+        }
+
+        private class TypeLogInitilizer : ILogInitializer
+        {
+            private readonly Type _type;
+
+            public TypeLogInitilizer(Type type)
+            {
+                _type = type;
+            }
+
+            public Logger CreateLogger()
+            {
+                return LogManager.GetCurrentClassLogger(_type);
+            }
+        }
+
+        private Logger Log
+        {
+            get
+            {
+                lock (_syncObject)
+                {
+                    if (_log == null)
+                    {
+                        _log = _logInitializer.CreateLogger();
+                    }
+
+                    return _log;
+                }
+            }
+        }
+
+        public NLogLogger(ILogInitializer logInitializer)
+        {
+            _logInitializer = logInitializer;
+        }
 
         public NLogLogger()
+            : this(new CurrentLogInitilizer())
         {
-            _log = GetCurrentLogger();
         }
 
         public NLogLogger(Logger log)
         {
             _log = log;
+            _logInitializer = null;
         }
 
         public NLogLogger(string loggerName)
+            : this(new NamedLogInitilizer(loggerName))
         {
-            _log = LogManager.GetLogger(loggerName);
         }
 
         public NLogLogger(Type type)
+            : this(new TypeLogInitilizer(type))
         {
-            _log = LogManager.GetCurrentClassLogger(type);
         }
 
         private static Logger GetCurrentLogger()
@@ -58,69 +120,69 @@ namespace AppDirect.WindowsClient.Common.Log
 
         public void TraceException(string message, Exception exception)
         {
-            _log.TraceException(message, exception);
+            Log.TraceException(message, exception);
         }
 
         public void Trace(string message, params object[] args)
         {
-            _log.Trace(message, args);
+            Log.Trace(message, args);
         }
 
         public void DebugException(string message, Exception exception)
         {
-            _log.DebugException(message, exception);
+            Log.DebugException(message, exception);
         }
 
         public void Debug(string message, params object[] args)
         {
-            _log.Debug(message, args);
+            Log.Debug(message, args);
         }
 
         public void ErrorException(string message, Exception exception)
         {
-            _log.ErrorException(message, exception);
+            Log.ErrorException(message, exception);
         }
 
         public void Error(string message, params object[] args)
         {
-            _log.Error(message, args);
+            Log.Error(message, args);
         }
 
         public void FatalException(string message, Exception exception)
         {
-            _log.FatalException(message, exception);
+            Log.FatalException(message, exception);
         }
 
         public void Fatal(string message, params object[] args)
         {
-            _log.Fatal(message, args);
+            Log.Fatal(message, args);
         }
 
         public void InfoException(string message, Exception exception)
         {
-            _log.InfoException(message, exception);
+            Log.InfoException(message, exception);
         }
 
         public void Info(string message, params object[] args)
         {
-            _log.Info(message, args);
+            Log.Info(message, args);
         }
 
         public void WarnException(string message, Exception exception)
         {
-            _log.WarnException(message, exception);
+            Log.WarnException(message, exception);
         }
 
         public void Warn(string message, params object[] args)
         {
-            _log.Warn(message, args);
+            Log.Warn(message, args);
         }
 
         public bool IsTraceEnabled
         {
             get
             {
-                return _log.IsTraceEnabled;
+                return Log.IsTraceEnabled;
             }
         }
 
@@ -128,7 +190,7 @@ namespace AppDirect.WindowsClient.Common.Log
         {
             get
             {
-                return _log.IsDebugEnabled;
+                return Log.IsDebugEnabled;
             }
         }
 
@@ -136,7 +198,7 @@ namespace AppDirect.WindowsClient.Common.Log
         {
             get
             {
-                return _log.IsErrorEnabled;
+                return Log.IsErrorEnabled;
             }
         }
 
@@ -144,7 +206,7 @@ namespace AppDirect.WindowsClient.Common.Log
         {
             get
             {
-                return _log.IsFatalEnabled;
+                return Log.IsFatalEnabled;
             }
         }
 
@@ -152,7 +214,7 @@ namespace AppDirect.WindowsClient.Common.Log
         {
             get
             {
-                return _log.IsInfoEnabled;
+                return Log.IsInfoEnabled;
             }
         }
 
@@ -160,7 +222,7 @@ namespace AppDirect.WindowsClient.Common.Log
         {
             get
             {
-                return _log.IsWarnEnabled;
+                return Log.IsWarnEnabled;
             }
         }
     }

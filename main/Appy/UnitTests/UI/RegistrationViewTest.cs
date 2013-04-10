@@ -29,6 +29,7 @@ namespace AppDirect.WindowsClient.Tests.UI
         [Test]
         public void OnRegisterClickCallsRightApis()
         {
+            Assert.Fail("Fix me");
             //var registerWindow = new RegistrationView();
             //registerWindow.RegisterButton_Click(registerWindow, new RoutedEventArgs());
             //_appDirectApiMock.Received().RegisterUser(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(),

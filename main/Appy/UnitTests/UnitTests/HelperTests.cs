@@ -1,10 +1,10 @@
-﻿using System;
-using System.Windows.Controls;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.UI;
 using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.Windows.Controls;
 
 namespace AppDirect.WindowsClient.Tests.UnitTests
 {
@@ -64,7 +64,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             cachedAppDirectApiMock.Authenticate(UsernameBad, PasswordBad).Returns(false);
 
             var browserMock = Substitute.For<IBrowserWindowsCommunicator>();
-         
+
             var kernel = ServiceLocator.Kernel;
             kernel.Rebind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
             kernel.Rebind<LocalStorage>().ToConstant(localStorage);
@@ -159,11 +159,12 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
             ServiceLocator.CachedAppDirectApi.Received().Authenticate(Username, PasswordBad);
         }
-        
-        //Should be moved to Integration Tests
+
         [Test]
         public void PerformForMinimumTimeDoesNotReturnBeforeTimeIsElapsed()
         {
+            Assert.Fail("Fix me");
+
             //var millisecondsToSleep = 300;
 
             //var start = Environment.TickCount;
