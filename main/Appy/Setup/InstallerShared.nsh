@@ -53,7 +53,8 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   System::Call "kernel32::CloseHandle(i r2) i .r1"
   ${EndIf}
 
-  StrCpy $1 0  
+  StrCpy $1 0 
+  StrCpy $6 "Browser Process Is Still Running"  
   nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
   loop1:
 	IntOp $1 $1 + 1 ;timeout index
@@ -65,6 +66,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   end1:
   
   StrCpy $1 0
+  StrCpy $6 "${NATIVEDLLPATH} could not be removed" 
   loop2:
 	IntOp $1 $1 + 1 ;timeout index
 	IfFileExists ${NATIVEDLLPATH} deleteFile end2
@@ -75,6 +77,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   end2:
   
   StrCpy $1 0
+  StrCpy $6 "${COMMONDLLPATH} could not be removed" 
   loop3:
 	IntOp $1 $1 + 1 ;timeout index
 	IfFileExists ${COMMONDLLPATH} deleteFile1 end3
@@ -85,6 +88,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   end3:
   
   StrCpy $1 0
+  StrCpy $6 "${BROWSERCACHEPATH}} could not be removed" 
   loop4:
     IntOp $1 $1 + 1 ;timeout index
     IfFileExists ${BROWSERCACHEPATH} deleteCache finalEnd
@@ -94,7 +98,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
       StrCmp $1 "50" error loop4 ;try for 10 seconds
 
   error:
-    MessageBox MB_OK "${APPNAME} can not update because the application is currently running or is in a faulted state.  Please uninstall the application before proceeding."
+    MessageBox MB_OK "${APPNAME} can not update because the application is currently running or is in a faulted state.  Please uninstall the application before proceeding. Error: $6"
 	  Abort
 
   finalEnd:
