@@ -482,8 +482,18 @@ namespace AppDirect.WindowsClient.UI
 
         public void LoginSuccessful(object sender, EventArgs e)
         {
-            SyncMyApplications(true);
-            GetSuggestedApplicationsWithApiCall(true);
+            try
+            {
+                Helper.RetryAction(() => SyncMyApplications(true), 3, TimeSpan.FromMilliseconds(200));
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+                Message = Properties.Resources.ErrorGettingMyApps;
+            }
+            
+            GetSuggestedApplicationsWithApiCall();
+
             IsLoggedIn = true;
         }
     }

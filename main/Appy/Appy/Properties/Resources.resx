@@ -189,4 +189,7 @@
   <data name="BaseUrlProtocol" xml:space="preserve">
     <value>https://</value>
   </data>
+  <data name="ErrorGettingMyApps" xml:space="preserve">
+    <value>There was a problem loading your applications. Please check your internet connection and try again.</value>
+  </data>
 </root>
