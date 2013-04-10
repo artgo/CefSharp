@@ -160,7 +160,7 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public void Uninstall(ApplicationViewModel applicationViewModel)
+        public bool Uninstall(ApplicationViewModel applicationViewModel)
         {
             if (applicationViewModel.Application.IsLocalApp)
             {
@@ -170,10 +170,13 @@ namespace AppDirect.WindowsClient.UI
                 {
                     ServiceLocator.LocalStorage.SaveAppSettings();
                 }
+
+                return true;
             }
             else
             {
                 MessageBox.Show(applicationViewModel.Application.Name + " can not be removed.");
+                return false;
             }
         }
 

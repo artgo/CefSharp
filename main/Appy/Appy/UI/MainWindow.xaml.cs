@@ -17,12 +17,13 @@ namespace AppDirect.WindowsClient.UI
     {
         public List<UIElement> WindowPanels = new List<UIElement>();
         public EventHandler PinToTaskbarClickNotifier;
+        public EventHandler UninstallClickNotifier;
 
         public MainViewModel ViewModel { get; set; }
 
         private static readonly ILogger _log = new NLogLogger("MainWindow");
 
-        public MainWindow(MainViewModel mainViewModel)
+        public MainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
         {
             try
             {
@@ -42,6 +43,11 @@ namespace AppDirect.WindowsClient.UI
 
             WindowPanels.Add(LoginViewControl);
             WindowPanels.Add(RegistrationViewControl);
+
+            ViewModel.ApplicationAddedNotifier += taskbarPanel.AddAppButton;
+            ViewModel.ApplicationRemovedNotifier += taskbarPanel.RemoveAppButton;
+            PinToTaskbarClickNotifier += taskbarPanel.PinToTaskbarClickHandler;
+            UninstallClickNotifier += taskbarPanel.UninstallAppClickHandler;
 
             LoginViewControl.RegistrationClick += Login_OnRegistrationClick;
             LoginViewControl.CloseLogin += Login_Close;
@@ -130,19 +136,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void UninstallAppClick(object sender, EventArgs e)
         {
-            var clickedApp = Helper.GetApplicationViewModelFromContextMenuClick(sender);
-
-            try
-            {
-                clickedApp.PinnedToTaskbarNotifier = false;
-                ViewModel.Uninstall(clickedApp);
-            }
-            catch (Exception ex)
-            {
-                _log.ErrorException("Error during uninstallation of app", ex);
-
-                MessageBox.Show(ex.Message);
-            }
+            UninstallClickNotifier.Invoke(sender, e);
         }
 
         private void LogInLogOutButtonClick(object sender, RoutedEventArgs e)

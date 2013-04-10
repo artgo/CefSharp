@@ -1,4 +1,5 @@
 ﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using System;
@@ -14,30 +15,36 @@ namespace AppDirect.WindowsClient.UI
     /// </summary>
     public partial class TaskbarPanel : ITaskbarInterop
     {
-        public TaskbarPanelViewModel ViewModel { get; set; }
+        private const int MainIconLargeSize = 30;
+        private const int MainIconSmallSize = 20;
+        private static volatile ILogger _log;
+        private MainWindow _applicationWindow;
 
         public const int DeskbandInitialSize = 40;
         public const int DefaultPanelMargins = 20;
+        public ILatch InitializeMainWindowLatch;
+
+        public MainWindow ApplicationWindow
+        {
+            get
+            {
+                InitializeMainWindowLatch.Wait();
+                return _applicationWindow;
+            }
+            set { _applicationWindow = value; }
+        }
 
         public TaskbarIconsSize CurrentIconSize { get; set; }
+        public TaskbarPanelViewModel ViewModel { get; set; }
 
-        private const int MainIconLargeSize = 30;
-        private const int MainIconSmallSize = 20;
-
-        public MainWindow ApplicationWindow { get; set; }
-
-        public TaskbarPanel(MainWindow mainView)
+        public TaskbarPanel(ILatch latch, ILogger logger)
         {
+            _log = logger;
             InitializeComponent();
-
-            ApplicationWindow = mainView;
+            InitializeMainWindowLatch = latch;
 
             ViewModel = new TaskbarPanelViewModel();
             DataContext = ViewModel;
-
-            ApplicationWindow.ViewModel.ApplicationAddedNotifier += AddAppButton;
-            ApplicationWindow.ViewModel.ApplicationRemovedNotifier += RemoveAppButton;
-            ApplicationWindow.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
         }
 
         public void InitializeButtons(TaskbarPosition taskbarPosition, TaskbarIconsSize taskbarIconsSize)
@@ -53,7 +60,7 @@ namespace AppDirect.WindowsClient.UI
             PositionChanged(taskbarPosition);
         }
 
-        private void PinToTaskbarClickHandler(object sender, EventArgs eventArgs)
+        public void PinToTaskbarClickHandler(object sender, EventArgs eventArgs)
         {
             var clickedApp = Helper.GetApplicationViewModelFromContextMenuClick(sender);
 
@@ -72,12 +79,28 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        public void UninstallAppClickHandler(object sender, EventArgs e)
+        {
+            var clickedApp = Helper.GetApplicationViewModelFromContextMenuClick(sender);
+
+            try
+            {
+                clickedApp.PinnedToTaskbarNotifier = ApplicationWindow.ViewModel.Uninstall(clickedApp);
+            }
+            catch (Exception ex)
+            {
+                _log.ErrorException("Error during uninstallation of app", ex);
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void AddButton(ApplicationViewModel application)
         {
             var taskbarButton = new TaskbarButton(application, CurrentIconSize);
 
             taskbarButton.PinToTaskbarClickNotifier += PinToTaskbarClickHandler;
-            taskbarButton.UninstallClickNotifier += ApplicationWindow.UninstallAppClick;
+            taskbarButton.UninstallClickNotifier += UninstallAppClickHandler;
 
             ButtonContainer.Children.Add(taskbarButton);
 
@@ -139,14 +162,14 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        private void RemoveAppButton(object sender, EventArgs e)
+        public void RemoveAppButton(object sender, EventArgs e)
         {
             var applicationViewModel = sender as ApplicationViewModel;
             ViewModel.RemovePinnedApp(applicationViewModel);
             Helper.PerformInUiThread(() => RemoveButton(applicationViewModel));
         }
 
-        private void AddAppButton(object sender, EventArgs e)
+        public void AddAppButton(object sender, EventArgs e)
         {
             var applicationViewModel = sender as ApplicationViewModel;
             ViewModel.AddPinnedApp(applicationViewModel);
