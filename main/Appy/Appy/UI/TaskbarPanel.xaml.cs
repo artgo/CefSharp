@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.API;
+﻿using System.Threading;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.InteropAPI.Internal;
@@ -17,29 +18,22 @@ namespace AppDirect.WindowsClient.UI
     {
         private const int MainIconLargeSize = 30;
         private const int MainIconSmallSize = 20;
-        private static volatile ILogger _log;
-        private MainWindow _applicationWindow;
+        private readonly ILogger _log;
+        private readonly MainViewModel _mainViewModel;
 
         public const int DeskbandInitialSize = 40;
         public const int DefaultPanelMargins = 20;
         public ILatch InitializeMainWindowLatch;
 
-        public MainWindow ApplicationWindow
-        {
-            get
-            {
-                InitializeMainWindowLatch.Wait();
-                return _applicationWindow;
-            }
-            set { _applicationWindow = value; }
-        }
+        public volatile MainWindow ApplicationWindow;
 
         public TaskbarIconsSize CurrentIconSize { get; set; }
         public TaskbarPanelViewModel ViewModel { get; set; }
 
-        public TaskbarPanel(ILatch latch, ILogger logger)
+        public TaskbarPanel(ILatch latch, ILogger logger, MainViewModel mainViewModel)
         {
             _log = logger;
+            _mainViewModel = mainViewModel;
             InitializeComponent();
             InitializeMainWindowLatch = latch;
 
@@ -85,7 +79,7 @@ namespace AppDirect.WindowsClient.UI
 
             try
             {
-                clickedApp.PinnedToTaskbarNotifier = ApplicationWindow.ViewModel.Uninstall(clickedApp);
+                clickedApp.PinnedToTaskbarNotifier = _mainViewModel.Uninstall(clickedApp);
             }
             catch (Exception ex)
             {
@@ -178,16 +172,24 @@ namespace AppDirect.WindowsClient.UI
 
         private void AppButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ApplicationWindow.Visibility != Visibility.Visible || !ApplicationWindow.Topmost)
-            {
-                ApplicationWindow.SetPosition();
-                ApplicationWindow.Show();
-                ApplicationWindow.Topmost = true;
-            }
-            else
-            {
-                ApplicationWindow.Hide();
-            }
+            (new Thread(() =>
+                {
+                    InitializeMainWindowLatch.Wait();
+
+                    Helper.PerformInUiThread(() =>
+                        {
+                            if (ApplicationWindow.Visibility != Visibility.Visible || !ApplicationWindow.Topmost)
+                            {
+                                ApplicationWindow.SetPosition();
+                                ApplicationWindow.Show();
+                                ApplicationWindow.Topmost = true;
+                            }
+                            else
+                            {
+                                ApplicationWindow.Hide();
+                            }
+                        });
+                })).Start();
         }
 
         public void HeightChanged(int newHeight)

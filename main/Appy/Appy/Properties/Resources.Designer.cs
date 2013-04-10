@@ -151,6 +151,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was a problem loading your applications. Please check your internet connection and try again..
+        /// </summary>
+        internal static string ErrorGettingMyApps {
+            get {
+                return ResourceManager.GetString("ErrorGettingMyApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://www.appdirect.com/forgotPassword.
         /// </summary>
         internal static string ForgotPasswordUrlString {

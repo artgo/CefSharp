@@ -254,11 +254,13 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
-                _log.ErrorException("Sync error", e);
-
                 if (throwExceptions)
                 {
                     throw;
+                }
+                else
+                {
+                    _log.ErrorException("Sync error", e);
                 }
             }
         }
@@ -301,11 +303,13 @@ namespace AppDirect.WindowsClient.UI
             }
             catch (Exception e)
             {
-                _log.ErrorException("Get suggested apps error", e);
-
                 if (throwExceptions)
                 {
                     throw;
+                }
+                else
+                {
+                    _log.ErrorException("Get suggested apps error", e);
                 }
             }
         }
@@ -482,8 +486,18 @@ namespace AppDirect.WindowsClient.UI
 
         public void LoginSuccessful(object sender, EventArgs e)
         {
-            SyncMyApplications(true);
-            GetSuggestedApplicationsWithApiCall(true);
+            try
+            {
+                Helper.RetryAction(() => SyncMyApplications(true), 3, TimeSpan.FromMilliseconds(200));
+            }
+            catch (Exception ex)
+            {
+                _log.ErrorException(ex.Message, ex);
+                Message = Properties.Resources.ErrorGettingMyApps;
+            }
+            
+            GetSuggestedApplicationsWithApiCall();
+
             IsLoggedIn = true;
         }
     }
