@@ -12,6 +12,11 @@ namespace AppDirect.WindowsClient.Tests.Common.UI
             action.Invoke();
         }
 
+        public void StartAsynchronously(Action action)
+        {
+            action.Invoke();
+        }
+
         public virtual void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn)
         {
             action.Invoke();

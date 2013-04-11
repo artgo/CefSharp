@@ -5,7 +5,6 @@ using AppDirect.WindowsClient.UI;
 using System;
 using System.Threading;
 using System.Windows;
-using NSubstitute.Exceptions;
 
 namespace AppDirect.WindowsClient
 {
@@ -18,7 +17,6 @@ namespace AppDirect.WindowsClient
         private readonly ILogger _log = new NLogLogger("MainApp");
         private volatile Mutex _instanceMutex = null;
         private volatile MainWindow _mainWindow;
-        private volatile ThreadStart _ipcCommunicatorStart;
         private volatile ILatch _mainWindowReadyLatch = new Latch();
 
         public App()
@@ -32,8 +30,10 @@ namespace AppDirect.WindowsClient
             currentDomain.UnhandledException += _exceptionHandler;
 
             var startTicks = Environment.TickCount;
+
             bool createdNew;
             _instanceMutex = new Mutex(true, @"AppDirect.WindowsClient Application Manager Mutex", out createdNew);
+
             if (!createdNew)
             {
                 _log.Info("Instance already exists, exit.");
@@ -55,12 +55,14 @@ namespace AppDirect.WindowsClient
                 Environment.Exit(0);
             }
 
+            var helper = ServiceLocator.UiHelper;
+
             ServiceLocator.LocalStorage.LoadStorage();
-            _ipcCommunicatorStart = ServiceLocator.IpcCommunicator.Start;
-            new Thread(_ipcCommunicatorStart).Start();
+            helper.StartAsynchronously(ServiceLocator.IpcCommunicator.Start);
 
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
+
             var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
 
             taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
@@ -73,18 +75,19 @@ namespace AppDirect.WindowsClient
             {
                 _log.ErrorException("Failed to initialize taskbar module", ex);
                 MessageBox.Show(ex.ToString());
+                ServiceLocator.UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
+                _instanceMutex = null;
+                Current.Shutdown();
                 Environment.Exit(0);
             }
 
-            ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start);
+            helper.StartAsynchronously(() => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
 
-            var thread = new Thread(() => InitializeMainWindow(mainViewModel, taskbarPanel));
-            thread.Start();
+            helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
 
             base.OnStartup(e);
-            var stopTicks = Environment.TickCount;
 
-            (new Thread(() => _log.Debug("Application startup completed in " + (stopTicks - startTicks) + "ms."))).Start();
+            helper.StartAsynchronously(() => _log.Debug("Application startup completed in " + (Environment.TickCount - startTicks) + "ms."));
         }
 
         private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
@@ -120,8 +123,6 @@ namespace AppDirect.WindowsClient
             }
 
             base.OnExit(e);
-
-            _ipcCommunicatorStart = null;
 
             Environment.Exit(0);
         }
