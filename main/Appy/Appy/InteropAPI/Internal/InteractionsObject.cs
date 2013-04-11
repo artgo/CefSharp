@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using System.IO;
+using System.Security;
+using Microsoft.Win32;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -269,32 +271,25 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             if (IsWin7OrUp)
             {
-                var regSmall = FailedValue;
+                // Defaulting to large icons on Windows 7 and 8
+                iconsSize = TaskbarIconsSize.Large;
 
-                for (int i = 0; i < 10; i++)
+                try
                 {
                     var val = Registry.GetValue(SmallIconsPath, SmallIconsFiledName, FailedValue);
 
-                    if ((val != null) && (((int)val) != FailedValue))
+                    if ((val is int) && ((int) val) == IconsSize.SMALL)
                     {
-                        regSmall = (int) val;
-                        break;
-                    }
-
-                    if (i < 9)
-                    {
-                        Thread.Sleep(100);
+                        iconsSize = TaskbarIconsSize.Small;
                     }
                 }
-
-                if (regSmall == IconsSize.SMALL)
+                catch (SecurityException)
                 {
-                    iconsSize = TaskbarIconsSize.Small;
+                    // Refactor: log
                 }
-                else
+                catch (IOException)
                 {
-                    // Defaulting to large icons on Windows 7 and 8
-                    iconsSize = TaskbarIconsSize.Large;
+                    // Refactor: log
                 }
             }
 
