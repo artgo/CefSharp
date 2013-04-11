@@ -7,7 +7,6 @@
         Background="Black"
         WindowStyle="None"
         AllowsTransparency="True"
-        Closing="MainWindow_OnClosing"
         ShowInTaskbar="False">
     <Window.Resources>
         <ContextMenu x:Key="UninstallContextMenu" Style="{StaticResource ContextMenuStyle}">

@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Browser.API;
+﻿using System.Threading;
+using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
@@ -16,6 +17,7 @@ namespace AppDirect.WindowsClient.Browser
         private static readonly IBrowserObject BrowserObject = new BrowserObject(new NLogLogger("BrowserObject"));
         private static readonly IUiHelper UiHelper = new UiHelper(new NLogLogger("UiHelper"));
         private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper);
+        private static volatile Mutex _instanceMutex = null;
 
         /// <summary>
         /// The main entry point for the application.
@@ -25,6 +27,15 @@ namespace AppDirect.WindowsClient.Browser
         {
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += ExceptionHandler;
+
+            bool createdNew;
+            _instanceMutex = new Mutex(true, @"AppDirect.WindowsClient Browser Mutex", out createdNew);
+            if (!createdNew)
+            {
+                Log.Info("Instance already exists, exit.");
+                _instanceMutex = null;
+                Environment.Exit(0);
+            }
 
             try
             {

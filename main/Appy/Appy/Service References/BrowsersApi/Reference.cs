@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Linq;
 using AppDirect.WindowsClient.Common.API;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -94,6 +95,11 @@ namespace AppDirect.WindowsClient.BrowsersApi
         public void CloseAllApplicationsAndQuit()
         {
             base.Channel.CloseAllApplicationsAndQuit();
+        }
+
+        public List<string> GetOpenApplicationIds()
+        {
+            return base.Channel.GetOpenApplicationIds().ToList();
         }
     }
 }

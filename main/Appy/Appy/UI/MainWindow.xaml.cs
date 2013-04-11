@@ -149,10 +149,6 @@ namespace AppDirect.WindowsClient.UI
             ViewModel.UpdateClick();
         }
 
-        private void MainWindow_OnClosing(object o, CancelEventArgs e)
-        {
-        }
-
         private void Login_OnRegistrationClick(object o, EventArgs e)
         {
             RegistrationViewControl.Visibility = Visibility.Visible;
@@ -170,6 +166,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
+            ServiceLocator.LocalStorage.SaveOpenBrowserWindows();
             ViewModel.GetAboutDialog();
         }
     }

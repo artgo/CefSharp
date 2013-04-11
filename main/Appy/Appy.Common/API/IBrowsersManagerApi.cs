@@ -20,5 +20,8 @@ namespace AppDirect.WindowsClient.Common.API
 
         [OperationContract(IsOneWay = true)]
         void CloseAllApplicationsAndQuit();
+
+        [OperationContract(IsOneWay = false)]
+        List<string> GetOpenApplicationIds();
     }
 }

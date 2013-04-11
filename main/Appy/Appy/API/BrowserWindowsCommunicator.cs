@@ -23,6 +23,11 @@ namespace AppDirect.WindowsClient.API
             MakeSureExecuteAction(() => Service.CloseApplication(appId));
         }
 
+        public List<string> GetOpenApplicationIds()
+        {
+            return MakeSureExecuteAction(() => Service.GetOpenApplicationIds());
+        }
+
         public void UpdateSession(IAppDirectSession newSession)
         {
             MakeSureExecuteAction(() => Service.UpdateSession(newSession));

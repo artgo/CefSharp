@@ -76,5 +76,10 @@ namespace AppDirect.WindowsClient.Browser.API
             _browserWindowsManager.CloseAllWindows();
             _uiHelper.GracefulShutdown();
         }
+
+        public List<string> GetOpenApplicationIds()
+        {
+            return _browserWindowsManager.GetBrowserWindows();
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Windows;
 using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.Common.UI
@@ -75,11 +76,16 @@ namespace AppDirect.WindowsClient.Common.UI
         public void GracefulShutdown()
         {
             _log.Info("Started shutdown");
-            PerformInUiThread(() =>
-                {
-                    System.Windows.Application.Current.Shutdown();
-                    _log.Info("Application shutdown complete");
-                });
+
+            if (Application.Current !=null)
+            {
+                PerformInUiThread(() =>
+                    {
+                        Application.Current.Shutdown();
+                    });
+
+                _log.Info("Application shutdown complete");
+            }
 
             _log.Info("Shutdown complete");
             Environment.Exit(0);
@@ -98,7 +104,7 @@ namespace AppDirect.WindowsClient.Common.UI
             }
             catch (Exception e)
             {
-                _log.ErrorException("Invokation failed", e);
+                _log.ErrorException("Invocation failed", e);
             }
         }
 

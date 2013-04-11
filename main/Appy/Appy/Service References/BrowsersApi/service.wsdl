@@ -57,6 +57,12 @@
   <wsdl:message name="IBrowsersManagerApi_CloseAllApplicationsAndQuit_InputMessage">
     <wsdl:part name="parameters" element="tns:CloseAllApplicationsAndQuit" />
   </wsdl:message>
+  <wsdl:message name="IBrowsersManagerApi_GetOpenApplicationIds_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOpenApplicationIds" />
+  </wsdl:message>
+  <wsdl:message name="IBrowsersManagerApi_GetOpenApplicationIds_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOpenApplicationIdsResponse" />
+  </wsdl:message>
   <wsdl:portType name="IBrowsersManagerApi">
     <wsdl:operation name="DisplayApplication">
       <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/DisplayApplication" message="tns:IBrowsersManagerApi_DisplayApplication_InputMessage" />
@@ -72,6 +78,10 @@
     </wsdl:operation>
     <wsdl:operation name="CloseAllApplicationsAndQuit">
       <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/CloseAllApplicationsAndQuit" message="tns:IBrowsersManagerApi_CloseAllApplicationsAndQuit_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOpenApplicationIds">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBrowsersManagerApi/GetOpenApplicationIds" message="tns:IBrowsersManagerApi_GetOpenApplicationIds_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBrowsersManagerApi/GetOpenApplicationIdsResponse" message="tns:IBrowsersManagerApi_GetOpenApplicationIds_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="AppDirect.WindowsClient.Browser.API.BrowsersManagerApi" type="tns:IBrowsersManagerApi">
@@ -108,6 +118,15 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
+    <wsdl:operation name="GetOpenApplicationIds">
+      <soap12:operation soapAction="http://tempuri.org/IBrowsersManagerApi/GetOpenApplicationIds" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="BrowsersManagerApi">
     <wsdl:port name="AppDirect.WindowsClient.Browser.API.BrowsersManagerApi" binding="tns:AppDirect.WindowsClient.Browser.API.BrowsersManagerApi">
@@ -115,7 +134,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.pipe://localhost/BrowsersManagerApi</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>ubuntudt\artem</Upn>
+          <Upn>tina.jensen@appdirect.net</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

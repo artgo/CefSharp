@@ -30,6 +30,8 @@ namespace AppDirect.WindowsClient.Storage
 
         public List<Application> PinnedApps { get; set; }
 
+        public List<string> AppsToReopen { get; set; } 
+
         public bool IsLoadedFromFile { get; set; }
 
         public object Locker = new object();
@@ -77,6 +79,7 @@ namespace AppDirect.WindowsClient.Storage
             InstalledAppDirectApps = new List<Application>();
             LastSuggestedApps = new List<Application>();
             PinnedApps = new List<Application>();
+            AppsToReopen = new List<string>();
             IsLoadedFromFile = false;
         }
 
@@ -121,6 +124,7 @@ namespace AppDirect.WindowsClient.Storage
                 InstalledAppDirectApps = localStorage.InstalledAppDirectApps ?? new List<Application>();
                 LastSuggestedApps = localStorage.LastSuggestedApps ?? new List<Application>();
                 PinnedApps = localStorage.PinnedApps ?? new List<Application>();
+                AppsToReopen = localStorage.AppsToReopen ?? new List<string>();
             }
         }
 
@@ -202,6 +206,7 @@ namespace AppDirect.WindowsClient.Storage
             InstalledAppDirectApps = new List<Application>();
             LastSuggestedApps = new List<Application>();
             PinnedApps = new List<Application>();
+            AppsToReopen = new List<string>();
         }
 
         public void SetCredentials(string username, string password)
@@ -210,6 +215,11 @@ namespace AppDirect.WindowsClient.Storage
             LoginInfo.EncryptedUsername = CipherUtility.Encrypt(username, LoginInfo.Salt);
             LoginInfo.EncryptedPassword = CipherUtility.Encrypt(password, LoginInfo.Salt);
             LoginInfo.PasswordSetDate = DateTime.Now.Date;
+        }
+
+        public void SaveOpenBrowserWindows()
+        {
+            AppsToReopen = ServiceLocator.BrowserWindowsCommunicator.GetOpenApplicationIds();
         }
     }
 }

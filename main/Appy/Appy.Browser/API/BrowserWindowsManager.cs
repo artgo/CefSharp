@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Browser.Interaction;
+﻿using System.Linq;
+using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
@@ -158,6 +159,14 @@ namespace AppDirect.WindowsClient.Browser.API
                         browserWindow.Close();
                     }
                 });
+        }
+
+        public List<string> GetBrowserWindows()
+        {
+            var openWindows = new List<string>();
+            openWindows.AddRange(from window in _browserWindows where window.Value.IsVisible select window.Key);
+
+            return openWindows;
         }
     }
 }
