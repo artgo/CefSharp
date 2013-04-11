@@ -87,7 +87,8 @@ namespace AppDirect.WindowsClient
 
             base.OnStartup(e);
 
-            helper.StartAsynchronously(() => _log.Debug("Application startup completed in " + (Environment.TickCount - startTicks) + "ms."));
+            var stopTicks = Environment.TickCount;
+            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + (stopTicks - startTicks) + "ms."));
         }
 
         private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
