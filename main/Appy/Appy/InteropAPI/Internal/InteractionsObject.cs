@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using DWORD = System.UInt32;
@@ -26,6 +27,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private const double StandardDpi = 96;
         private const string StartButtonClass = @"Button";
         private const uint NotHideWindow = ~(uint) SetWindowPosConstants.SWP_HIDEWINDOW;
+        private const int FailedValue = -1;
 
         // win 7  default with large buttons
         private const int DefaultStartButtonWidth = 54;
@@ -262,18 +264,41 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private TaskbarIconsSize GetTaskbarIconSize()
         {
-            var sz = TaskbarIconsSize.Small;	// old versions use small icons
-            var regSmall = Registry.GetValue(SmallIconsPath, SmallIconsFiledName, -1);
+            // Default icon size for XP and Vista is small
+            var iconsSize = TaskbarIconsSize.Small;
 
-            if (regSmall != null)				// since Win7
+            if (IsWin7OrUp)
             {
-                if ((int)regSmall == IconsSize.LARGE)
+                var regSmall = FailedValue;
+
+                for (int i = 0; i < 10; i++)
                 {
-                    sz = TaskbarIconsSize.Large;
+                    var val = Registry.GetValue(SmallIconsPath, SmallIconsFiledName, FailedValue);
+
+                    if ((val != null) && (((int)val) != FailedValue))
+                    {
+                        regSmall = (int) val;
+                        break;
+                    }
+
+                    if (i < 9)
+                    {
+                        Thread.Sleep(100);
+                    }
+                }
+
+                if (regSmall == IconsSize.SMALL)
+                {
+                    iconsSize = TaskbarIconsSize.Small;
+                }
+                else
+                {
+                    // Defaulting to large icons on Windows 7 and 8
+                    iconsSize = TaskbarIconsSize.Large;
                 }
             }
 
-            return sz;
+            return iconsSize;
         }
 
         private double GetDpiScaleFactor()

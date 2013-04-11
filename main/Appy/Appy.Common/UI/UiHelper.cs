@@ -36,6 +36,16 @@ namespace AppDirect.WindowsClient.Common.UI
             }
         }
 
+        public void StartAsynchronously(Action action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException("action");
+            }
+
+            (new Thread(action.Invoke)).Start();
+        }
+
         public void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn)
         {
             if (action == null)

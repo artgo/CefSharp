@@ -6,6 +6,8 @@ namespace AppDirect.WindowsClient.Common.UI
     {
         void PerformInUiThread(Action action);
 
+        void StartAsynchronously(Action action);
+
         void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn);
 
         void GracefulShutdown();
