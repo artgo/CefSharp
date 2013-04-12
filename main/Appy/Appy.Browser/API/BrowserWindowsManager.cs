@@ -161,10 +161,11 @@ namespace AppDirect.WindowsClient.Browser.API
                 });
         }
 
-        public List<string> GetBrowserWindows()
+        IEnumerable<IWindowData> IBrowserWindowsManager.GetBrowserWindowDatas()
         {
-            var openWindows = new List<string>();
-            openWindows.AddRange(from window in _browserWindows where window.Value.IsVisible select window.Key);
+            var openWindows = from window in _browserWindows
+                                  where window.Value.IsVisible
+                                      select (IWindowData)new WindowData() { ApplicationId = window.Key, WindowState = window.Value.WindowState };
 
             return openWindows;
         }

@@ -52,6 +52,26 @@ namespace AppDirect.WindowsClient.Browser.API
             });
         }
 
+        public void DisplayApplications(IEnumerable<IApplicationWithState> applications)
+        {
+            foreach (var applicationWithState in applications)
+            {
+                var browserWindow = _browserWindowsManager.GetOrCreateBrowserWindow(applicationWithState.Application);
+
+                var state = applicationWithState.WindowState;
+
+                _uiHelper.PerformInUiThread(() =>
+                {
+                    if (!browserWindow.IsVisible)
+                    {
+                        browserWindow.Show();
+                    }
+
+                    browserWindow.WindowState = state;
+                });
+            }
+        }
+
         public void CloseApplication(string appId)
         {
             var browserWindow = _browserWindowsManager.GetBrowserWindow(appId);
@@ -77,9 +97,9 @@ namespace AppDirect.WindowsClient.Browser.API
             _uiHelper.GracefulShutdown();
         }
 
-        public List<string> GetOpenApplicationIds()
+        public IEnumerable<IWindowData> GetOpenWindowDatas()
         {
-            return _browserWindowsManager.GetBrowserWindows();
+            return _browserWindowsManager.GetBrowserWindowDatas();
         }
     }
 }

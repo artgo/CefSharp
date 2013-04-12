@@ -77,6 +77,11 @@ namespace AppDirect.WindowsClient.BrowsersApi
             base.Channel.DisplayApplication(application);
         }
 
+        public void DisplayApplications(IEnumerable<IApplicationWithState> applications)
+        {
+            base.Channel.DisplayApplications(applications);
+        }
+
         public void CloseApplication(string appId)
         {
             base.Channel.CloseApplication(appId);
@@ -97,9 +102,9 @@ namespace AppDirect.WindowsClient.BrowsersApi
             base.Channel.CloseAllApplicationsAndQuit();
         }
 
-        public List<string> GetOpenApplicationIds()
+        public IEnumerable<IWindowData> GetOpenWindowDatas()
         {
-            return base.Channel.GetOpenApplicationIds().ToList();
+            return base.Channel.GetOpenWindowDatas();
         }
     }
 }

@@ -16,6 +16,6 @@ namespace AppDirect.WindowsClient.Browser.API
 
         void CloseAllWindows();
 
-        List<string> GetBrowserWindows();
+        IEnumerable<IWindowData> GetBrowserWindowDatas();
     }
 }

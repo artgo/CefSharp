@@ -1,5 +1,4 @@
-﻿using System;
-using AppDirect.WindowsClient.Common.API;
+﻿using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using System.Collections.Generic;
@@ -18,14 +17,14 @@ namespace AppDirect.WindowsClient.API
             MakeSureExecuteAction(() => Service.DisplayApplication(application));
         }
 
+        public void DisplayApplications(IEnumerable<IApplicationWithState> applications)
+        {
+            MakeSureExecuteAction(() => Service.DisplayApplications(applications));
+        }
+
         public void CloseApplication(string appId)
         {
             MakeSureExecuteAction(() => Service.CloseApplication(appId));
-        }
-
-        public List<string> GetOpenApplicationIds()
-        {
-            return MakeSureExecuteAction(() => Service.GetOpenApplicationIds());
         }
 
         public void UpdateSession(IAppDirectSession newSession)
@@ -41,6 +40,11 @@ namespace AppDirect.WindowsClient.API
         public void CloseAllApplicationsAndQuit()
         {
             MakeSureExecuteAction(() => Service.CloseAllApplicationsAndQuit());
+        }
+
+        public IEnumerable<IWindowData> GetOpenWindowDatas()
+        {
+            return MakeSureExecuteAction(() => Service.GetOpenWindowDatas());
         }
     }
 }
