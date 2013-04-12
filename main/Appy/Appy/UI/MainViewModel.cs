@@ -133,14 +133,17 @@ namespace AppDirect.WindowsClient.UI
 
         public void Logout()
         {
-            lock (ServiceLocator.LocalStorage.Locker)
-            {
-                ServiceLocator.CachedAppDirectApi.UnAuthenticate();
-                ServiceLocator.LocalStorage.ClearLoginCredentials();
-            }
-
-            SyncMyApplications();
             IsLoggedIn = false;
+            ServiceLocator.UiHelper.StartAsynchronously(() =>
+                {
+                    ServiceLocator.BrowserWindowsCommunicator.CloseAllApplicationsAndQuit();
+                    lock (ServiceLocator.LocalStorage.Locker)
+                    {
+                        ServiceLocator.CachedAppDirectApi.UnAuthenticate();
+                        ServiceLocator.LocalStorage.ClearLoginCredentials();
+                    }
+                    SyncMyApplications();
+                });
         }
 
         public void Install(ApplicationViewModel applicationViewModel)

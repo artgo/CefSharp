@@ -1,6 +1,9 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Storage;
+using AppDirect.WindowsClient.Tests.Common.UI;
 using AppDirect.WindowsClient.UI;
 using AppDirect.WindowsClient.Updates;
 using NSubstitute;
@@ -48,6 +51,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             kernel.Rebind<ICachedAppDirectApi>().ToConstant(cachedAppDirectApiMock);
             kernel.Rebind<LocalStorage>().ToConstant(localStorage);
             kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(browserMock);
+            kernel.Rebind<IUiHelper>().ToConstant(new TestUiHelper());
         }
 
         private void InitializeTests()
@@ -181,9 +185,17 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             SetMyAppsAndLogin(_myApplications);
+            ServiceLocator.CachedAppDirectApi.IsAuthenticated.Returns(false);
             _mainViewModel.Logout();
-
             Assert.IsEmpty(ServiceLocator.LocalStorage.InstalledAppDirectApps);
+        }
+
+        [Test]
+        public void LogOutCallsCloseBrowserWindows()
+        {
+            InitializeTests();
+            _mainViewModel.Logout();
+            ServiceLocator.BrowserWindowsCommunicator.ReceivedWithAnyArgs().CloseAllApplicationsAndQuit();
         }
 
         #endregion Log Out Tests
