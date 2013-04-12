@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Browser.API;
+﻿using System.Windows;
+using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
@@ -7,6 +8,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.Browser.Tests.API
 {
@@ -90,6 +92,25 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
             _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
             _browsersManagerApi.CloseAllApplicationsAndQuit();
             _uiHelper.Received().GracefulShutdown();
+        }
+
+        [Test]
+        public void TestGetOpenWindowDatasCallsGetBroswerWindowDatas()
+        {
+            _browsersManagerApi.GetOpenWindowDatas();
+            _browserWindowsManager.Received().GetBrowserWindowDatas();
+        }
+
+        [Test]
+        [STAThread]
+        public void TestDisplayApplicationsSetsWindowState()
+        {
+            WindowState testWindowState = WindowState.Maximized;
+            var windowMock = Substitute.For<BrowserWindow>();
+            _browserWindowsManager.GetOrCreateBrowserWindow(null).ReturnsForAnyArgs(windowMock);
+            _browsersManagerApi.DisplayApplications(new List<IApplicationWithState>() { new ApplicationWithState() { Application = new Application(), WindowState = testWindowState } });
+            
+            Assert.AreEqual(testWindowState, windowMock.WindowState);
         }
     }
 }

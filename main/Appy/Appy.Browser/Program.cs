@@ -90,6 +90,7 @@ namespace AppDirect.WindowsClient.Browser
                 UiHelper.IgnoreException(apiStarter.Stop);
                 UiHelper.IgnoreException(sessionKeeper.Stop);
                 UiHelper.IgnoreException(BrowserObject.Unload);
+                UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
             }
         }
 

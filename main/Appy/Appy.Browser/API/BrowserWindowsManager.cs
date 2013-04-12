@@ -161,7 +161,7 @@ namespace AppDirect.WindowsClient.Browser.API
                 });
         }
 
-        IEnumerable<IWindowData> IBrowserWindowsManager.GetBrowserWindowDatas()
+        public virtual IEnumerable<IWindowData> GetBrowserWindowDatas()
         {
             var openWindows = new List<IWindowData>();
             _uiHelper.PerformInUiThread(() =>
