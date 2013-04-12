@@ -1,4 +1,5 @@
 using AppDirect.WindowsClient.Browser.API;
+using System.ComponentModel;
 using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Windows;
@@ -13,9 +14,7 @@ namespace AppDirect.WindowsClient.Browser.UI
     {
         private BrowserViewModel ViewModel { get; set; }
 
-        public BrowserWindow()
-        {
-        }
+        public BrowserWindow() {}
 
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
@@ -144,6 +143,12 @@ namespace AppDirect.WindowsClient.Browser.UI
             {
                 WindowState = WindowState.Maximized;
             }
+        }
+
+        private void BrowserWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            Hide();
+            e.Cancel = true;
         }
     }
 }

@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Appy.Browser")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("AppDirect Inc.")]
+[assembly: AssemblyCompany("AppDirect")]
 [assembly: AssemblyProduct("Appy.Browser")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
