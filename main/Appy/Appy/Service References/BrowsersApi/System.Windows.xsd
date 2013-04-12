@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/System.Windows" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/System.Windows" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="WindowState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Normal" />
+      <xs:enumeration value="Minimized" />
+      <xs:enumeration value="Maximized" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="WindowState" nillable="true" type="tns:WindowState" />
+</xs:schema>

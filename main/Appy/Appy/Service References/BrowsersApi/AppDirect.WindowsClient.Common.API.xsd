@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/System.Windows" />
   <xs:import namespace="http://schemas.datacontract.org/2004/07/System.Net" />
   <xs:complexType name="IApplication">
     <xs:sequence>
@@ -48,9 +49,33 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="LocalApplication" nillable="true" type="tns:LocalApplication" />
+  <xs:complexType name="ArrayOfIApplicationWithState">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="IApplicationWithState" nillable="true" type="tns:IApplicationWithState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfIApplicationWithState" nillable="true" type="tns:ArrayOfIApplicationWithState" />
+  <xs:complexType name="IApplicationWithState">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Application" nillable="true" type="tns:IApplication" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Windows" minOccurs="0" name="WindowState" type="q1:WindowState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="IApplicationWithState" nillable="true" type="tns:IApplicationWithState" />
+  <xs:complexType name="ApplicationWithState">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:IApplicationWithState">
+        <xs:sequence>
+          <xs:element name="_x003C_Application_x003E_k__BackingField" nillable="true" type="tns:IApplication" />
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/System.Windows" name="_x003C_WindowState_x003E_k__BackingField" type="q2:WindowState" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ApplicationWithState" nillable="true" type="tns:ApplicationWithState" />
   <xs:complexType name="IAppDirectSession">
     <xs:sequence>
-      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Net" minOccurs="0" name="Cookies" nillable="true" type="q1:ArrayOfCookie" />
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/System.Net" minOccurs="0" name="Cookies" nillable="true" type="q3:ArrayOfCookie" />
       <xs:element minOccurs="0" name="ExpirationDate" type="xs:dateTime" />
     </xs:sequence>
   </xs:complexType>
@@ -59,7 +84,7 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:IAppDirectSession">
         <xs:sequence>
-          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/System.Net" name="_x003C_Cookies_x003E_k__BackingField" nillable="true" type="q2:ArrayOfCookie" />
+          <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/System.Net" name="_x003C_Cookies_x003E_k__BackingField" nillable="true" type="q4:ArrayOfCookie" />
           <xs:element name="_x003C_ExpirationDate_x003E_k__BackingField" type="xs:dateTime" />
         </xs:sequence>
       </xs:extension>
@@ -72,4 +97,28 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfIApplication" nillable="true" type="tns:ArrayOfIApplication" />
+  <xs:complexType name="ArrayOfIWindowData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="IWindowData" nillable="true" type="tns:IWindowData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfIWindowData" nillable="true" type="tns:ArrayOfIWindowData" />
+  <xs:complexType name="IWindowData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ApplicationId" nillable="true" type="xs:string" />
+      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/System.Windows" minOccurs="0" name="WindowState" type="q5:WindowState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="IWindowData" nillable="true" type="tns:IWindowData" />
+  <xs:complexType name="WindowData">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:IWindowData">
+        <xs:sequence>
+          <xs:element name="_x003C_ApplicationId_x003E_k__BackingField" nillable="true" type="xs:string" />
+          <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/System.Windows" name="_x003C_WindowState_x003E_k__BackingField" type="q6:WindowState" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="WindowData" nillable="true" type="tns:WindowData" />
 </xs:schema>

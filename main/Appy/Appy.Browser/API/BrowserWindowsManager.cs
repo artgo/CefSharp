@@ -163,9 +163,20 @@ namespace AppDirect.WindowsClient.Browser.API
 
         IEnumerable<IWindowData> IBrowserWindowsManager.GetBrowserWindowDatas()
         {
-            var openWindows = from window in _browserWindows
-                                  where window.Value.IsVisible
-                                      select (IWindowData)new WindowData() { ApplicationId = window.Key, WindowState = window.Value.WindowState };
+            var openWindows = new List<IWindowData>();
+            _uiHelper.PerformInUiThread(() =>
+                {
+                    foreach (var window in _browserWindows)
+                    {
+                        if (window.Value.IsVisible)
+                        {
+                            openWindows.Add(new WindowData{
+                                ApplicationId = window.Key,
+                                WindowState = window.Value.WindowState
+                            });
+                        }
+                    }
+                });
 
             return openWindows;
         }

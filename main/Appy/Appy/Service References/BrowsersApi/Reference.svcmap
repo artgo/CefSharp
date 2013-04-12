@@ -25,6 +25,7 @@
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="ce9c7128-1696-44d0-84d3-352811a30d3a" SourceId="1" SourceUrl="net.pipe://localhost/BrowsersManagerApi/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="5c6cb6f8-780f-4fa5-938d-d391c80cf940" SourceId="1" SourceUrl="net.pipe://localhost/BrowsersManagerApi/mex" />
     <MetadataFile FileName="AppDirect.WindowsClient.Common.API.xsd" MetadataType="Schema" ID="0d8f335b-b38e-405f-88a4-51f081f6b2e7" SourceId="1" SourceUrl="net.pipe://localhost/BrowsersManagerApi/mex" />
+    <MetadataFile FileName="System.Windows.xsd" MetadataType="Schema" ID="8d2aa4b8-8b08-4204-bad2-c04b15a71b74" SourceId="1" SourceUrl="net.pipe://localhost/BrowsersManagerApi/mex" />
     <MetadataFile FileName="System.Net.xsd" MetadataType="Schema" ID="d048d376-31ee-4fef-9719-46b121eb73cc" SourceId="1" SourceUrl="net.pipe://localhost/BrowsersManagerApi/mex" />
     <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="b7b0f0e2-bd1c-4418-8073-49237e209ce6" SourceId="1" SourceUrl="net.pipe://localhost/BrowsersManagerApi/mex" />
   </Metadata>

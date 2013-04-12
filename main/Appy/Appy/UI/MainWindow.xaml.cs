@@ -167,8 +167,6 @@ namespace AppDirect.WindowsClient.UI
 
         private void AboutMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            ServiceLocator.LocalStorage.SaveOpenBrowserWindows();
-            (new Thread(() => ServiceLocator.LocalStorage.SaveAppSettings())).Start();
             ViewModel.GetAboutDialog();
         }
     }
