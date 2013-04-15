@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using AppDirect.WindowsClient.Browser.API;
+﻿using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
@@ -7,6 +6,7 @@ using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using System;
+using System.Threading;
 using System.Windows;
 
 namespace AppDirect.WindowsClient.Browser
@@ -121,7 +121,7 @@ namespace AppDirect.WindowsClient.Browser
             }
 
             var hadException = true;
-            while(hadException)
+            while (hadException)
             {
                 try
                 {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AppDirect.WindowsClient.Browser.Interaction;
+﻿using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
@@ -12,14 +11,14 @@ namespace AppDirect.WindowsClient.Browser.API
     public class BrowserWindowsManager : IBrowserWindowsManager
     {
         private readonly object _lockObject = new object();
-        private readonly Dictionary<string, IBrowserWindow> _browserWindows = new Dictionary<string, IBrowserWindow>();
+        private readonly IDictionary<string, IBrowserWindow> _browserWindows = new Dictionary<string, IBrowserWindow>();
         private readonly IBrowserObject _browserObject;
         private readonly IUiHelper _uiHelper;
         private readonly IBrowserWindowsBuilder<IBrowserWindow> _browserWindowsBuilder;
         private volatile IAppDirectSession _session = null;
         private volatile IEnumerable<IApplication> _applications = null;
 
-        public BrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder )
+        public BrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder)
         {
             if (browserObject == null)
             {
@@ -172,7 +171,8 @@ namespace AppDirect.WindowsClient.Browser.API
                     {
                         if (window.Value.Visible)
                         {
-                            openWindows.Add(new WindowData{
+                            openWindows.Add(new WindowData
+                            {
                                 ApplicationId = window.Key,
                                 WindowState = window.Value.WindowState
                             });

@@ -13,7 +13,9 @@ namespace AppDirect.WindowsClient.Browser.UI
     {
         private BrowserViewModel ViewModel { get; set; }
 
-        public BrowserWindow() {}
+        public BrowserWindow()
+        {
+        }
 
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
@@ -85,7 +87,7 @@ namespace AppDirect.WindowsClient.Browser.UI
             ViewModel.Session = session;
             PreInitializeWindow();
         }
-        
+
         protected override void OnClosed(EventArgs e)
         {
             browser.Dispose();

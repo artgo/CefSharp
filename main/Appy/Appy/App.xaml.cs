@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows;
-using AppDirect.WindowsClient.Common.API;
-using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient
 {
@@ -136,9 +135,8 @@ namespace AppDirect.WindowsClient
                                 WindowState = app.WindowState
                             };
 
-                       appsWithData.Add(appWithData);
+                        appsWithData.Add(appWithData);
                     }
-
                 }
 
                 ServiceLocator.BrowserWindowsCommunicator.DisplayApplications(appsWithData);
@@ -147,7 +145,6 @@ namespace AppDirect.WindowsClient
             ServiceLocator.LocalStorage.AppsToReopen = null;
             ServiceLocator.UiHelper.StartAsynchronously(() => ServiceLocator.LocalStorage.SaveAppSettings());
         }
-
 
         private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
         {

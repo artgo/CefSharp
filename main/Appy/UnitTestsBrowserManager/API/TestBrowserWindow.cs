@@ -10,33 +10,33 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
 {
     public class TestBrowserWindow : IBrowserWindow
     {
-        public void SetSession(IAppDirectSession session)
+        public virtual void SetSession(IAppDirectSession session)
         {
         }
 
-        public void Close()
+        public virtual void Close()
         {
         }
 
-        public WindowState WindowState { get; set; }
-        public bool Visible
+        public virtual WindowState WindowState { get; set; }
+        public virtual bool Visible
         {
             get { return true; }
         }
 
-        public void Hide()
+        public virtual void Hide()
         {
         }
 
-        public void PreInitializeWindow()
+        public virtual void PreInitializeWindow()
         {
         }
 
-        public void Show()
+        public virtual void Show()
         {
         }
 
-        public void Display()
+        public virtual void Display()
         {
         }
     }

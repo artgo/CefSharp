@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\BrowserWindowsBuilder.cs" />
     <Compile Include="UI\IBrowserWindowsBuilder.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>

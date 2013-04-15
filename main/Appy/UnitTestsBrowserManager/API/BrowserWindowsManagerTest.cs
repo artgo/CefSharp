@@ -19,15 +19,16 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         private volatile IBrowserObject _browserObject = null;
         private volatile IUiHelper _uiHelper = null;
         private volatile BrowserWindowsManager _browserWindowsManager = null;
+        private TestBrowserWindowsBuilder _browserWindowBuilder;
 
         [SetUp]
         public void Init()
         {
             _uiHelper = new TestUiHelper();
             _browserObject = Substitute.For<IBrowserObject>();
-            var browserWindowBuilder = new TestBrowserWindowsBuilder();
+            _browserWindowBuilder = Substitute.For<TestBrowserWindowsBuilder>();
 
-            _browserWindowsManager = new BrowserWindowsManager(_browserObject, _uiHelper, browserWindowBuilder);
+            _browserWindowsManager = new BrowserWindowsManager(_browserObject, _uiHelper, _browserWindowBuilder);
         }
 
         [Test]
