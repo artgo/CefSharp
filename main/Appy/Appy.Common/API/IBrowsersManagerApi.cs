@@ -10,6 +10,9 @@ namespace AppDirect.WindowsClient.Common.API
         void DisplayApplication(IApplication application);
 
         [OperationContract(IsOneWay = true)]
+        void DisplayApplications(IEnumerable<IApplicationWithState> applications);
+
+        [OperationContract(IsOneWay = true)]
         void CloseApplication(string appId);
 
         [OperationContract(IsOneWay = true)]
@@ -20,5 +23,8 @@ namespace AppDirect.WindowsClient.Common.API
 
         [OperationContract(IsOneWay = true)]
         void CloseAllApplicationsAndQuit();
+
+        [OperationContract(IsOneWay = false)]
+        IEnumerable<IWindowData> GetOpenWindowDatas();
     }
 }

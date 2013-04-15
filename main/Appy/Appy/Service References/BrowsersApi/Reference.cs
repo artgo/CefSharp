@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Linq;
 using AppDirect.WindowsClient.Common.API;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -76,6 +77,11 @@ namespace AppDirect.WindowsClient.BrowsersApi
             base.Channel.DisplayApplication(application);
         }
 
+        public void DisplayApplications(IEnumerable<IApplicationWithState> applications)
+        {
+            base.Channel.DisplayApplications(applications);
+        }
+
         public void CloseApplication(string appId)
         {
             base.Channel.CloseApplication(appId);
@@ -94,6 +100,11 @@ namespace AppDirect.WindowsClient.BrowsersApi
         public void CloseAllApplicationsAndQuit()
         {
             base.Channel.CloseAllApplicationsAndQuit();
+        }
+
+        public IEnumerable<IWindowData> GetOpenWindowDatas()
+        {
+            return base.Channel.GetOpenWindowDatas();
         }
     }
 }

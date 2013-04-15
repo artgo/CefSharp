@@ -1,3 +1,4 @@
+using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Windows;
@@ -8,11 +9,13 @@ namespace AppDirect.WindowsClient.Browser.UI
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class BrowserWindow : Window
+    public partial class BrowserWindow : IBrowserWindow
     {
         private BrowserViewModel ViewModel { get; set; }
 
-        public BrowserWindow() {}
+        public BrowserWindow()
+        {
+        }
 
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
@@ -51,12 +54,32 @@ namespace AppDirect.WindowsClient.Browser.UI
             }
         }
 
+        public bool Visible { get { return IsVisible; } }
+
         public virtual void PreInitializeWindow()
         {
             if ((ViewModel.Session != null) && (ViewModel.Session.Cookies.Count > 0))
             {
                 browser.NavigateTo(ViewModel.Application.UrlString);
             }
+        }
+
+        public void Display()
+        {
+            if (!IsVisible)
+            {
+                Show();
+            }
+
+            if (WindowState == WindowState.Minimized)
+            {
+                WindowState = WindowState.Normal;
+            }
+
+            Activate();
+            Topmost = true;
+            Topmost = false;
+            Focus();
         }
 
         public void SetSession(IAppDirectSession session)

@@ -39,6 +39,15 @@ namespace AppDirect.WindowsClient.Updates
         {
             try
             {
+                ServiceLocator.LocalStorage.SaveOpenBrowserWindows();
+            }
+            catch (Exception e )
+            {
+                _log.ErrorException("Updater threw an exception while attempting to save open browser windows.", e);
+            }
+
+            try
+            {
                 var updater = new Process();
                 updater.StartInfo.FileName = UpdaterExeFileName;
                 updater.StartInfo.UseShellExecute = true;

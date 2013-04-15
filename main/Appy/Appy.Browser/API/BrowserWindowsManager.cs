@@ -11,13 +11,14 @@ namespace AppDirect.WindowsClient.Browser.API
     public class BrowserWindowsManager : IBrowserWindowsManager
     {
         private readonly object _lockObject = new object();
-        private readonly IDictionary<string, BrowserWindow> _browserWindows = new Dictionary<string, BrowserWindow>();
+        private readonly IDictionary<string, IBrowserWindow> _browserWindows = new Dictionary<string, IBrowserWindow>();
         private readonly IBrowserObject _browserObject;
         private readonly IUiHelper _uiHelper;
+        private readonly IBrowserWindowsBuilder<IBrowserWindow> _browserWindowsBuilder;
         private volatile IAppDirectSession _session = null;
         private volatile IEnumerable<IApplication> _applications = null;
 
-        public BrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper)
+        public BrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder)
         {
             if (browserObject == null)
             {
@@ -31,6 +32,7 @@ namespace AppDirect.WindowsClient.Browser.API
 
             _browserObject = browserObject;
             _uiHelper = uiHelper;
+            _browserWindowsBuilder = browserWindowsBuilder;
         }
 
         public virtual IEnumerable<IApplication> Applications
@@ -75,10 +77,10 @@ namespace AppDirect.WindowsClient.Browser.API
                 {
                     _browserObject.SetCookies(_session.Cookies);
 
-                    IEnumerable<BrowserWindow> windows;
+                    IEnumerable<IBrowserWindow> windows;
                     lock (_lockObject)
                     {
-                        windows = new List<BrowserWindow>(_browserWindows.Values);
+                        windows = new List<IBrowserWindow>(_browserWindows.Values);
                     }
 
                     foreach (var browserWindow in windows)
@@ -89,7 +91,7 @@ namespace AppDirect.WindowsClient.Browser.API
             }
         }
 
-        public virtual BrowserWindow GetOrCreateBrowserWindow(IApplication application)
+        public virtual IBrowserWindow GetOrCreateBrowserWindow(IApplication application)
         {
             if (application == null)
             {
@@ -112,7 +114,7 @@ namespace AppDirect.WindowsClient.Browser.API
 
                     _uiHelper.PerformInUiThread(() =>
                         {
-                            var browserWindow = new BrowserWindow(model);
+                            var browserWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
                             _browserWindows[applicationId] = browserWindow;
                             eventHandle.Set();
                         });
@@ -124,7 +126,7 @@ namespace AppDirect.WindowsClient.Browser.API
             }
         }
 
-        public virtual BrowserWindow GetBrowserWindow(string applicationId)
+        public virtual IBrowserWindow GetBrowserWindow(string applicationId)
         {
             if (string.IsNullOrEmpty(applicationId))
             {
@@ -144,10 +146,10 @@ namespace AppDirect.WindowsClient.Browser.API
 
         public void CloseAllWindows()
         {
-            IEnumerable<BrowserWindow> windows;
+            IEnumerable<IBrowserWindow> windows;
             lock (_lockObject)
             {
-                windows = new List<BrowserWindow>(_browserWindows.Values);
+                windows = new List<IBrowserWindow>(_browserWindows.Values);
                 _browserWindows.Clear();
             }
 
@@ -158,6 +160,27 @@ namespace AppDirect.WindowsClient.Browser.API
                         browserWindow.Close();
                     }
                 });
+        }
+
+        public virtual IEnumerable<IWindowData> GetBrowserWindowDatas()
+        {
+            var openWindows = new List<IWindowData>();
+            _uiHelper.PerformInUiThread(() =>
+                {
+                    foreach (var window in _browserWindows)
+                    {
+                        if (window.Value.Visible)
+                        {
+                            openWindows.Add(new WindowData
+                            {
+                                ApplicationId = window.Key,
+                                WindowState = window.Value.WindowState
+                            });
+                        }
+                    }
+                });
+
+            return openWindows;
         }
     }
 }

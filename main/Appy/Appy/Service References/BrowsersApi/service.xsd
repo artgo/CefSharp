@@ -8,6 +8,13 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="DisplayApplications">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" minOccurs="0" name="applications" nillable="true" type="q2:ArrayOfIApplicationWithState" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="CloseApplication">
     <xs:complexType>
       <xs:sequence>
@@ -18,20 +25,32 @@
   <xs:element name="UpdateSession">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" minOccurs="0" name="newSession" nillable="true" type="q2:IAppDirectSession" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" minOccurs="0" name="newSession" nillable="true" type="q3:IAppDirectSession" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="UpdateApplications">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" minOccurs="0" name="applications" nillable="true" type="q3:ArrayOfIApplication" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" minOccurs="0" name="applications" nillable="true" type="q4:ArrayOfIApplication" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="CloseAllApplicationsAndQuit">
     <xs:complexType>
       <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetOpenWindowDatas">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetOpenWindowDatasResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/AppDirect.WindowsClient.Common.API" minOccurs="0" name="GetOpenWindowDatasResult" nillable="true" type="q5:ArrayOfIWindowData" />
+      </xs:sequence>
     </xs:complexType>
   </xs:element>
 </xs:schema>

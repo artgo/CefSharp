@@ -3,7 +3,6 @@ using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
-using System.Windows;
 
 namespace AppDirect.WindowsClient.Browser.API
 {
@@ -35,21 +34,28 @@ namespace AppDirect.WindowsClient.Browser.API
 
             _uiHelper.PerformInUiThread(() =>
             {
-                if (!browserWindow.IsVisible)
-                {
-                    browserWindow.Show();
-                }
-
-                if (browserWindow.WindowState == WindowState.Minimized)
-                {
-                    browserWindow.WindowState = WindowState.Normal;
-                }
-
-                browserWindow.Activate();
-                browserWindow.Topmost = true;
-                browserWindow.Topmost = false;
-                browserWindow.Focus();
+                browserWindow.Display();
             });
+        }
+
+        public void DisplayApplications(IEnumerable<IApplicationWithState> applications)
+        {
+            foreach (var applicationWithState in applications)
+            {
+                var browserWindow = _browserWindowsManager.GetOrCreateBrowserWindow(applicationWithState.Application);
+
+                var state = applicationWithState.WindowState;
+
+                _uiHelper.PerformInUiThread(() =>
+                {
+                    if (!browserWindow.Visible)
+                    {
+                        browserWindow.Show();
+                    }
+
+                    browserWindow.WindowState = state;
+                });
+            }
         }
 
         public void CloseApplication(string appId)
@@ -75,6 +81,11 @@ namespace AppDirect.WindowsClient.Browser.API
         {
             _browserWindowsManager.CloseAllWindows();
             _uiHelper.GracefulShutdown();
+        }
+
+        public IEnumerable<IWindowData> GetOpenWindowDatas()
+        {
+            return _browserWindowsManager.GetBrowserWindowDatas();
         }
     }
 }

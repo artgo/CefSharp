@@ -1,8 +1,11 @@
 ﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 
@@ -103,6 +106,44 @@ namespace AppDirect.WindowsClient
             {
                 ServiceLocator.UiHelper.PerformInUiThread(() => _mainWindow.Show());
             }
+
+            ResurrectBrowserWindows();
+        }
+
+        private void ResurrectBrowserWindows()
+        {
+            if ((ServiceLocator.LocalStorage.AppsToReopen != null) && ServiceLocator.LocalStorage.AppsToReopen.Any() && ServiceLocator.LocalStorage.HasCredentials)
+            {
+                IDictionary<string, Common.API.IApplication> apps = new Dictionary<string, Common.API.IApplication>();
+                lock (ServiceLocator.LocalStorage.Locker)
+                {
+                    foreach (var application in ServiceLocator.LocalStorage.AllInstalledApplications)
+                    {
+                        apps[application.Id] = application;
+                    }
+                }
+
+                var appsWithData = new List<IApplicationWithState>();
+
+                foreach (var app in ServiceLocator.LocalStorage.AppsToReopen)
+                {
+                    if (apps.Keys.Contains(app.ApplicationId))
+                    {
+                        var appWithData = new ApplicationWithState()
+                            {
+                                Application = apps[app.ApplicationId],
+                                WindowState = app.WindowState
+                            };
+
+                        appsWithData.Add(appWithData);
+                    }
+                }
+
+                ServiceLocator.BrowserWindowsCommunicator.DisplayApplications(appsWithData);
+            }
+
+            ServiceLocator.LocalStorage.AppsToReopen = null;
+            ServiceLocator.UiHelper.StartAsynchronously(() => ServiceLocator.LocalStorage.SaveAppSettings());
         }
 
         private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)

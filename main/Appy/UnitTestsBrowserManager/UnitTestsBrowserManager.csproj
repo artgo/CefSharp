@@ -59,6 +59,8 @@
     <Compile Include="API\BrowsersManagerApiTest.cs" />
     <Compile Include="API\BrowserWindowsManagerTest.cs" />
     <Compile Include="API\IpcMainWindowStarterTest.cs" />
+    <Compile Include="API\TestBrowserWindow.cs" />
+    <Compile Include="API\TestBrowserWindowBuilder.cs" />
     <Compile Include="API\TestIpcMainWindowStarter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -282,6 +282,7 @@
       <DependentUpon>myapps.xsd</DependentUpon>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\AppDirect.WindowsClient.Common.API.IWindowData.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -301,6 +302,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\BrowsersApi\System.Net.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\System.Windows.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

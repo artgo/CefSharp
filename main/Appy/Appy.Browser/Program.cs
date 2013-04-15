@@ -2,9 +2,11 @@
 using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
+using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using System;
+using System.Threading;
 using System.Windows;
 
 namespace AppDirect.WindowsClient.Browser
@@ -15,7 +17,9 @@ namespace AppDirect.WindowsClient.Browser
         private static readonly ILogger Log = new NLogLogger("Browser.Program");
         private static readonly IBrowserObject BrowserObject = new BrowserObject(new NLogLogger("BrowserObject"));
         private static readonly IUiHelper UiHelper = new UiHelper(new NLogLogger("UiHelper"));
-        private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper);
+        private static readonly IBrowserWindowsBuilder<IBrowserWindow> BrowserWindowsBuilder = new BrowserWindowsBuilder();
+        private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper, BrowserWindowsBuilder);
+        private static volatile Mutex _instanceMutex = null;
 
         /// <summary>
         /// The main entry point for the application.
@@ -25,6 +29,15 @@ namespace AppDirect.WindowsClient.Browser
         {
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += ExceptionHandler;
+
+            bool createdNew;
+            _instanceMutex = new Mutex(true, @"AppDirect.WindowsClient Browser Mutex", out createdNew);
+            if (!createdNew)
+            {
+                Log.Info("Instance already exists, exit.");
+                _instanceMutex = null;
+                Environment.Exit(0);
+            }
 
             try
             {
@@ -79,6 +92,7 @@ namespace AppDirect.WindowsClient.Browser
                 UiHelper.IgnoreException(apiStarter.Stop);
                 UiHelper.IgnoreException(sessionKeeper.Stop);
                 UiHelper.IgnoreException(BrowserObject.Unload);
+                UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
             }
         }
 
@@ -107,7 +121,7 @@ namespace AppDirect.WindowsClient.Browser
             }
 
             var hadException = true;
-            while(hadException)
+            while (hadException)
             {
                 try
                 {

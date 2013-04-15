@@ -1,3 +1,4 @@
+using System.Threading;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
@@ -147,10 +148,6 @@ namespace AppDirect.WindowsClient.UI
         private void UpdateButtonOnClick(object sender, RoutedEventArgs e)
         {
             ViewModel.UpdateClick();
-        }
-
-        private void MainWindow_OnClosing(object o, CancelEventArgs e)
-        {
         }
 
         private void Login_OnRegistrationClick(object o, EventArgs e)

@@ -58,6 +58,7 @@ namespace AppDirect.WindowsClient.Common.API
             }
 
             _communicationObject = (ICommunicationObject)service;
+
             _failedState = false;
         }
 
@@ -117,24 +118,25 @@ namespace AppDirect.WindowsClient.Common.API
 
             RetryStartUntilReady();
 
-            try
-            {
-                action.Invoke();
-            }
-            catch (CommunicationException e)
-            {
-                LogCommunicationError(e);
+            bool failed = true;
 
-                // Restart the communicator and retry
+            while (failed)
+            {
                 try
                 {
-                    Start();
                     action.Invoke();
+                    failed = false;
+                    _failedState = false;
                 }
-                catch (CommunicationException e2)
+                catch (CommunicationException e)
                 {
-                    LogCommunicationError(e2);
-                    throw;
+                    LogCommunicationError(e);
+                }
+
+                if (failed)
+                {
+                    _uiHelper.Sleep(RestartIntervalMilliseconds);
+                    TryToStart();
                 }
             }
         }
@@ -148,27 +150,21 @@ namespace AppDirect.WindowsClient.Common.API
 
             RetryStartUntilReady();
 
-            try
+            while (true)
             {
-                var result =  action.Invoke();
-                return result;
-            }
-            catch (CommunicationException e)
-            {
-                LogCommunicationError(e);
-
-                // Restart the communicator and retry
                 try
                 {
-                    Start();
-                    var result = action.Invoke();
+                    var result =  action.Invoke();
+                    _failedState = false;
                     return result;
                 }
-                catch (CommunicationException e2)
+                catch (CommunicationException e)
                 {
-                    LogCommunicationError(e2);
-                    throw;
+                    LogCommunicationError(e);
                 }
+
+                _uiHelper.Sleep(RestartIntervalMilliseconds);
+                TryToStart();
             }
         }
 
