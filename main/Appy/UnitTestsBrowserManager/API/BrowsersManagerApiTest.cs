@@ -1,6 +1,4 @@
-﻿using System.Windows;
-using AppDirect.WindowsClient.Browser.API;
-using AppDirect.WindowsClient.Browser.UI;
+﻿using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Tests.Common.UI;
@@ -8,6 +6,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.Browser.Tests.API
@@ -99,7 +98,7 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
             var windowMock = Substitute.For<IBrowserWindow>();
             _browserWindowsManager.GetOrCreateBrowserWindow(null).ReturnsForAnyArgs(windowMock);
             _browsersManagerApi.DisplayApplications(new List<IApplicationWithState>() { new ApplicationWithState() { Application = new Application(), WindowState = testWindowState } });
-            
+
             Assert.AreEqual(testWindowState, windowMock.WindowState);
         }
     }
