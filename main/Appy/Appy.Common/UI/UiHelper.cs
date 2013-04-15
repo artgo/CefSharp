@@ -88,7 +88,8 @@ namespace AppDirect.WindowsClient.Common.UI
             }
 
             _log.Info("Shutdown complete");
-            Environment.Exit(0);
+
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
         public void IgnoreException(Action action)

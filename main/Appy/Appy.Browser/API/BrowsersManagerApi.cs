@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.Windows;
+using Application = System.Windows.Application;
 
 namespace AppDirect.WindowsClient.Browser.API
 {

@@ -1,12 +1,11 @@
-using System;
 using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Interaction;
-using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Tests.Common.UI;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using Application = AppDirect.WindowsClient.Common.API.Application;
@@ -20,13 +19,15 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         private volatile IUiHelper _uiHelper = null;
         private volatile BrowserWindowsManager _browserWindowsManager = null;
         private TestBrowserWindowsBuilder _browserWindowBuilder;
+        private IBrowserWindow _browserWindowMock;
 
         [SetUp]
         public void Init()
         {
             _uiHelper = new TestUiHelper();
             _browserObject = Substitute.For<IBrowserObject>();
-            _browserWindowBuilder = Substitute.For<TestBrowserWindowsBuilder>();
+            _browserWindowMock = Substitute.For<IBrowserWindow>();
+            _browserWindowBuilder = new TestBrowserWindowsBuilder(_browserWindowMock);
 
             _browserWindowsManager = new BrowserWindowsManager(_browserObject, _uiHelper, _browserWindowBuilder);
         }
@@ -52,7 +53,7 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         [STAThread]
         public void TestGetOrCreateBrowserWindowReturnsNotNull()
         {
-            var app = new Application() {Id = "1", UrlString = "url"};
+            var app = new Application() { Id = "1", UrlString = "url" };
             var result = _browserWindowsManager.GetOrCreateBrowserWindow(app);
             Assert.IsNotNull(result);
         }
@@ -102,35 +103,19 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
             Assert.IsTrue(result1 == result2);
         }
 
-        private class TestBrowserWindowsManager : BrowserWindowsManager
-        {
-            private readonly BrowserWindow _browserWindowMock;
-
-            public TestBrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, BrowserWindow browserWindowMock, IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder)
-                : base(browserObject, uiHelper, browserWindowsBuilder)
-            {
-                _browserWindowMock = browserWindowMock;
-            }
-
-            public override IBrowserWindow GetOrCreateBrowserWindow(IApplication application)
-            {
-                return _browserWindowMock;
-            }
-        }
-
         [Test]
         [STAThread]
         public void TestSettingApplicationsPreInitializesAllWindows()
         {
             var apps = new List<IApplication>()
-            { 
-                new Application() { Id = "1", UrlString = "http://google.com" }, 
-                new Application() { Id = "2", UrlString = "http://google.com" }, 
+            {
+                new Application() { Id = "1", UrlString = "http://google.com" },
+                new Application() { Id = "2", UrlString = "http://google.com" },
                 new Application() { Id = "3", UrlString = "http://google.com" }
             };
 
-            var browserWindowMock = Substitute.For<BrowserWindow>();
-            var browserWindowsManager = new TestBrowserWindowsManager(_browserObject, _uiHelper, browserWindowMock, new TestBrowserWindowsBuilder());
+            var browserWindowMock = Substitute.For<IBrowserWindow>();
+            var browserWindowsManager = new BrowserWindowsManager(_browserObject, _uiHelper, new TestBrowserWindowsBuilder(browserWindowMock));
             browserWindowsManager.Applications = apps;
             browserWindowMock.Received(apps.Count).PreInitializeWindow();
         }
