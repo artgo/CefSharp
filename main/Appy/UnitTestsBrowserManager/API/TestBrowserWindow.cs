@@ -12,38 +12,32 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
     {
         public void SetSession(IAppDirectSession session)
         {
-            throw new NotImplementedException();
         }
 
         public void Close()
         {
-            throw new NotImplementedException();
         }
 
         public WindowState WindowState { get; set; }
         public bool Visible
         {
-            get { throw new NotImplementedException(); }
+            get { return true; }
         }
 
         public void Hide()
         {
-            throw new NotImplementedException();
         }
 
         public void PreInitializeWindow()
         {
-            throw new NotImplementedException();
         }
 
         public void Show()
         {
-            throw new NotImplementedException();
         }
 
         public void Display()
         {
-            throw new NotImplementedException();
         }
     }
 }

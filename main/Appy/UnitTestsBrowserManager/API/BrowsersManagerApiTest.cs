@@ -32,7 +32,7 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         public void TestDisplayApplicationCallGetOrCreateBrowserWindow()
         {
             _uiHelper = Substitute.For<IUiHelper>();
-            var windowMock = Substitute.For<BrowserWindow>();
+            var windowMock = Substitute.For<TestBrowserWindow>();
             _browserWindowsManager.GetOrCreateBrowserWindow(null).ReturnsForAnyArgs(windowMock);
             _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
             _browsersManagerApi.DisplayApplication(new Application());
@@ -43,27 +43,17 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         [STAThread]
         public void TestDisplayApplicationCallsActivate()
         {
-            var windowMock = Substitute.For<BrowserWindow>();
+            var windowMock = Substitute.For<TestBrowserWindow>();
             _browserWindowsManager.GetOrCreateBrowserWindow(null).ReturnsForAnyArgs(windowMock);
             _browsersManagerApi.DisplayApplication(new Application());
-            windowMock.Received().Activate();
-        }
-
-        [Test]
-        [STAThread]
-        public void TestDisplayApplicationCallsFocus()
-        {
-            var windowMock = Substitute.For<BrowserWindow>();
-            _browserWindowsManager.GetOrCreateBrowserWindow(null).ReturnsForAnyArgs(windowMock);
-            _browsersManagerApi.DisplayApplication(new Application());
-            windowMock.Received().Focus();
+            windowMock.Received().Display();
         }
 
         [Test]
         [STAThread]
         public void TestCloseApplicationCallsHideOnWindow()
         {
-            var windowMock = Substitute.For<BrowserWindow>();
+            var windowMock = Substitute.For<TestBrowserWindow>();
             _browserWindowsManager.GetBrowserWindow(null).ReturnsForAnyArgs(windowMock);
             _browsersManagerApi.CloseApplication("1");
             windowMock.Received().Hide();
@@ -106,7 +96,7 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         public void TestDisplayApplicationsSetsWindowState()
         {
             WindowState testWindowState = WindowState.Maximized;
-            var windowMock = Substitute.For<BrowserWindow>();
+            var windowMock = Substitute.For<TestBrowserWindow>();
             _browserWindowsManager.GetOrCreateBrowserWindow(null).ReturnsForAnyArgs(windowMock);
             _browsersManagerApi.DisplayApplications(new List<IApplicationWithState>() { new ApplicationWithState() { Application = new Application(), WindowState = testWindowState } });
             
