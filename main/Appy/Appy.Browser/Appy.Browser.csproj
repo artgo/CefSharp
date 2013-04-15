@@ -84,11 +84,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\IBrowserWindowsBuilder.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="API\BrowserWindowsManager.cs" />
+    <Compile Include="UI\IBrowserWindow.cs" />
     <Compile Include="API\IBrowserWindowsManager.cs" />
     <Compile Include="API\IMainApplicationServiceClient.cs" />
     <Compile Include="API\IpcMainWindowStarter.cs" />

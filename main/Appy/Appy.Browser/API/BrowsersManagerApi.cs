@@ -35,22 +35,11 @@ namespace AppDirect.WindowsClient.Browser.API
 
             _uiHelper.PerformInUiThread(() =>
             {
-                if (!browserWindow.IsVisible)
-                {
-                    browserWindow.Show();
-                }
-
-                if (browserWindow.WindowState == WindowState.Minimized)
-                {
-                    browserWindow.WindowState = WindowState.Normal;
-                }
-
-                browserWindow.Activate();
-                browserWindow.Topmost = true;
-                browserWindow.Topmost = false;
-                browserWindow.Focus();
+                browserWindow.Display();
             });
         }
+
+
 
         public void DisplayApplications(IEnumerable<IApplicationWithState> applications)
         {
@@ -62,7 +51,7 @@ namespace AppDirect.WindowsClient.Browser.API
 
                 _uiHelper.PerformInUiThread(() =>
                 {
-                    if (!browserWindow.IsVisible)
+                    if (!browserWindow.Visible)
                     {
                         browserWindow.Show();
                     }

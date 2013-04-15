@@ -3,6 +3,7 @@ using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
+using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using System;
@@ -16,7 +17,8 @@ namespace AppDirect.WindowsClient.Browser
         private static readonly ILogger Log = new NLogLogger("Browser.Program");
         private static readonly IBrowserObject BrowserObject = new BrowserObject(new NLogLogger("BrowserObject"));
         private static readonly IUiHelper UiHelper = new UiHelper(new NLogLogger("UiHelper"));
-        private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper);
+        private static readonly IBrowserWindowsBuilder<IBrowserWindow> BrowserWindowsBuilder = new BrowserWindowsBuilder();
+        private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper, BrowserWindowsBuilder);
         private static volatile Mutex _instanceMutex = null;
 
         /// <summary>

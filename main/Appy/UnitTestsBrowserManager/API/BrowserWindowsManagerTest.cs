@@ -25,7 +25,9 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         {
             _uiHelper = new TestUiHelper();
             _browserObject = Substitute.For<IBrowserObject>();
-            _browserWindowsManager = new BrowserWindowsManager(_browserObject, _uiHelper);
+            var browserWindowBuilder = new TestBrowserWindowsBuilder();
+
+            _browserWindowsManager = new BrowserWindowsManager(_browserObject, _uiHelper, browserWindowBuilder);
         }
 
         [Test]
@@ -103,13 +105,13 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         {
             private readonly BrowserWindow _browserWindowMock;
 
-            public TestBrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, BrowserWindow browserWindowMock)
-                : base(browserObject, uiHelper)
+            public TestBrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, BrowserWindow browserWindowMock, IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder)
+                : base(browserObject, uiHelper, browserWindowsBuilder)
             {
                 _browserWindowMock = browserWindowMock;
             }
 
-            public override BrowserWindow GetOrCreateBrowserWindow(IApplication application)
+            public override IBrowserWindow GetOrCreateBrowserWindow(IApplication application)
             {
                 return _browserWindowMock;
             }
@@ -127,7 +129,7 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
             };
 
             var browserWindowMock = Substitute.For<BrowserWindow>();
-            var browserWindowsManager = new TestBrowserWindowsManager(_browserObject, _uiHelper, browserWindowMock);
+            var browserWindowsManager = new TestBrowserWindowsManager(_browserObject, _uiHelper, browserWindowMock, new TestBrowserWindowsBuilder());
             browserWindowsManager.Applications = apps;
             browserWindowMock.Received(apps.Count).PreInitializeWindow();
         }

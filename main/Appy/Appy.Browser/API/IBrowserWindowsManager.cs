@@ -10,9 +10,9 @@ namespace AppDirect.WindowsClient.Browser.API
 
         IAppDirectSession Session { get; set; }
 
-        BrowserWindow GetOrCreateBrowserWindow(IApplication application);
+        IBrowserWindow GetOrCreateBrowserWindow(IApplication application);
 
-        BrowserWindow GetBrowserWindow(string applicationId);
+        IBrowserWindow GetBrowserWindow(string applicationId);
 
         void CloseAllWindows();
 
