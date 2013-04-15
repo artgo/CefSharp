@@ -3,8 +3,6 @@ using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
-using System.Windows;
-using Application = System.Windows.Application;
 
 namespace AppDirect.WindowsClient.Browser.API
 {
@@ -39,8 +37,6 @@ namespace AppDirect.WindowsClient.Browser.API
                 browserWindow.Display();
             });
         }
-
-
 
         public void DisplayApplications(IEnumerable<IApplicationWithState> applications)
         {

@@ -1,7 +1,7 @@
+using AppDirect.WindowsClient.Common.Log;
 using System;
 using System.Threading;
 using System.Windows;
-using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.Common.UI
 {
@@ -77,7 +77,7 @@ namespace AppDirect.WindowsClient.Common.UI
         {
             _log.Info("Started shutdown");
 
-            if (Application.Current !=null)
+            if (Application.Current != null)
             {
                 PerformInUiThread(() =>
                     {
@@ -110,7 +110,7 @@ namespace AppDirect.WindowsClient.Common.UI
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
