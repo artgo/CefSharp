@@ -140,11 +140,11 @@ namespace AppDirect.WindowsClient.API
 
             _cookies.Clear();
 
-            var coockiesForDomain = cookies.GetCookies(_cookiesDomain);
+            var cookiesForDomain = cookies.GetCookies(_cookiesDomain);
 
-            for (var j = 0; j < coockiesForDomain.Count; j++)
+            for (var j = 0; j < cookiesForDomain.Count; j++)
             {
-                var oCookie = coockiesForDomain[j];
+                var oCookie = cookiesForDomain[j];
                 var oC = new Cookie
                     {
                         Domain = request.RequestUri.Host,
