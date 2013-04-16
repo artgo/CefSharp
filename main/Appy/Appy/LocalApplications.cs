@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Models;
+using System.Collections.Generic;
 
 namespace AppDirect.WindowsClient
 {
     ///<summary>
-    /// A list of the applications that the Windows Client will recommend in addition to those applications that are recommended via the AppDirect API calls 
+    /// A list of the applications that the Windows Client will recommend in addition to those applications that are recommended via the AppDirect API calls
     ///</summary>
     public static class LocalApplications
     {
@@ -96,7 +93,7 @@ namespace AppDirect.WindowsClient
                         UrlString = "http://www.Pinterest.com",
                         BrowserHeight = 700,
                         BrowserWidth = 1100
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "Yelp",
@@ -105,7 +102,7 @@ namespace AppDirect.WindowsClient
                         ImagePath = "Icons/yelp.ico",
                         Name = "Yelp",
                         UrlString = "http://www.Yelp.com",
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "Groupon",
@@ -114,7 +111,7 @@ namespace AppDirect.WindowsClient
                         ImagePath = "Icons/Groupon.png",
                         Name = "Groupon",
                         UrlString = "http://www.Groupon.com"
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "LivingSocial",
@@ -123,7 +120,7 @@ namespace AppDirect.WindowsClient
                         ImagePath = "Icons/LivingSocial.png",
                         Name = "LivingSocial",
                         UrlString = "http://www.LivingSocial.com"
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "Instagram",
@@ -134,7 +131,7 @@ namespace AppDirect.WindowsClient
                         UrlString = "http://www.Instagram.com",
                         BrowserHeight = 700,
                         BrowserWidth = 800
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "Hulu",
@@ -151,7 +148,7 @@ namespace AppDirect.WindowsClient
                         ImagePath = "Icons/Rdio.png",
                         Name = "Rdio",
                         UrlString = "http://www.Rdio.com"
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "GrubHub",
@@ -160,7 +157,7 @@ namespace AppDirect.WindowsClient
                         ImagePath = "Icons/GrubHub.png",
                         Name = "GrubHub",
                         UrlString = "http://www.GrubHub.com"
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "Grooveshark",
@@ -169,7 +166,7 @@ namespace AppDirect.WindowsClient
                         ImagePath = "Icons/Grooveshark.png",
                         Name = "Grooveshark",
                         UrlString = "http://www.Grooveshark.com"
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "Reddit",
@@ -198,7 +195,7 @@ namespace AppDirect.WindowsClient
                         ImagePath = "Icons/Ymail.png",
                         Name = "Y!Mail",
                         UrlString = "http://mail.yahoo.com"
-                    }, 
+                    },
                     new LocalApplication()
                     {
                         Description = "Flickr",

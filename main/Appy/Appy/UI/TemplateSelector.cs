@@ -14,21 +14,20 @@ namespace AppDirect.WindowsClient.UI
     public class TemplateSelector: DataTemplateSelector
     {
         public DataTemplate AppDataTemplate { get; set; }
-        public DataTemplate AppDataWithAlertTemplate { get; set; }
-        public DataTemplate EmptyDataTemplate { get; set; }
+        public DataTemplate AppDataWithLongNameTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            var app = item as Application;
+            var app = item as ApplicationViewModel;
 
             if (app == null)
             {
                 throw new Exception("SelectTemplate called on an object that is not an application");
             }
 
-            if (app.Name == null)
+            if (app.Application.Name.Length > 15 && app.Application.Name.Contains(' '))
             {
-                return EmptyDataTemplate;
+                return AppDataWithLongNameTemplate;
             }
 
             return AppDataTemplate;

@@ -396,10 +396,6 @@
     <Resource Include="UI\Images\myAppWhite.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\AppBtnDefault.png" />
-    <Resource Include="UI\Images\AppBtnHover.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="UI\Images\IconMask.png" />
   </ItemGroup>
   <ItemGroup>
@@ -441,9 +437,6 @@
     <Resource Include="UI\Images\crossBtn_click.png" />
     <Resource Include="UI\Images\crossBtn_default.png" />
     <Resource Include="UI\Images\crossBtn_hover.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\Images\AppOnHoverMask.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Icons\appStore-Icon.png" />
@@ -513,6 +506,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\Notification-Update-Available.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\RoundedCorners.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

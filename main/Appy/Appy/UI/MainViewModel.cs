@@ -187,11 +187,8 @@ namespace AppDirect.WindowsClient.UI
         {
             lock (ServiceLocator.LocalStorage.Locker)
             {
-                if (!ServiceLocator.LocalStorage.InstalledLocalApps.Contains(LocalApplications.AppStoreApp))
-                {
-                    ServiceLocator.LocalStorage.InstalledLocalApps.Insert(0, LocalApplications.AppStoreApp);
-                }
-
+                ServiceLocator.LocalStorage.InstalledLocalApps[0] = LocalApplications.AppStoreApp;
+             
                 ServiceLocator.LocalStorage.LastSuggestedApps.RemoveAll(
                     a => ServiceLocator.LocalStorage.AllInstalledApplications.Contains(a));
 
