@@ -1,6 +1,7 @@
 using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Common.API;
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 
@@ -144,6 +145,12 @@ namespace AppDirect.WindowsClient.Browser.UI
             {
                 WindowState = WindowState.Maximized;
             }
+        }
+
+        private void BrowserWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            Hide();
+            e.Cancel = true;
         }
     }
 }

@@ -6,7 +6,7 @@
         Icon="{Binding Application.LocalImagePath}"
         WindowStyle="SingleBorderWindow" 
         ResizeMode="CanResize"
-        MinHeight="700" MinWidth="900">
+        MinHeight="700" MinWidth="900" Closing="BrowserWindow_OnClosing">
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="0"
                             GlassFrameThickness="0,0,0,1"
