@@ -19,6 +19,7 @@
 *.[Cc]ache
 *.ilk
 *.log
+*.tmp
 *.lib
 *.sbr
 *.sdf
