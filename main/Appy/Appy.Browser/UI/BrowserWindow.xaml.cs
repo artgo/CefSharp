@@ -1,7 +1,7 @@
 using AppDirect.WindowsClient.Browser.API;
-using System.ComponentModel;
 using AppDirect.WindowsClient.Common.API;
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 
@@ -14,7 +14,9 @@ namespace AppDirect.WindowsClient.Browser.UI
     {
         private BrowserViewModel ViewModel { get; set; }
 
-        public BrowserWindow() {}
+        public BrowserWindow()
+        {
+        }
 
         public BrowserWindow(BrowserViewModel browserViewModel)
         {
