@@ -64,9 +64,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>libs\Microsoft.Windows.Shell.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+    <Reference Include="NLog, Version=2.0.1.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NLog.2.0.0.2000\lib\net35\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net35\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -81,6 +81,10 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="Xilium.CefGlue">
       <HintPath>libs\Xilium.CefGlue.dll</HintPath>
+    </Reference>
+    <Reference Include="Xilium.CefGlue.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libs\Xilium.CefGlue.WPF.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -114,11 +118,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Control\WpfCefBrowser.cs" />
-    <Compile Include="Control\WpfCefClient.cs" />
-    <Compile Include="Control\WpfCefDisplayHandler.cs" />
-    <Compile Include="Control\WpfCefLifeSpanHandler.cs" />
-    <Compile Include="Control\WpfCefRenderHandler.cs" />
     <Compile Include="Interaction\BrowserObject.cs" />
     <Compile Include="Program.cs" />
     <Page Include="UI\BrowserWindow.xaml">

@@ -1,9 +1,9 @@
 ﻿using AppDirect.WindowsClient.Browser.API;
-using AppDirect.WindowsClient.Browser.Control;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using System;
 using System.Threading;
+using Xilium.CefGlue.WPF;
 
 namespace AppDirect.WindowsClient.Browser.Session
 {
