@@ -75,11 +75,21 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         }
 
         [Test]
-        public void TestCloseAllApplicationsAndQuitCallsShutdown()
+        public void TestCloseAllApplicationsAndRemoveSessionInfoRemovesSessionInfo()
         {
             _uiHelper = Substitute.For<IUiHelper>();
             _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
-            _browsersManagerApi.CloseAllApplicationsAndQuit();
+            var appDirectSession = _browserWindowsManager.Session;
+            _browsersManagerApi.CloseAllApplicationsAndRemoveSessionInfo();
+            Assert.AreNotEqual(appDirectSession, _browserWindowsManager.Session);
+        }
+
+        [Test]
+        public void TestCloseBrowserProcessCallsShutdown()
+        {
+            _uiHelper = Substitute.For<IUiHelper>();
+            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
+            _browsersManagerApi.CloseBrowserProcess();
             _uiHelper.Received().GracefulShutdown();
         }
 

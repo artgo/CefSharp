@@ -136,7 +136,7 @@ namespace AppDirect.WindowsClient.UI
             IsLoggedIn = false;
             ServiceLocator.UiHelper.StartAsynchronously(() =>
                 {
-                    ServiceLocator.BrowserWindowsCommunicator.CloseAllApplicationsAndQuit();
+                    ServiceLocator.BrowserWindowsCommunicator.CloseAllApplicationsAndRemoveSessionInfo();
                     lock (ServiceLocator.LocalStorage.Locker)
                     {
                         ServiceLocator.CachedAppDirectApi.UnAuthenticate();
@@ -220,7 +220,21 @@ namespace AppDirect.WindowsClient.UI
 
                 if (forceAuthentication || !ServiceLocator.CachedAppDirectApi.IsAuthenticated)
                 {
-                    Helper.Authenticate();
+                    bool loginSuccessful = false;
+                    try
+                    {
+                        loginSuccessful = Helper.Authenticate();
+                    }
+                    catch (Exception e )
+                    {
+                        Logout();
+                        _log.ErrorException("Exception thrown by authentication", e);
+                    }
+
+                    if (IsLoggedIn && !loginSuccessful)
+                    {
+                        Logout();
+                    }
                 }
 
                 if (ServiceLocator.CachedAppDirectApi.IsAuthenticated)

@@ -157,7 +157,7 @@ namespace AppDirect.WindowsClient
             if (_instanceMutex != null)
             {
                 ServiceLocator.UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
-                ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.CloseAllApplicationsAndQuit);
+                ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.CloseBrowserProcess);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Stop);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.IpcCommunicator.Stop);
                 ServiceLocator.UiHelper.IgnoreException(UpdateManager.Stop);

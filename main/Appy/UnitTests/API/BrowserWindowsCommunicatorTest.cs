@@ -84,8 +84,8 @@ namespace AppDirect.WindowsClient.Tests.API
         public void TestCloseAllApplicationsAndQuitCallsCloseAllApplicationsAndQuit()
         {
             _browserWindowsCommunicator.Start();
-            _browserWindowsCommunicator.CloseAllApplicationsAndQuit();
-            _browserApi.Received().CloseAllApplicationsAndQuit();
+            _browserWindowsCommunicator.CloseAllApplicationsAndRemoveSessionInfo();
+            _browserApi.Received().CloseAllApplicationsAndRemoveSessionInfo();
         }
 
         [Test]

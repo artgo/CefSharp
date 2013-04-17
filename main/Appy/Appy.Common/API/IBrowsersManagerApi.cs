@@ -22,7 +22,10 @@ namespace AppDirect.WindowsClient.Common.API
         void UpdateApplications(IEnumerable<IApplication> applications);
 
         [OperationContract(IsOneWay = true)]
-        void CloseAllApplicationsAndQuit();
+        void CloseAllApplicationsAndRemoveSessionInfo();
+
+        [OperationContract(IsOneWay = true)]
+        void CloseBrowserProcess();
 
         [OperationContract(IsOneWay = false)]
         IEnumerable<IWindowData> GetOpenWindowDatas();

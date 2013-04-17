@@ -37,9 +37,14 @@ namespace AppDirect.WindowsClient.API
             MakeSureExecuteAction(() => Service.UpdateApplications(applications));
         }
 
-        public void CloseAllApplicationsAndQuit()
+        public void CloseAllApplicationsAndRemoveSessionInfo()
         {
-            MakeSureExecuteAction(() => Service.CloseAllApplicationsAndQuit());
+            MakeSureExecuteAction(() => Service.CloseAllApplicationsAndRemoveSessionInfo());
+        }
+
+        public void CloseBrowserProcess()
+        {
+            MakeSureExecuteAction(() => Service.CloseBrowserProcess());
         }
 
         public IEnumerable<IWindowData> GetOpenWindowDatas()
