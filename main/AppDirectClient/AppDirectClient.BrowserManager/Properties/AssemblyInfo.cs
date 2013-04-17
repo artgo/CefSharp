@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Appy.Browser")]
+[assembly: AssemblyTitle("AppDirectClient.BrowserManager")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AppDirect")]
-[assembly: AssemblyProduct("Appy.Browser")]
+[assembly: AssemblyProduct("AppDirectClient.BrowserManager")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

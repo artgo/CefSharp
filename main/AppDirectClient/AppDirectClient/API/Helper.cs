@@ -22,7 +22,7 @@ namespace AppDirect.WindowsClient.API
         public static readonly string ApplicationName = AssemblyName.Name;
         public static readonly string ApplicationVersion = AssemblyName.Version.ToString();
         public static readonly string ApplicationDirectory = @"\AppDirect\" + ApplicationName;
-        public static readonly string BrowserProjectExt = ".Browser";
+        public static readonly string BrowserProjectExt = ".BrowserManager";
         public static readonly string ExeExt = ".exe";
         private const int MinimumPasswordLength = 4;
         private const int MaximumPasswordLength = 18;

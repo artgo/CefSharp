@@ -66,9 +66,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppDirectClient.Browser\AppDirectClient.Browser.csproj">
+    <ProjectReference Include="..\AppDirectClient.BrowserManager\AppDirectClient.BrowserManager.csproj">
       <Project>{1f6bf7cc-6c7f-40c0-a48e-981d5ca6428a}</Project>
-      <Name>AppDirectClient.Browser</Name>
+      <Name>AppDirectClient.BrowserManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\AppDirectClient.Common\AppDirectClient.Common.csproj">
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>

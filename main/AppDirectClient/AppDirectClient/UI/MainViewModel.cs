@@ -187,11 +187,10 @@ namespace AppDirect.WindowsClient.UI
         {
             lock (ServiceLocator.LocalStorage.Locker)
             {
-                ServiceLocator.LocalStorage.InstalledLocalApps.Remove(LocalApplications.AppStoreApp);
-
                 if (ServiceLocator.LocalStorage.InstalledLocalApps.Any())
                 {
-                    ServiceLocator.LocalStorage.InstalledLocalApps[0] = LocalApplications.AppStoreApp;
+                    ServiceLocator.LocalStorage.InstalledLocalApps.Remove(LocalApplications.AppStoreApp);
+                    ServiceLocator.LocalStorage.InstalledLocalApps.Insert(0,LocalApplications.AppStoreApp);
                 }
                 else
                 {

@@ -10,11 +10,11 @@
 !define INSTALLERICON "install.ico"
 !define APPEXEPATH "${APPDIR}\${APPEXE}"
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
-!define COPYFILES "/r /x AppDirectClient\ApplicationData\*.* AppDirectClient\*.*"
+!define COPYFILES "/r /x ${APPNAME}\ApplicationData\*.* AppDirectClient\*.*"
 !define APPCLOSEMESSAGE "AppDirectForceApplicationCloseMessage"
 !define APPWINDOWCLASSNAME "AppDirectTaskbarButtonsWindow"
 !define SYNC_TERM 0x00100001
-!define BROWSERPROCESSNAME "${APPNAME}.Browser.exe"
+!define BROWSERPROCESSNAME "${APPNAME}.BrowserManager.exe"
 !define NATIVEDLLPATH "$INSTDIR\native.dll"
 !define COMMONDLLPATH "$INSTDIR\${APPNAME}.Common.dll"
 !define BROWSERCACHEPATH "$INSTDIR\CACHE"
