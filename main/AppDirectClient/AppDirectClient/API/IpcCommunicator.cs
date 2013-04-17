@@ -5,7 +5,7 @@ namespace AppDirect.WindowsClient.API
 {
     public class IpcCommunicator : AbstractServiceRunner<MainApplication>, IIpcCommunicator
     {
-        private static readonly string BrowserPostfix = Helper.BrowserProjectExt + Helper.ExeExt;
+        private static readonly string BrowserProjectName = Helper.BrowserProject + Helper.ExeExt;
 
         public IpcCommunicator(MainApplication service)
             : base(service)
@@ -21,7 +21,7 @@ namespace AppDirect.WindowsClient.API
 
         protected virtual void StartBrowserProcess()
         {
-            var browserWindowProcess = new Process { StartInfo = { FileName = Helper.ApplicationName + BrowserPostfix } };
+            var browserWindowProcess = new Process { StartInfo = { FileName = BrowserProjectName } };
             browserWindowProcess.Start();
         }
     }

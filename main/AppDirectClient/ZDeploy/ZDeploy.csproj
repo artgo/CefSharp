@@ -44,10 +44,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppDirectClient.Common\AppDirectClient.Common.csproj">
-      <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
-      <Name>AppDirectClient.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AppDirectClient\AppDirectClient.csproj">
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>AppDirectClient</Name>

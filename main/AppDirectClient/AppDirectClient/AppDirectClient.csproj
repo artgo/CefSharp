@@ -496,9 +496,9 @@
     <Resource Include="UI\Images\RoundedCorners.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppDirectClient.Common\AppDirectClient.Common.csproj">
+    <ProjectReference Include="..\Common\Common.csproj">
       <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
-      <Name>AppDirectClient.Common</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

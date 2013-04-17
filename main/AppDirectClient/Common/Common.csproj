@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AppDirect.WindowsClient.Common</RootNamespace>
-    <AssemblyName>AppDirectClient.Common</AssemblyName>
+    <AssemblyName>Common</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
@@ -121,7 +121,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)AppDirectClient.Common.dll" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+    <PostBuildEvent>xcopy "$(TargetDir)Common.dll" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 xcopy "$(TargetDir)NLog.dll" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 </PostBuildEvent>
   </PropertyGroup>

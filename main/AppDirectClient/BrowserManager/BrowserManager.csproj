@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AppDirect.WindowsClient.Browser</RootNamespace>
-    <AssemblyName>AppDirectClient.BrowserManager</AssemblyName>
+    <AssemblyName>BrowserManager</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -145,7 +145,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="AppDirectClient.BrowserManager.exe.nlog">
+    <None Include="BrowserManager.exe.nlog">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
@@ -174,13 +174,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppDirectClient.Common\AppDirectClient.Common.csproj">
-      <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
-      <Name>AppDirectClient.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AppDirectClient\AppDirectClient.csproj">
       <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
       <Name>AppDirectClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -217,9 +217,9 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r
 xcopy "$(ProjectDir)libs" "$(SolutionDir)Setup\AppDirectClient" /e /y /i /r
-xcopy "$(TargetDir)AppDirectClient.BrowserManager.exe" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
-xcopy "$(TargetDir)AppDirectClient.BrowserManager.exe.config" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
-xcopy "$(TargetDir)AppDirectClient.BrowserManager.exe.nlog" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+xcopy "$(TargetDir)BrowserManager.exe" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+xcopy "$(TargetDir)BrowserManager.exe.config" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+xcopy "$(TargetDir)BrowserManager.exe.nlog" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
