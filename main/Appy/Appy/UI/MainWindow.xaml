@@ -111,7 +111,7 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="Width" Value="165" />
-            <Setter Property="Height" Value="45" />
+            <Setter Property="Height" Value="42" />
         </Style>
         <Style x:Key="TopPanelGridStyle" TargetType="Grid">
             <Setter Property="Margin" Value="0,2,0,0" />
@@ -232,35 +232,41 @@
             </Setter>
         </Style>
         <Style x:Key="AppButton" TargetType="Button" BasedOn="{StaticResource BorderlessButton}">
-            <Setter Property="Height" Value="45" />
+            <Setter Property="Height" Value="42" />
             <Setter Property="Width" Value="165" />
             <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Margin" Value="0,0,15,2"></Setter>
+            <Setter Property="Margin" Value="0,0,15,15"></Setter>
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
+                        <GradientStop Color="#9c9c9c" Offset="0" />
+                        <GradientStop Color="#424343" Offset="0.015" />
+                        <GradientStop Color="#050606" Offset=".6" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid Name="App" Style="{StaticResource YourAppsButtonGrid}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="55" />
-                                <ColumnDefinition Width="100*" />
-                            </Grid.ColumnDefinitions>
-                            <Image Name="BackgroundImage" Grid.ColumnSpan="2" VerticalAlignment="Top"
-                                   HorizontalAlignment="Left" Source="Images\AppBtnDefault.png" />
-                            <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0"
-                                   Width="37" Height="37" Source="{Binding Application.LocalImagePath}" />
-                            <Image Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0"
-                                   Width="37" Height="37" Source="Images/IconMask.png" />
-                            <Viewbox Grid.Column="1" HorizontalAlignment="Left" Stretch="Uniform" MaxHeight="16" MaxWidth="100">
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left"
-                                       Text="{Binding Application.Name}" />
-                            </Viewbox>
-                            <Image Name="OnHoverMask" Grid.ColumnSpan="2" Margin="-2,2,0,0" VerticalAlignment="Top"
-                                   HorizontalAlignment="Left" Source="Images\AppOnHoverMask.png" Visibility="Hidden" />
-                        </Grid>
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="2">
+                            <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      Margin="{TemplateBinding Padding}"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Visibility" TargetName="OnHoverMask" Value="Visible" />
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,2">
+                                            <GradientStop Color="#424343" Offset="0" />
+                                            <GradientStop Color="#222222" Offset="0.015" />
+                                            <GradientStop Color="#424343" Offset=".6" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -418,6 +424,35 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <DataTemplate x:Key="AppDataTemplate">
+            <Button Style="{StaticResource AppButton}" Click="AppButtonClick" PreviewMouseLeftButtonDown="DoubleClickHandler">
+                <Grid Name="App" Style="{StaticResource YourAppsButtonGrid}">
+                    <Image VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   Width="42" Height="42" Source="{Binding Application.LocalImagePath}" />
+                    <Image VerticalAlignment="Top" HorizontalAlignment="Left"
+                                   Width="42" Height="42" Source="Images/RoundedCorners.png" />
+                    <Viewbox Margin="52,0,5,0" HorizontalAlignment="Left" Stretch="Uniform" MaxHeight="18" MaxWidth="100">
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left"
+                                       Text="{Binding Application.Name}" />
+                    </Viewbox>
+                </Grid>
+            </Button>
+        </DataTemplate>
+        <DataTemplate x:Key="AppDataWithLongNameTemplate">
+            <Button Style="{StaticResource AppButton}" Click="AppButtonClick" PreviewMouseLeftButtonDown="DoubleClickHandler">
+                <Grid Name="App" Style="{StaticResource YourAppsButtonGrid}">
+                    <Image VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   Width="42" Height="42" Source="{Binding Application.LocalImagePath}" />
+                    <Image VerticalAlignment="Top" HorizontalAlignment="Left"
+                                   Width="42" Height="42" Source="Images/RoundedCorners.png" />
+                    <TextBlock Margin="52,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                                       Text="{Binding Application.Name}" />
+                </Grid>
+            </Button>
+        </DataTemplate>
+        <controls:TemplateSelector x:Key="TemplateSelector"
+              AppDataTemplate="{StaticResource AppDataTemplate}"
+              AppDataWithLongNameTemplate="{StaticResource AppDataWithLongNameTemplate}" />
     </Window.Resources>
     <Grid Name="ContentGrid" Margin="0,0,0,0">
         <Grid Name="MainViewGrid" Visibility="Visible">
@@ -451,7 +486,7 @@
                                 <Grid>
                                     <Image Source="Images/wrench.png" Width="12" />
                                     <Grid Background="{StaticResource MenuItemHoverColor}" Visibility="{Binding UpdateSpinnerVisibility}">
-                                        <ProgressBar Margin="3,0,0,0" Name ="Spinner" Style="{StaticResource SpinnerProgress}"/>
+                                        <ProgressBar Margin="3,0,0,0" Name ="Spinner" Style="{StaticResource SpinnerProgress}" />
                                     </Grid>
                                 </Grid>
                             </MenuItem.Icon>
@@ -485,23 +520,18 @@
             <Grid Name="YourApps" Margin="30,60,0,0" Height="235" Width="400" VerticalAlignment="Top"
                           HorizontalAlignment="Left">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="389*"/>
-                    <ColumnDefinition Width="11*"/>
+                    <ColumnDefinition Width="389*" />
+                    <ColumnDefinition Width="11*" />
                 </Grid.ColumnDefinitions>
                 <ListBox BorderThickness="0" Background="Transparent"
                                  ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox"
-                                 ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
+                                 ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2" ItemTemplateSelector="{StaticResource TemplateSelector}">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel IsItemsHost="True" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Button Style="{StaticResource AppButton}" Click="AppButtonClick" PreviewMouseLeftButtonDown="DoubleClickHandler" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
                     <ListBox.Resources>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Focusable" Value="False"></Setter>
@@ -537,9 +567,9 @@
                     </Rectangle.Effect>
                 </Rectangle>
             </Grid>
-            <controls:CustomMessageBox x:Name="MessageBoxGrid" DataContext="{Binding}"/>
+            <controls:CustomMessageBox x:Name="MessageBoxGrid" DataContext="{Binding}" />
         </Grid>
-        <controls:LoginView x:Name="LoginViewControl"/>
-        <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden"/>
+        <controls:LoginView x:Name="LoginViewControl" />
+        <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden" />
     </Grid>
 </Window>

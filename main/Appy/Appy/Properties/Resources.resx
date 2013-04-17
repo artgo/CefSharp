@@ -130,7 +130,7 @@
     <value>/home</value>
   </data>
   <data name="BaseAppStoreUrl" xml:space="preserve">
-    <value>test.appdirect.com</value>
+    <value>www.appdirect.com</value>
   </data>
   <data name="CheckingForUpdatesString" xml:space="preserve">
     <value>Checking for updates</value>
