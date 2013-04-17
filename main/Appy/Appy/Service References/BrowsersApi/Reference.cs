@@ -97,9 +97,14 @@ namespace AppDirect.WindowsClient.BrowsersApi
             base.Channel.UpdateApplications(applications);
         }
 
-        public void CloseAllApplicationsAndQuit()
+        public void CloseAllApplicationsAndRemoveSessionInfo()
         {
-            base.Channel.CloseAllApplicationsAndQuit();
+            base.Channel.CloseAllApplicationsAndRemoveSessionInfo();
+        }
+
+        public void CloseBrowserProcess()
+        {
+            base.Channel.CloseBrowserProcess();
         }
 
         public IEnumerable<IWindowData> GetOpenWindowDatas()

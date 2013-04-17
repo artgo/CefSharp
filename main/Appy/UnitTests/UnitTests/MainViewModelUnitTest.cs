@@ -195,7 +195,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             _mainViewModel.Logout();
-            ServiceLocator.BrowserWindowsCommunicator.ReceivedWithAnyArgs().CloseAllApplicationsAndQuit();
+            ServiceLocator.BrowserWindowsCommunicator.ReceivedWithAnyArgs().CloseAllApplicationsAndRemoveSessionInfo();
         }
 
         #endregion Log Out Tests

@@ -47,7 +47,8 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   System::Call "user32::GetWindowThreadProcessId(i $0, *i .r1 ) i .r2"
   System::Call "kernel32::OpenProcess(i ${SYNC_TERM}, i 0, i r1)i .r2"
   SendMessage $0 $3 0 0
-  System::Call "kernel32::WaitForSingleObject(i r2, i 10000) i.r5"
+  System::Call "kernel32::WaitForSingleObject(i r2, i 12000) i.r5"
+  StrCpy $6 $5
   StrCmp $5 0 end0 error
   end0:
   System::Call "kernel32::CloseHandle(i r2) i .r1"
