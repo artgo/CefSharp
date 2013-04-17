@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2FDC87A4-0C19-473E-A117-30A9C1477D18}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AppDirect.WindowsClient</RootNamespace>
+    <AssemblyName>AppDirectClient</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>80</ApplicationRevision>
+    <ApplicationVersion>0.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>UI\Icons\AppIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>B9A0B12D3637CCE89C73A14325E3F1122C7A4501</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevDefined.OAuth">
+      <HintPath>..\packages\DevDefined.OAuth.0.1\lib\DevDefined.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net35\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=2.0.1.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NLog.2.0.1.2\lib\net35\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="API\BrowsersManagerApiServiceBuilder.cs" />
+    <Compile Include="API\BrowserWindowsCommunicator.cs" />
+    <Compile Include="API\Helper.cs" />
+    <Compile Include="API\IBrowserWindowsCommunicator.cs" />
+    <Compile Include="API\IIpcCommunicator.cs" />
+    <Compile Include="API\ILatch.cs" />
+    <Compile Include="API\IpcCommunicator.cs" />
+    <Compile Include="API\Latch.cs" />
+    <Compile Include="InteropAPI\Internal\CoordsPackager.cs" />
+    <Compile Include="InteropAPI\Internal\InteractionsObject.cs" />
+    <Compile Include="InteropAPI\Internal\Interop.cs" />
+    <Compile Include="InteropAPI\Internal\InteropException.cs" />
+    <Compile Include="InteropAPI\Internal\MessageParams.cs" />
+    <Compile Include="InteropAPI\Internal\NativeDll.cs" />
+    <Compile Include="InteropAPI\Internal\RectWin.cs" />
+    <Compile Include="InteropAPI\Internal\RegistryChangeEventArgs.cs" />
+    <Compile Include="InteropAPI\Internal\RegistryChangeMonitor.cs" />
+    <Compile Include="InteropAPI\ITaskbarInterop.cs" />
+    <Compile Include="InteropAPI\ITaskbarInteropCallback.cs" />
+    <Compile Include="InteropAPI\ShutdownHelper.cs" />
+    <Compile Include="InteropAPI\TaskbarAPI.cs" />
+    <Compile Include="InteropAPI\TaskbarIconsSize.cs" />
+    <Compile Include="InteropAPI\TaskbarPosition.cs" />
+    <Compile Include="LocalApplications.cs" />
+    <Compile Include="API\IAppDirectApi.cs" />
+    <Compile Include="API\ICachedAppDirectApi.cs" />
+    <Compile Include="MainApplication.cs" />
+    <Compile Include="myapps.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>myapps.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LoginObject.cs" />
+    <Compile Include="Service References\BrowsersApi\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Storage\CipherUtility.cs" />
+    <Compile Include="Storage\LocalStorage.cs" />
+    <Compile Include="UI\ApplicationViewModel.cs" />
+    <Compile Include="UI\AppSessionRefresher.cs" />
+    <Compile Include="UI\LoginViewModel.cs" />
+    <Compile Include="UI\CustomMessageBox.xaml.cs">
+      <DependentUpon>CustomMessageBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TaskbarPanel.xaml.cs">
+      <DependentUpon>TaskbarPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\RegistrationView.xaml.cs">
+      <DependentUpon>RegistrationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TaskbarButton.xaml.cs">
+      <DependentUpon>TaskbarButton.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\TaskbarPanelViewModel.cs" />
+    <Compile Include="UI\TemplateSelector.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="API\AppDirectApi.cs" />
+    <Compile Include="apps_list.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>apps_list.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="API\CachedAppDirectApi.cs" />
+    <Compile Include="UI\MainViewModel.cs" />
+    <Compile Include="UI\WaterMarkTextHelper.cs" />
+    <Compile Include="UpdateManager.cs" />
+    <Compile Include="Updates\Updater.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="AppDirect--Inc.-Desktop-App.pfx" />
+    <None Include="AppDirectClient.exe.nlog">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="apps_list.xsc">
+      <DependentUpon>apps_list.xsd</DependentUpon>
+    </None>
+    <None Include="apps_list.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>apps_list.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="apps_list.xss">
+      <DependentUpon>apps_list.xsd</DependentUpon>
+    </None>
+    <None Include="myapps.xsc">
+      <DependentUpon>myapps.xsd</DependentUpon>
+    </None>
+    <None Include="myapps.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>myapps.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="myapps.xss">
+      <DependentUpon>myapps.xsd</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\AppDirect.WindowsClient.Common.API.IWindowData.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="Service References\BrowsersApi\AppDirect.WindowsClient.Common.API.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\Arrays.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\service.wsdl" />
+    <None Include="Service References\BrowsersApi\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\System.Net.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\BrowsersApi\System.Windows.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\pandora.png" />
+    <Resource Include="UI\Images\FeaturedMaskDefault.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\facebook.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\gmail.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\freshbooks.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\gmail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\linked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\deleteDefault.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\Flickr.png" />
+    <Resource Include="UI\Icons\Grooveshark.png" />
+    <Resource Include="UI\Icons\Hulu.png" />
+    <Resource Include="UI\Icons\pinterest.png" />
+    <Resource Include="UI\Icons\Rdio.png" />
+    <Resource Include="UI\Icons\Reddi.png" />
+    <Resource Include="UI\Icons\Spotify.png" />
+    <Resource Include="UI\Icons\Amazon.png" />
+    <Resource Include="UI\Icons\Google.png" />
+    <Resource Include="UI\Icons\Netflix.png" />
+    <Resource Include="UI\Icons\YouTube.png" />
+    <Resource Include="UI\Icons\Ymail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\WeatherChannel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\deleteOnHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\yelp.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\Groupon.png" />
+    <Resource Include="UI\Icons\Grubhub.png" />
+    <Resource Include="UI\Icons\Instagram.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\LivingSocial.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\AppIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\alertGrey.png" />
+    <Resource Include="UI\Images\alertWhite.png" />
+    <Resource Include="UI\Images\cogGrey.png" />
+    <Resource Include="UI\Images\cogWhite.png" />
+    <Resource Include="UI\Images\dotGrey.png" />
+    <Resource Include="UI\Images\dotWhite.png" />
+    <Resource Include="UI\Images\myAppGrey.png" />
+    <Resource Include="UI\Images\myAppWhite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\IconMask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\FeaturedMaskHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\FeaturedMaskClick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="UI\CustomMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\TaskbarPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\RegistrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\TaskbarButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\email.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\crossBtn_click.png" />
+    <Resource Include="UI\Images\crossBtn_default.png" />
+    <Resource Include="UI\Images\crossBtn_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\appStore-Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\back_hover.png" />
+    <Resource Include="UI\Images\creditCard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\ScrollBarBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\deskIcon-Hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\deskIcon-Default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\TaskBarHoverMask.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\logout.png" />
+    <Resource Include="UI\Images\wrench.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Accessibility">
+      <Guid>{1EA4DBF0-3C3B-11CF-810C-00AA00389B71}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\logoutWhite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\BrowsersApi\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BrowsersApi\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BrowsersApi\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\BrowsersApi\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Icons\Taskbar-Icon-Hover.png" />
+    <Resource Include="UI\Icons\Taskbar-Icon-Normal.png" />
+    <Resource Include="UI\Icons\Taskbar-Icon-Pressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\Notification-Update-Available.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\Images\RoundedCorners.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDirectClient.Common\AppDirectClient.Common.csproj">
+      <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
+      <Name>AppDirectClient.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(TargetDir)AppDirectClient.exe" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+xcopy "$(TargetDir)AppDirectClient.exe.config" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+xcopy "$(TargetDir)Ninject.dll" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+xcopy "$(TargetDir)AppDirectClient.exe.nlog" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

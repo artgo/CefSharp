@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7FB78D60-D4D1-4EF3-8004-43C2ED7B2280}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZDeploy</RootNamespace>
+    <AssemblyName>ZDeploy</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppDirectClient.Browser\AppDirectClient.Browser.csproj">
+      <Project>{1f6bf7cc-6c7f-40c0-a48e-981d5ca6428a}</Project>
+      <Name>AppDirectClient.Browser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AppDirectClient.Common\AppDirectClient.Common.csproj">
+      <Project>{7220cabf-d13d-411e-a5b0-6e63f505bbb5}</Project>
+      <Name>AppDirectClient.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AppDirectClient\AppDirectClient.csproj">
+      <Project>{2fdc87a4-0c19-473e-a117-30a9c1477d18}</Project>
+      <Name>AppDirectClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IntegrationTests\IntegrationTests.csproj">
+      <Project>{31e2a5ee-d1dc-4bd3-a078-a6f95bedea40}</Project>
+      <Name>IntegrationTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitTestsBrowserManager\UnitTestsBrowserManager.csproj">
+      <Project>{d0bcc3fe-0130-4b05-b780-19f1564d8a84}</Project>
+      <Name>UnitTestsBrowserManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
+      <Project>{e074ea7b-ddf1-4530-a392-94d98e428c2c}</Project>
+      <Name>UnitTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VersionPrint\VersionPrint.csproj">
+      <Project>{59be6c04-4181-4fae-af86-c9d1d240f22b}</Project>
+      <Name>VersionPrint</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(SolutionDir)Setup\AppIcon.ico" "$(SolutionDir)Setup\AppDirectClient" /r /y
+"C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\build_uninstaller.nsi"
+"$(SolutionDir)Setup\build_uninstaller.exe"
+move /Y "$(SolutionDir)Setup\uninstall.exe" "$(SolutionDir)Setup\AppDirectClient"
+"C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\AppDirectClient\uninstall.exe"
+"C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\AppDirectClientInstaller.nsi"
+"C:\Program Files (x86)\NSIS\makensis.exe" "$(SolutionDir)Setup\updater.nsi"
+"C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\AppDirectClientInstaller.exe"
+"C:\Program Files (x86)\Windows Kits\8.0\bin\x86\signtool" sign /t "http://timestamp.verisign.com/scripts/timstamp.dll"  "$(SolutionDir)Setup\updater.exe"
+rd /S /Q "$(SolutionDir)bin\Result"
+md "$(SolutionDir)bin\Result"
+move /Y "$(SolutionDir)Setup\AppDirectClientInstaller.exe" "$(SolutionDir)bin\Result"
+move /Y "$(SolutionDir)Setup\updater.exe" "$(SolutionDir)bin\Result"
+move /Y "$(SolutionDir)Setup\version.txt" "$(SolutionDir)bin\Result"
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
