@@ -47,6 +47,7 @@ namespace AppDirect.WindowsClient.UI
 
             ViewModel.ApplicationAddedNotifier += taskbarPanel.AddAppButton;
             ViewModel.ApplicationRemovedNotifier += taskbarPanel.RemoveAppButton;
+            ViewModel.LogoutNotifier += taskbarPanel.RemoveAllAppButtons;
             PinToTaskbarClickNotifier += taskbarPanel.PinToTaskbarClickHandler;
             UninstallClickNotifier += taskbarPanel.UninstallAppClickHandler;
 

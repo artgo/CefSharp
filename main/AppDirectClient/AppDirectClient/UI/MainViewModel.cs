@@ -27,6 +27,7 @@ namespace AppDirect.WindowsClient.UI
         private bool _registrationInProgress = false;
         public EventHandler ApplicationAddedNotifier;
         public EventHandler ApplicationRemovedNotifier;
+        public EventHandler LogoutNotifier;
         private bool _isLoggedIn = ServiceLocator.LocalStorage.HasCredentials;
 
         private static readonly ILogger _log = new NLogLogger("MainViewModel");
@@ -134,6 +135,8 @@ namespace AppDirect.WindowsClient.UI
         public void Logout()
         {
             IsLoggedIn = false;
+            LogoutNotifier(null, null);
+
             ServiceLocator.UiHelper.StartAsynchronously(() =>
                 {
                     ServiceLocator.BrowserWindowsCommunicator.CloseAllApplicationsAndRemoveSessionInfo();
