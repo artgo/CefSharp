@@ -41,5 +41,12 @@ namespace AppDirect.WindowsClient.UI
             ServiceLocator.LocalStorage.PinnedApps.Remove(clickedApp.Application);
             ServiceLocator.LocalStorage.SaveAppSettings();
         }
+
+        public void RemoveAllPinnedApps()
+        {
+            PinnedApps.Clear();
+            ServiceLocator.LocalStorage.PinnedApps.Clear();
+            ServiceLocator.LocalStorage.SaveAppSettings();
+        }
     }
 }

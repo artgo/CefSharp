@@ -1,13 +1,12 @@
-﻿using System.Threading;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -28,6 +27,7 @@ namespace AppDirect.WindowsClient.UI
         public volatile MainWindow ApplicationWindow;
 
         public TaskbarIconsSize CurrentIconSize { get; set; }
+
         public TaskbarPanelViewModel ViewModel { get; set; }
 
         public TaskbarPanel(ILatch latch, ILogger logger, MainViewModel mainViewModel)
@@ -156,11 +156,38 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        private void RemoveAllAppButtons()
+        {
+            if (ButtonContainer.Children == null || ButtonContainer.Children.Count <= 1)
+            {
+                return;
+            }
+
+            ButtonContainer.Children.RemoveRange(1, ButtonContainer.Children.Count - 1);
+
+            if (ButtonContainer.Orientation == Orientation.Horizontal)
+            {
+                Width = MainButton.Width;
+            }
+            else
+            {
+                Height = MainButton.Height;
+            }
+
+            NotifyTaskbarOfChange();
+        }
+
         public void RemoveAppButton(object sender, EventArgs e)
         {
             var applicationViewModel = sender as ApplicationViewModel;
             ViewModel.RemovePinnedApp(applicationViewModel);
             Helper.PerformInUiThread(() => RemoveButton(applicationViewModel));
+        }
+
+        public void RemoveAllAppButtons(object sender, EventArgs e)
+        {
+            ViewModel.RemoveAllPinnedApps();
+            Helper.PerformInUiThread(RemoveAllAppButtons);
         }
 
         public void AddAppButton(object sender, EventArgs e)
