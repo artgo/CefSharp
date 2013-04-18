@@ -14,9 +14,9 @@
 !define APPCLOSEMESSAGE "AppDirectForceApplicationCloseMessage"
 !define APPWINDOWCLASSNAME "AppDirectTaskbarButtonsWindow"
 !define SYNC_TERM 0x00100001
-!define BROWSERPROCESSNAME "${APPNAME}.BrowserManager.exe"
+!define BROWSERPROCESSNAME "BrowserManager.exe"
 !define NATIVEDLLPATH "$INSTDIR\native.dll"
-!define COMMONDLLPATH "$INSTDIR\${APPNAME}.Common.dll"
+!define COMMONDLLPATH "$INSTDIR\Common.dll"
 !define BROWSERCACHEPATH "$INSTDIR\CACHE"
 
 !define COPY64 "/r 64Bit\*.*"
