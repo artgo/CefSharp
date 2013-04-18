@@ -19,13 +19,13 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border BorderThickness="1" BorderBrush="DimGray">
-                            <Grid ToolTip="{Binding Application.Name}">
-                                <Image Name="Icon" Source="{Binding Application.LocalImagePath}"></Image>
-                                <Image Name="HighlightMask" Source="Images\TaskBarHoverMask.png" Visibility="Hidden"/>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
+                        <Grid ToolTip="{Binding Application.Name}">
+                            <Image Name="Icon" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1,1,1,1"
+                                       Source="{Binding Application.LocalImagePath}" />
+                            <Image Name="BorderMask" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Images/BtnBorder.png"/>
+                            <Image Name="HighlightMask" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Images/TaskBarHoverMask.png" Visibility="Hidden"/>
+                        </Grid>
+                                                <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="HighlightMask" Property="Visibility" Value="Visible"/>
                             </Trigger>
