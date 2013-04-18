@@ -280,7 +280,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="140">
+                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="130">
                             <Rectangle Fill="{StaticResource RightPanelColor}"></Rectangle>
                             <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="34" Height="34">
                                 <Image HorizontalAlignment="Center" VerticalAlignment="Center" Width="30" Height="30"
@@ -288,11 +288,9 @@
                                 <Image Name="Mask" HorizontalAlignment="Center" VerticalAlignment="Center" Width="34"
                                        Height="34" Source="Images/crossBtn_default.png" />
                             </Grid>
-                            <StackPanel Margin="50,3,0,0">
-                                <TextBlock TextTrimming="CharacterEllipsis" FontSize="12" Margin="0,0,0,2"
-                                           VerticalAlignment="Center" Text="{Binding Application.Name}">
-                                </TextBlock>
-                            </StackPanel>
+                            <TextBlock TextTrimming="CharacterEllipsis" FontSize="12" Height="12" Margin="45,0,0,2"
+                                        VerticalAlignment="Center" Text="{Binding Application.Name}">
+                            </TextBlock>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -554,7 +552,7 @@
                     </ListBox.Resources>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Button Style="{StaticResource InstallAppButton}" Height="34" Margin="0,0,0,10"
+                            <Button Style="{StaticResource InstallAppButton}" Height="34" Width="130" Margin="0,0,0,10"
                                     PreviewMouseLeftButtonDown="DoubleClickHandler" Click="InstallApp_OnClick" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
