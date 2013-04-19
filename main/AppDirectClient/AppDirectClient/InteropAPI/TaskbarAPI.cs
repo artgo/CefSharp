@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Windows.Controls;
+using System.Windows.Forms;
 using AppDirect.WindowsClient.InteropAPI.Internal;
+using Control = System.Windows.Controls.Control;
 
 namespace AppDirect.WindowsClient.InteropAPI
 {
@@ -39,6 +40,8 @@ namespace AppDirect.WindowsClient.InteropAPI
         public int TaskbarHeight { get { return _interactionsObject.TaskbarHeight; } }
         public TaskbarPosition TaskbarPosition { get { return _interactionsObject.TaskbarPosition; } }
         public TaskbarIconsSize TaskbarIconsSize { get { return _interactionsObject.TaskbarIconsSize; } }
+        public Screen TaskbarScreen { get { return _interactionsObject.TaskbarScreen; } }
+        public Double DpiScalingFactor { get { return _interactionsObject.DpiScalingFactor; } }
 
         public static void Cleanup()
         {
