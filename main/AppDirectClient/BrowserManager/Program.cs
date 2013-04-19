@@ -57,7 +57,7 @@ namespace AppDirect.WindowsClient.Browser
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,
                                                                  new NLogLogger("MainApplicationServiceClient"));
 
-            var sessionKeeper = new SessionKeeper(mainAppClient, BrowserWindowsManager, new NLogLogger("Browser.SessionKeeper"));
+            var sessionKeeper = new SessionKeeper(mainAppClient, BrowserWindowsManager, BrowserWindowsBuilder, new NLogLogger("Browser.SessionKeeper"), UiHelper);
 
             try
             {

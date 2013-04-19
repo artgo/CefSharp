@@ -1,5 +1,4 @@
-﻿using AppDirect.WindowsClient.Browser.UI;
-using AppDirect.WindowsClient.Common.API;
+﻿using AppDirect.WindowsClient.Common.API;
 using System.Collections.Generic;
 
 namespace AppDirect.WindowsClient.Browser.API
