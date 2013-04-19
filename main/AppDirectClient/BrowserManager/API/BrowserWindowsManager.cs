@@ -109,17 +109,13 @@ namespace AppDirect.WindowsClient.Browser.API
             {
                 if (!_browserWindows.ContainsKey(applicationId))
                 {
-                    var eventHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
                     var model = new BrowserViewModel() { Application = application, Session = Session };
 
                     _uiHelper.PerformInUiThread(() =>
                         {
                             var browserWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
                             _browserWindows[applicationId] = browserWindow;
-                            eventHandle.Set();
                         });
-
-                    eventHandle.WaitOne();
                 }
 
                 return _browserWindows[applicationId];

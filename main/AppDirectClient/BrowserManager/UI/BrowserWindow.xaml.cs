@@ -12,6 +12,7 @@ namespace AppDirect.WindowsClient.Browser.UI
     /// </summary>
     public partial class BrowserWindow : IBrowserWindow
     {
+        private volatile bool _firstTime = true;
         private BrowserViewModel ViewModel { get; set; }
 
         public BrowserWindow()
@@ -35,6 +36,7 @@ namespace AppDirect.WindowsClient.Browser.UI
                 if ((browserViewModel.Session != null) && (browserViewModel.Session.Cookies.Count > 0) && !string.IsNullOrEmpty(browserViewModel.Application.UrlString))
                 {
                     browser.StartUrl = browserViewModel.Application.UrlString;
+                    _firstTime = false;
                 }
 
                 if (!string.IsNullOrEmpty(browserViewModel.Application.Name))
@@ -61,7 +63,15 @@ namespace AppDirect.WindowsClient.Browser.UI
         {
             if ((ViewModel.Session != null) && (ViewModel.Session.Cookies.Count > 0))
             {
-                browser.NavigateTo(ViewModel.Application.UrlString);
+                if (_firstTime)
+                {
+                    browser.NavigateTo(ViewModel.Application.UrlString);
+                    _firstTime = false;
+                }
+                else
+                {
+                    browser.Refresh();
+                }
             }
         }
 
@@ -81,6 +91,8 @@ namespace AppDirect.WindowsClient.Browser.UI
             Topmost = true;
             Topmost = false;
             Focus();
+
+            PreInitializeWindow();
         }
 
         public void SetSession(IAppDirectSession session)

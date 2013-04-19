@@ -1,9 +1,11 @@
 ﻿using AppDirect.WindowsClient.Browser.API;
+using AppDirect.WindowsClient.Browser.UI;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using System;
+using System.Collections.Generic;
 using System.Threading;
-using Xilium.CefGlue.WPF;
 
 namespace AppDirect.WindowsClient.Browser.Session
 {
@@ -15,12 +17,16 @@ namespace AppDirect.WindowsClient.Browser.Session
         private static readonly TimeSpan TimeBetweenUpdates = TimeSpan.FromMinutes(3);
         private readonly Thread _updaterThread;
         private readonly IBrowserWindowsManager _browserWindowsManager;
+        private readonly IUiHelper _uiHelper;
         private readonly ThreadStart _sessionUpdator;
         private readonly MainApplicationServiceClient _mainAppClient;
+        private readonly IDictionary<string, IBrowserWindow> _browserWindows = new Dictionary<string, IBrowserWindow>();
+        private readonly IBrowserWindowsBuilder<IBrowserWindow> _browserWindowsBuilder;
         private readonly ILogger _log;
         private volatile bool _stopFlag = false;
 
-        public SessionKeeper(MainApplicationServiceClient mainAppClient, IBrowserWindowsManager browserWindowsManager, ILogger log)
+        public SessionKeeper(MainApplicationServiceClient mainAppClient, IBrowserWindowsManager browserWindowsManager,
+            IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder, ILogger log, IUiHelper uiHelper)
         {
             if (mainAppClient == null)
             {
@@ -32,15 +38,27 @@ namespace AppDirect.WindowsClient.Browser.Session
                 throw new ArgumentNullException("browserWindowsManager");
             }
 
+            if (browserWindowsBuilder == null)
+            {
+                throw new ArgumentNullException("browserWindowsBuilder");
+            }
+
             if (log == null)
             {
                 throw new ArgumentNullException("log");
             }
 
+            if (uiHelper == null)
+            {
+                throw new ArgumentNullException("uiHelper");
+            }
+
             _mainAppClient = mainAppClient;
             _log = log;
+            _uiHelper = uiHelper;
             _sessionUpdator = KeepUpdatingSession;
             _browserWindowsManager = browserWindowsManager;
+            _browserWindowsBuilder = browserWindowsBuilder;
             _updaterThread = new Thread(_sessionUpdator);
         }
 
@@ -55,7 +73,7 @@ namespace AppDirect.WindowsClient.Browser.Session
         {
             while (true)
             {
-                Thread.Sleep(TimeBetweenUpdates);
+                _uiHelper.Sleep(TimeBetweenUpdates);
 
                 if (_stopFlag)
                 {
@@ -84,18 +102,34 @@ namespace AppDirect.WindowsClient.Browser.Session
         private void ReloadSessions()
         {
             var session = _mainAppClient.GetSession();
+
+            if ((session == null) || (session.Cookies.Count <= 0))
+            {
+                return;
+            }
+
             _browserWindowsManager.Session = session;
 
             var apps = _mainAppClient.GetMyApps();
             _browserWindowsManager.Applications = apps;
 
-            foreach (var app in _browserWindowsManager.Applications)
-            {
-                if ((app != null) && !string.IsNullOrEmpty(app.UrlString))
+            _uiHelper.PerformInUiThread(() =>
                 {
-                    var browser = new WpfCefBrowser();
-                    browser.NavigateTo(app.UrlString);
-                }
+                    foreach (var app in apps)
+                    {
+                        if ((app == null) || string.IsNullOrEmpty(app.UrlString) || _browserWindows.ContainsKey(app.Id))
+                            continue;
+
+                        var model = new BrowserViewModel() { Application = app, Session = session };
+
+                        var browserWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
+                        _browserWindows[app.Id] = browserWindow;
+                    }
+                });
+
+            foreach (var browserWindow in _browserWindows.Values)
+            {
+                browserWindow.SetSession(session);
             }
         }
 
