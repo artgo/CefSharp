@@ -121,7 +121,7 @@
     <value>{0} Version: </value>
   </data>
   <data name="ApplicationExe" xml:space="preserve">
-    <value>Appy.exe</value>
+    <value>AppDirectClient.exe</value>
   </data>
   <data name="ApplicationName" xml:space="preserve">
     <value>AppDirect Windows Client</value>
@@ -130,7 +130,7 @@
     <value>/home</value>
   </data>
   <data name="BaseAppStoreUrl" xml:space="preserve">
-    <value>www.appdirect.com</value>
+    <value>10.25.10.74:8080/AppDirect</value>
   </data>
   <data name="CheckingForUpdatesString" xml:space="preserve">
     <value>Checking for updates</value>
@@ -187,7 +187,7 @@
     <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/version.txt</value>
   </data>
   <data name="BaseUrlProtocol" xml:space="preserve">
-    <value>https://</value>
+    <value>http://</value>
   </data>
   <data name="ErrorGettingMyApps" xml:space="preserve">
     <value>There was a problem loading your applications. Please check your internet connection and try again.</value>

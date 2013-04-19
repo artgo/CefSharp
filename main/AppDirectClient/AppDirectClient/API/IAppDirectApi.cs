@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common.API;
+﻿using AppDirect.WindowsClient.API.VO;
+using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -15,5 +16,14 @@ namespace AppDirect.WindowsClient.API
             string email, string confirmEmail, string companyName, string phone, string industryId, string companySize);
         bool ConfirmUserEmail(string email, string confirmationCode);
         bool IsEmailConfirmed(string email);
+
+        UserInfoRaw UserInfo { get; }
+
+        Product GetExtendedAppInfo(string applicationId);
+
+        SubscriptionWS SubscribeUser(SubscriptionWS subscriptionWs);
+        bool UnsubscribeUser(string subscriptionId);
+        bool AssignEditionToUser(string companyId, string userId, string subscriptionId);
+        bool UnassignEditionFromUser(string companyId, string userId, string subscriptionId);
     }
 }

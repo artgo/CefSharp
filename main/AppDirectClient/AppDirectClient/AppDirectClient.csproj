@@ -129,6 +129,7 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
@@ -151,6 +152,21 @@
     <Compile Include="API\ILatch.cs" />
     <Compile Include="API\IpcCommunicator.cs" />
     <Compile Include="API\Latch.cs" />
+    <Compile Include="API\VO\AddressWS.cs" />
+    <Compile Include="API\VO\CompanyEntitlementStatus.cs" />
+    <Compile Include="API\VO\CompanyWS.cs" />
+    <Compile Include="API\VO\ContactInfoWS.cs" />
+    <Compile Include="API\VO\MembershipWS.cs" />
+    <Compile Include="API\VO\OrderItemWS.cs" />
+    <Compile Include="API\VO\ParameterWS.cs" />
+    <Compile Include="API\VO\PricingUnit.cs" />
+    <Compile Include="API\VO\Role.cs" />
+    <Compile Include="API\VO\SubscriptionWS.cs" />
+    <Compile Include="API\VO\UserInfo.cs" />
+    <Compile Include="API\VO\UserInfoRaw.cs" />
+    <Compile Include="API\VO\UserStatusWS.cs" />
+    <Compile Include="API\VO\UserWS.cs" />
+    <Compile Include="application.Designer.cs" />
     <Compile Include="InteropAPI\Internal\CoordsPackager.cs" />
     <Compile Include="InteropAPI\Internal\InteractionsObject.cs" />
     <Compile Include="InteropAPI\Internal\Interop.cs" />
@@ -249,6 +265,9 @@
     <None Include="AppDirect--Inc.-Desktop-App.pfx" />
     <None Include="AppDirectClient.exe.nlog">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="application.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="apps_list.xsc">
       <DependentUpon>apps_list.xsd</DependentUpon>

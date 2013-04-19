@@ -1,0 +1,55 @@
+﻿using System;
+
+namespace AppDirect.WindowsClient.API.VO
+{
+    [Serializable]
+    public enum PricingUnit
+    {
+        USER,
+        GIGABYTE,
+        MEGABYTE,
+        HOUR,
+        MINUTE,
+        INVOICE,
+        UNIT,
+        PROJECT,
+        PROPERTY,
+        ITEM,
+        WORD,
+        EMAIL,
+        CONTACT,
+        CALL,
+        CREDIT,
+        ROOM,
+        HOST,
+        AGENT,
+        OPERATOR,
+        PROVIDER,
+        MANAGER,
+        TESTER,
+        JVM,
+        SERVER,
+        WEB_USE_MINUTE,
+        AUDIO_USE_MINUTE,
+        PIECE,
+        EMPLOYEE_PAY_PERIOD,
+        COMPUTER,
+        NOT_APPLICABLE,
+        ONE_TIME_SETUP,
+        PRORATED_CREDIT,
+        DATA_POINTS,
+        TIER1_API_CALLS,
+        TIER2_API_CALLS,
+        ADVISORY_HOURS,
+        OVERAGE_AUDIO_MINUTE,
+        EMPLOYEE,
+        CONNECTION,
+        PUSH_USER,
+        THOUSAND_EMAILS_PER_DAY,
+        PUSH_NOTIFICATION_DEVICES,
+        API_CALLS,
+        SMS_TEXT_MESSAGE,
+        CONTACTS_1000,
+        CONTRACT_FEE
+    }
+}

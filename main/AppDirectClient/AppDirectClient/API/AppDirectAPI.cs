@@ -1,4 +1,6 @@
-﻿using AppDirect.WindowsClient.Common.API;
+﻿using System.Xml.Serialization;
+using AppDirect.WindowsClient.API.VO;
+using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,10 +25,20 @@ namespace AppDirect.WindowsClient.API
         private static readonly string DomainPrefix = Helper.BaseAppStoreUrl;
         private static readonly string MyAppsUrl = DomainPrefix + @"/api/account/v1/myapps.json";
         private static readonly string LoginUrlStr = DomainPrefix + @"/login?1434449477-1.IFormSubmitListener-loginpanel-signInForm";
+        private static readonly string UserInfoUrl = DomainPrefix + @"/api/account/v1/userinfo";
+        private static readonly string AppInfoTemplateUrl = DomainPrefix + @"/api/marketplace/v1/products/{0}";
+
+        private static readonly string SubscribeTemplateUrl = DomainPrefix + @"/api/subscriptions/v1";
+        private static readonly string UnsubscribeTemplateUrl = DomainPrefix + @"/api/subscriptions/v1/{0}";
+
+        private static readonly string AssignTemplateUrl = DomainPrefix + @"/api/account/v1/companies/{0}/users/{1}/assign/{2}";
+        private static readonly string UnassignTemplateUrl = DomainPrefix + @"/api/account/v1/companies/{0}/users/{1}/unassign/{2}";
 
         private readonly Uri _serviceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FREE");
         private readonly Uri _cookiesDomain = new Uri(DomainPrefix);
         private readonly JavaScriptSerializer _serializer = new JavaScriptSerializer();
+        private readonly XmlSerializer _subscriptionSerializer = new XmlSerializer(typeof(SubscriptionWS));
+
         private readonly IList<Cookie> _cookies = new List<Cookie>();
         private readonly object _timeContextLockObject = new object();
 
@@ -186,6 +198,216 @@ namespace AppDirect.WindowsClient.API
         public bool IsEmailConfirmed(string email)
         {
             return true;
+        }
+
+        public UserInfoRaw UserInfo
+        {
+            get
+            {
+                if (!IsAuthenticated)
+                {
+                    return null;
+                }
+
+                var request = BuildHttpWebRequestForUrl(UserInfoUrl, false, true);
+
+                request.CookieContainer = _context;
+                var response = (HttpWebResponse)request.GetResponse();
+
+                var responseStream = response.GetResponseStream();
+                if (responseStream == null)
+                {
+                    throw new IOException("No response stream returned");
+                }
+                var reader = new StreamReader(responseStream);
+                var result = reader.ReadToEnd();
+                if ((response.StatusCode != HttpStatusCode.OK) || String.IsNullOrEmpty(result))
+                {
+                    return null;
+                }
+
+                return _serializer.Deserialize<UserInfoRaw>(result);
+            }
+        }
+
+        public SubscriptionWS SubscribeUser(SubscriptionWS subscriptionWs)
+        {
+            if (subscriptionWs == null)
+            {
+                throw new ArgumentNullException("subscriptionWs");
+            }
+
+            if (subscriptionWs.user == null)
+            {
+                throw new ArgumentNullException("subscriptionWs.user");
+            }
+
+            if (subscriptionWs.company == null)
+            {
+                throw new ArgumentNullException("subscriptionWs.company");
+            }
+
+            if (subscriptionWs.paymentPlanId == null)
+            {
+                throw new ArgumentNullException("subscriptionWs.paymentPlanId");
+            }
+
+            if (!IsAuthenticated)
+            {
+                return null;
+            }
+
+            var request = BuildHttpWebRequestForUrl(SubscribeTemplateUrl, true, false);
+
+            request.CookieContainer = _context;
+            request.ContentType = "application/xml";
+
+
+            var outStream = request.GetRequestStream();
+            _subscriptionSerializer.Serialize(outStream, subscriptionWs);
+            outStream.Close();
+
+            var response = (HttpWebResponse)request.GetResponse();
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
+
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+            {
+                throw new IOException("No response stream returned");
+            }
+
+            var result = _subscriptionSerializer.Deserialize(responseStream) as SubscriptionWS;
+
+            return result;
+        }
+
+        public bool UnsubscribeUser(string subscriptionId)
+        {
+            if (string.IsNullOrEmpty(subscriptionId))
+            {
+                throw new ArgumentNullException("subscriptionId");
+            }
+
+            if (!IsAuthenticated)
+            {
+                return false;
+            }
+
+            var request = (HttpWebRequest)WebRequest.Create(string.Format(UnsubscribeTemplateUrl, subscriptionId));
+            request.UserAgent = UserAgent;
+            request.Method = "DELETE";
+            request.Accept = HtmlAcceptString;
+            request.Headers.Add("accept-language: en-us,en");
+            request.Headers.Add("accept-charset: iso-8859-1,*,utf-8");
+            request.KeepAlive = true;
+            request.AllowAutoRedirect = true;
+            request.Referer = DomainPrefix + @"/login";
+            request.CookieContainer = _context;
+
+            var response = (HttpWebResponse) request.GetResponse();
+
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+            {
+                throw new IOException("No response stream returned");
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool AssignUnassignApiCall(string template, string companyId, string userId, string subscriptionId)
+        {
+            if (string.IsNullOrEmpty(template))
+            {
+                throw new ArgumentNullException("template");
+            }
+
+            if (string.IsNullOrEmpty(companyId))
+            {
+                throw new ArgumentNullException("companyId");
+            }
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new ArgumentNullException("userId");
+            }
+
+            if (string.IsNullOrEmpty(subscriptionId))
+            {
+                throw new ArgumentNullException("subscriptionId");
+            }
+
+            if (!IsAuthenticated)
+            {
+                return false;
+            }
+
+            var request = BuildHttpWebRequestForUrl(string.Format(template, HttpUtility.UrlEncode(companyId), 
+                HttpUtility.UrlEncode(userId), HttpUtility.UrlEncode(subscriptionId)), true, true);
+
+            request.CookieContainer = _context;
+            request.ContentType = "application/json";
+
+            var sw = new StreamWriter(request.GetRequestStream());
+            sw.Write("[]");
+            sw.Close();
+
+            var response = (HttpWebResponse)request.GetResponse();
+
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+            {
+                throw new IOException("No response stream returned");
+            }
+            var reader = new StreamReader(responseStream);
+            var result = reader.ReadToEnd();
+            if ((response.StatusCode != HttpStatusCode.OK) || String.IsNullOrEmpty(result))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool AssignEditionToUser(string companyId, string userId, string subscriptionId)
+        {
+            return AssignUnassignApiCall(AssignTemplateUrl, companyId, userId, subscriptionId);
+        }
+
+        public bool UnassignEditionFromUser(string companyId, string userId, string subscriptionId)
+        {
+            return AssignUnassignApiCall(UnassignTemplateUrl, companyId, userId, subscriptionId);
+        }
+
+        public Product GetExtendedAppInfo(string applicationId)
+        {
+            var request = BuildHttpWebRequestForUrl(string.Format(AppInfoTemplateUrl, applicationId), false, true);
+
+            request.CookieContainer = _context;
+            var response = (HttpWebResponse)request.GetResponse();
+
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+            {
+                throw new IOException("No response stream returned");
+            }
+            var reader = new StreamReader(responseStream);
+            var result = reader.ReadToEnd();
+            if ((response.StatusCode != HttpStatusCode.OK) || String.IsNullOrEmpty(result))
+            {
+                return null;
+            }
+
+            return _serializer.Deserialize<Product>(result);
         }
     }
 }

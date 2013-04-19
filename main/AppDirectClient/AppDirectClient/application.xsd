@@ -1,0 +1,221 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+<xs:element name="product">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:short" name="id"/>
+<xs:element type="xs:string" name="name"/>
+<xs:element type="xs:string" name="type"/>
+<xs:element name="provider">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="uuid"/>
+<xs:element type="xs:string" name="name"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="listing">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="blurb"/>
+<xs:element type="xs:string" name="overview"/>
+<xs:element type="xs:byte" name="reviewCount"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="overview">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="splashTitle"/>
+<xs:element type="xs:string" name="splashDescription"/>
+<xs:element type="xs:anyURI" name="imageUrl"/>
+<xs:element name="benefits">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="benefit" maxOccurs="unbounded" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="description"/>
+<xs:element type="xs:string" name="title"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element type="xs:string" name="versions"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element type="xs:string" name="support"/>
+<xs:element type="xs:string" name="resources"/>
+<xs:element type="xs:string" name="screenshots"/>
+<xs:element type="xs:string" name="addonOfferings"/>
+<xs:element type="xs:string" name="featuredCustomers"/>
+<xs:element type="xs:string" name="featuredMedia"/>
+<xs:element type="xs:dateTime" name="lastModified"/>
+<xs:element name="pricing">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="footnotes"/>
+<xs:element name="editions">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="edition" maxOccurs="unbounded" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:short" name="id"/>
+<xs:element type="xs:string" name="name"/>
+<xs:element type="xs:string" name="primary"/>
+<xs:element name="trial">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:byte" name="length"/>
+<xs:element type="xs:string" name="unit"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element type="xs:byte" name="expiredTrialGracePeriod"/>
+<xs:element name="plans">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="plan">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:short" name="id"/>
+<xs:element type="xs:string" name="frequency"/>
+<xs:element name="contract">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="blockContractDowngrades"/>
+<xs:element type="xs:string" name="blockContractUpgrades"/>
+<xs:element type="xs:string" name="blockSwitchToShorterContract"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element type="xs:string" name="allowCustomUsage"/>
+<xs:element type="xs:string" name="keepBillDateOnUsageChange"/>
+<xs:element type="xs:string" name="separatePrepaid"/>
+<xs:element type="xs:string" name="isPrimaryPrice"/>
+<xs:element name="costs">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="cost" maxOccurs="unbounded" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="unit"/>
+<xs:element type="xs:float" name="minUnits"/>
+<xs:element type="xs:string" name="meteredUsage"/>
+<xs:element type="xs:string" name="pricePerIncrement"/>
+<xs:element type="xs:string" name="blockContractDecrease"/>
+<xs:element type="xs:string" name="blockContractIncrease"/>
+<xs:element type="xs:string" name="blockOriginalContractDecrease"/>
+<xs:element name="amounts">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="amount" maxOccurs="unbounded" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="currency"/>
+<xs:element type="xs:float" name="value"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="discountDetails">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="description"/>
+<xs:element type="xs:float" name="percentage"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element type="xs:string" name="bullets"/>
+<xs:element name="items">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="item">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="unit"/>
+<xs:element type="xs:float" name="amount" minOccurs="0"/>
+<xs:element type="xs:string" name="unlimited"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="features">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="feature">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="header"/>
+<xs:element type="xs:string" name="description"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="tags">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="tag" maxOccurs="unbounded" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="type"/>
+<xs:element type="xs:short" name="id"/>
+<xs:element type="xs:string" name="name"/>
+<xs:element type="xs:string" name="showBadge"/>
+<xs:element name="children" minOccurs="0">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="tag">
+<xs:complexType>
+<xs:sequence>
+<xs:element type="xs:string" name="type"/>
+<xs:element type="xs:short" name="id"/>
+<xs:element type="xs:string" name="name"/>
+<xs:element type="xs:string" name="showBadge"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+<xs:attribute type="xs:anyURI" name="href"/>
+</xs:complexType>
+</xs:element>
+</xs:schema>
