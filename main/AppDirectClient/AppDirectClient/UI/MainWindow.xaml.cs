@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Windows.Forms;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
@@ -8,6 +9,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using MessageBox = System.Windows.MessageBox;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -62,26 +64,28 @@ namespace AppDirect.WindowsClient.UI
 
         public void SetPosition()
         {
+            var screen = TaskbarApi.Instance.TaskbarScreen;
+            var scalingFactor = 1.0/TaskbarApi.Instance.DpiScalingFactor;
             switch (TaskbarApi.Instance.TaskbarPosition)
             {
                 case TaskbarPosition.Bottom:
-                    Left = SystemParameters.WorkArea.Left;
-                    Top = SystemParameters.WorkArea.Bottom - Height;
+                    Left = screen.WorkingArea.Left * scalingFactor;
+                    Top = (screen.WorkingArea.Bottom * scalingFactor) - Height;
                     break;
 
                 case TaskbarPosition.Left:
-                    Left = SystemParameters.WorkArea.Left;
-                    Top = SystemParameters.WorkArea.Top;
+                    Left = screen.WorkingArea.Left * scalingFactor;
+                    Top = screen.WorkingArea.Top * scalingFactor;
                     break;
 
                 case TaskbarPosition.Right:
-                    Left = SystemParameters.WorkArea.Right - Width;
-                    Top = SystemParameters.WorkArea.Top;
+                    Left = (screen.WorkingArea.Right * scalingFactor) - Width;
+                    Top = screen.WorkingArea.Top * scalingFactor;
                     break;
 
                 case TaskbarPosition.Top:
-                    Left = SystemParameters.WorkArea.Left;
-                    Top = SystemParameters.WorkArea.Top;
+                    Left = screen.WorkingArea.Left * scalingFactor;
+                    Top = screen.WorkingArea.Top * scalingFactor;
                     break;
             }
         }

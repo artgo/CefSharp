@@ -1,12 +1,13 @@
 ﻿using System.IO;
 using System.Security;
+using System.Windows.Forms;
 using Microsoft.Win32;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Windows.Controls;
 using System.Windows.Interop;
+using Control = System.Windows.Controls.Control;
 using DWORD = System.UInt32;
 using HMONITOR = System.IntPtr;
 using HWND = System.IntPtr;
@@ -51,6 +52,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile int _buttonsWidth = 0;
         private volatile TaskbarPosition _taskbarPosition = TaskbarPosition.Bottom;
         private volatile TaskbarIconsSize _taskbarIconsSize = TaskbarIconsSize.Large;
+        private Screen _taskbarScreen;
         private volatile HWND _taskbarHwnd = NULL;
         private volatile HWND _rebarHwnd = NULL;
         private volatile HWND _startButtonHwnd = NULL;
@@ -68,6 +70,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public TaskbarPosition TaskbarPosition { get { return _taskbarPosition; } }
 
         public TaskbarIconsSize TaskbarIconsSize { get { return _taskbarIconsSize; } }
+        
+        public Screen TaskbarScreen { get { return _taskbarScreen; } }
+
+        public Double DpiScalingFactor { get { return _dpiScalingFactor; } }
 
         #endregion field members
 
@@ -91,6 +97,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             _buttonsWindowSize = GetButtonsWindowSize(true);
             _taskbarHeight = GetTaskbarHeight();
+            _taskbarScreen = Screen.FromHandle(_taskbarHwnd);
         }
 
         public void Place(Control wnd, ITaskbarInterop notifyee, int initialWidth)
@@ -310,6 +317,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             var oldHeight = _buttonsWindowSize.Height;
             var oldWidth = _buttonsWindowSize.Width;
             _buttonsWindowSize = GetButtonsWindowSize();
+
+            _taskbarScreen = Screen.FromHandle(_taskbarHwnd);
 
             var newTaskbarPosition = GetTaskbarEdge();
             if (newTaskbarPosition != _taskbarPosition)
