@@ -48,8 +48,6 @@ static RECT buttonsRect;
 static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam, 
 										  const UINT_PTR uIdSubclass, const DWORD_PTR dwRefData)
 {
-	const int BitsToShift = 16;
-	const int BitMask = 0xFFFF;
 	const APPDIRECT_IPC_MESSAGES* messages = ((APPDIRECT_IPC_MESSAGES*)dwRefData);
 
 	if ((uMsg == WM_WINDOWPOSCHANGING) && !bExiting)
@@ -81,8 +79,8 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 		}
 
 		// Pack coordinated of rebar
-		const WPARAM wParam = (WPARAM)((((uint) p->x) << BitsToShift) | (((uint) p->y) & BitMask));
-		const LPARAM lParam = (LPARAM)((((uint) (p->x + p->cx)) << BitsToShift) | (((uint) (p->y + p->cy)) & BitMask));
+		const WPARAM wParam = MAKEWPARAM(p->x, p->y);
+		const LPARAM lParam = MAKELPARAM(p->x + p->cx, p->y + p->cy);
 
 		// And send them to the main application message queue
 		::PostMessage(messages->AppDirectHwnd, messages->UpdateMessage, wParam, lParam);
@@ -116,15 +114,13 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 			}
 
 			return 0;	// this message is processed
-		} 
+		}
 		else if ((uMsg == messages->UpdateMessage) && !bExiting) 
 		{
-			const unsigned int p1 = (unsigned int)wParam;
-			const unsigned int p2 = (unsigned int)lParam;
-			buttonsRect.left = p1 >> BitsToShift;
-			buttonsRect.top = p1 & BitMask;
-			buttonsRect.right = p2 >> BitsToShift;
-			buttonsRect.bottom = p2 & BitMask;
+			buttonsRect.left = (int)(short) LOWORD(lParam);
+			buttonsRect.top =  (int)(short) HIWORD(lParam);
+			buttonsRect.right = (int)(short) LOWORD(wParam);
+			buttonsRect.bottom = (int)(short) HIWORD(wParam);
 
 			return 0;	// this message is processed
 		}
@@ -138,6 +134,8 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	if (bExiting) 
 		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 
+	const APPDIRECT_IPC_MESSAGES* messages = ((APPDIRECT_IPC_MESSAGES*)dwRefData);
+
 	switch (uMsg)
 	{
 		// Handle on top / topmost Z-Order
@@ -145,12 +143,11 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		case WM_WINDOWPOSCHANGED:
 		{
 			// place on top of task bar
-			HWND theButton = (HWND)dwRefData;
-			if (theButton)
+			if (messages->AppDirectHwnd)
 			{
 				WINDOWPOS * p = (WINDOWPOS*)lParam;
 				BOOL b = ::SetWindowPos(
-						theButton, 
+						messages->AppDirectHwnd, 
 						p->hwndInsertAfter,
 						0, 0, 0, 0, 0
 						| SWP_NOACTIVATE
@@ -163,6 +160,13 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 			break;
 		}
+		case WM_MOVE:
+			if (messages->AppDirectHwnd) {
+				int xPos = (int)(short) LOWORD(lParam);
+				int yPos = (int)(short) HIWORD(lParam);
+				::SendMessage(messages->AppDirectHwnd, messages->UpdateMessage, 0, 0);
+			}
+			break;
 	}
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
@@ -214,8 +218,7 @@ NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
 		messages->AppDirectHwnd = GetAppDirectHwnd();
 		g_hDll = ::LoadLibrary(gc_TheDllName); _ASSERT(g_hDll);		// prevent dll from unloading
 		BOOL b = ::SetWindowSubclass(FindRebar(), SubclassRebarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
-		HWND theButton = GetAppDirectHwnd();
-		b = ::SetWindowSubclass(FindTaskBar(), SubclassTaskbarProc, 0, (DWORD_PTR)theButton);	_ASSERT(b);
+		b = ::SetWindowSubclass(FindTaskBar(), SubclassTaskbarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
 	}
 
 	return ::CallNextHookEx(NULL, code, wParam, lParam);

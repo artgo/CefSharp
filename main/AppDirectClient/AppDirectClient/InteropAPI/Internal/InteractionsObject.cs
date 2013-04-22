@@ -565,7 +565,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 if (!_shutdownStarted && !_isShutdown)
                 {
-                    ReactToSizeMove();
+                    ReactToSizeMove(true);
                     handled = true;
                 }
             } 
