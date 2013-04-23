@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common.API;
+﻿using System.Net;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
@@ -31,10 +32,21 @@ namespace AppDirect.WindowsClient.Browser.API
         public void DisplayApplication(IApplication application)
         {
             var browserWindow = _browserWindowsManager.GetOrCreateBrowserWindow(application);
+            
+            _uiHelper.PerformInUiThread(() =>
+            {
+                browserWindow.Display();
+            });
+        }
+
+        public void DisplayRegistration(IApplication application)
+        {
+            var browserWindow = _browserWindowsManager.GetOrCreateRegistrationWindow(application);
 
             _uiHelper.PerformInUiThread(() =>
             {
                 browserWindow.Display();
+                browserWindow.Navigate();
             });
         }
 

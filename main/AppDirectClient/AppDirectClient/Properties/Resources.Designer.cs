@@ -250,6 +250,15 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /signup.
+        /// </summary>
+        internal static string RegistrationPath {
+            get {
+                return ResourceManager.GetString("RegistrationPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact your administrator to uninstall this application.
         /// </summary>
         internal static string UninstallAppDirectApp {

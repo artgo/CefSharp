@@ -39,5 +39,9 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         public virtual void Display()
         {
         }
+
+        public void Navigate()
+        {
+        }
     }
 }

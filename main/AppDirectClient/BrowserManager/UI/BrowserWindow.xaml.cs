@@ -95,6 +95,11 @@ namespace AppDirect.WindowsClient.Browser.UI
             PreInitializeWindow();
         }
 
+        public void Navigate()
+        {
+            browser.NavigateTo(ViewModel.Application.UrlString);
+        }
+
         public void SetSession(IAppDirectSession session)
         {
             ViewModel.Session = session;

@@ -192,4 +192,7 @@
   <data name="ErrorGettingMyApps" xml:space="preserve">
     <value>There was a problem loading your applications. Please check your internet connection and try again.</value>
   </data>
+  <data name="RegistrationPath" xml:space="preserve">
+    <value>/signup</value>
+  </data>
 </root>

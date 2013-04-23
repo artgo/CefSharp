@@ -17,5 +17,6 @@ namespace AppDirect.WindowsClient.Browser.API
         void PreInitializeWindow();
         void Show();
         void Display();
+        void Navigate();
     }
 }

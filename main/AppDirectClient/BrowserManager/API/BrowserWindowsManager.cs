@@ -4,7 +4,6 @@ using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace AppDirect.WindowsClient.Browser.API
 {
@@ -119,6 +118,34 @@ namespace AppDirect.WindowsClient.Browser.API
                 }
 
                 return _browserWindows[applicationId];
+            }
+        }
+
+        public virtual IBrowserWindow GetOrCreateRegistrationWindow(IApplication application)
+        {
+            if (application == null)
+            {
+                throw new ArgumentNullException("application");
+            }
+
+            var applicationId = application.Id;
+
+            if (string.IsNullOrEmpty(applicationId))
+            {
+                throw new ArgumentNullException("application.Id");
+            }
+
+            lock (_lockObject)
+            {
+                IBrowserWindow browserWindow = null;
+                var model = new BrowserViewModel() { Application = application, Session = Session };
+
+                _uiHelper.PerformInUiThread(() =>
+                    {
+                        browserWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
+                    });
+
+                return browserWindow;
             }
         }
 

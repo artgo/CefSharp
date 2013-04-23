@@ -10,6 +10,9 @@ namespace AppDirect.WindowsClient.Common.API
         void DisplayApplication(IApplication application);
 
         [OperationContract(IsOneWay = true)]
+        void DisplayRegistration(IApplication application);
+
+        [OperationContract(IsOneWay = true)]
         void DisplayApplications(IEnumerable<IApplicationWithState> applications);
 
         [OperationContract(IsOneWay = true)]
