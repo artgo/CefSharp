@@ -565,7 +565,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 if (!_shutdownStarted && !_isShutdown)
                 {
-                    ReactToSizeMove(true);
+                    ReactToSizeMove(wParam.ToInt32() != 0);
                     handled = true;
                 }
             } 
@@ -664,7 +664,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             Shell32Dll.SHAppBarMessage((uint)AppBarMessages.ABM_GETTASKBARPOS, ref appbar);
             if (taskbarRect != null)
             {
-                taskbarRect = new RectWin(appbar.rc);
+                if (!User32Dll.GetWindowRect(this._taskbarHwnd, taskbarRect))
+                {
+                    throw new InteropException("Cannot calculate taskbar rect");
+                }
             }
 
             return (TaskbarPosition)appbar.uEdge;

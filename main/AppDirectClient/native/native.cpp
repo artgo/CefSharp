@@ -78,12 +78,8 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 			}
 		}
 
-		// Pack coordinated of rebar
-		const WPARAM wParam = MAKEWPARAM(p->x, p->y);
-		const LPARAM lParam = MAKELPARAM(p->x + p->cx, p->y + p->cy);
-
 		// And send them to the main application message queue
-		::PostMessage(messages->AppDirectHwnd, messages->UpdateMessage, wParam, lParam);
+		::PostMessage(messages->AppDirectHwnd, messages->UpdateMessage, FALSE, NULL);
 
 		return 0;	// this message is processed
 	}
@@ -117,10 +113,10 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 		}
 		else if ((uMsg == messages->UpdateMessage) && !bExiting) 
 		{
-			buttonsRect.left = (int)(short) LOWORD(lParam);
-			buttonsRect.top =  (int)(short) HIWORD(lParam);
-			buttonsRect.right = (int)(short) LOWORD(wParam);
-			buttonsRect.bottom = (int)(short) HIWORD(wParam);
+			buttonsRect.left = HIWORD(wParam);
+			buttonsRect.top = LOWORD(wParam);
+			buttonsRect.right = HIWORD(lParam);
+			buttonsRect.bottom = LOWORD(lParam);
 
 			return 0;	// this message is processed
 		}
@@ -164,7 +160,7 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			if (messages->AppDirectHwnd) {
 				int xPos = (int)(short) LOWORD(lParam);
 				int yPos = (int)(short) HIWORD(lParam);
-				::SendMessage(messages->AppDirectHwnd, messages->UpdateMessage, 0, 0);
+				::SendMessage(messages->AppDirectHwnd, messages->UpdateMessage, TRUE, NULL);
 			}
 			break;
 	}
