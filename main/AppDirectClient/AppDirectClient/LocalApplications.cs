@@ -25,8 +25,6 @@ namespace AppDirect.WindowsClient
         {
             Description = "Registration",
             Id = "Register",
-            LocalImagePath = "Images/email.png",
-            ImagePath = "Images/email.png",
             Name = "Register",
             UrlString = Helper.BaseAppStoreUrl + Properties.Resources.RegistrationPath,
             BrowserWidth = 1150,

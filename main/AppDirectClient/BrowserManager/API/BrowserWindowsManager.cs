@@ -16,6 +16,7 @@ namespace AppDirect.WindowsClient.Browser.API
         private readonly IBrowserWindowsBuilder<IBrowserWindow> _browserWindowsBuilder;
         private volatile IAppDirectSession _session = null;
         private volatile IEnumerable<IApplication> _applications = null;
+        private volatile IBrowserWindow _registrationWindow;
 
         public BrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder)
         {
@@ -72,7 +73,7 @@ namespace AppDirect.WindowsClient.Browser.API
             {
                 _session = value;
 
-                if ((_session != null) && (_session.Cookies.Count > 0))
+                if ((_session != null) && (_session.Cookies != null) && (_session.Cookies.Count > 0))
                 {
                     _browserObject.SetCookies(_session.Cookies);
 
@@ -137,15 +138,16 @@ namespace AppDirect.WindowsClient.Browser.API
 
             lock (_lockObject)
             {
-                IBrowserWindow browserWindow = null;
-                var model = new BrowserViewModel() { Application = application, Session = Session };
+                if (_registrationWindow == null)
+                {
+                    var model = new BrowserViewModel() {Application = application, Session = Session};
 
-                _uiHelper.PerformInUiThread(() =>
-                    {
-                        browserWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
-                    });
-
-                return browserWindow;
+                    _uiHelper.PerformInUiThread(() =>
+                        {
+                            _registrationWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
+                        });
+                }
+                return _registrationWindow;
             }
         }
 
