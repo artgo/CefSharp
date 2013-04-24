@@ -19,7 +19,6 @@ namespace AppDirect.WindowsClient.UI
     public class MainViewModel : INotifyPropertyChanged
     {
         public LoginViewModel LoginViewModel = new LoginViewModel();
-        private const int MyAppDisplayLimit = 10;
         private string _message = String.Empty;
         private Visibility _updateSpinnerVisibility = Visibility.Hidden;
         private string _updateString = Properties.Resources.GetUpdateString;
@@ -193,13 +192,13 @@ namespace AppDirect.WindowsClient.UI
                 if (ServiceLocator.LocalStorage.InstalledLocalApps.Any())
                 {
                     ServiceLocator.LocalStorage.InstalledLocalApps.Remove(LocalApplications.AppStoreApp);
-                    ServiceLocator.LocalStorage.InstalledLocalApps.Insert(0,LocalApplications.AppStoreApp);
+                    ServiceLocator.LocalStorage.InstalledLocalApps.Insert(0, LocalApplications.AppStoreApp);
                 }
                 else
                 {
                     ServiceLocator.LocalStorage.InstalledLocalApps.Add(LocalApplications.AppStoreApp);
                 }
-             
+
                 ServiceLocator.LocalStorage.LastSuggestedApps.RemoveAll(
                     a => ServiceLocator.LocalStorage.AllInstalledApplications.Contains(a));
 
@@ -208,7 +207,7 @@ namespace AppDirect.WindowsClient.UI
                 SuggestedApplications =
                     new ObservableCollection<ApplicationViewModel>();
 
-                foreach (var installedApps in ServiceLocator.LocalStorage.AllInstalledApplications.Take(MyAppDisplayLimit))
+                foreach (var installedApps in ServiceLocator.LocalStorage.AllInstalledApplications)
                 {
                     MyApplications.Add(new ApplicationViewModel(installedApps));
                 }
@@ -219,7 +218,7 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
         }
-        
+
         /// <summary>
         /// Attempts to sync MyApplications with API. Default behavior ignores exceptions.  Will fail if user is logged in and the API can not be reached.
         /// </summary>
@@ -236,7 +235,7 @@ namespace AppDirect.WindowsClient.UI
                     {
                         loginSuccessful = Helper.Authenticate();
                     }
-                    catch (Exception e )
+                    catch (Exception e)
                     {
                         Logout();
                         _log.ErrorException("Exception thrown by authentication", e);
@@ -520,7 +519,7 @@ namespace AppDirect.WindowsClient.UI
                 _log.ErrorException(ex.Message, ex);
                 Message = Properties.Resources.ErrorGettingMyApps;
             }
-            
+
             GetSuggestedApplicationsWithApiCall();
 
             IsLoggedIn = true;
