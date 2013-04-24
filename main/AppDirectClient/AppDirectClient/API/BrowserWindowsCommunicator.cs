@@ -17,6 +17,11 @@ namespace AppDirect.WindowsClient.API
             MakeSureExecuteAction(() => Service.DisplayApplication(application));
         }
 
+        public void DisplayApplicationWithoutSession(IApplication application)
+        {
+            MakeSureExecuteAction(() => Service.DisplayApplicationWithoutSession(application));
+        }
+
         public void DisplayApplications(IEnumerable<IApplicationWithState> applications)
         {
             MakeSureExecuteAction(() => Service.DisplayApplications(applications));

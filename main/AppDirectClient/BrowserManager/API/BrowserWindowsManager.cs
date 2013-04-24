@@ -4,7 +4,6 @@ using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace AppDirect.WindowsClient.Browser.API
 {
@@ -17,6 +16,7 @@ namespace AppDirect.WindowsClient.Browser.API
         private readonly IBrowserWindowsBuilder<IBrowserWindow> _browserWindowsBuilder;
         private volatile IAppDirectSession _session = null;
         private volatile IEnumerable<IApplication> _applications = null;
+        private readonly IDictionary<string, IBrowserWindow> _browserWindowsWithoutSession = new Dictionary<string, IBrowserWindow>();
 
         public BrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder)
         {
@@ -73,7 +73,7 @@ namespace AppDirect.WindowsClient.Browser.API
             {
                 _session = value;
 
-                if ((_session != null) && (_session.Cookies.Count > 0))
+                if ((_session != null) && (_session.Cookies != null) && (_session.Cookies.Count > 0))
                 {
                     _browserObject.SetCookies(_session.Cookies);
 
@@ -119,6 +119,37 @@ namespace AppDirect.WindowsClient.Browser.API
                 }
 
                 return _browserWindows[applicationId];
+            }
+        }
+
+        public virtual IBrowserWindow GetOrCreateSessionlessWindow(IApplication application)
+        {
+            if (application == null)
+            {
+                throw new ArgumentNullException("application");
+            }
+
+            var applicationId = application.Id;
+
+            if (string.IsNullOrEmpty(applicationId))
+            {
+                throw new ArgumentNullException("application.Id");
+            }
+
+            lock (_lockObject)
+            {
+                if (!_browserWindowsWithoutSession.ContainsKey(applicationId))
+                {
+                    var model = new BrowserViewModel() { Application = application, Session = Session };
+
+                    _uiHelper.PerformInUiThread(() =>
+                    {
+                        var browserWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
+                        _browserWindowsWithoutSession[applicationId] = browserWindow;
+                    });
+                }
+
+                return _browserWindowsWithoutSession[applicationId];
             }
         }
 

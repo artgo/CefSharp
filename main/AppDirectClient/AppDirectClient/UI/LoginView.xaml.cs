@@ -230,7 +230,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void GoToRegistrationClick(object sender, EventArgs eventArgs)
         {
-            RegistrationClick.Invoke(sender, eventArgs);
+            ServiceLocator.BrowserWindowsCommunicator.DisplayApplicationWithoutSession(LocalApplications.RegistrationApp);
         }
 
         public void SetFocusField()

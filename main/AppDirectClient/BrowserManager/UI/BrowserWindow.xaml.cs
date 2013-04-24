@@ -1,3 +1,4 @@
+using System.Windows.Media.Imaging;
 using AppDirect.WindowsClient.Browser.API;
 using AppDirect.WindowsClient.Common.API;
 using System;
@@ -33,7 +34,7 @@ namespace AppDirect.WindowsClient.Browser.UI
 
             if (browserViewModel.Application != null)
             {
-                if ((browserViewModel.Session != null) && (browserViewModel.Session.Cookies.Count > 0) && !string.IsNullOrEmpty(browserViewModel.Application.UrlString))
+                if ((browserViewModel.Session != null) && (browserViewModel.Session.Cookies != null) && (browserViewModel.Session.Cookies.Count > 0) && !string.IsNullOrEmpty(browserViewModel.Application.UrlString))
                 {
                     browser.StartUrl = browserViewModel.Application.UrlString;
                     _firstTime = false;
@@ -61,7 +62,7 @@ namespace AppDirect.WindowsClient.Browser.UI
 
         public virtual void PreInitializeWindow()
         {
-            if ((ViewModel.Session != null) && (ViewModel.Session.Cookies.Count > 0))
+            if ((ViewModel.Session != null) && (ViewModel.Session.Cookies != null) && (ViewModel.Session.Cookies.Count > 0))
             {
                 if (_firstTime)
                 {
@@ -93,6 +94,11 @@ namespace AppDirect.WindowsClient.Browser.UI
             Focus();
 
             PreInitializeWindow();
+        }
+
+        public void Navigate()
+        {
+            browser.NavigateTo(ViewModel.Application.UrlString);
         }
 
         public void SetSession(IAppDirectSession session)

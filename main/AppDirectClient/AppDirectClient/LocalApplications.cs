@@ -21,6 +21,16 @@ namespace AppDirect.WindowsClient
             BrowserHeight = 830
         };
 
+        private static readonly LocalApplication Registration = new LocalApplication()
+        {
+            Description = "Registration",
+            Id = "Register",
+            Name = "Register",
+            UrlString = Helper.BaseAppStoreUrl + Properties.Resources.RegistrationPath,
+            BrowserWidth = 1150,
+            BrowserHeight = 830
+        };
+
         public static List<Application> LocalApplicationsList
         {
             get { return Applications; }
@@ -29,6 +39,11 @@ namespace AppDirect.WindowsClient
         public static Application AppStoreApp
         {
             get { return AppStore; }
+        }
+
+        public static Application RegistrationApp
+        {
+            get { return Registration; }
         }
 
         private static readonly List<Application> Applications = new List<Application>
