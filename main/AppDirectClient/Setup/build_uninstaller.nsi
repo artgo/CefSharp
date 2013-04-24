@@ -67,13 +67,14 @@ Function un.onInit
   StrCpy $6 $5
   StrCmp $5 0 end0 error
   end0:
-  System::Call "kernel32::CloseHandle(i r2) i .r1"
-  Pop $4
-  Goto finalEnd
-  
+    System::Call "kernel32::CloseHandle(i r2) i .r1"
+    Pop $4
+      
   error:
     MessageBox MB_OK "${APPNAME} can not uninstall because the application is currently running.  Please close the application before uninstalling. Error: $6"
 	  Abort
 	  
-  finalEnd:
+  finalEnd:  
+	nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
+	sleep 500
 FunctionEnd 
