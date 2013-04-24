@@ -77,9 +77,9 @@ namespace AppDirect.WindowsClient.BrowsersApi
             base.Channel.DisplayApplication(application);
         }
 
-        public void DisplayRegistration(IApplication application)
+        public void DisplayApplicationWithoutSession(IApplication application)
         {
-            base.Channel.DisplayRegistration(application);
+            base.Channel.DisplayApplicationWithoutSession(application);
         }
 
         public void DisplayApplications(IEnumerable<IApplicationWithState> applications)

@@ -39,14 +39,15 @@ namespace AppDirect.WindowsClient.Browser.API
             });
         }
 
-        public void DisplayRegistration(IApplication application)
+        public void DisplayApplicationWithoutSession(IApplication application)
         {
-            var browserWindow = _browserWindowsManager.GetOrCreateRegistrationWindow(application);
+            var browserWindow = _browserWindowsManager.GetOrCreateSessionlessWindow(application);
 
             _uiHelper.PerformInUiThread(() =>
             {
-                browserWindow.Display();
                 browserWindow.Navigate();
+                browserWindow.Display();
+                
             });
         }
 

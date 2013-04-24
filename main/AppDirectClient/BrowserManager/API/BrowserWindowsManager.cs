@@ -16,7 +16,7 @@ namespace AppDirect.WindowsClient.Browser.API
         private readonly IBrowserWindowsBuilder<IBrowserWindow> _browserWindowsBuilder;
         private volatile IAppDirectSession _session = null;
         private volatile IEnumerable<IApplication> _applications = null;
-        private volatile IBrowserWindow _registrationWindow;
+        private readonly IDictionary<string, IBrowserWindow> _browserWindowsWithoutSession = new Dictionary<string, IBrowserWindow>();
 
         public BrowserWindowsManager(IBrowserObject browserObject, IUiHelper uiHelper, IBrowserWindowsBuilder<IBrowserWindow> browserWindowsBuilder)
         {
@@ -122,7 +122,7 @@ namespace AppDirect.WindowsClient.Browser.API
             }
         }
 
-        public virtual IBrowserWindow GetOrCreateRegistrationWindow(IApplication application)
+        public virtual IBrowserWindow GetOrCreateSessionlessWindow(IApplication application)
         {
             if (application == null)
             {
@@ -138,16 +138,18 @@ namespace AppDirect.WindowsClient.Browser.API
 
             lock (_lockObject)
             {
-                if (_registrationWindow == null)
+                if (!_browserWindowsWithoutSession.ContainsKey(applicationId))
                 {
-                    var model = new BrowserViewModel() {Application = application, Session = Session};
+                    var model = new BrowserViewModel() { Application = application, Session = Session };
 
                     _uiHelper.PerformInUiThread(() =>
-                        {
-                            _registrationWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
-                        });
+                    {
+                        var browserWindow = _browserWindowsBuilder.CreateBrowserWindow(model);
+                        _browserWindowsWithoutSession[applicationId] = browserWindow;
+                    });
                 }
-                return _registrationWindow;
+
+                return _browserWindowsWithoutSession[applicationId];
             }
         }
 
