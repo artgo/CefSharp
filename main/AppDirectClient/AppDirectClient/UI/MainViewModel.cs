@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.API;
+﻿using System.Net;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Properties;
@@ -161,10 +162,38 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                Helper.AddApplication(applicationViewModel.Application.Id);
+                if (!string.IsNullOrEmpty(applicationViewModel.Application.SubscriptionId))
+                {
+                    AddToMyApps(applicationViewModel);
+                    RemoveFromSuggestedApps(applicationViewModel);
+
+                    BackgroundWorker backgroundWorker = new BackgroundWorker();
+                    backgroundWorker.DoWork += SubscribeAsynchronously;
+                    backgroundWorker.RunWorkerCompleted += SubscriptionComplete;
+                    backgroundWorker.RunWorkerAsync(applicationViewModel.Application.SubscriptionId);
+                    //applicationViewModel.Application.SubscriptionId = subscriptionId;
+                    AddToMyApps(applicationViewModel);
+                }
             }
         }
 
+        private void SubscribeAsynchronously(object sender, DoWorkEventArgs e)
+        {
+            e.Result = Helper.AddApplication((string)e.Argument);
+        }
+
+        private void SubscriptionComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null && e.Error.GetType() == typeof(WebException))
+            {
+                _log.ErrorException("Connection error", e.Error);
+            }
+            else if (!String.IsNullOrEmpty((string)e.Result))
+            {   
+                SyncMyApplications();
+            }
+        }
+        
         public bool Uninstall(ApplicationViewModel applicationViewModel)
         {
             if (applicationViewModel.Application.IsLocalApp)
@@ -180,8 +209,15 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                MessageBox.Show(applicationViewModel.Application.Name + " can not be removed.");
-                return false;
+                if (!string.IsNullOrEmpty(applicationViewModel.Application.SubscriptionId))
+                {
+                    return Helper.RemoveApplication(applicationViewModel.Application);
+                }
+                else
+                {
+                    MessageBox.Show(applicationViewModel.Application.Name + " can not be removed.");
+                    return false;
+                }
             }
         }
 

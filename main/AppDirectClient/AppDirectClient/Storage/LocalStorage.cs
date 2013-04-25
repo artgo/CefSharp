@@ -199,6 +199,7 @@ namespace AppDirect.WindowsClient.Storage
         public void ClearLoginCredentials()
         {
             LoginInfo = null;
+            UserInfo = null;
         }
 
         public void ClearAllStoredData()

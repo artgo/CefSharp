@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common.Log;
+﻿using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
@@ -245,7 +246,7 @@ namespace AppDirect.WindowsClient.API
             return ((idleTime > 0) ? (idleTime / 1000) : 0);
         }
 
-        public static bool AddApplication(string applicationId)
+        public static string AddApplication(string applicationId)
         {
             if (ServiceLocator.LocalStorage.UserInfo == null)
             {
@@ -254,8 +255,12 @@ namespace AppDirect.WindowsClient.API
 
             var freeSubscriptionPlanId =
                 ServiceLocator.CachedAppDirectApi.GetFreeSubscriptionPlanId(applicationId);
-            var provisionApplication = ServiceLocator.CachedAppDirectApi.ProvisionApplication(ServiceLocator.LocalStorage.UserInfo.UserId, ServiceLocator.LocalStorage.UserInfo.CompanyId, freeSubscriptionPlanId);
-            return true;
+            return ServiceLocator.CachedAppDirectApi.ProvisionApplication(ServiceLocator.LocalStorage.UserInfo.UserId, ServiceLocator.LocalStorage.UserInfo.CompanyId, freeSubscriptionPlanId);
+        }
+
+        public static bool RemoveApplication(IApplication application)
+        {
+            return ServiceLocator.CachedAppDirectApi.DeprovisionApplication(application.SubscriptionId);
         }
 
         public static void GetUserInfo()

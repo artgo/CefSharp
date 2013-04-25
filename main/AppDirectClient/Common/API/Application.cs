@@ -34,6 +34,8 @@ namespace AppDirect.WindowsClient.Common.API
 
         public override bool BrowserResizable { get; set; }
 
+        public override string SubscriptionId { get; set; }
+
         public bool PinnedToTaskbar { get; set; }
 
         public override bool Equals(Object obj)
