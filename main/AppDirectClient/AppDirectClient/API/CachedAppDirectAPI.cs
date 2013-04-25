@@ -1,6 +1,10 @@
-﻿using AppDirect.WindowsClient.Common.API;
+﻿using System;
+using System.Globalization;
+using AppDirect.WindowsClient.API.VO;
+using AppDirect.WindowsClient.Common.API;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -12,13 +16,15 @@ namespace AppDirect.WindowsClient.API
         private const int MaxApps = 25;
         private static readonly Regex IdFromUrl = new Regex(@"\d+$");
         private readonly IAppDirectApi _appDirectApi;
+        private readonly ILogger _log;
 
         private volatile IList<Application> _suggestedApps;
         private volatile IList<Application> _myApps;
 
-        public CachedAppDirectApi(IAppDirectApi appDirectApi)
+        public CachedAppDirectApi(IAppDirectApi appDirectApi, ILogger logger)
         {
             _appDirectApi = appDirectApi;
+            _log = logger;
         }
 
         public IList<Application> MyApps
@@ -61,6 +67,42 @@ namespace AppDirect.WindowsClient.API
         public AppDirectSession Session
         {
             get { return _appDirectApi.Session; }
+        }
+
+        public UserInfo UserInfo { 
+            get 
+            { 
+                var userInfoRaw = _appDirectApi.UserInfo;
+                var cultureStr = userInfoRaw.Locale;
+                var result = new UserInfo()
+                    {
+                        UserId = userInfoRaw.User_Id,
+                        CompanyId = userInfoRaw.Company_Id,
+                        Email = userInfoRaw.Email,
+                        GivenName = userInfoRaw.Given_Name,
+                        FamilyName = userInfoRaw.Family_Name,
+                        Verified = userInfoRaw.Verified
+                    };
+
+                if (!string.IsNullOrEmpty(cultureStr))
+                {
+                    if (cultureStr.Contains("_"))
+                    {
+                        cultureStr = cultureStr.Replace('_', '-');
+                    }
+
+                    try
+                    {
+                        result.Culture = new CultureInfo(cultureStr);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        _log.ErrorException("Failed to convert culture " + cultureStr, e);
+                    }
+                }
+
+                return result;
+            } 
         }
 
         public bool Authenticate(string key, string secret)
@@ -150,6 +192,69 @@ namespace AppDirect.WindowsClient.API
         public bool IsEmailConfirmed(string email)
         {
             return _appDirectApi.IsEmailConfirmed(email);
+        }
+
+        public string GetFreeSubscriptionPlanId(string applicationId)
+        {
+            var app = _appDirectApi.GetExtendedAppInfo(applicationId);
+
+            foreach (var edition in app.Pricing.Editions)
+            {
+                foreach (var plan in edition.Plans)
+                {
+                    var isFreePlan = true;
+
+                    foreach (var cost in plan.Costs)
+                    {
+                        if (cost.MeteredUsage.HasValue && (cost.MeteredUsage == true))
+                        {
+                            isFreePlan = false;
+                            break;
+                        }
+
+                        var isFreeCost = true;
+
+                        foreach (var amount in cost.Amounts)
+                        {
+                            if (amount.Value.HasValue && (amount.Value > Decimal.Zero))
+                            {
+                                isFreeCost = false;
+                                break;
+                            }
+                        }
+
+                        if (!isFreeCost)
+                        {
+                            isFreePlan = false;
+                            break;
+                        }
+                    }
+
+                    if (isFreePlan)
+                    {
+                        return plan.Id;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public string ProvisionApplication(string userId, string companyId, string pricingPlanId)
+        {
+            var subscriptionWs = new SubscriptionWS();
+            subscriptionWs.paymentPlanId = pricingPlanId;
+            subscriptionWs.user = new UserWS() {id = userId};
+            subscriptionWs.company = new CompanyWS() {id = companyId};
+
+            var resultSubscription = _appDirectApi.SubscribeUser(subscriptionWs);
+
+            return resultSubscription.id;
+        }
+
+        public bool DeprovisionApplication(string subscriptionId)
+        {
+            return _appDirectApi.UnsubscribeUser(subscriptionId);
         }
     }
 }

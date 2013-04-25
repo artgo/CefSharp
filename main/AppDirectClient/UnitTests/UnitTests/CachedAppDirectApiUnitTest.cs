@@ -1,4 +1,5 @@
 ﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common.Log;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -7,143 +8,79 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
     [TestFixture]
     public class CachedAppDirectApiUnitTest
     {
-        private static ICachedAppDirectApi BuildCachedAppDirectApi()
+        private volatile IAppDirectApi _appDirectApiMock;
+        private volatile CachedAppDirectApi _cachedAppDirectApi;
+        private volatile ILogger _log;
+
+        [SetUp]
+        public void Init()
         {
-            return new CachedAppDirectApi(new AppDirectApi());
-        }
-  
-        private static ICachedAppDirectApi BuildCachedAppDirectApiAuthenticated()
-        {
-            var appDirectApi = BuildCachedAppDirectApi();
-            appDirectApi.Authenticate(TestData.TestUsername, TestData.TestPassword);
-            return appDirectApi;
+            _appDirectApiMock = Substitute.For<IAppDirectApi>();
+            _log = Substitute.For<ILogger>();
+            _cachedAppDirectApi = new CachedAppDirectApi(_appDirectApiMock, _log);
         }
 
         [Test]
         public void CachedMyAppsCallsMyApps()
         {
-            var appDirectApiMock = Substitute.For<IAppDirectApi>();
-            var api = new CachedAppDirectApi(appDirectApiMock);
-            var apps = api.MyApps;
-            var myApps = appDirectApiMock.Received().MyApps;
+            var apps = _cachedAppDirectApi.MyApps;
+            var myApps = _appDirectApiMock.Received().MyApps;
         }
 
         [Test]
         public void CachedSuggestedAppsCallsSuggestedApps()
         {
-            var appDirectApiMock = Substitute.For<IAppDirectApi>();
-            var api = new CachedAppDirectApi(appDirectApiMock);
-            var apps = api.SuggestedApps;
-            var myApps = appDirectApiMock.Received().SuggestedApps;
+            var apps = _cachedAppDirectApi.SuggestedApps;
+            var myApps = _appDirectApiMock.Received().SuggestedApps;
         }
 
         [Test]
         public void CachedIsAuthenticatedAppsCallsIsAuthenticated()
         {
-            var appDirectApiMock = Substitute.For<IAppDirectApi>();
-            var api = new CachedAppDirectApi(appDirectApiMock);
-            var apps = api.SuggestedApps;
-            var myApps = appDirectApiMock.Received().SuggestedApps;
+            var apps = _cachedAppDirectApi.SuggestedApps;
+            var myApps = _appDirectApiMock.Received().SuggestedApps;
         }
 
         [Test]
         public void CachedAuthenticateCallsAuthenticate()
         {
-            var appDirectApiMock = Substitute.For<IAppDirectApi>();
-            var api = new CachedAppDirectApi(appDirectApiMock);
-            api.Authenticate("", "");
-            appDirectApiMock.ReceivedWithAnyArgs().Authenticate("", "");
+            _cachedAppDirectApi.Authenticate("1", "2");
+            _appDirectApiMock.ReceivedWithAnyArgs().Authenticate("1", "2");
         }
 
         [Test]
         public void CachedUnAuthenticateCallsUnAuthenticate()
         {
-            var appDirectApiMock = Substitute.For<IAppDirectApi>();
-            var api = new CachedAppDirectApi(appDirectApiMock);
-            api.UnAuthenticate();
-            appDirectApiMock.ReceivedWithAnyArgs().UnAuthenticate();
+            _cachedAppDirectApi.UnAuthenticate();
+            _appDirectApiMock.ReceivedWithAnyArgs().UnAuthenticate();
         }
-
-        [Test]
-        public void AuthenticationFailsForWrongCredentials()
-        {
-            var appDirectApi = BuildCachedAppDirectApi();
-
-            Assert.IsFalse(appDirectApi.Authenticate(TestData.TestUsername, "wrong_password"));
-        }
-
-        [Test]
-        public void AuthenticationSucceedForRightCredentials()
-        {
-            var appDirectApi = BuildCachedAppDirectApi();
-
-            Assert.IsTrue(appDirectApi.Authenticate(TestData.TestUsername, TestData.TestPassword));
-       } 
 
         [Test]
         public void MyAppsAreNeverNull()
         {
-            var apps = BuildCachedAppDirectApi().MyApps;
-
-            Assert.IsNotNull(apps);
+            Assert.IsNotNull(_cachedAppDirectApi.MyApps);
         }
 
         [Test]
         public void IsNotAuthenticatedByDefault()
         {
-            var authenticated = BuildCachedAppDirectApi().IsAuthenticated;
-
-            Assert.IsFalse(authenticated);
-        }
-
-        [Test]
-        public void IsAuthenticatedAfterAuthentication()
-        {
-            var appDirectApi = BuildCachedAppDirectApiAuthenticated();
-            var authenticated = appDirectApi.IsAuthenticated;
-
-            Assert.IsTrue(authenticated);
-        }
-
-        [Test]
-        public void IsAuthenticatedAfterAuthenticationWithNoApps()
-        {
-            var appDirectApi = BuildCachedAppDirectApi();
-            appDirectApi.Authenticate(TestData.NoAppsUsername, TestData.TestPassword);
-            var authenticated = appDirectApi.IsAuthenticated;
-
-            Assert.IsTrue(authenticated);
-        }
-
-        [Test]
-        public void SomeMyAppsAreThereAfterAuthentication()
-        {
-            var appDirectApi = BuildCachedAppDirectApiAuthenticated();
-            var apps = appDirectApi.MyApps;
-
-            Assert.IsTrue(apps.Count > 0);
-        }
-
-        [Test]
-        public void DataIsReturnedForSuggestedApps()
-        {
-            var apps = BuildCachedAppDirectApi().SuggestedApps;
-
-            Assert.IsNotNull(apps);
-        }
-
-        [Test]
-        public void ReturnedSizeForMyAppsIsLessThan11()
-        {
-            var apps = BuildCachedAppDirectApi().MyApps;
-
-            Assert.IsTrue(apps.Count < 11);
+            Assert.IsFalse(_cachedAppDirectApi.IsAuthenticated);
         }
 
         [Test]
         public void ReturnedSizeForSuggestedAppsIsLessThanOrEqualTo25()
         {
-            var apps = BuildCachedAppDirectApi().SuggestedApps;
+            var suggestedApps = new WebApplicationsListApplication[101];
+            for (var i = 0;  i < 101; i++)
+            {
+                var app = new WebApplicationsListApplication();
+                app.Id = "1";
+                suggestedApps[i] = app;
+            }
+
+            _appDirectApiMock.SuggestedApps.ReturnsForAnyArgs(suggestedApps);
+
+            var apps = _cachedAppDirectApi.SuggestedApps;
 
             Assert.IsTrue(apps.Count <= 25);
         }
