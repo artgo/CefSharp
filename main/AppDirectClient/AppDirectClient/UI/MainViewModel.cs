@@ -161,7 +161,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                Helper.LaunchApp(applicationViewModel);
+                Helper.AddApplication(applicationViewModel.Application.Id);
             }
         }
 

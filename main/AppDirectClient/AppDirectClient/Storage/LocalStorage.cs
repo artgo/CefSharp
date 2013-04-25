@@ -1,3 +1,4 @@
+using AppDirect.WindowsClient.API.VO;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Models;
@@ -72,6 +73,8 @@ namespace AppDirect.WindowsClient.Storage
                        LoginInfo.PasswordSetDate.AddDays(DaysBeforePasswordExpires) > DateTime.Now;
             }
         }
+
+        public UserInfo UserInfo { get; set; }
 
         public LocalStorage()
         {

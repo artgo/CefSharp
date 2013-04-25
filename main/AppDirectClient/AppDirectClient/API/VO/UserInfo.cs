@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient.API.VO
 {
@@ -20,6 +21,7 @@ namespace AppDirect.WindowsClient.API.VO
 
         public string CompanyId { get; set; }
 
+        [XmlIgnore]
         public CultureInfo Culture { get; set; }
     }
 }

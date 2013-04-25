@@ -244,5 +244,24 @@ namespace AppDirect.WindowsClient.API
 
             return ((idleTime > 0) ? (idleTime / 1000) : 0);
         }
+
+        public static bool AddApplication(string applicationId)
+        {
+            if (ServiceLocator.LocalStorage.UserInfo == null)
+            {
+                GetUserInfo();
+            }
+
+            var freeSubscriptionPlanId =
+                ServiceLocator.CachedAppDirectApi.GetFreeSubscriptionPlanId(applicationId);
+            var provisionApplication = ServiceLocator.CachedAppDirectApi.ProvisionApplication(ServiceLocator.LocalStorage.UserInfo.UserId, ServiceLocator.LocalStorage.UserInfo.CompanyId, freeSubscriptionPlanId);
+            return true;
+        }
+
+        public static void GetUserInfo()
+        {
+            ServiceLocator.LocalStorage.UserInfo = ServiceLocator.CachedAppDirectApi.UserInfo;
+        }
+        
     }
 }
