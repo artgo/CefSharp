@@ -162,18 +162,13 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                if (!string.IsNullOrEmpty(applicationViewModel.Application.SubscriptionId))
-                {
-                    AddToMyApps(applicationViewModel);
-                    RemoveFromSuggestedApps(applicationViewModel);
+                AddToMyApps(applicationViewModel);
+                RemoveFromSuggestedApps(applicationViewModel);
 
-                    BackgroundWorker backgroundWorker = new BackgroundWorker();
-                    backgroundWorker.DoWork += SubscribeAsynchronously;
-                    backgroundWorker.RunWorkerCompleted += SubscriptionComplete;
-                    backgroundWorker.RunWorkerAsync(applicationViewModel.Application.SubscriptionId);
-                    //applicationViewModel.Application.SubscriptionId = subscriptionId;
-                    AddToMyApps(applicationViewModel);
-                }
+                BackgroundWorker backgroundWorker = new BackgroundWorker();
+                backgroundWorker.DoWork += SubscribeAsynchronously;
+                backgroundWorker.RunWorkerCompleted += SubscriptionComplete;
+                backgroundWorker.RunWorkerAsync(applicationViewModel.Application.Id);
             }
         }
 
