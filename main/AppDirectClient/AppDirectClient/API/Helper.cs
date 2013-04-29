@@ -138,7 +138,10 @@ namespace AppDirect.WindowsClient.API
             {
                 var clickedApp = GetApplicationFromButtonSender(sender);
 
-                LaunchApp(clickedApp);
+                if (clickedApp.Application.ApplicationStatus == Status.Active)
+                {
+                    LaunchApp(clickedApp);
+                }
             }
             catch (Exception ex)
             {

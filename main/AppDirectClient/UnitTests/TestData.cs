@@ -8,7 +8,7 @@
         public const string TestPassword = "origo2010";
         public const string TestPassword2 = "origo2010";
         public const string FileName = @"ApplicationData\LocalStorage";
-        public const string TestFreeAppId = "6208";
+        public const string TestFreeAppId = "2651";
         public const string TestAppId2 = "1086";
     }
 }

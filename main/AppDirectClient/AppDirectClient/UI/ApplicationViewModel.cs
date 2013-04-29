@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using AppDirect.WindowsClient.Common.API;
+using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -16,6 +18,16 @@ namespace AppDirect.WindowsClient.UI
 
         public Application Application { get; set; }
 
+        public Visibility InProgressVisibility
+        {
+            get { return _inProgressVisibility; }
+            set
+            {
+                _inProgressVisibility = value;
+                NotifyPropertyChanged("InProgressVisibility");
+            }
+        }
+
         public bool PinnedToTaskbarNotifier
         {
             get { return Application.PinnedToTaskbar; }
@@ -27,6 +39,7 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        private Visibility _inProgressVisibility = Visibility.Collapsed;
 
         protected void NotifyPropertyChanged(string propertyName)
         {

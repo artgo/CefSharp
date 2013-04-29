@@ -1,5 +1,7 @@
-﻿using System.Xml.Serialization;
+﻿using System.Xml;
+using System.Xml.Serialization;
 using AppDirect.WindowsClient.API.VO;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,8 @@ using System.IO;
 using System.Net;
 using System.Web;
 using System.Web.Script.Serialization;
+using DevDefined.OAuth.Consumer;
+using DevDefined.OAuth.Framework;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -257,11 +261,12 @@ namespace AppDirect.WindowsClient.API
                 return null;
             }
 
-            var request = BuildHttpWebRequestForUrl(SubscribeTemplateUrl, true, false);
+            var requestUrl = OAuthBase.GetOAuthSignedUrl(SubscribeTemplateUrl, "POST");
+            Console.WriteLine(requestUrl);
 
-            request.CookieContainer = _context;
+            var request = BuildHttpWebRequestForUrl(requestUrl, true, false);
+
             request.ContentType = "application/xml";
-
 
             var outStream = request.GetRequestStream();
             _subscriptionSerializer.Serialize(outStream, subscriptionWs);
@@ -297,7 +302,11 @@ namespace AppDirect.WindowsClient.API
                 return false;
             }
 
-            var request = (HttpWebRequest)WebRequest.Create(string.Format(UnsubscribeTemplateUrl, subscriptionId));
+            var url = string.Format(UnsubscribeTemplateUrl, subscriptionId);
+            string requestUrl = OAuthBase.GetOAuthSignedUrl(url, "DELETE");
+            Console.WriteLine(requestUrl);
+
+            var request = (HttpWebRequest)WebRequest.Create(requestUrl);
             request.UserAgent = UserAgent;
             request.Method = "DELETE";
             request.Accept = HtmlAcceptString;
@@ -306,9 +315,9 @@ namespace AppDirect.WindowsClient.API
             request.KeepAlive = true;
             request.AllowAutoRedirect = true;
             request.Referer = DomainPrefix + @"/login";
-            request.CookieContainer = _context;
 
-            var response = (HttpWebResponse) request.GetResponse();
+            var response = (HttpWebResponse)request.GetResponse();
+
 
             var responseStream = response.GetResponseStream();
             if (responseStream == null)

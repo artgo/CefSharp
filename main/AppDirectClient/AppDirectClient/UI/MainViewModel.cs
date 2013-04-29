@@ -162,34 +162,71 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                AddToMyApps(applicationViewModel);
+                applicationViewModel.InProgressVisibility = Visibility.Visible;
+                applicationViewModel.Application.ApplicationStatus = Status.AttempingProvisioning;
                 RemoveFromSuggestedApps(applicationViewModel);
+                AddToMyApps(applicationViewModel);
 
                 BackgroundWorker backgroundWorker = new BackgroundWorker();
                 backgroundWorker.DoWork += SubscribeAsynchronously;
-                backgroundWorker.RunWorkerCompleted += SubscriptionComplete;
-                backgroundWorker.RunWorkerAsync(applicationViewModel.Application.Id);
+                backgroundWorker.RunWorkerAsync(applicationViewModel);
             }
         }
 
         private void SubscribeAsynchronously(object sender, DoWorkEventArgs e)
         {
-            e.Result = Helper.AddApplication((string)e.Argument);
+            ApplicationViewModel applicationVM = (ApplicationViewModel)e.Argument;
+
+            try
+            {
+                var subscriptionId = Helper.AddApplication(applicationVM.Application.Id);
+                if (!String.IsNullOrEmpty(subscriptionId))
+                {
+                    Helper.PerformInUiThread(() =>
+                        {
+                            applicationVM.Application.SubscriptionId = subscriptionId;
+                            applicationVM.InProgressVisibility = Visibility.Collapsed;
+                        });
+                }
+
+                var storedApplication = ServiceLocator.LocalStorage.InstalledAppDirectApps.FirstOrDefault(a => a.Equals(applicationVM.Application));
+                if (storedApplication != null)
+                {
+                    storedApplication.ApplicationStatus = applicationVM.Application.ApplicationStatus;
+                    storedApplication.SubscriptionId = applicationVM.Application.SubscriptionId;
+                }
+            }
+            catch (Exception ex)
+            {
+                string errorInfo = String.Empty;
+
+                if (ex.Message.Contains("409"))
+                {
+                    errorInfo = "The application has been requested previously and will be added to your applications as soon as provisioning is completed.";
+                    applicationVM.Application.ApplicationStatus = Status.Provisioning;
+                }
+
+                if (ex.Message.Contains("424"))
+                {
+                    errorInfo =
+                        "The application has been requested and will be added to your applications as soon as provisioning is completed.";
+                    applicationVM.Application.ApplicationStatus = Status.Provisioning;
+                }
+
+                Helper.PerformInUiThread(() =>
+                {
+                    RemoveFromMyApps(applicationVM);
+                    AddToSuggestedApps(applicationVM);
+                    Message = String.Format("{0} can not be added through {1} at this time. {2}", applicationVM.Application.Name, Helper.ApplicationName, errorInfo);
+                });
+
+                _log.ErrorException("Provisioning Application Exception", ex);
+            }
+            
+            SyncMyApplications();
         }
 
-        private void SubscriptionComplete(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Error != null && e.Error.GetType() == typeof(WebException))
-            {
-                _log.ErrorException("Connection error", e.Error);
-            }
-            else if (!String.IsNullOrEmpty((string)e.Result))
-            {   
-                SyncMyApplications();
-            }
-        }
-        
-        public bool Uninstall(ApplicationViewModel applicationViewModel)
+        public void Uninstall(ApplicationViewModel applicationViewModel)
         {
             if (applicationViewModel.Application.IsLocalApp)
             {
@@ -199,20 +236,39 @@ namespace AppDirect.WindowsClient.UI
                 {
                     ServiceLocator.LocalStorage.SaveAppSettings();
                 }
-
-                return true;
             }
             else
             {
                 if (!string.IsNullOrEmpty(applicationViewModel.Application.SubscriptionId))
                 {
-                    return Helper.RemoveApplication(applicationViewModel.Application);
+                    applicationViewModel.InProgressVisibility = Visibility.Visible;
+                    
+                    BackgroundWorker backgroundWorker = new BackgroundWorker();
+                    backgroundWorker.DoWork += UnsubscribeAsynchronously;
+                    backgroundWorker.RunWorkerAsync(applicationViewModel);
                 }
                 else
                 {
-                    MessageBox.Show(applicationViewModel.Application.Name + " can not be removed.");
-                    return false;
+                    MessageBox.Show(applicationViewModel.Application.Name + " cannot be removed.");
                 }
+            }
+        }
+
+        private void UnsubscribeAsynchronously(object sender, DoWorkEventArgs e)
+        {
+            var applicationViewModel = (ApplicationViewModel)e.Argument;
+            ServiceLocator.BrowserWindowsCommunicator.CloseApplication(applicationViewModel.Application.Id);
+            var success = Helper.RemoveApplication(applicationViewModel.Application);
+
+            if (success)
+            {
+                RemoveFromMyApps(applicationViewModel);
+                GetSuggestedApplicationsWithApiCall();
+            }
+            else
+            {
+                applicationViewModel.InProgressVisibility = Visibility.Collapsed;
+                MessageBox.Show(applicationViewModel.Application.Name + " cannot be removed.");
             }
         }
 
@@ -245,7 +301,10 @@ namespace AppDirect.WindowsClient.UI
 
                 foreach (var lastSuggestedApp in ServiceLocator.LocalStorage.LastSuggestedApps)
                 {
-                    SuggestedApplications.Add(new ApplicationViewModel(lastSuggestedApp));
+                    if (lastSuggestedApp.ApplicationStatus != Status.Provisioning)
+                    {
+                        SuggestedApplications.Add(new ApplicationViewModel(lastSuggestedApp));
+                    }
                 }
             }
         }
@@ -286,8 +345,23 @@ namespace AppDirect.WindowsClient.UI
 
                 var displayedApps = MyApplications.Select(a => a.Application).ToList();
 
-                var newApps = apiApps.Except(displayedApps).ToList();
-                var expiredApps = displayedApps.Where(a => !a.IsLocalApp).Except(apiApps).ToList();
+                var newApps = new List<Application>();
+                var expiredApps = displayedApps.Where(a => !a.IsLocalApp && a.ApplicationStatus != Status.AttempingProvisioning).Except(apiApps).ToList();
+
+                foreach (var application in apiApps)
+                {
+                    var matchedApp = displayedApps.FirstOrDefault(a => a.Equals(application));
+
+                    if (matchedApp != null)
+                    {
+                        matchedApp.UrlString = application.UrlString;
+                        matchedApp.ApplicationStatus = Status.Active;
+                    }
+                    else
+                    {
+                        newApps.Add(application);
+                    }
+                }
 
                 foreach (var application in expiredApps)
                 {
@@ -335,7 +409,7 @@ namespace AppDirect.WindowsClient.UI
 
                     apiSuggestedApps.RemoveAll(a => a.Price != null && !a.Price.Contains("Free"));
 
-                    var displayedApps = SuggestedApplications.Select(a => a.Application).ToList();
+                    var displayedApps = ServiceLocator.LocalStorage.LastSuggestedApps;
 
                     var newApps = apiSuggestedApps.Except(displayedApps.Where(a => !a.IsLocalApp)).ToList();
                     var expiredApps = displayedApps.Where(a => !a.IsLocalApp).Except(apiSuggestedApps).ToList();
@@ -441,7 +515,10 @@ namespace AppDirect.WindowsClient.UI
                 }
             }
 
-            Helper.PerformInUiThread(() => SuggestedApplications.Add(applicationViewModel));
+            if (applicationViewModel.Application.ApplicationStatus != Status.Provisioning)
+            {
+                Helper.PerformInUiThread(() => SuggestedApplications.Add(applicationViewModel));
+            }
         }
 
         private void RemoveFromSuggestedApps(ApplicationViewModel applicationViewModel, bool saveLocalStorage = true)

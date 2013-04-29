@@ -431,6 +431,10 @@
                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left"
                                        Text="{Binding Application.Name}" />
                     </Viewbox>
+                    <Grid Name="ProvisionInProgress" ToolTip="In Progress" Visibility="{Binding InProgressVisibility}">
+                        <Rectangle Fill="{StaticResource TextFieldFocusColor}" Opacity=".8"/>
+                        <ProgressBar HorizontalAlignment="Left" Margin="10,10,0,0" Height="50" Width="50" Name ="Spinner" Style="{StaticResource SpinnerProgress}"/>
+                    </Grid>
                 </Grid>
             </Button>
         </DataTemplate>
@@ -443,6 +447,10 @@
                                    Width="42" Height="42" Source="Images/RoundedCorners.png" />
                     <TextBlock Margin="52,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
                                        Text="{Binding Application.Name}" />
+                    <Grid Name="ProvisionInProgress" ToolTip="In Progress" Visibility="{Binding InProgressVisibility}">
+                        <Rectangle Fill="{StaticResource TextFieldFocusColor}" Opacity=".8"/>
+                        <ProgressBar HorizontalAlignment="Left" Margin="10,10,0,0" Height="50" Width="50" Name ="Spinner" Style="{StaticResource SpinnerProgress}"/>
+                    </Grid>
                 </Grid>
             </Button>
         </DataTemplate>
@@ -540,8 +548,8 @@
                 <TextBlock Name="SuggestedAppsLabel" Style="{StaticResource TextStyle}" FontSize="13" Padding="0"
                            Grid.Column="1" Foreground="White" Text="Available Apps" HorizontalAlignment="Left"
                            Margin="30,30,0,0" VerticalAlignment="Top" />
-                <ListBox Style="{StaticResource ListBoxStyle}" Height="{StaticResource WindowHeight}"
-                         VerticalAlignment="Top" Margin="30,60,30,20" Name="SuggestedListBox"
+                <ListBox Style="{StaticResource ListBoxStyle}" Height="250"
+                         VerticalAlignment="Top" Margin="30,60,30,0" Name="SuggestedListBox"
                          ItemsSource="{Binding SuggestedApplications}">
                     <ListBox.Resources>
                         <Style TargetType="ListBoxItem">
