@@ -54,7 +54,7 @@ namespace AppDirect.WindowsClient.API
                     action();
                     return;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Log.ErrorException("Failed to invoke action", e);
 
@@ -77,7 +77,7 @@ namespace AppDirect.WindowsClient.API
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <typeparam name="ReturnType"></typeparam>
         /// <param name="action"></param>
@@ -116,7 +116,7 @@ namespace AppDirect.WindowsClient.API
                     {
                         throw;
                     }
-                    
+
                     Thread.Sleep(accumulatingTimeSpan);
                     accumulatingTimeSpan += retryInterval;
                 }
@@ -270,6 +270,5 @@ namespace AppDirect.WindowsClient.API
         {
             ServiceLocator.LocalStorage.UserInfo = ServiceLocator.CachedAppDirectApi.UserInfo;
         }
-        
     }
 }

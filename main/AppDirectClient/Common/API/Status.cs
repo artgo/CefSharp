@@ -5,6 +5,7 @@
         Active,
         AttempingProvisioning,
         Provisioning,
-        Deprovisioning
+        Deprovisioning,
+        NotActive
     }
 }

@@ -91,6 +91,7 @@
     <Compile Include="API\AppDirectSession.cs" />
     <Compile Include="API\Application.cs" />
     <Compile Include="API\ApplicationWithState.cs" />
+    <Compile Include="API\Exceptions.cs" />
     <Compile Include="API\IAbstractServiceClient.cs" />
     <Compile Include="API\IAbstractServiceRunner.cs" />
     <Compile Include="API\IAppDirectSession.cs" />

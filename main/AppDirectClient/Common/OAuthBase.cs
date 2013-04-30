@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
+using AppDirect.WindowsClient.Common.Properties;
 
 namespace AppDirect.WindowsClient.Common
 {
@@ -333,8 +334,8 @@ namespace AppDirect.WindowsClient.Common
         public static string GetOAuthSignedUrl(string baseUrl, string httpMethod)
         {
             OAuthBase oauthBase = new OAuthBase();
-            string consumerKey = "appdirect-277";
-            string consumerSecret = "rW-KM2U0q1dP5wyd";
+            string consumerKey = Resources.ConsumerKey;
+            string consumerSecret = Resources.ConsumerSecret;
             string timestamp = oauthBase.GenerateTimeStamp();
             string nonce = oauthBase.GenerateNonce();
             string normalizedUrl;

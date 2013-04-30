@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Properties;
@@ -7,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -176,6 +176,7 @@ namespace AppDirect.WindowsClient.UI
         private void SubscribeAsynchronously(object sender, DoWorkEventArgs e)
         {
             ApplicationViewModel applicationVM = (ApplicationViewModel)e.Argument;
+            string errorInfo = String.Empty;
 
             try
             {
@@ -188,41 +189,46 @@ namespace AppDirect.WindowsClient.UI
                             applicationVM.InProgressVisibility = Visibility.Collapsed;
                         });
                 }
+                else
+                {
+                    throw new InvalidDataException("API returned invalid SubscriptionId");
+                }
 
-                var storedApplication = ServiceLocator.LocalStorage.InstalledAppDirectApps.FirstOrDefault(a => a.Equals(applicationVM.Application));
+                var storedApplication =
+                    ServiceLocator.LocalStorage.InstalledAppDirectApps.FirstOrDefault(
+                        a => a.Equals(applicationVM.Application));
                 if (storedApplication != null)
                 {
                     storedApplication.ApplicationStatus = applicationVM.Application.ApplicationStatus;
                     storedApplication.SubscriptionId = applicationVM.Application.SubscriptionId;
                 }
             }
+            catch (FailedDependencyException ex)
+            {
+                _log.ErrorException("Provisioning Application Exception", ex);
+                errorInfo = String.Format("{0} has been requested and will be added to your apps as soon as provisioning is complete.", applicationVM.Application.Name);
+                applicationVM.Application.ApplicationStatus = Status.Provisioning;
+            }
+            catch (ConflictException ex)
+            {
+                _log.ErrorException("Provisioning Application Exception", ex);
+                errorInfo = "{0} has been requested previously and will be added to your applications as soon as provisioning is complete.";
+                applicationVM.Application.ApplicationStatus = Status.Provisioning;
+            }
             catch (Exception ex)
             {
-                string errorInfo = String.Empty;
-
-                if (ex.Message.Contains("409"))
-                {
-                    errorInfo = "The application has been requested previously and will be added to your applications as soon as provisioning is completed.";
-                    applicationVM.Application.ApplicationStatus = Status.Provisioning;
-                }
-
-                if (ex.Message.Contains("424"))
-                {
-                    errorInfo =
-                        "The application has been requested and will be added to your applications as soon as provisioning is completed.";
-                    applicationVM.Application.ApplicationStatus = Status.Provisioning;
-                }
-
-                Helper.PerformInUiThread(() =>
-                {
-                    RemoveFromMyApps(applicationVM);
-                    AddToSuggestedApps(applicationVM);
-                    Message = String.Format("{0} can not be added through {1} at this time. {2}", applicationVM.Application.Name, Helper.ApplicationName, errorInfo);
-                });
-
                 _log.ErrorException("Provisioning Application Exception", ex);
+                errorInfo = String.Format("{0} can not be added through {1} at this time. {2}",
+                                        applicationVM.Application.Name, Helper.ApplicationName, errorInfo);
             }
-            
+
+            Helper.PerformInUiThread(() =>
+                    {
+                        RemoveFromMyApps(applicationVM);
+                        AddToSuggestedApps(applicationVM);
+                        Message = errorInfo;
+                    });
+
             SyncMyApplications();
         }
 
@@ -242,7 +248,7 @@ namespace AppDirect.WindowsClient.UI
                 if (!string.IsNullOrEmpty(applicationViewModel.Application.SubscriptionId))
                 {
                     applicationViewModel.InProgressVisibility = Visibility.Visible;
-                    
+
                     BackgroundWorker backgroundWorker = new BackgroundWorker();
                     backgroundWorker.DoWork += UnsubscribeAsynchronously;
                     backgroundWorker.RunWorkerAsync(applicationViewModel);
@@ -258,18 +264,33 @@ namespace AppDirect.WindowsClient.UI
         {
             var applicationViewModel = (ApplicationViewModel)e.Argument;
             ServiceLocator.BrowserWindowsCommunicator.CloseApplication(applicationViewModel.Application.Id);
-            var success = Helper.RemoveApplication(applicationViewModel.Application);
 
-            if (success)
+            try
             {
-                RemoveFromMyApps(applicationViewModel);
-                GetSuggestedApplicationsWithApiCall();
+                var success = Helper.RemoveApplication(applicationViewModel.Application);
+
+                if (success)
+                {
+                    RemoveFromMyApps(applicationViewModel);
+                    GetSuggestedApplicationsWithApiCall();
+                }
+                else
+                {
+                    applicationViewModel.InProgressVisibility = Visibility.Collapsed;
+                    Message = applicationViewModel.Application.Name + " cannot be removed.";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                applicationViewModel.InProgressVisibility = Visibility.Collapsed;
-                MessageBox.Show(applicationViewModel.Application.Name + " cannot be removed.");
+                _log.ErrorException("Deprovisioning Application Exception", ex);
+
+                Helper.PerformInUiThread(() =>
+                    {
+                        Message = "Error Removing " + applicationViewModel.Application.Name;
+                    });
             }
+
+            SyncMyApplications();
         }
 
         public void InitializeAppsLists()
@@ -626,6 +647,15 @@ namespace AppDirect.WindowsClient.UI
             {
                 _log.ErrorException(ex.Message, ex);
                 Message = Properties.Resources.ErrorGettingMyApps;
+            }
+
+            try
+            {
+                Helper.GetUserInfo();
+            }
+            catch (Exception ex)
+            {
+                _log.ErrorException(ex.Message, ex);
             }
 
             GetSuggestedApplicationsWithApiCall();
