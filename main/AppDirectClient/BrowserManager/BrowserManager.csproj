@@ -82,7 +82,7 @@
     <Reference Include="Xilium.CefGlue">
       <HintPath>libs\Xilium.CefGlue.dll</HintPath>
     </Reference>
-    <Reference Include="Xilium.CefGlue.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="Xilium.CefGlue.WPF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>libs\Xilium.CefGlue.WPF.dll</HintPath>
     </Reference>
