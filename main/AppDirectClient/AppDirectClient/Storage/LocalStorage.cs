@@ -37,6 +37,7 @@ namespace AppDirect.WindowsClient.Storage
 
         public object Locker = new object();
         private volatile LoginObject _loginInfo;
+        private volatile UserInfo _userInfo;
 
         public bool UpdateDownloaded { get; set; }
 
@@ -79,7 +80,11 @@ namespace AppDirect.WindowsClient.Storage
             }
         }
 
-        public UserInfo UserInfo { get; set; }
+        public UserInfo UserInfo
+        {
+            get { return _userInfo; }
+            set { _userInfo = value; }
+        }
 
         public LocalStorage()
         {
