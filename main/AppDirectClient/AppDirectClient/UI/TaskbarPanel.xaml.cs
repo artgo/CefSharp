@@ -79,7 +79,7 @@ namespace AppDirect.WindowsClient.UI
 
             try
             {
-                _mainViewModel.Uninstall(clickedApp);
+                _mainViewModel.RemoveApp(clickedApp);
             }
             catch (Exception ex)
             {

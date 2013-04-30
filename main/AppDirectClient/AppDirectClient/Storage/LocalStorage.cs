@@ -36,6 +36,7 @@ namespace AppDirect.WindowsClient.Storage
         public bool IsLoadedFromFile { get; set; }
 
         public object Locker = new object();
+        private volatile LoginObject _loginInfo;
 
         public bool UpdateDownloaded { get; set; }
 
@@ -60,7 +61,11 @@ namespace AppDirect.WindowsClient.Storage
 
         public List<string> HiddenApps { get; set; }
 
-        public LoginObject LoginInfo { get; set; }
+        public LoginObject LoginInfo
+        {
+            get { return _loginInfo; }
+            set { _loginInfo = value; }
+        }
 
         public bool HasCredentials
         {

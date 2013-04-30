@@ -121,7 +121,7 @@ namespace AppDirect.WindowsClient.UI
 
             try
             {
-                ViewModel.Install(clickedApp);
+                ViewModel.AddApp(clickedApp);
             }
             catch (Exception ex)
             {

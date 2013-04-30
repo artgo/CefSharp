@@ -295,7 +295,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             var app = _mainViewModel.SuggestedApplications.First(a => a.Application.IsLocalApp);
-            _mainViewModel.Install(app);
+            _mainViewModel.AddApp(app);
             return app;
         }
 
@@ -303,8 +303,8 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         {
             InitializeTests();
             var app = _mainViewModel.SuggestedApplications.First(a => a.Application.IsLocalApp);
-            _mainViewModel.Install(app);
-            _mainViewModel.Uninstall(app);
+            _mainViewModel.AddApp(app);
+            _mainViewModel.RemoveApp(app);
             return app;
         }
     }

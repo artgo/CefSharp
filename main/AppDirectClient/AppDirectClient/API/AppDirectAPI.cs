@@ -276,16 +276,15 @@ namespace AppDirect.WindowsClient.API
             {
                 response = (HttpWebResponse)request.GetResponse();
             }
-            catch (Exception ex)
+            catch (WebException ex)
             {
-                WebException webException = (WebException)ex;
-                var exceptionResponse = (HttpWebResponse)webException.Response;
+                var exceptionResponse = (HttpWebResponse)ex.Response;
 
                 if (exceptionResponse.StatusCode == HttpStatusCode.Conflict)
                 {
                     throw new ConflictException();
                 }
-                if (exceptionResponse.StatusDescription == "Failed Dependency")
+                if ((int)exceptionResponse.StatusCode == 424)
                 {
                     throw new FailedDependencyException();
                 }
@@ -323,7 +322,6 @@ namespace AppDirect.WindowsClient.API
 
             var url = string.Format(UnsubscribeTemplateUrl, subscriptionId);
             string requestUrl = OAuthBase.GetOAuthSignedUrl(url, deleteMethod);
-            Console.WriteLine(requestUrl);
 
             var request = (HttpWebRequest)WebRequest.Create(requestUrl);
             request.UserAgent = UserAgent;

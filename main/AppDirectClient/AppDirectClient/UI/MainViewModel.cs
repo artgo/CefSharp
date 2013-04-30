@@ -149,7 +149,7 @@ namespace AppDirect.WindowsClient.UI
                 });
         }
 
-        public void Install(ApplicationViewModel applicationViewModel)
+        public void AddApp(ApplicationViewModel applicationViewModel)
         {
             if (applicationViewModel.Application.IsLocalApp)
             {
@@ -207,13 +207,11 @@ namespace AppDirect.WindowsClient.UI
             {
                 _log.ErrorException("Provisioning Application Exception", ex);
                 errorInfo = String.Format("{0} has been requested and will be added to your apps as soon as provisioning is complete.", applicationVM.Application.Name);
-                applicationVM.Application.ApplicationStatus = Status.Provisioning;
             }
             catch (ConflictException ex)
             {
                 _log.ErrorException("Provisioning Application Exception", ex);
                 errorInfo = "{0} has been requested previously and will be added to your applications as soon as provisioning is complete.";
-                applicationVM.Application.ApplicationStatus = Status.Provisioning;
             }
             catch (Exception ex)
             {
@@ -222,17 +220,20 @@ namespace AppDirect.WindowsClient.UI
                                         applicationVM.Application.Name, Helper.ApplicationName, errorInfo);
             }
 
-            Helper.PerformInUiThread(() =>
+            if (!String.IsNullOrEmpty(errorInfo))
+            {
+                Helper.PerformInUiThread(() =>
                     {
                         RemoveFromMyApps(applicationVM);
                         AddToSuggestedApps(applicationVM);
                         Message = errorInfo;
                     });
+            }
 
             SyncMyApplications();
         }
 
-        public void Uninstall(ApplicationViewModel applicationViewModel)
+        public void RemoveApp(ApplicationViewModel applicationViewModel)
         {
             if (applicationViewModel.Application.IsLocalApp)
             {
@@ -255,7 +256,7 @@ namespace AppDirect.WindowsClient.UI
                 }
                 else
                 {
-                    MessageBox.Show(applicationViewModel.Application.Name + " cannot be removed.");
+                    Helper.PerformInUiThread(() => Message = applicationViewModel.Application.Name + " cannot be removed through " + Helper.ApplicationName);
                 }
             }
         }
@@ -376,6 +377,8 @@ namespace AppDirect.WindowsClient.UI
                     if (matchedApp != null)
                     {
                         matchedApp.UrlString = application.UrlString;
+
+                        //Only change the status to active after the URL has been reset by myApps API call
                         matchedApp.ApplicationStatus = Status.Active;
                     }
                     else

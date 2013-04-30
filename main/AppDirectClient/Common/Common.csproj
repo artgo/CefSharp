@@ -68,10 +68,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevDefined.OAuth, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a3261f5b4697e67d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DevDefined.OAuth.0.1\lib\DevDefined.OAuth.dll</HintPath>
-    </Reference>
     <Reference Include="NLog, Version=2.0.1.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NLog.2.0.1.2\lib\net35\NLog.dll</HintPath>
@@ -91,7 +87,8 @@
     <Compile Include="API\AppDirectSession.cs" />
     <Compile Include="API\Application.cs" />
     <Compile Include="API\ApplicationWithState.cs" />
-    <Compile Include="API\Exceptions.cs" />
+    <Compile Include="API\ConflictException.cs" />
+    <Compile Include="API\FailedDependencyException.cs" />
     <Compile Include="API\IAbstractServiceClient.cs" />
     <Compile Include="API\IAbstractServiceRunner.cs" />
     <Compile Include="API\IAppDirectSession.cs" />
