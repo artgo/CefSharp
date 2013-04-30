@@ -8,5 +8,6 @@ namespace AppDirect.WindowsClient.Browser.Interaction
         void Unload();
         void Initialize();
         void SetCookies(IList<Cookie> cookies);
+        void DeleteCookies();
     }
 }

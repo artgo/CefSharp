@@ -136,14 +136,15 @@ namespace AppDirect.WindowsClient.UI
             IsLoggedIn = false;
             LogoutNotifier(null, null);
 
+            lock (ServiceLocator.LocalStorage.Locker)
+            {
+                ServiceLocator.LocalStorage.ClearLoginCredentials();
+            }
+
             ServiceLocator.UiHelper.StartAsynchronously(() =>
                 {
                     ServiceLocator.BrowserWindowsCommunicator.CloseAllApplicationsAndRemoveSessionInfo();
-                    lock (ServiceLocator.LocalStorage.Locker)
-                    {
-                        ServiceLocator.CachedAppDirectApi.UnAuthenticate();
-                        ServiceLocator.LocalStorage.ClearLoginCredentials();
-                    }
+                    ServiceLocator.CachedAppDirectApi.UnAuthenticate();
                     SyncMyApplications();
                 });
         }

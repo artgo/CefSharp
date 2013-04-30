@@ -180,6 +180,8 @@ namespace AppDirect.WindowsClient.Browser.API
                 _browserWindows.Clear();
             }
 
+            _browserObject.DeleteCookies();
+
             _uiHelper.PerformInUiThread(() =>
                 {
                     foreach (var browserWindow in windows)

@@ -149,5 +149,11 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             var cookiesTask = new CookiesSetTask(cookies);
             CefRuntime.PostTask(CefThreadId.IO, cookiesTask);
         }
+
+        public void DeleteCookies()
+        {
+        //    foreach(var cookie in _cookies)
+        //    CefCookieManager.Global.DeleteCookies()
+        }
     }
 }
