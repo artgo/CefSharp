@@ -53,7 +53,7 @@ namespace AppDirect.WindowsClient.API
         bool IsEmailConfirmed(string email);
 
         /// <summary>
-        /// Gets free subscription plan ID which can used to singup user for this applicaiton for free.
+        /// Gets free subscription plan ID which can be used to signup user for this application for free.
         /// </summary>
         /// <param name="applicationId">Application ID</param>
         /// <returns>Payment plan ID for free plan</returns>

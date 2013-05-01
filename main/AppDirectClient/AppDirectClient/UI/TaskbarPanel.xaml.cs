@@ -79,7 +79,7 @@ namespace AppDirect.WindowsClient.UI
 
             try
             {
-                clickedApp.PinnedToTaskbarNotifier = _mainViewModel.Uninstall(clickedApp);
+                _mainViewModel.RemoveApp(clickedApp);
             }
             catch (Exception ex)
             {

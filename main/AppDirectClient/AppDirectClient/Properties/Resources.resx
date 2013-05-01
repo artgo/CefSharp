@@ -130,7 +130,7 @@
     <value>/home</value>
   </data>
   <data name="BaseAppStoreUrl" xml:space="preserve">
-    <value>10.25.10.74:8080/AppDirect</value>
+    <value>test.appdirect.com</value>
   </data>
   <data name="CheckingForUpdatesString" xml:space="preserve">
     <value>Checking for updates</value>
@@ -187,7 +187,7 @@
     <value>http://windows-client-dev.s3-website-us-east-1.amazonaws.com/version.txt</value>
   </data>
   <data name="BaseUrlProtocol" xml:space="preserve">
-    <value>http://</value>
+    <value>https://</value>
   </data>
   <data name="ErrorGettingMyApps" xml:space="preserve">
     <value>There was a problem loading your applications. Please check your internet connection and try again.</value>

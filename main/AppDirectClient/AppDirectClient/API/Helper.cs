@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common.Log;
+﻿using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
@@ -53,7 +54,7 @@ namespace AppDirect.WindowsClient.API
                     action();
                     return;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Log.ErrorException("Failed to invoke action", e);
 
@@ -76,7 +77,7 @@ namespace AppDirect.WindowsClient.API
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <typeparam name="ReturnType"></typeparam>
         /// <param name="action"></param>
@@ -115,7 +116,7 @@ namespace AppDirect.WindowsClient.API
                     {
                         throw;
                     }
-                    
+
                     Thread.Sleep(accumulatingTimeSpan);
                     accumulatingTimeSpan += retryInterval;
                 }
@@ -137,7 +138,11 @@ namespace AppDirect.WindowsClient.API
             {
                 var clickedApp = GetApplicationFromButtonSender(sender);
 
-                LaunchApp(clickedApp);
+                //if the status is not active the application is disabled in the UI
+                if (clickedApp.Application.ApplicationStatus == Status.Active)
+                {
+                    LaunchApp(clickedApp);
+                }
             }
             catch (Exception ex)
             {
@@ -243,6 +248,28 @@ namespace AppDirect.WindowsClient.API
             }
 
             return ((idleTime > 0) ? (idleTime / 1000) : 0);
+        }
+
+        public static string AddApplication(string applicationId)
+        {
+            if (ServiceLocator.LocalStorage.UserInfo == null)
+            {
+                GetUserInfo();
+            }
+
+            var freeSubscriptionPlanId =
+                ServiceLocator.CachedAppDirectApi.GetFreeSubscriptionPlanId(applicationId);
+            return ServiceLocator.CachedAppDirectApi.ProvisionApplication(ServiceLocator.LocalStorage.UserInfo.UserId, ServiceLocator.LocalStorage.UserInfo.CompanyId, freeSubscriptionPlanId);
+        }
+
+        public static bool RemoveApplication(IApplication application)
+        {
+            return ServiceLocator.CachedAppDirectApi.DeprovisionApplication(application.SubscriptionId);
+        }
+
+        public static void GetUserInfo()
+        {
+            ServiceLocator.LocalStorage.UserInfo = ServiceLocator.CachedAppDirectApi.UserInfo;
         }
     }
 }

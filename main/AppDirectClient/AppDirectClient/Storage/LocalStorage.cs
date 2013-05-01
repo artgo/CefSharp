@@ -1,3 +1,4 @@
+using AppDirect.WindowsClient.API.VO;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Models;
@@ -35,6 +36,8 @@ namespace AppDirect.WindowsClient.Storage
         public bool IsLoadedFromFile { get; set; }
 
         public object Locker = new object();
+        private volatile LoginObject _loginInfo;
+        private volatile UserInfo _userInfo;
 
         public bool UpdateDownloaded { get; set; }
 
@@ -59,7 +62,11 @@ namespace AppDirect.WindowsClient.Storage
 
         public List<string> HiddenApps { get; set; }
 
-        public LoginObject LoginInfo { get; set; }
+        public LoginObject LoginInfo
+        {
+            get { return _loginInfo; }
+            set { _loginInfo = value; }
+        }
 
         public bool HasCredentials
         {
@@ -71,6 +78,12 @@ namespace AppDirect.WindowsClient.Storage
                        !String.IsNullOrEmpty(LoginInfo.Salt) &&
                        LoginInfo.PasswordSetDate.AddDays(DaysBeforePasswordExpires) > DateTime.Now;
             }
+        }
+
+        public UserInfo UserInfo
+        {
+            get { return _userInfo; }
+            set { _userInfo = value; }
         }
 
         public LocalStorage()
@@ -196,6 +209,7 @@ namespace AppDirect.WindowsClient.Storage
         public void ClearLoginCredentials()
         {
             LoginInfo = null;
+            UserInfo = null;
         }
 
         public void ClearAllStoredData()

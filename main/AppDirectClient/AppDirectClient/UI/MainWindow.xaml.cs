@@ -121,16 +121,7 @@ namespace AppDirect.WindowsClient.UI
 
             try
             {
-                if (!clickedApp.Application.IsLocalApp && ServiceLocator.LocalStorage.LoginInfo == null)
-                {
-                    ViewModel.LoginViewModel.LoginHeaderText = String.Format(Properties.Resources.LoginHeader,
-                                                                             clickedApp.Application.Name);
-                    ViewModel.LoginViewModel.IsVisible = Visibility.Visible;
-                }
-                else
-                {
-                    ViewModel.Install(clickedApp);
-                }
+                ViewModel.AddApp(clickedApp);
             }
             catch (Exception ex)
             {

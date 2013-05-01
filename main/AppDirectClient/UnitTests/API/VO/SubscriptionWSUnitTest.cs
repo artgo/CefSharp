@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using AppDirect.WindowsClient.API.VO;
 using NUnit.Framework;
 using System.IO;
@@ -36,39 +37,60 @@ namespace AppDirect.WindowsClient.Tests.API.VO
         }
 
         [Test]
-        public void SunscriptionWSSerializesToNotNull()
+        public void SubscriptionWSSerializesToNotNull()
         {
             Assert.IsNotNull(_serializedXml);
         }
 
         [Test]
-        public void SunscriptionWSSerializesToXml()
+        public void SubscriptionWSSerializesToXml()
         {
             Assert.IsTrue(_serializedXml.StartsWith("<?xml"));
         }
 
         [Test]
-        public void SunscriptionWSSerializesRoot()
+        public void SubscriptionWSSerializesRoot()
         {
             Assert.IsTrue(_serializedXml.Contains("<subscription"));
         }
 
         [Test]
-        public void SunscriptionWSSerializesPaymentPlanId()
+        public void SubscriptionWSSerializesPaymentPlanId()
         {
             Assert.IsTrue(_serializedXml.Contains("<paymentPlanId>0</paymentPlanId>"));
         }
 
         [Test]
-        public void SunscriptionWSSerializesUserId()
+        public void SubscriptionWSSerializesUserId()
         {
             Assert.IsTrue(_serializedXml.Contains("<id>1</id>"));
         }
 
         [Test]
-        public void SunscriptionWSSerializesCompanyId()
+        public void SubscriptionWSSerializesCompanyId()
         {
             Assert.IsTrue(_serializedXml.Contains("<id>2</id>"));
         }
+
+        [Test]
+        public void SubscriptionWSSerializesOrder()
+        {
+            Assert.IsTrue(Regex.IsMatch(_serializedXml, @".*<id>2</id>.*<id>1</id>.*<paymentPlanId>0</paymentPlanId>.*", RegexOptions.Singleline));
+        }
+
+        [Test]
+        public void SubscriptionWSSerializesCompanyIdFirst()
+        {
+            Assert.IsTrue(Regex.IsMatch(_serializedXml, @".*<company>\s*<id>2</id>.*", RegexOptions.Singleline));
+        }
+
+
+        [Test]
+        public void SubscriptionWSSerializesUserIdFirst()
+        {
+            Assert.IsTrue(Regex.IsMatch(_serializedXml, @".*<user>\s*<id>1</id>.*", RegexOptions.Singleline));
+        }
+
+
     }
 }

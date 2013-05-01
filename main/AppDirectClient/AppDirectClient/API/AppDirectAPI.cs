@@ -1,5 +1,5 @@
-﻿using System.Xml.Serialization;
-using AppDirect.WindowsClient.API.VO;
+﻿using AppDirect.WindowsClient.API.VO;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -33,6 +34,8 @@ namespace AppDirect.WindowsClient.API
 
         private static readonly string AssignTemplateUrl = DomainPrefix + @"/api/account/v1/companies/{0}/users/{1}/assign/{2}";
         private static readonly string UnassignTemplateUrl = DomainPrefix + @"/api/account/v1/companies/{0}/users/{1}/unassign/{2}";
+        private const string postMethod = "POST";
+        private const string deleteMethod = "DELETE";
 
         private readonly Uri _serviceUriSuggested = new Uri(DomainPrefix + @"/api/marketplace/v1/listing?filter=FREE");
         private readonly Uri _cookiesDomain = new Uri(DomainPrefix);
@@ -257,17 +260,37 @@ namespace AppDirect.WindowsClient.API
                 return null;
             }
 
-            var request = BuildHttpWebRequestForUrl(SubscribeTemplateUrl, true, false);
+            var requestUrl = OAuthBase.GetOAuthSignedUrl(SubscribeTemplateUrl, postMethod);
+            Console.WriteLine(requestUrl);
 
-            request.CookieContainer = _context;
+            var request = BuildHttpWebRequestForUrl(requestUrl, true, false);
+
             request.ContentType = "application/xml";
-
 
             var outStream = request.GetRequestStream();
             _subscriptionSerializer.Serialize(outStream, subscriptionWs);
             outStream.Close();
 
-            var response = (HttpWebResponse)request.GetResponse();
+            HttpWebResponse response;
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                var exceptionResponse = (HttpWebResponse)ex.Response;
+
+                if (exceptionResponse.StatusCode == HttpStatusCode.Conflict)
+                {
+                    throw new ConflictException();
+                }
+                if ((int)exceptionResponse.StatusCode == 424)
+                {
+                    throw new FailedDependencyException();
+                }
+
+                throw;
+            }
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
@@ -297,18 +320,20 @@ namespace AppDirect.WindowsClient.API
                 return false;
             }
 
-            var request = (HttpWebRequest)WebRequest.Create(string.Format(UnsubscribeTemplateUrl, subscriptionId));
+            var url = string.Format(UnsubscribeTemplateUrl, subscriptionId);
+            string requestUrl = OAuthBase.GetOAuthSignedUrl(url, deleteMethod);
+
+            var request = (HttpWebRequest)WebRequest.Create(requestUrl);
             request.UserAgent = UserAgent;
-            request.Method = "DELETE";
+            request.Method = deleteMethod;
             request.Accept = HtmlAcceptString;
             request.Headers.Add("accept-language: en-us,en");
             request.Headers.Add("accept-charset: iso-8859-1,*,utf-8");
             request.KeepAlive = true;
             request.AllowAutoRedirect = true;
             request.Referer = DomainPrefix + @"/login";
-            request.CookieContainer = _context;
 
-            var response = (HttpWebResponse) request.GetResponse();
+            var response = (HttpWebResponse)request.GetResponse();
 
             var responseStream = response.GetResponseStream();
             if (responseStream == null)
@@ -351,7 +376,7 @@ namespace AppDirect.WindowsClient.API
                 return false;
             }
 
-            var request = BuildHttpWebRequestForUrl(string.Format(template, HttpUtility.UrlEncode(companyId), 
+            var request = BuildHttpWebRequestForUrl(string.Format(template, HttpUtility.UrlEncode(companyId),
                 HttpUtility.UrlEncode(userId), HttpUtility.UrlEncode(subscriptionId)), true, true);
 
             request.CookieContainer = _context;

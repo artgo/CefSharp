@@ -97,7 +97,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 10.25.10.74:8080/AppDirect.
+        ///   Looks up a localized string similar to test.appdirect.com.
         /// </summary>
         internal static string BaseAppStoreUrl {
             get {
@@ -106,7 +106,7 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://.
+        ///   Looks up a localized string similar to https://.
         /// </summary>
         internal static string BaseUrlProtocol {
             get {

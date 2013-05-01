@@ -59,5 +59,23 @@ namespace AppDirect.WindowsClient.Common.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to appdirect-277.
+        /// </summary>
+        internal static string ConsumerKey {
+            get {
+                return ResourceManager.GetString("ConsumerKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to rW-KM2U0q1dP5wyd.
+        /// </summary>
+        internal static string ConsumerSecret {
+            get {
+                return ResourceManager.GetString("ConsumerSecret", resourceCulture);
+            }
+        }
     }
 }

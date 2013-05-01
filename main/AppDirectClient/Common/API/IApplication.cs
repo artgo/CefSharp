@@ -44,5 +44,11 @@ namespace AppDirect.WindowsClient.Common.API
         
         [DataMember]
         public abstract bool BrowserResizable { get; set; }
+
+        [DataMember]
+        public abstract string SubscriptionId { get; set; }
+
+        [DataMember]
+        public abstract Status ApplicationStatus { get; set; }
     }
 }
