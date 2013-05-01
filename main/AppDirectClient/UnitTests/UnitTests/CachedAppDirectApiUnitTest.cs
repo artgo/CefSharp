@@ -240,5 +240,47 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
 
             Assert.AreNotEqual(testProduct.Pricing.Editions[0].Plans[0].Id, _cachedAppDirectApi.GetFreeSubscriptionPlanId(_applicationId));
         }
+
+        [Test]
+        public void GetFreeSubscriptionPlanIdReturnsFreePlan()
+        {
+            string _applicationId = "test352";
+            var testProduct = _serializer.Deserialize<Product>(_testProductXml);
+            
+            _appDirectApiMock.GetExtendedAppInfo(_applicationId).Returns(testProduct);
+
+            var freeSubscriptionPlanId = _cachedAppDirectApi.GetFreeSubscriptionPlanId(_applicationId);
+            ProductPricingEditionPlansPlan returnedPlan = null;
+            foreach (var edition in testProduct.Pricing.Editions)
+            {
+                foreach (var plan in edition.Plans)
+                {
+                    if (plan.Id == freeSubscriptionPlanId)
+                    {
+                        returnedPlan = plan;
+                        break;
+                    }
+                }
+                if (returnedPlan != null)
+                {
+                    break;
+                }
+            }
+
+            if (returnedPlan == null)
+            {
+                Assert.Fail();
+            }
+
+            foreach (var cost in returnedPlan.Costs)
+            {
+                Assert.IsTrue(cost.MeteredUsage == null || cost.MeteredUsage == false);
+
+                foreach (var amount in cost.Amounts)
+                {
+                    Assert.IsTrue(amount.Value == null || amount.Value == decimal.Zero);
+                }
+            }
+        }
     }
 }
