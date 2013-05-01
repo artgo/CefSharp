@@ -21,7 +21,6 @@ namespace AppDirect.WindowsClient.API.VO
 
         public string CompanyId { get; set; }
 
-        [XmlIgnore]
-        public CultureInfo Culture { get; set; }
+        public string Locale { get; set; }
     }
 }

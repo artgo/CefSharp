@@ -73,33 +73,17 @@ namespace AppDirect.WindowsClient.API
             get 
             { 
                 var userInfoRaw = _appDirectApi.UserInfo;
-                var cultureStr = userInfoRaw.Locale;
                 var result = new UserInfo()
                     {
                         UserId = userInfoRaw.User_Id,
                         CompanyId = userInfoRaw.Company_Id,
                         Email = userInfoRaw.Email,
+                        Name = userInfoRaw.Name,
                         GivenName = userInfoRaw.Given_Name,
                         FamilyName = userInfoRaw.Family_Name,
-                        Verified = userInfoRaw.Verified
+                        Verified = userInfoRaw.Verified,
+                        Locale = userInfoRaw.Locale
                     };
-
-                if (!string.IsNullOrEmpty(cultureStr))
-                {
-                    if (cultureStr.Contains("_"))
-                    {
-                        cultureStr = cultureStr.Replace('_', '-');
-                    }
-
-                    try
-                    {
-                        result.Culture = new CultureInfo(cultureStr);
-                    }
-                    catch (ArgumentException e)
-                    {
-                        _log.ErrorException("Failed to convert culture " + cultureStr, e);
-                    }
-                }
 
                 return result;
             } 
@@ -242,6 +226,11 @@ namespace AppDirect.WindowsClient.API
 
         public string ProvisionApplication(string userId, string companyId, string pricingPlanId)
         {
+            if (!IsAuthenticated)
+            {
+                return null;
+            }
+
             var subscriptionWs = new SubscriptionWS();
             subscriptionWs.paymentPlanId = pricingPlanId;
             subscriptionWs.user = new UserWS() {id = userId};
