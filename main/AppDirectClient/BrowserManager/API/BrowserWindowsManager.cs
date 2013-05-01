@@ -189,6 +189,11 @@ namespace AppDirect.WindowsClient.Browser.API
                 });
         }
 
+        public void ClearAllCookies()
+        {
+            _browserObject.DeleteCookies();
+        }
+
         public virtual IEnumerable<IWindowData> GetBrowserWindowDatas()
         {
             var openWindows = new List<IWindowData>();

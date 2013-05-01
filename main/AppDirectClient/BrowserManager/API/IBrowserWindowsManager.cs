@@ -18,5 +18,7 @@ namespace AppDirect.WindowsClient.Browser.API
         void CloseAllWindows();
 
         IEnumerable<IWindowData> GetBrowserWindowDatas();
+
+        void ClearAllCookies();
     }
 }
