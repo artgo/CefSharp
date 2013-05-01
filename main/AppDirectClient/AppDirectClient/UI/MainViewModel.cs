@@ -211,7 +211,7 @@ namespace AppDirect.WindowsClient.UI
             catch (ConflictException ex)
             {
                 _log.ErrorException("Provisioning Application Exception", ex);
-                errorInfo = "{0} has been requested previously and will be added to your applications as soon as provisioning is complete.";
+                errorInfo = String.Format("{0} has been requested previously and will be added to your applications as soon as provisioning is complete.", applicationVM.Application.Name);
             }
             catch (Exception ex)
             {
