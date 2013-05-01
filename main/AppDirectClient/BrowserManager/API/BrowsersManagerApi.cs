@@ -94,6 +94,7 @@ namespace AppDirect.WindowsClient.Browser.API
         {
             _browserWindowsManager.CloseAllWindows();
             _browserWindowsManager.Session = new AppDirectSession();
+            _browserWindowsManager.ClearAllCookies();
         }
 
         public void CloseBrowserProcess()

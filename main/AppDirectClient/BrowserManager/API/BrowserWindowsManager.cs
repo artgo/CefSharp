@@ -180,8 +180,6 @@ namespace AppDirect.WindowsClient.Browser.API
                 _browserWindows.Clear();
             }
 
-            _browserObject.DeleteCookies();
-
             _uiHelper.PerformInUiThread(() =>
                 {
                     foreach (var browserWindow in windows)
@@ -189,6 +187,11 @@ namespace AppDirect.WindowsClient.Browser.API
                         browserWindow.Close();
                     }
                 });
+        }
+
+        public void ClearAllCookies()
+        {
+            _browserObject.DeleteCookies();
         }
 
         public virtual IEnumerable<IWindowData> GetBrowserWindowDatas()

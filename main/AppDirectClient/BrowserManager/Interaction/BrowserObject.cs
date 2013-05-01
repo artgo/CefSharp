@@ -144,6 +144,23 @@ namespace AppDirect.WindowsClient.Browser.Interaction
             }
         }
 
+        private class CookiesDeleteTask : CefTask
+        {
+            private class DeleteCookieVisitor : CefCookieVisitor
+            {
+                protected override bool Visit(CefCookie cookie, int count, int total, out bool delete)
+                {
+                    delete = true;
+                    return true;
+                }
+            }
+
+            protected override void Execute()
+            {
+                CefCookieManager.Global.VisitAllCookies(new DeleteCookieVisitor());
+            }
+        }
+
         public void SetCookies(IList<Cookie> cookies)
         {
             var cookiesTask = new CookiesSetTask(cookies);
@@ -152,8 +169,8 @@ namespace AppDirect.WindowsClient.Browser.Interaction
 
         public void DeleteCookies()
         {
-        //    foreach(var cookie in _cookies)
-        //    CefCookieManager.Global.DeleteCookies()
+            var deleteAll = new CookiesDeleteTask();
+            CefRuntime.PostTask(CefThreadId.IO, deleteAll);
         }
     }
 }
