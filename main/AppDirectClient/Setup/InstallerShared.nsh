@@ -99,9 +99,13 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
       StrCmp $1 "50" error loop4 ;try for 10 seconds
 
   error:
-    MessageBox MB_OK "${APPNAME} can not update because the application is currently running or is in a faulted state.  Please uninstall the application before proceeding. Error: $6"
-	  Abort
-
+    WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" "updater" $EXEPATH
+	Delete "$SMSTARTUP\${APPNAME}.lnk"	
+	MessageBox MB_YESNO "You must restart your computer in order to complete this update.  Would you like to restart now?" IDYES restart
+	Abort
+	restart:
+	Reboot
+	
   finalEnd:
 !macroend
 
