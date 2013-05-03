@@ -39,20 +39,6 @@ namespace AppDirect.WindowsClient.Tests.API
         }
 
         [Test]
-        public void TestDisplayApplicationThrowsIfNotStarted()
-        {
-            Assert.Throws<NullReferenceException>(() => _browserWindowsCommunicator.DisplayApplication(new Application()));
-        }
-
-        [Test]
-        public void TestDisplayApplicationThrowsIfStopped()
-        {
-            _browserWindowsCommunicator.Start();
-            _browserWindowsCommunicator.Stop();
-            Assert.Throws<NullReferenceException>(() => _browserWindowsCommunicator.DisplayApplication(new Application()));
-        }
-
-        [Test]
         public void TestIfRemoteThrowsWeCallItAgain()
         {
             var thrownAlready = false;

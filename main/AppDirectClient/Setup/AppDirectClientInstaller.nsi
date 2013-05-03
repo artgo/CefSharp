@@ -3,6 +3,7 @@
 !include "MUI.nsh"
 !include "InstallerShared.nsh"
 !include "FindProcess.nsh"
+!include "ga.nsh"
 ;--------------------------------
 ; The name of the installer
 Name "${APPNAME}"
@@ -204,13 +205,23 @@ Section "Start Menu Shortcuts"
 SectionEnd
 
 Function .onInstSuccess
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Success" "" ""
   Sleep 200
   Exec "${APPEXEPATH}"
 FunctionEnd
 
-Function .onInit 
+Function .onInit
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Started" "" ""
   Push $4
   StrCpy $4 1
   !insertmacro CloseApplicationIfRunning
   Pop $4
-FunctionEnd 
+FunctionEnd
+
+Function .onInstFailed
+    !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Failed" "" ""
+FunctionEnd
+
+Function .onGUIEnd
+    !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Ended" "" ""
+FunctionEnd

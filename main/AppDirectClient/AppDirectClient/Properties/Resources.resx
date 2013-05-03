@@ -195,4 +195,10 @@
   <data name="RegistrationPath" xml:space="preserve">
     <value>/signup</value>
   </data>
+  <data name="BaseAnalyticsDomainName" xml:space="preserve">
+    <value>test.appdirect.com</value>
+  </data>
+  <data name="GACategory" xml:space="preserve">
+    <value>DesktopClient</value>
+  </data>
 </root>

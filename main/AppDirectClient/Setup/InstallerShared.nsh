@@ -18,6 +18,7 @@
 !define NATIVEDLLPATH "$INSTDIR\native.dll"
 !define COMMONDLLPATH "$INSTDIR\Common.dll"
 !define BROWSERCACHEPATH "$INSTDIR\CACHE"
+!define GAACCOUNT "UA-33544164-4"
 
 !define COPY64 "/r 64Bit\*.*"
 !define COPY32 "/r 32Bit\*.*"

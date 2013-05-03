@@ -108,6 +108,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GaDotNet.Common">
+      <HintPath>libs\GaDotNet.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.3.0.1.10\lib\net35\Ninject.dll</HintPath>
@@ -138,6 +141,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Analytics\AsyncAnalytics.cs" />
+    <Compile Include="Analytics\GoogleAnalytics.cs" />
+    <Compile Include="Analytics\IAnalytics.cs" />
     <Compile Include="API\BrowsersManagerApiServiceBuilder.cs" />
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
     <Compile Include="API\Helper.cs" />
@@ -517,9 +523,12 @@
   <ItemGroup>
     <Resource Include="UI\Images\BtnBorder.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)AppDirectClient.exe" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+    <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r
+xcopy "$(ProjectDir)libs" "$(SolutionDir)Setup\AppDirectClient" /e /y /i /r
+xcopy "$(TargetDir)AppDirectClient.exe" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 xcopy "$(TargetDir)AppDirectClient.exe.config" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 xcopy "$(TargetDir)Ninject.dll" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 xcopy "$(TargetDir)AppDirectClient.exe.nlog" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
