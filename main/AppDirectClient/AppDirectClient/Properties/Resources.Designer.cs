@@ -99,6 +99,15 @@ namespace AppDirect.WindowsClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to test.appdirect.com.
         /// </summary>
+        internal static string BaseAnalyticsDomainName {
+            get {
+                return ResourceManager.GetString("BaseAnalyticsDomainName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to test.appdirect.com.
+        /// </summary>
         internal static string BaseAppStoreUrl {
             get {
                 return ResourceManager.GetString("BaseAppStoreUrl", resourceCulture);
@@ -165,6 +174,15 @@ namespace AppDirect.WindowsClient.Properties {
         internal static string ForgotPasswordUrlString {
             get {
                 return ResourceManager.GetString("ForgotPasswordUrlString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DesktopClient.
+        /// </summary>
+        internal static string GACategory {
+            get {
+                return ResourceManager.GetString("GACategory", resourceCulture);
             }
         }
         

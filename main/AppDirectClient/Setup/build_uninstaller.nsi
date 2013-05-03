@@ -55,6 +55,7 @@ Section "Uninstall"
 SectionEnd
 
 Function un.onInit
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Uninstall" "Started" "" ""
   Push $4
   StrCpy $4 0
   System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
@@ -71,10 +72,23 @@ Function un.onInit
     Pop $4
       
   error:
+	!insertmacro GoogleAnalytics "${GAACCOUNT}" "Uninstall" "Failed" "" ""
     MessageBox MB_OK "${APPNAME} can not uninstall because the application is currently running.  Please close the application before uninstalling. Error: $6"
-	  Abort
+	Abort
 	  
   finalEnd:  
 	nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
 	sleep 500
-FunctionEnd 
+FunctionEnd
+
+Function un.onUninstFailed
+    !insertmacro GoogleAnalytics "${GAACCOUNT}" "Uninstall" "Failed" "" ""
+FunctionEnd
+
+Function un.onUninstSuccess
+    !insertmacro GoogleAnalytics "${GAACCOUNT}" "Uninstall" "Success" "" ""
+FunctionEnd
+
+Function un.onGUIEnd
+    !insertmacro GoogleAnalytics "${GAACCOUNT}" "Uninstall" "Ended" "" ""
+FunctionEnd

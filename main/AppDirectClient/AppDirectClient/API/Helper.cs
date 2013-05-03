@@ -32,6 +32,8 @@ namespace AppDirect.WindowsClient.API
         public static readonly int DefaultBrowserWidth = 1000;
         public static readonly int DefaultBrowserHeight = 581;
         public static readonly bool DefaultBrowserResizable = true;
+        public static readonly string BaseAnalyticsDomainName = Properties.Resources.BaseAnalyticsDomainName;
+        public static readonly string GaCategory = Properties.Resources.GACategory;
         public static readonly string BaseAppStoreDomainName = Properties.Resources.BaseAppStoreUrl;
         public static readonly string BaseAppStoreUrl = Properties.Resources.BaseUrlProtocol + BaseAppStoreDomainName;
         private static readonly IUiHelper UiHelper = new UiHelper(new NLogLogger("UiHelper"));

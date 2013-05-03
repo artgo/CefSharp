@@ -85,6 +85,9 @@
       <Name>AppDirectClient</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(TargetDir)VersionPrint.exe" &gt; "$(SolutionDir)Setup\version.txt"

@@ -90,8 +90,9 @@ namespace AppDirect.WindowsClient
 
             base.OnStartup(e);
 
-            var stopTicks = Environment.TickCount;
-            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + (stopTicks - startTicks) + "ms."));
+            var timeElapsed = Environment.TickCount - startTicks;
+            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
+            ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
         }
 
         private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
@@ -149,6 +150,7 @@ namespace AppDirect.WindowsClient
         private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
         {
             _log.ErrorException("Exception during runtime", unhandledExceptionEventArgs.ExceptionObject as Exception);
+            ServiceLocator.Analytics.Notify("Crash", unhandledExceptionEventArgs.ExceptionObject.GetType().ToString(), 0);
             MessageBox.Show(unhandledExceptionEventArgs.ExceptionObject.ToString());
         }
 
