@@ -193,8 +193,11 @@ namespace AppDirect.WindowsClient.UI
         public void AddAppButton(object sender, EventArgs e)
         {
             var applicationViewModel = sender as ApplicationViewModel;
-            ViewModel.AddPinnedApp(applicationViewModel);
-            Helper.PerformInUiThread(() => AddButton(applicationViewModel));
+            if (!ViewModel.PinnedApps.Contains(applicationViewModel))
+            {
+                ViewModel.AddPinnedApp(applicationViewModel);
+                Helper.PerformInUiThread(() => AddButton(applicationViewModel));
+            }
         }
 
         private void AppButton_Click(object sender, RoutedEventArgs e)

@@ -31,7 +31,7 @@
         <SolidColorBrush x:Key="TextFieldDefaultBorderColor" Color="#333333" />
         <SolidColorBrush x:Key="MenuItemColor" Color="#252525" />
         <SolidColorBrush x:Key="MenuItemHoverColor" Color="#252e34" />
-        <SolidColorBrush x:Key="SeparatorColor" Color="#181818" />
+        <SolidColorBrush x:Key="SeparatorColor" Color="#191919" />
         <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
         <Storyboard x:Key="enterGotFocus" >
             <DoubleAnimation Duration="0:0:0.2" To=".4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Message"/>
@@ -670,11 +670,17 @@
             </Setter>
         </Style>
         <Style x:Key="MenuItemSeparator" TargetType="Separator">
-            <Setter Property="Margin" Value="0,-1,0,-1" />
-            <Setter Property="BorderBrush" Value="{StaticResource SeparatorColor}" />
-            <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="Background" Value="{StaticResource SeparatorColor}" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Separator}">
+                        <Grid SnapsToDevicePixels="true">
+                            <Rectangle Height="1"
+                               Margin="0,0,0,24"
+                               Fill="{StaticResource SeparatorColor}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Setter Property="LayoutTransform">
                 <Setter.Value>
                     <RotateTransform Angle="90" />
