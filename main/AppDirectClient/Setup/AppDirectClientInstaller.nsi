@@ -3,7 +3,6 @@
 !include "MUI.nsh"
 !include "InstallerShared.nsh"
 !include "FindProcess.nsh"
-!include "ga.nsh"
 ;--------------------------------
 ; The name of the installer
 Name "${APPNAME}"

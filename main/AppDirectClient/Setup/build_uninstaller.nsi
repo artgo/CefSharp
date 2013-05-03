@@ -72,8 +72,9 @@ Function un.onInit
     Pop $4
       
   error:
+	!insertmacro GoogleAnalytics "${GAACCOUNT}" "Uninstall" "Failed" "" ""
     MessageBox MB_OK "${APPNAME} can not uninstall because the application is currently running.  Please close the application before uninstalling. Error: $6"
-	  Abort
+	Abort
 	  
   finalEnd:  
 	nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"

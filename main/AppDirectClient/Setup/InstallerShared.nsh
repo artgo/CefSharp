@@ -1,3 +1,5 @@
+!include "ga.nsh"
+
 !define APPNAME "AppDirectClient"
 !define COMPANYNAME "AppDirect"
 !define COMPANYDISPLAYNAME "AppDirect Inc."
@@ -100,6 +102,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
       StrCmp $1 "50" error loop4 ;try for 10 seconds
 
   error:
+    !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Retry" "" ""
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" "updater" $EXEPATH
 	Delete "$SMSTARTUP\${APPNAME}.lnk"	
 	MessageBox MB_YESNO "You must restart your computer in order to complete this update.  Would you like to restart now?" IDYES restart
@@ -123,5 +126,5 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   Is64Bit:
   File ${COPY64}
 
-ENDCOPY:
+  ENDCOPY:
 !macroend
