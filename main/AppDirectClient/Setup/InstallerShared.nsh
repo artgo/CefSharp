@@ -1,5 +1,7 @@
 !include "ga.nsh"
+!include LogicLib.nsh
 
+!define ___X64__NSH___
 !define APPNAME "AppDirectClient"
 !define COMPANYNAME "AppDirect"
 !define COMPANYDISPLAYNAME "AppDirect Inc."
@@ -117,14 +119,39 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   ; Files to copy
   File ${COPYFILES}
 
-  EnumRegKey $0 HKLM "SOFTWARE\Wow6432Node" 0
-  IfErrors 0 Is64Bit
-
-  File ${COPY32}
-  Goto ENDCOPY
-
-  Is64Bit:
-  File ${COPY64}
+ ${If} ${RunningX64}
+ File ${COPY64}
+ goto ENDCOPY
+ ${EndIf}
+ 
+ File ${COPY32}
+ Goto ENDCOPY
 
   ENDCOPY:
 !macroend
+
+!macro _RunningX64 _a _b _t _f
+  !insertmacro _LOGICLIB_TEMP
+  System::Call kernel32::GetCurrentProcess()i.s
+  System::Call kernel32::IsWow64Process(is,*i.s)
+  Pop $_LOGICLIB_TEMP
+  !insertmacro _!= $_LOGICLIB_TEMP 0 `${_t}` `${_f}`
+!macroend
+
+!define RunningX64 `"" RunningX64 ""`
+
+!macro DisableX64FSRedirection
+
+  System::Call kernel32::Wow64EnableWow64FsRedirection(i0)
+
+!macroend
+
+!define DisableX64FSRedirection "!insertmacro DisableX64FSRedirection"
+
+!macro EnableX64FSRedirection
+
+  System::Call kernel32::Wow64EnableWow64FsRedirection(i1)
+
+!macroend
+
+!define EnableX64FSRedirection "!insertmacro EnableX64FSRedirection"
