@@ -1,6 +1,5 @@
 !include "InstallerShared.nsh"
 !include "MUI.nsh"
-!include "LogicLib.nsh"
 !include "FindProcess.nsh"
 
 ;--------------------------------
