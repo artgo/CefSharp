@@ -1,17 +1,17 @@
-﻿using System.IO;
-using System.Security;
-using System.Windows.Forms;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
-using System.Threading;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using Control = System.Windows.Controls.Control;
 using DWORD = System.UInt32;
-using HMONITOR = System.IntPtr;
 using HWND = System.IntPtr;
+
 using LPARAM = System.IntPtr;
+
 using Point = System.Drawing.Point;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
@@ -29,7 +29,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private const int BuffSize = 256;
         private const double StandardDpi = 96;
         private const string StartButtonClass = @"Button";
-        private const uint NotHideWindow = ~(uint) SetWindowPosConstants.SWP_HIDEWINDOW;
+        private const uint NotHideWindow = ~(uint)SetWindowPosConstants.SWP_HIDEWINDOW;
         private const int FailedValue = -1;
 
         // win 7  default with large buttons
@@ -70,7 +70,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public TaskbarPosition TaskbarPosition { get { return _taskbarPosition; } }
 
         public TaskbarIconsSize TaskbarIconsSize { get { return _taskbarIconsSize; } }
-        
+
         public Screen TaskbarScreen { get { return _taskbarScreen; } }
 
         public Double DpiScalingFactor { get { return _dpiScalingFactor; } }
@@ -142,6 +142,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             // 94000C00 is from the Start button
             hwndSourceParams.WindowStyle = (int)(0
+
                 // popup is prohibiting child style on Win8
                 //| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
                 | (uint)WindowsStyleConstants.WS_VISIBLE							// 10000000
@@ -158,7 +159,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             ;
 
             hwndSourceParams.UsesPerPixelOpacity = true;		// set the WS_EX_LAYERED extended window style
-            _hwndSource = new HwndSource(hwndSourceParams) {RootVisual = wnd};
+            _hwndSource = new HwndSource(hwndSourceParams) { RootVisual = wnd };
 
             _wndProcHook = WndProc;
             _hwndSource.AddHook(_wndProcHook);
@@ -219,7 +220,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
             else if (uMsg == (uint)WindowsMessages.WM_WINDOWPOSCHANGING)
             {
-                var winPos = (WINDOWPOS) Marshal.PtrToStructure(lParam, typeof(WINDOWPOS));
+                var winPos = (WINDOWPOS)Marshal.PtrToStructure(lParam, typeof(WINDOWPOS));
                 winPos.flags = winPos.flags & NotHideWindow;
                 Marshal.StructureToPtr(winPos, lParam, true);
             }
@@ -285,7 +286,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 {
                     var val = Registry.GetValue(SmallIconsPath, SmallIconsFiledName, FailedValue);
 
-                    if ((val is int) && ((int) val) == IconsSize.SMALL)
+                    if ((val is int) && ((int)val) == IconsSize.SMALL)
                     {
                         iconsSize = TaskbarIconsSize.Small;
                     }
@@ -437,6 +438,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 return false;
             }
+
             // Flag to dispose HwndSource after everything is complete.
             // We can't dispose HwndSource in this method because then we won't get
             //   message from hook that unhooking is complete. So we do it on that unhooking complete message.
@@ -466,7 +468,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return true;
         }
 
-        // return global coords of left top conner of our window = placeholder of buttons
+        // return global coords of left top corner of our window = placeholder of buttons
+
         private System.Drawing.Point CalculateButtonPosition()
         {
             var p = GetTaskbarRect();
@@ -476,11 +479,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             if (orientation.IsVertical())
             {
-                pos = new System.Drawing.Point(p.Left, p.Top + s.Height);
+                pos = new System.Drawing.Point(p.Left, s.Top + s.Height);//place from the bottom of start button
             }
             else
             {
-                pos = new System.Drawing.Point(p.Left + s.Width, p.Top);
+                pos = new System.Drawing.Point(s.Left + s.Width, p.Top);//place from the right of start button
             }
 
             return pos;
@@ -522,11 +525,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private RectWin CalculateShiftedRebarCoords(int diff)
         {
-            var newRebarCoords = new RectWin();
-            if (!User32Dll.GetWindowRect(_rebarHwnd, newRebarCoords))
-            {
-                throw new InteropException("Cannot calculate new Rebar position");
-            }
+            var newRebarCoords = GetRebarRect();
 
             var taskbarPos = GetTaskbarRect();
 
@@ -545,12 +544,26 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
             else
             {
+                var heightDiff = (taskbarPos.Height - newRebarCoords.Height) / 2;
+
+                newRebarCoords.Top -= heightDiff;
+                newRebarCoords.Bottom -= heightDiff;
                 newRebarCoords.Left += diff;
 
                 // Do not do this since we are already trimming in C++ part
                 //newRebarCoords.Width -= diff;
             }
 
+            return newRebarCoords;
+        }
+
+        private RectWin GetRebarRect()
+        {
+            var newRebarCoords = new RectWin();
+            if (!User32Dll.GetWindowRect(_rebarHwnd, newRebarCoords))
+            {
+                throw new InteropException("Cannot calculate new Rebar position");
+            }
             return newRebarCoords;
         }
 
@@ -568,7 +581,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     ReactToSizeMove(wParam.ToInt32() != 0);
                     handled = true;
                 }
-            } 
+            }
             else if (msg == _dllUnloadMessageId)
             {
                 if (_shutdownStarted && !_isShutdown)
@@ -597,7 +610,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     handled = true;
                 }
             }
-            else if (msg == (int) WindowsMessages.WM_DISPLAYCHANGE)
+            else if (msg == (int)WindowsMessages.WM_DISPLAYCHANGE)
             {
                 if (!_shutdownStarted && !_isShutdown)
                 {
@@ -846,7 +859,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private Point ScreenFromWpf(Point local, IntPtr hwnd)
         {
-            var p = new Point() { X = local.X, Y = local.Y};
+            var p = new Point() { X = local.X, Y = local.Y };
             var ok = User32Dll.ClientToScreen(hwnd, ref p);
             if (!ok)
             {
