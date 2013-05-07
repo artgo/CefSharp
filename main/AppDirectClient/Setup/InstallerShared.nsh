@@ -52,7 +52,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   System::Call "user32::GetWindowThreadProcessId(i $0, *i .r1 ) i .r2"
   System::Call "kernel32::OpenProcess(i ${SYNC_TERM}, i 0, i r1)i .r2"
   SendMessage $0 $3 0 0
-  System::Call "kernel32::WaitForSingleObject(i r2, i 12000) i.r5"
+  System::Call "kernel32::WaitForSingleObject(i r2, i 30000) i.r5"
   StrCpy $6 $5
   StrCmp $5 0 end0 error
   end0:
@@ -107,7 +107,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
     !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Retry" "" ""
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" "updater" $EXEPATH
 	Delete "$SMSTARTUP\${APPNAME}.lnk"	
-	MessageBox MB_YESNO "You must restart your computer in order to complete this update.  Would you like to restart now?" IDYES restart
+	MessageBox MB_YESNO "${APPNAME} has updates ready.  You must restart your computer to complete these updates. Would you like to restart now?" IDYES restart
 	Abort
 	restart:
 	Reboot

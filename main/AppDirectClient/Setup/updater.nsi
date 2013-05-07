@@ -5,7 +5,7 @@
 ;--------------------------------
 
 ; The name of the installer
-Name "updater"
+Name "${APPNAME} Updater"
 
 ;--------------------------------
 ;Replace Default Installer Icon
