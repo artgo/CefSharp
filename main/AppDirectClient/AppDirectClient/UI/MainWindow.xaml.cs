@@ -70,22 +70,22 @@ namespace AppDirect.WindowsClient.UI
             {
                 case TaskbarPosition.Bottom:
                     Left = screen.WorkingArea.Left * scalingFactor;
-                    Top = (screen.WorkingArea.Bottom * scalingFactor) - Height;
+                    Top = ((screen.Bounds.Bottom - TaskbarApi.Instance.TaskbarHeight ) * scalingFactor) - Height;
                     break;
 
                 case TaskbarPosition.Left:
-                    Left = screen.WorkingArea.Left * scalingFactor;
+                    Left = (screen.Bounds.Left + TaskbarApi.Instance.TaskbarHeight) * scalingFactor;
                     Top = screen.WorkingArea.Top * scalingFactor;
                     break;
 
                 case TaskbarPosition.Right:
-                    Left = (screen.WorkingArea.Right * scalingFactor) - Width;
+                    Left = ((screen.Bounds.Right - TaskbarApi.Instance.TaskbarHeight) * scalingFactor) - Width;
                     Top = screen.WorkingArea.Top * scalingFactor;
                     break;
 
                 case TaskbarPosition.Top:
                     Left = screen.WorkingArea.Left * scalingFactor;
-                    Top = screen.WorkingArea.Top * scalingFactor;
+                    Top = (screen.Bounds.Top + TaskbarApi.Instance.TaskbarHeight) * scalingFactor;
                     break;
             }
         }
