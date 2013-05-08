@@ -153,12 +153,40 @@ namespace AppDirect.WindowsClient.API
                     Name = applicationsApplication.Name,
                     UrlString = applicationsApplication.LoginUrl,
                     IsLocalApp = false,
-                    Price = applicationsApplication.StartingPrice
+                    Price = applicationsApplication.StartingPrice,
+                    Status = ConvertStatus(applicationsApplication.Status, applicationsApplication.SubscriptionStatus),
+                    SubscriptionId = applicationsApplication.SubscriptionId
                 };
                 appList.Add(app);
             }
 
             return appList;
+        }
+
+        /// <summary>
+        /// Considers the value of status and subscriptionStatus to return the most accurate current status
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="subscriptionStatus"></param>
+        /// <returns></returns>
+        private static Status ConvertStatus(string status, string subscriptionStatus)
+        {
+            var status1 = TryParseStatus(status);
+            var status2 = TryParseStatus(subscriptionStatus);
+            
+            return (Status)Math.Max((int)status1, (int)status2);
+        }
+
+        private static Status TryParseStatus(string status)
+        {
+            try
+            {
+                return (Status)Enum.Parse(typeof(Status), status, true);
+            }
+            catch (ArgumentException)
+            {
+                return Status.Unknown;
+            }
         }
 
         public bool RegisterUser(string firstName, string lastName, string password, string confirmPassword, string email,

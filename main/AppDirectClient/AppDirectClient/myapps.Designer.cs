@@ -45,6 +45,10 @@ namespace AppDirect.WindowsClient
         public string Status { get; set; }
         [XmlElement("startingPrice")]
         public string StartingPrice { get; set; }
+        [XmlElement("subscriptionId")]
+        public string SubscriptionId { get; set; }
+        [XmlElement("subscriptionStatus")]
+        public string SubscriptionStatus { get; set; }
         [XmlArray(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [XmlArrayItem("entry", typeof(MyappsMyappVersionsEntry), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public List<MyappsMyappVersionsEntry> Versions { get; set; }

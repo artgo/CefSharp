@@ -49,6 +49,6 @@ namespace AppDirect.WindowsClient.Common.API
         public abstract string SubscriptionId { get; set; }
 
         [DataMember]
-        public abstract Status ApplicationStatus { get; set; }
+        public abstract Status Status { get; set; }
     }
 }

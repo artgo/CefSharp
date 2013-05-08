@@ -18,13 +18,13 @@ namespace AppDirect.WindowsClient.UI
 
         public Application Application { get; set; }
 
-        public Visibility InProgressVisibility
+        public Status ApplicationStatus
         {
-            get { return _inProgressVisibility; }
+            get { return Application.Status; }
             set
             {
-                _inProgressVisibility = value;
-                NotifyPropertyChanged("InProgressVisibility");
+                Application.Status = value;
+                NotifyPropertyChanged("ApplicationStatus");
             }
         }
 
