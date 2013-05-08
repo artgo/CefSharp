@@ -34,6 +34,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         // win 7  default with large buttons
         private const int DefaultStartButtonWidth = 54;
+        private int _taskbarMargins = 0;
 
         private const int DefaultStartButtonHeight = 40;
         private const string CloseMessageName = @"AppDirectForceApplicationCloseMessage";
@@ -95,6 +96,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _taskbarPosition = GetTaskbarEdge();
             _taskbarIconsSize = GetTaskbarIconSize();
 
+            _taskbarMargins = GetTaskbarHeight() - GetRebarHeight();
             _buttonsWindowSize = GetButtonsWindowSize(true);
             _taskbarHeight = GetTaskbarHeight();
             _taskbarScreen = Screen.FromHandle(_taskbarHwnd);
@@ -391,29 +393,32 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return newHeight;
         }
 
-        private void UpdatePosition()
+        private int GetRebarHeight()
         {
-            // reposition the window
-            var szStart = GetStartButtonRect();
-            System.Drawing.Point offset;
-            var edge = GetTaskbarEdge();
-            if (edge.IsVertical())
+            var rebarRect = GetRebarRect();
+            int newHeight;
+            if (_taskbarPosition.IsVertical())
             {
-                offset = new Point(0, szStart.Height);
+                newHeight = rebarRect.Width;
             }
             else
             {
-                offset = new Point(szStart.Width, 0);
+                newHeight = rebarRect.Height;
             }
+            return newHeight;
+        }
 
-            var offset2 = ScreenFromWpf(offset, _taskbarHwnd);
+        private void UpdatePosition()
+        {
+            var offset = GetTopLeftCoords();
+
             var flags = (uint)(0
                 | SetWindowPosConstants.SWP_SHOWWINDOW
                 | SetWindowPosConstants.SWP_NOOWNERZORDER
                 | SetWindowPosConstants.SWP_NOACTIVATE
                 );
             User32Dll.SetWindowPos(_hwndSource.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
-                                   offset2.X, offset2.Y,
+                                   offset.X, offset.Y,
                                    _buttonsWindowSize.Width, _buttonsWindowSize.Height,
                                    flags);
         }
@@ -759,12 +764,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     {
                         _buttonsWindowSize.Height = startButtonRect.Height;
                     }
-                    _buttonsWindowSize.Width = taskbarRect.Width;
+                    _buttonsWindowSize.Width = taskbarRect.Width - _taskbarMargins;
                 }
                 else
                 {
                     // limit height: horizontal taskbar with small icons has Start button window out of the screen
-                    _buttonsWindowSize.Height = taskbarRect.Height;
+                    _buttonsWindowSize.Height = taskbarRect.Height - _taskbarMargins;
                     if (firstTime)
                     {
                         _buttonsWindowSize.Width = startButtonRect.Width;
@@ -779,7 +784,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 }
                 else
                 {
-                    _buttonsWindowSize.Height = taskbarRect.Height;
+                    _buttonsWindowSize.Height = taskbarRect.Height - _taskbarMargins;
                 }
             }
 
@@ -819,21 +824,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 newRebarCoords = CalculateShiftedRebarCoords(delta);
             }
 
-            // reposition the window
-            var szStart = GetStartButtonRect();
-
-            System.Drawing.Point offset;
-            if (_taskbarPosition.IsVertical())
-            {
-                offset = new Point(0, szStart.Height);
-            }
-            else
-            {
-                offset = new Point(szStart.Width, 0);
-            }
-
-            var offset2 = ScreenFromWpf(offset, _taskbarHwnd);
-
+            var offset = GetTopLeftCoords();
             PostPositionToHook();
 
             if (!SetRebarPos(newRebarCoords))
@@ -842,13 +833,31 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
 
             User32Dll.SetWindowPos(_hwndSource.Handle, (IntPtr)WindowZOrderConstants.HWND_TOP,
-                                   offset2.X, offset2.Y,
+                                   offset.X, offset.Y,
                                    _buttonsWindowSize.Width, _buttonsWindowSize.Height,
                                    (uint)
                                    (SetWindowPosConstants.SWP_SHOWWINDOW | SetWindowPosConstants.SWP_NOOWNERZORDER |
                                     SetWindowPosConstants.SWP_NOACTIVATE));
 
             return true;
+        }
+
+        private Point GetTopLeftCoords()
+        {
+            var szStart = GetStartButtonRect();
+            System.Drawing.Point offset;
+            var edge = GetTaskbarEdge();
+            var taskbar = GetTaskbarRect();
+            if (edge.IsVertical())
+            {
+                offset = new Point(taskbar.Left + (taskbar.Width / 2) - (_buttonsWindowSize.Width / 2), szStart.Top + szStart.Height);
+            }
+            else
+            {
+                offset = new Point(szStart.Left + szStart.Width, taskbar.Top + (taskbar.Height / 2) - (_buttonsWindowSize.Height / 2));
+            }
+
+            return offset;
         }
 
         private bool SetRebarPos(RectWin newRebarCoords)
