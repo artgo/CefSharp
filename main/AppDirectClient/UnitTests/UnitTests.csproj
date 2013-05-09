@@ -78,6 +78,7 @@
     <Compile Include="UnitTests\LoginViewModelUnitTest.cs" />
     <Compile Include="UnitTests\MainViewModelUnitTest.cs" />
     <Compile Include="UnitTests\ServiceLocatorTest.cs" />
+    <Compile Include="UnitTests\StatusHelperUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppDirectClient\AppDirectClient.csproj">

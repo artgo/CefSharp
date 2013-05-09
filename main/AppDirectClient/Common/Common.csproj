@@ -84,10 +84,13 @@
   <ItemGroup>
     <Compile Include="API\AbstractServiceClient.cs" />
     <Compile Include="API\AbstractServiceRunner.cs" />
+    <Compile Include="API\ApiStatus.cs" />
+    <Compile Include="API\ApiSubscriptionStatus.cs" />
     <Compile Include="API\AppDirectSession.cs" />
     <Compile Include="API\Application.cs" />
     <Compile Include="API\ApplicationWithState.cs" />
     <Compile Include="API\ConflictException.cs" />
+    <Compile Include="API\DisplayStatus.cs" />
     <Compile Include="API\FailedDependencyException.cs" />
     <Compile Include="API\IAbstractServiceClient.cs" />
     <Compile Include="API\IAbstractServiceRunner.cs" />
