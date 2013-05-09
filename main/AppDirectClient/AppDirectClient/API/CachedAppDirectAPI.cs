@@ -113,8 +113,14 @@ namespace AppDirect.WindowsClient.API
                 return appList;
             }
 
+            
             foreach (var applicationsApplication in apiAppList)
             {
+                if (applicationsApplication.Referable.ToLower() == "true")
+                {
+                    continue;
+                }
+
                 var app = new Application
                     {
                         Description = applicationsApplication.Description,

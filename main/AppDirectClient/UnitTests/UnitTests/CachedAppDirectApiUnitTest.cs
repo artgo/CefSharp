@@ -39,6 +39,22 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         }
 
         [Test]
+        public void CachedSuggestedAppsDoesNotReturnReferableSuggestedApps()
+        {
+            _appDirectApiMock.SuggestedApps.ReturnsForAnyArgs(new WebApplicationsListApplication[]{new WebApplicationsListApplication(){Referable = "True"}});
+            var apps = _cachedAppDirectApi.SuggestedApps;
+            Assert.IsEmpty(apps);
+        }
+
+        [Test]
+        public void CachedSuggestedAppsDoesReturnNonReferableSuggestedApps()
+        {
+            _appDirectApiMock.SuggestedApps.ReturnsForAnyArgs(new WebApplicationsListApplication[] { new WebApplicationsListApplication() { Referable = "False" } });
+            var apps = _cachedAppDirectApi.SuggestedApps;
+            Assert.IsNotEmpty(apps);
+        }
+
+        [Test]
         public void CachedIsAuthenticatedAppsCallsIsAuthenticated()
         {
             var apps = _cachedAppDirectApi.SuggestedApps;
