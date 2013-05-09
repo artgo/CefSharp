@@ -363,6 +363,8 @@ namespace AppDirect.WindowsClient.UI
                 var newApps = new List<Application>();
                 var expiredApps = displayedApps.Where(a => !a.IsLocalApp && a.Status != Status.AttemptingProvisioning).Except(apiApps).ToList();
 
+                apiApps = apiApps.OrderByDescending(a => a.SubscriptionId).Distinct().ToList();
+
                 foreach (var application in apiApps)
                 {
                     var matchedApp = MyApplications.FirstOrDefault(a => a.Application.Equals(application));
