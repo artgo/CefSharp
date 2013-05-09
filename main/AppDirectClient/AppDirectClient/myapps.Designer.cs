@@ -7,6 +7,7 @@
 
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient
 {
@@ -42,13 +43,13 @@ namespace AppDirect.WindowsClient
         [XmlElement("publishedOn")]
         public string PublishedOn { get; set; }
         [XmlElement("status")]
-        public string Status { get; set; }
+        public ApiStatus? Status { get; set; }
         [XmlElement("startingPrice")]
         public string StartingPrice { get; set; }
         [XmlElement("subscriptionId")]
         public string SubscriptionId { get; set; }
         [XmlElement("subscriptionStatus")]
-        public string SubscriptionStatus { get; set; }
+        public ApiSubscriptionStatus? SubscriptionStatus { get; set; }
         [XmlArray(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [XmlArrayItem("entry", typeof(MyappsMyappVersionsEntry), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public List<MyappsMyappVersionsEntry> Versions { get; set; }

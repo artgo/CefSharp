@@ -1,10 +1,9 @@
-﻿using System;
-using System.Globalization;
-using AppDirect.WindowsClient.API.VO;
+﻿using AppDirect.WindowsClient.API.VO;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -69,9 +68,10 @@ namespace AppDirect.WindowsClient.API
             get { return _appDirectApi.Session; }
         }
 
-        public UserInfo UserInfo { 
-            get 
-            { 
+        public UserInfo UserInfo
+        {
+            get
+            {
                 var userInfoRaw = _appDirectApi.UserInfo;
                 var result = new UserInfo()
                     {
@@ -86,7 +86,7 @@ namespace AppDirect.WindowsClient.API
                     };
 
                 return result;
-            } 
+            }
         }
 
         public bool Authenticate(string key, string secret)
@@ -113,10 +113,9 @@ namespace AppDirect.WindowsClient.API
                 return appList;
             }
 
-            
             foreach (var applicationsApplication in apiAppList)
             {
-                if (applicationsApplication.Referable.ToLower() == "true")
+                if (!String.IsNullOrEmpty(applicationsApplication.Referable) && applicationsApplication.Referable.ToLower() == "true")
                 {
                     continue;
                 }
@@ -160,39 +159,13 @@ namespace AppDirect.WindowsClient.API
                     UrlString = applicationsApplication.LoginUrl,
                     IsLocalApp = false,
                     Price = applicationsApplication.StartingPrice,
-                    Status = ConvertStatus(applicationsApplication.Status, applicationsApplication.SubscriptionStatus),
+                    Status = StatusHelper.ConvertToDisplayStatus(applicationsApplication.Status, applicationsApplication.SubscriptionStatus),
                     SubscriptionId = applicationsApplication.SubscriptionId
                 };
                 appList.Add(app);
             }
 
             return appList;
-        }
-
-        /// <summary>
-        /// Considers the value of status and subscriptionStatus to return the most accurate current status
-        /// </summary>
-        /// <param name="status"></param>
-        /// <param name="subscriptionStatus"></param>
-        /// <returns></returns>
-        private static Status ConvertStatus(string status, string subscriptionStatus)
-        {
-            var status1 = TryParseStatus(status);
-            var status2 = TryParseStatus(subscriptionStatus);
-            
-            return (Status)Math.Max((int)status1, (int)status2);
-        }
-
-        private static Status TryParseStatus(string status)
-        {
-            try
-            {
-                return (Status)Enum.Parse(typeof(Status), status, true);
-            }
-            catch (ArgumentException)
-            {
-                return Status.Unknown;
-            }
         }
 
         public bool RegisterUser(string firstName, string lastName, string password, string confirmPassword, string email,
@@ -267,8 +240,8 @@ namespace AppDirect.WindowsClient.API
 
             var subscriptionWs = new SubscriptionWS();
             subscriptionWs.paymentPlanId = pricingPlanId;
-            subscriptionWs.user = new UserWS() {id = userId};
-            subscriptionWs.company = new CompanyWS() {id = companyId};
+            subscriptionWs.user = new UserWS() { id = userId };
+            subscriptionWs.company = new CompanyWS() { id = companyId };
 
             var resultSubscription = _appDirectApi.SubscribeUser(subscriptionWs);
 

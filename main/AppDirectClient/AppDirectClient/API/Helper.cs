@@ -141,7 +141,7 @@ namespace AppDirect.WindowsClient.API
                 var clickedApp = GetApplicationFromButtonSender(sender);
 
                 //if the status is not active the application is disabled in the UI
-                if (clickedApp.Application.Status == Status.Active)
+                if (clickedApp.Application.Status == DisplayStatus.Active)
                 {
                     LaunchApp(clickedApp);
                 }

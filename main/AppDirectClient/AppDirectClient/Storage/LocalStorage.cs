@@ -29,8 +29,6 @@ namespace AppDirect.WindowsClient.Storage
 
         public List<Application> LastSuggestedApps { get; set; }
 
-        public List<Application> PinnedApps { get; set; }
-
         public List<WindowData> AppsToReopen { get; set; }
 
         public bool IsLoadedFromFile { get; set; }
@@ -91,7 +89,6 @@ namespace AppDirect.WindowsClient.Storage
             InstalledLocalApps = new List<Application>();
             InstalledAppDirectApps = new List<Application>();
             LastSuggestedApps = new List<Application>();
-            PinnedApps = new List<Application>();
             IsLoadedFromFile = false;
         }
 
@@ -135,7 +132,6 @@ namespace AppDirect.WindowsClient.Storage
                 InstalledLocalApps = localStorage.InstalledLocalApps ?? new List<Application>();
                 InstalledAppDirectApps = localStorage.InstalledAppDirectApps ?? new List<Application>();
                 LastSuggestedApps = localStorage.LastSuggestedApps ?? new List<Application>();
-                PinnedApps = localStorage.PinnedApps ?? new List<Application>();
                 AppsToReopen = localStorage.AppsToReopen ?? null;
             }
         }
@@ -218,7 +214,6 @@ namespace AppDirect.WindowsClient.Storage
             InstalledLocalApps = new List<Application>();
             InstalledAppDirectApps = new List<Application>();
             LastSuggestedApps = new List<Application>();
-            PinnedApps = new List<Application>();
             AppsToReopen = null;
         }
 

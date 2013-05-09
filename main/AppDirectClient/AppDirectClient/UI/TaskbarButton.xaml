@@ -31,19 +31,23 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="HighlightMask" Property="Visibility" Value="Visible" />
                             </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition  Property="IsFocused" Value="True"/>
+                                    <Condition  Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
                                 <Setter TargetName="HighlightMask" Property="Visibility" Value="Visible" />
-                            </Trigger>
+                            </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-            <DataTrigger Binding="{Binding ApplicationStatus}">
-                <DataTrigger.Value>
-                    <local:Status>Active</local:Status>
-                </DataTrigger.Value>
-                <Setter Property="Opacity" Value="1" />
+                <DataTrigger Binding="{Binding ApplicationStatus}">
+                    <DataTrigger.Value>
+                        <local:DisplayStatus>Active</local:DisplayStatus>
+                    </DataTrigger.Value>
+                        <Setter Property="Opacity" Value="1" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>

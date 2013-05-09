@@ -97,7 +97,7 @@
     <Compile Include="API\IWindowData.cs" />
     <Compile Include="API\IMainApplication.cs" />
     <Compile Include="API\IBrowsersManagerApi.cs" />
-    <Compile Include="API\Status.cs" />
+    <Compile Include="API\StatusHelper.cs" />
     <Compile Include="API\WindowData.cs" />
     <Compile Include="API\IServiceBuilder.cs" />
     <Compile Include="API\IStartStop.cs" />

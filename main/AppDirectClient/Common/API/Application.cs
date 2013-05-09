@@ -36,7 +36,7 @@ namespace AppDirect.WindowsClient.Common.API
 
         public override string SubscriptionId { get; set; }
 
-        public override Status Status { get; set; }
+        public override DisplayStatus Status { get; set; }
         
         public bool PinnedToTaskbar { get; set; }
 

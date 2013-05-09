@@ -438,7 +438,7 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ApplicationStatus}">
                     <DataTrigger.Value>
-                        <local:Status>ApiCallInProgress</local:Status>
+                        <local:DisplayStatus>ApiCallInProgress</local:DisplayStatus>
                     </DataTrigger.Value>
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
@@ -458,7 +458,13 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ApplicationStatus}">
                     <DataTrigger.Value>
-                        <local:Status>Pending_Remote_Creation</local:Status>
+                        <local:DisplayStatus>PendingAddition</local:DisplayStatus>
+                    </DataTrigger.Value>
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ApplicationStatus}">
+                    <DataTrigger.Value>
+                        <local:DisplayStatus>PendingRemoval</local:DisplayStatus>
                     </DataTrigger.Value>
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>

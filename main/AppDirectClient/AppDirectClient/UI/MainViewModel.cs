@@ -163,7 +163,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                applicationViewModel.ApplicationStatus = Status.ApiCallInProgress;
+                applicationViewModel.ApplicationStatus = DisplayStatus.ApiCallInProgress;
                 RemoveFromSuggestedApps(applicationViewModel);
                 AddToMyApps(applicationViewModel);
 
@@ -247,7 +247,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (!string.IsNullOrEmpty(applicationViewModel.Application.SubscriptionId))
                 {
-                    Helper.PerformInUiThread(() => applicationViewModel.ApplicationStatus = Status.ApiCallInProgress);
+                    Helper.PerformInUiThread(() => applicationViewModel.ApplicationStatus = DisplayStatus.ApiCallInProgress);
 
                     BackgroundWorker backgroundWorker = new BackgroundWorker();
                     backgroundWorker.DoWork += UnsubscribeAsynchronously;
@@ -363,14 +363,14 @@ namespace AppDirect.WindowsClient.UI
                 var displayedApps = MyApplications.Select(a => a.Application).ToList();
 
                 var newApps = new List<Application>();
-                var expiredApps = displayedApps.Where(a => !a.IsLocalApp && a.Status != Status.ApiCallInProgress).Except(apiApps).ToList();
+                var expiredApps = displayedApps.Where(a => !a.IsLocalApp && a.Status != DisplayStatus.ApiCallInProgress).Except(apiApps).ToList();
 
                 apiApps = apiApps.OrderByDescending(a => a.SubscriptionId).Distinct().ToList();
 
                 foreach (var application in apiApps)
                 {
                     var matchedApp = MyApplications.FirstOrDefault(a => a.Application.Equals(application));
-                    if ((int)application.Status > 5)//Remove applications that have been cancelled or are no longer active
+                    if (application.Status >= DisplayStatus.Cancelled)//Remove applications that have been cancelled or are no longer active
                     {
                         if (matchedApp != null)
                         {

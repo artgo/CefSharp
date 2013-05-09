@@ -18,7 +18,7 @@ namespace AppDirect.WindowsClient.UI
 
         public Application Application { get; set; }
 
-        public Status ApplicationStatus
+        public DisplayStatus ApplicationStatus
         {
             get { return Application.Status; }
             set
