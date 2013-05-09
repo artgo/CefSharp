@@ -163,7 +163,7 @@ namespace AppDirect.WindowsClient.UI
             }
             else
             {
-                applicationViewModel.ApplicationStatus = Status.AttemptingProvisioning;
+                applicationViewModel.ApplicationStatus = Status.ApiCallInProgress;
                 RemoveFromSuggestedApps(applicationViewModel);
                 AddToMyApps(applicationViewModel);
 
@@ -247,6 +247,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 if (!string.IsNullOrEmpty(applicationViewModel.Application.SubscriptionId))
                 {
+                    Helper.PerformInUiThread(() => applicationViewModel.ApplicationStatus = Status.ApiCallInProgress);
+
                     BackgroundWorker backgroundWorker = new BackgroundWorker();
                     backgroundWorker.DoWork += UnsubscribeAsynchronously;
                     backgroundWorker.RunWorkerAsync(applicationViewModel);
@@ -361,7 +363,7 @@ namespace AppDirect.WindowsClient.UI
                 var displayedApps = MyApplications.Select(a => a.Application).ToList();
 
                 var newApps = new List<Application>();
-                var expiredApps = displayedApps.Where(a => !a.IsLocalApp && a.Status != Status.AttemptingProvisioning).Except(apiApps).ToList();
+                var expiredApps = displayedApps.Where(a => !a.IsLocalApp && a.Status != Status.ApiCallInProgress).Except(apiApps).ToList();
 
                 apiApps = apiApps.OrderByDescending(a => a.SubscriptionId).Distinct().ToList();
 

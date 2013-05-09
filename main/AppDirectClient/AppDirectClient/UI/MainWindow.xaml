@@ -438,7 +438,7 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ApplicationStatus}">
                     <DataTrigger.Value>
-                        <local:Status>AttemptingProvisioning</local:Status>
+                        <local:Status>ApiCallInProgress</local:Status>
                     </DataTrigger.Value>
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
