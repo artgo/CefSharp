@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace AppDirect.WindowsClient.Common.API
 {
@@ -6,6 +9,9 @@ namespace AppDirect.WindowsClient.Common.API
     {
         private static HashSet<ApiStatus> _cancelledApiStatuses = new HashSet<ApiStatus>() { ApiStatus.FAILED, ApiStatus.CANCELLED };
         private static HashSet<ApiSubscriptionStatus> _cancelledApiSubscriptionStatuses = new HashSet<ApiSubscriptionStatus>() { ApiSubscriptionStatus.FREE_TRIAL_EXPIRED, ApiSubscriptionStatus.SUSPENDED, ApiSubscriptionStatus.FAILED, ApiSubscriptionStatus.CANCELLED };
+        private static HashSet<ApiSubscriptionStatus> _validSubscriptionStatuses = new HashSet<ApiSubscriptionStatus>() { ApiSubscriptionStatus.ACTIVE, ApiSubscriptionStatus.SUSPENDED, ApiSubscriptionStatus.FAILED, ApiSubscriptionStatus.CANCELLED };
+
+
 
         /// <summary>
         /// Resisted using bitwise flags for readability
@@ -13,24 +19,80 @@ namespace AppDirect.WindowsClient.Common.API
         /// <param name="statusString"></param>
         /// <param name="subscriptionStatusString"></param>
         /// <returns></returns>
-        public static DisplayStatus ConvertToDisplayStatus(ApiStatus? status, ApiSubscriptionStatus? subscriptionStatus)
+        public static DisplayStatus ConvertToDisplayStatus(string statusString, string subscriptionStatusString)
         {
-            if (status == null || subscriptionStatus == null || _cancelledApiSubscriptionStatuses.Contains(subscriptionStatus.Value) || _cancelledApiStatuses.Contains(status.Value))
+            var subscriptionStatus = ApiSubscriptionStatusFromString(subscriptionStatusString);
+            var status = ApiStatusFromString(statusString);
+
+            DisplayStatus convertedSubScriptionStatus = DisplayStatus.Cancelled;
+
+            switch (subscriptionStatus)
             {
-                return DisplayStatus.Cancelled;
+                case ApiSubscriptionStatus.ACTIVE:
+                case ApiSubscriptionStatus.FREE_TRIAL:
+                    convertedSubScriptionStatus = DisplayStatus.Active;
+                    break;
+                case ApiSubscriptionStatus.PENDING_REMOTE_CREATION:
+                    convertedSubScriptionStatus = DisplayStatus.SubscriptionPendingAddition;
+                    break;
+                default://Apps in all other status should not appear
+                    return DisplayStatus.Cancelled;
             }
 
-            if (subscriptionStatus == ApiSubscriptionStatus.PENDING_REMOTE_CANCELLATION || status == ApiStatus.PENDING_REMOTE_CANCELLATION)
+            switch (status)
             {
-                return DisplayStatus.PendingRemoval;
+                case ApiStatus.ACTIVE:
+                    return convertedSubScriptionStatus;
+                case ApiStatus.PENDING_REMOTE_CANCELLATION:
+                    return DisplayStatus.UserPendingRemoval;
+                case ApiStatus.PENDING_REMOTE_CREATION:
+                    {
+                        switch (convertedSubScriptionStatus)
+                        {
+                            case DisplayStatus.SubscriptionPendingAddition:
+                                return DisplayStatus.SubscriptionPendingAddition;
+                            default:
+                                return DisplayStatus.UserPendingAddition;
+                        }
+                    }
+                default:
+                    return DisplayStatus.Cancelled;
             }
+        }
 
-            if (subscriptionStatus == ApiSubscriptionStatus.PENDING_REMOTE_CREATION || status == ApiStatus.PENDING_REMOTE_CREATION)
+        public static ApiStatus ApiStatusFromString(string status)
+        {
+            try
             {
-                return DisplayStatus.PendingAddition;
+                return (ApiStatus)Enum.Parse(typeof(ApiStatus), status);
             }
+            catch (ArgumentException)
+            {
+                return ApiStatus.UNKNOWN;
+            }
+        }
 
-            return DisplayStatus.Active;
+        public static ApiSubscriptionStatus ApiSubscriptionStatusFromString(string status)
+        {
+            try
+            {
+                return (ApiSubscriptionStatus)Enum.Parse(typeof(ApiSubscriptionStatus), status);
+            }
+            catch (ArgumentException)
+            {
+                return ApiSubscriptionStatus.UNKNOWN;
+            }
+        }
+
+        public static string GetDescription(this Enum value)
+        {
+            FieldInfo field = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute attribute
+                    = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
+                        as DescriptionAttribute;
+
+            return attribute == null ? value.ToString() : attribute.Description;
         }
     }
 }

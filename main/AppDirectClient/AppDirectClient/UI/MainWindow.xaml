@@ -449,7 +449,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContentControl}">
-                        <Grid Name="ProvisionInProgress" ToolTip="In Progress">
+                        <Grid Name="ProvisionInProgress">
                             <Rectangle Fill="{StaticResource TextFieldFocusColor}" Opacity=".8"/>
                         </Grid>
                     </ControlTemplate>
@@ -458,15 +458,24 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ApplicationStatus}">
                     <DataTrigger.Value>
-                        <local:DisplayStatus>PendingAddition</local:DisplayStatus>
+                        <local:DisplayStatus>SubscriptionPendingAddition</local:DisplayStatus>
                     </DataTrigger.Value>
                     <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="ToolTip" Value="Subscription Pending Creation" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding ApplicationStatus}">
                     <DataTrigger.Value>
-                        <local:DisplayStatus>PendingRemoval</local:DisplayStatus>
+                        <local:DisplayStatus>UserPendingAddition</local:DisplayStatus>
                     </DataTrigger.Value>
                     <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="ToolTip" Value="Your account is being provisioned" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ApplicationStatus}">
+                    <DataTrigger.Value>
+                        <local:DisplayStatus>UserPendingRemoval</local:DisplayStatus>
+                    </DataTrigger.Value>
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="ToolTip" Value="Your account is being deprovisioned" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>

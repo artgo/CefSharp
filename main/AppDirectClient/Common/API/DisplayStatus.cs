@@ -1,11 +1,18 @@
-﻿namespace AppDirect.WindowsClient.Common.API
+﻿using System.ComponentModel;
+
+namespace AppDirect.WindowsClient.Common.API
 {
     public enum DisplayStatus
     {
-        Active = 0,
-        ApiCallInProgress = 1,
-        PendingAddition = 2,
-        PendingRemoval = 4,
-        Cancelled = 8
+        Active,
+        [Description("In Progress")]
+        ApiCallInProgress,
+        [Description("Your account is being provisioned")]
+        UserPendingAddition,
+        [Description("Your account is being deprovisioned")]
+        UserPendingRemoval,
+        [Description("Your company subscription is being provisioned")]
+        SubscriptionPendingAddition,
+        Cancelled
     }
 }

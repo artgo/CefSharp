@@ -9,6 +9,7 @@
         FREE_TRIAL_EXPIRED,
         FAILED,
         SUSPENDED,
-        CANCELLED
+        CANCELLED,
+        UNKNOWN
     }
 }

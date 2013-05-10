@@ -6,6 +6,7 @@
         PENDING_REMOTE_CREATION,
         PENDING_REMOTE_CANCELLATION,
         FAILED,
-        CANCELLED
+        CANCELLED,
+        UNKNOWN
     }
 }

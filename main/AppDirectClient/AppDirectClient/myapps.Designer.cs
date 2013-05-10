@@ -43,13 +43,13 @@ namespace AppDirect.WindowsClient
         [XmlElement("publishedOn")]
         public string PublishedOn { get; set; }
         [XmlElement("status")]
-        public ApiStatus? Status { get; set; }
+        public string Status { get; set; }
         [XmlElement("startingPrice")]
         public string StartingPrice { get; set; }
         [XmlElement("subscriptionId")]
         public string SubscriptionId { get; set; }
         [XmlElement("subscriptionStatus")]
-        public ApiSubscriptionStatus? SubscriptionStatus { get; set; }
+        public string SubscriptionStatus { get; set; }
         [XmlArray(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [XmlArrayItem("entry", typeof(MyappsMyappVersionsEntry), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public List<MyappsMyappVersionsEntry> Versions { get; set; }

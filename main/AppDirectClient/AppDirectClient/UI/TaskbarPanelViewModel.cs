@@ -12,21 +12,9 @@ namespace AppDirect.WindowsClient.UI
     {
         public List<ApplicationViewModel> PinnedApps { get; set; }
         
-        public TaskbarPanelViewModel()
+        public TaskbarPanelViewModel(List<ApplicationViewModel> myApps )
         {
-            PinnedApps = new List<ApplicationViewModel>();
-
-            if (ServiceLocator.LocalStorage.AllInstalledApplications == null)
-            {
-                return;
-            }
-
-            foreach (var application in ServiceLocator.LocalStorage.AllInstalledApplications.Where(a => a.PinnedToTaskbar))
-            {
-                PinnedApps.Add(new ApplicationViewModel(application));
-            }
-
-            ServiceLocator.LocalStorage.SaveAppSettings();
+            PinnedApps = myApps;
         }
 
         public void AddPinnedApp(ApplicationViewModel clickedApp)

@@ -37,7 +37,7 @@ namespace AppDirect.WindowsClient.UI
             InitializeComponent();
             InitializeMainWindowLatch = latch;
 
-            ViewModel = new TaskbarPanelViewModel();
+            ViewModel = new TaskbarPanelViewModel(_mainViewModel.MyApplications.Where(a => a.Application.PinnedToTaskbar).ToList());
             DataContext = ViewModel;
         }
 
