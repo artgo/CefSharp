@@ -84,8 +84,6 @@
   <ItemGroup>
     <Compile Include="API\AbstractServiceClient.cs" />
     <Compile Include="API\AbstractServiceRunner.cs" />
-    <Compile Include="API\ApiStatus.cs" />
-    <Compile Include="API\ApiSubscriptionStatus.cs" />
     <Compile Include="API\AppDirectSession.cs" />
     <Compile Include="API\Application.cs" />
     <Compile Include="API\ApplicationWithState.cs" />
@@ -100,7 +98,6 @@
     <Compile Include="API\IWindowData.cs" />
     <Compile Include="API\IMainApplication.cs" />
     <Compile Include="API\IBrowsersManagerApi.cs" />
-    <Compile Include="API\StatusHelper.cs" />
     <Compile Include="API\WindowData.cs" />
     <Compile Include="API\IServiceBuilder.cs" />
     <Compile Include="API\IStartStop.cs" />

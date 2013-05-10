@@ -14,21 +14,21 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         public void ConvertToDisplayStatusReturnsCancelledForNullStatus()
         {
             Assert.AreEqual(DisplayStatus.Cancelled,
-                            StatusHelper.ConvertToDisplayStatus(null, ApiSubscriptionStatus.ACTIVE));
+                            StatusHelper.ConvertToDisplayStatus(null, "ACTIVE"));
         }
 
         [Test]
         public void ConvertToDisplayStatusReturnsCancelledForNullSubscriptionStatus()
         {
             Assert.AreEqual(DisplayStatus.Cancelled,
-                            StatusHelper.ConvertToDisplayStatus(ApiStatus.ACTIVE, null));
+                            StatusHelper.ConvertToDisplayStatus("ACTIVE", null));
         }
 
         [Test]
         public void ConvertToDisplayStatusReturnsCancelledForCancelledStatus()
         {
             Assert.AreEqual(DisplayStatus.Cancelled,
-                            StatusHelper.ConvertToDisplayStatus(ApiStatus.CANCELLED, ApiSubscriptionStatus.ACTIVE));
+                            StatusHelper.ConvertToDisplayStatus("CANCELLED", "ACTIVE"));
         }
 
 
@@ -36,42 +36,42 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         public void ConvertToDisplayStatusReturnsCancelledForCancelledSubscriptionStatus()
         {
             Assert.AreEqual(DisplayStatus.Cancelled,
-                            StatusHelper.ConvertToDisplayStatus(ApiStatus.ACTIVE, ApiSubscriptionStatus.CANCELLED));
+                            StatusHelper.ConvertToDisplayStatus("ACTIVE", "CANCELLED"));
         }
 
         [Test]
         public void ConvertToDisplayStatusReturnsPendingAdditionForPendingStatus()
         {
-            Assert.AreEqual(DisplayStatus.PendingAddition,
-                            StatusHelper.ConvertToDisplayStatus(ApiStatus.PENDING_REMOTE_CREATION, ApiSubscriptionStatus.ACTIVE));
+            Assert.AreEqual(DisplayStatus.UserPendingAddition,
+                            StatusHelper.ConvertToDisplayStatus("PENDING_REMOTE_CREATION", "ACTIVE"));
         }
 
         [Test]
         public void ConvertToDisplayStatusReturnsPendingRemovalForPendingStatus()
         {
-            Assert.AreEqual(DisplayStatus.PendingRemoval,
-                            StatusHelper.ConvertToDisplayStatus(ApiStatus.PENDING_REMOTE_CANCELLATION, ApiSubscriptionStatus.ACTIVE));
+            Assert.AreEqual(DisplayStatus.UserPendingRemoval,
+                            StatusHelper.ConvertToDisplayStatus("PENDING_REMOTE_CANCELLATION", "ACTIVE"));
         }
 
         [Test]
-        public void ConvertToDisplayStatusReturnsPendingRemovalForPendingSubscriptionStatus()
+        public void ConvertToDisplayStatusReturnsCancelledForPendingSubscriptionStatus()
         {
-            Assert.AreEqual(DisplayStatus.PendingRemoval,
-                            StatusHelper.ConvertToDisplayStatus(ApiStatus.ACTIVE, ApiSubscriptionStatus.PENDING_REMOTE_CANCELLATION));
+            Assert.AreEqual(DisplayStatus.Cancelled,
+                            StatusHelper.ConvertToDisplayStatus("ACTIVE", "PENDING_REMOTE_CANCELLATION"));
         }
 
         [Test]
         public void ConvertToDisplayStatusReturnsActiveForActiveStatus()
         {
             Assert.AreEqual(DisplayStatus.Active,
-                            StatusHelper.ConvertToDisplayStatus(ApiStatus.ACTIVE, ApiSubscriptionStatus.ACTIVE));
+                            StatusHelper.ConvertToDisplayStatus("ACTIVE", "ACTIVE"));
         }
 
         [Test]
         public void ConvertToDisplayStatusReturnsActiveForFreeTrialStatus()
         {
             Assert.AreEqual(DisplayStatus.Active,
-                            StatusHelper.ConvertToDisplayStatus(ApiStatus.ACTIVE, ApiSubscriptionStatus.FREE_TRIAL));
+                            StatusHelper.ConvertToDisplayStatus("ACTIVE", "FREE_TRIAL"));
         }
     }
 }

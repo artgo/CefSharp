@@ -144,6 +144,8 @@
     <Compile Include="Analytics\AsyncAnalytics.cs" />
     <Compile Include="Analytics\GoogleAnalytics.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
+    <Compile Include="ApiStatus.cs" />
+    <Compile Include="ApiSubscriptionStatus.cs" />
     <Compile Include="API\BrowsersManagerApiServiceBuilder.cs" />
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
     <Compile Include="API\Helper.cs" />
@@ -198,6 +200,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="ServiceLocator.cs" />
+    <Compile Include="StatusHelper.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
     <Compile Include="UI\ApplicationViewModel.cs" />

@@ -1,4 +1,4 @@
-﻿namespace AppDirect.WindowsClient.Common.API
+﻿namespace AppDirect.WindowsClient
 {
     public enum ApiSubscriptionStatus
     {

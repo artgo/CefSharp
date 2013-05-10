@@ -34,7 +34,6 @@
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition  Property="IsFocused" Value="True"/>
-                                    <Condition  Property="IsFocused" Value="True"/>
                                 </MultiTrigger.Conditions>
                                 <Setter TargetName="HighlightMask" Property="Visibility" Value="Visible" />
                             </MultiTrigger>

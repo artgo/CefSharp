@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using AppDirect.WindowsClient.Common.API;
 
-namespace AppDirect.WindowsClient.Common.API
+namespace AppDirect.WindowsClient
 {
     public static class StatusHelper
     {
         private static HashSet<ApiStatus> _cancelledApiStatuses = new HashSet<ApiStatus>() { ApiStatus.FAILED, ApiStatus.CANCELLED };
         private static HashSet<ApiSubscriptionStatus> _cancelledApiSubscriptionStatuses = new HashSet<ApiSubscriptionStatus>() { ApiSubscriptionStatus.FREE_TRIAL_EXPIRED, ApiSubscriptionStatus.SUSPENDED, ApiSubscriptionStatus.FAILED, ApiSubscriptionStatus.CANCELLED };
         private static HashSet<ApiSubscriptionStatus> _validSubscriptionStatuses = new HashSet<ApiSubscriptionStatus>() { ApiSubscriptionStatus.ACTIVE, ApiSubscriptionStatus.SUSPENDED, ApiSubscriptionStatus.FAILED, ApiSubscriptionStatus.CANCELLED };
-
-
 
         /// <summary>
         /// Resisted using bitwise flags for readability
@@ -60,6 +59,8 @@ namespace AppDirect.WindowsClient.Common.API
                 default:
                     return DisplayStatus.Cancelled;
             }
+            
+            return DisplayStatus.Cancelled;
         }
 
         public static ApiStatus ApiStatusFromString(string status)
