@@ -1,10 +1,9 @@
-﻿using System;
-using System.Globalization;
-using AppDirect.WindowsClient.API.VO;
+﻿using AppDirect.WindowsClient.API.VO;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.API
 {
@@ -69,9 +68,10 @@ namespace AppDirect.WindowsClient.API
             get { return _appDirectApi.Session; }
         }
 
-        public UserInfo UserInfo { 
-            get 
-            { 
+        public UserInfo UserInfo
+        {
+            get
+            {
                 var userInfoRaw = _appDirectApi.UserInfo;
                 var result = new UserInfo()
                     {
@@ -86,7 +86,7 @@ namespace AppDirect.WindowsClient.API
                     };
 
                 return result;
-            } 
+            }
         }
 
         public bool Authenticate(string key, string secret)
@@ -115,6 +115,11 @@ namespace AppDirect.WindowsClient.API
 
             foreach (var applicationsApplication in apiAppList)
             {
+                if (!String.IsNullOrEmpty(applicationsApplication.Referable) && applicationsApplication.Referable.ToLower() == "true")
+                {
+                    continue;
+                }
+
                 var app = new Application
                     {
                         Description = applicationsApplication.Description,
@@ -153,7 +158,9 @@ namespace AppDirect.WindowsClient.API
                     Name = applicationsApplication.Name,
                     UrlString = applicationsApplication.LoginUrl,
                     IsLocalApp = false,
-                    Price = applicationsApplication.StartingPrice
+                    Price = applicationsApplication.StartingPrice,
+                    Status = StatusHelper.ConvertToDisplayStatus(applicationsApplication.Status, applicationsApplication.SubscriptionStatus),
+                    SubscriptionId = applicationsApplication.SubscriptionId
                 };
                 appList.Add(app);
             }
@@ -233,8 +240,8 @@ namespace AppDirect.WindowsClient.API
 
             var subscriptionWs = new SubscriptionWS();
             subscriptionWs.paymentPlanId = pricingPlanId;
-            subscriptionWs.user = new UserWS() {id = userId};
-            subscriptionWs.company = new CompanyWS() {id = companyId};
+            subscriptionWs.user = new UserWS() { id = userId };
+            subscriptionWs.company = new CompanyWS() { id = companyId };
 
             var resultSubscription = _appDirectApi.SubscribeUser(subscriptionWs);
 

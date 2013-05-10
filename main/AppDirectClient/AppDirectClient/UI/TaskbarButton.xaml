@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:AppDirect.WindowsClient.Common.API;assembly=Common"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ContextMenu x:Key="UninstallContextMenu" Style="{StaticResource ContextMenuStyle}">
@@ -15,6 +16,7 @@
         <Style x:Key="DeskbandButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Opacity" Value=".5" />
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -22,20 +24,31 @@
                         <Grid ToolTip="{Binding Application.Name}">
                             <Image Name="Icon" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1,1,1,1"
                                        Source="{Binding Application.LocalImagePath}" />
-                            <Image Name="BorderMask" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Images/BtnBorder.png" />
                             <Image Name="HighlightMask" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Images/TaskBarHoverMask.png" Visibility="Hidden" />
+                            <Image Name="BorderMask" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Images/BtnBorder.png" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="HighlightMask" Property="Visibility" Value="Visible" />
                             </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition  Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
                                 <Setter TargetName="HighlightMask" Property="Visibility" Value="Visible" />
-                            </Trigger>
+                            </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ApplicationStatus}">
+                    <DataTrigger.Value>
+                        <local:DisplayStatus>Active</local:DisplayStatus>
+                    </DataTrigger.Value>
+                        <Setter Property="Opacity" Value="1" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
     <Button Name="AppButton" Style="{StaticResource DeskbandButtonStyle}" Click="TaskbarButton_Click" PreviewMouseLeftButtonDown ="TaskbarButton_DoubleClick">
