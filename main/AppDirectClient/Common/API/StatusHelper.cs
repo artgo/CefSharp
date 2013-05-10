@@ -24,16 +24,17 @@ namespace AppDirect.WindowsClient.Common.API
             var subscriptionStatus = ApiSubscriptionStatusFromString(subscriptionStatusString);
             var status = ApiStatusFromString(statusString);
 
-            DisplayStatus convertedSubScriptionStatus = DisplayStatus.Cancelled;
+            DisplayStatus convertedSubscriptionStatus = DisplayStatus.Cancelled;
 
             switch (subscriptionStatus)
             {
                 case ApiSubscriptionStatus.ACTIVE:
                 case ApiSubscriptionStatus.FREE_TRIAL:
-                    convertedSubScriptionStatus = DisplayStatus.Active;
+                    convertedSubscriptionStatus = DisplayStatus.Active;
                     break;
                 case ApiSubscriptionStatus.PENDING_REMOTE_CREATION:
-                    convertedSubScriptionStatus = DisplayStatus.SubscriptionPendingAddition;
+                case ApiSubscriptionStatus.PENDING:
+                    convertedSubscriptionStatus = DisplayStatus.SubscriptionPendingAddition;
                     break;
                 default://Apps in all other status should not appear
                     return DisplayStatus.Cancelled;
@@ -42,18 +43,19 @@ namespace AppDirect.WindowsClient.Common.API
             switch (status)
             {
                 case ApiStatus.ACTIVE:
-                    return convertedSubScriptionStatus;
+                    return convertedSubscriptionStatus;
                 case ApiStatus.PENDING_REMOTE_CANCELLATION:
                     return DisplayStatus.UserPendingRemoval;
                 case ApiStatus.PENDING_REMOTE_CREATION:
                     {
-                        switch (convertedSubScriptionStatus)
+                        switch (convertedSubscriptionStatus)
                         {
                             case DisplayStatus.SubscriptionPendingAddition:
                                 return DisplayStatus.SubscriptionPendingAddition;
-                            default:
+                            case DisplayStatus.Active:
                                 return DisplayStatus.UserPendingAddition;
                         }
+                        break;
                     }
                 default:
                     return DisplayStatus.Cancelled;
