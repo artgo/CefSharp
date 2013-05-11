@@ -50,8 +50,7 @@ Section "Create"
   WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT}
   WriteRegStr HKCU "${REGSTR}" "DisplayIcon" "$INSTDIR\${APPICON}"
   WriteRegDWORD HKCU "${REGSTR}" "NoModify" 1
-  WriteRegDWORD HKCU "${REGSTR}" "NoRepair" 1
-  
+  WriteRegDWORD HKCU "${REGSTR}" "NoRepair" 1  
 SectionEnd
 
 Section "Start Menu Shortcuts"
@@ -63,6 +62,7 @@ Section "Start Menu Shortcuts"
 SectionEnd
 
 Function .onInit
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Update" "Started" "" ""
   Push $4
   StrCpy $4 0
   !insertmacro CloseApplicationIfRunning
@@ -72,5 +72,13 @@ FunctionEnd
 Function .onInstSuccess
   Sleep 200
   Exec "${APPEXEPATH}"
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Update" "Success" "" ""
 FunctionEnd
 
+Function .onInstFailed
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Update" "Failed" "" ""
+FunctionEnd
+
+Function .onGUIEnd
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Update" "Ended" "" ""
+FunctionEnd

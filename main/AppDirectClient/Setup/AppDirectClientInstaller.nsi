@@ -204,9 +204,9 @@ Section "Start Menu Shortcuts"
 SectionEnd
 
 Function .onInstSuccess
-  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Success" "" ""
   Sleep 200
   Exec "${APPEXEPATH}"
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Success" "" ""
 FunctionEnd
 
 Function .onInit
@@ -218,9 +218,9 @@ Function .onInit
 FunctionEnd
 
 Function .onInstFailed
-    !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Failed" "" ""
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Failed" "" ""
 FunctionEnd
 
 Function .onGUIEnd
-    !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Ended" "" ""
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Ended" "" ""
 FunctionEnd
