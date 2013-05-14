@@ -45,7 +45,7 @@ namespace AppDirect.WindowsClient.UI
         {
             CurrentIconSize = taskbarIconsSize;
 
-            foreach (var applicationViewModel in ViewModel.PinnedApps)
+            foreach (var applicationViewModel in ViewModel.PinnedApps.Where(a => a.PinnedToTaskbarNotifier))
             {
                 AddButton(applicationViewModel);
             }
@@ -61,7 +61,7 @@ namespace AppDirect.WindowsClient.UI
             var clickedItem = (MenuItem)sender;
 
             //Item is checked at this point if when it was clicked it was NOT checked
-            if (clickedItem.IsChecked)
+            if (clickedItem.IsChecked && !ViewModel.PinnedApps.Contains(clickedApp))
             {
                 ViewModel.AddPinnedApp(clickedApp);
                 AddButton(clickedApp);
