@@ -12,25 +12,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         }
 
         [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void InjectExplrorerExe();
+        public static extern bool SetupSubclass(IntPtr hwndAdButton);
 
         [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void DetachHooks();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr SetupHooks2(int code, IntPtr wParam, IntPtr lParam);
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr FindTaskBar();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr FindRebar();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern uint GetRebarThread();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern uint GetExitMsg();
+        public static extern bool TearDownSubclass();
 
         [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         public static extern uint GetUpdatePositionMsg();

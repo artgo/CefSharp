@@ -39,6 +39,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private const int DefaultStartButtonHeight = 40;
         private const string CloseMessageName = @"AppDirectForceApplicationCloseMessage";
+        private const string ExitMessageName = @"AppDirectForceApplicationExitMessage";
         private const string WindowName = @"AppDirectTaskbarButtonsWindow";
         private readonly static bool IsVistaOrUp;
         private readonly static bool IsWin7OrUp;
@@ -136,7 +137,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             UpdateHandles();
             _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
             _updateMessageId = NativeDll.GetUpdatePositionMsg();
-            _dllUnloadMessageId = NativeDll.GetExitMsg();
+            _dllUnloadMessageId = User32Dll.RegisterWindowMessage(ExitMessageName);
 
             var pos = CalculateButtonPosition();
 
@@ -187,7 +188,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             if (IsVistaOrUp)
             {
-                var availableMessages = new[] { _closeMessageId, _updateMessageId, _dllUnloadMessageId };
+                var availableMessages = new[] { _closeMessageId, _updateMessageId };
 
                 foreach (var availableMessage in availableMessages)
                 {
@@ -196,7 +197,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 }
             }
 
-            NativeDll.InjectExplrorerExe();
+            NativeDll.SetupSubclass(_hwndSource.Handle);
 
             _taskbarPosition = GetTaskbarEdge();
 
@@ -243,12 +244,17 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return User32Dll.FindWindow("Shell_TrayWnd", null);
         }
 
+        private HWND FindReBar(IntPtr hwndTaskBar)
+        {
+            return User32Dll.FindWindowEx(hwndTaskBar, IntPtr.Zero, "ReBarWindow32", null);
+        }
+
         private void UpdateHandles()
         {
             lock (_lockObject)
             {
-                _rebarHwnd = NativeDll.FindRebar();
                 _taskbarHwnd = FindTaskBar();
+                _rebarHwnd = FindReBar(_taskbarHwnd);
 
                 // Start button musto go after taskbar
                 _startButtonHwnd = FindStartButton();
@@ -460,7 +466,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _shutdownCallback = shutdownCallback;
 
             // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
-            NativeDll.DetachHooks(); // detach - can cause reposition by Rebar itself
+            NativeDll.TearDownSubclass(); // detach - can cause reposition by Rebar itself
+            User32Dll.SendMessage(_hwndSource.Handle, (int)_dllUnloadMessageId, 0, 0);
 
             if (_subclassProc != null)
             {
@@ -470,7 +477,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             var newRebarCoords = CalculateRebarCoords(false);
 
-            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), IntPtr.Zero,
+            if (!User32Dll.SetWindowPos(FindReBar(FindTaskBar()), IntPtr.Zero,
                                         newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width,
                                         newRebarCoords.Height,
                                         0)) // move to correct coords
@@ -595,12 +602,19 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     handled = true;
                 }
             }
+            else if (msg == _closeMessageId)
+            {
+                if (!_shutdownStarted && !_isShutdown)
+                {
+                    ShutdownHelper.Instance.Shutdown();
+                    handled = true;
+                }
+            }
             else if (msg == _dllUnloadMessageId)
             {
                 if (_shutdownStarted && !_isShutdown)
                 {
                     _isShutdown = true;
-                    EjectNativeDll(lParam);
                     if (_hwndSource != null)
                     {
                         _hwndSource.Dispose();
@@ -612,14 +626,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                         _shutdownCallback();
                         _shutdownCallback = null;
                     }
-                    handled = true;
-                }
-            }
-            else if (msg == _closeMessageId)
-            {
-                if (!_shutdownStarted && !_isShutdown)
-                {
-                    ShutdownHelper.Instance.Shutdown();
                     handled = true;
                 }
             }

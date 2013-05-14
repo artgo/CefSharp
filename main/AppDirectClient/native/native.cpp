@@ -1,18 +1,31 @@
 #include "stdafx.h"
 #include "native.h"
-#include "consts.h"
 
-static const int BuffSize = 256;
+#define WM_APPDIRECT_SETUP_SUBCLASS WM_USER + 1
+#define WM_APPDIRECT_TEARDOWN_SUBCLASS WM_USER + 2
 
-bool g_bInitDone = false;
-HWND g_ReBar = NULL;		// of the taskbar
-SIZE g_RebarOffset;
-HHOOK g_ProgHook = NULL;
-HMODULE g_hDll = NULL;
+// The following message is registered with ::RegisterWindowsMessage
+// because it's used across application
+UINT WM_APPDIRECT_UPDATE = 0;
 
-NATIVE_API HWND FindTaskBar()
+
+BOOL g_bInitDone = FALSE;
+HMODULE g_hModule = NULL;
+RECT g_RectButtons;
+
+void setModuleHandle(HMODULE hModule)
+{
+	g_hModule = hModule;
+}
+
+HWND FindTaskBar()
 {
 	return ::FindWindow(L"Shell_TrayWnd", NULL);
+}
+
+HWND FindReBar(HWND hwndTaskBar)
+{
+	return ::FindWindowEx(hwndTaskBar, NULL, REBARCLASSNAME, NULL);
 }
 
 static bool IsVertical()
@@ -21,11 +34,6 @@ static bool IsVertical()
 	APPBARDATA appbar = {sizeof(appbar), taskBar};
     SHAppBarMessage(ABM_GETTASKBARPOS, &appbar);
 	return (appbar.uEdge == ABE_LEFT) || (appbar.uEdge == ABE_RIGHT);
-}
-
-UINT GetExitMsg()
-{
-	return ::RegisterWindowMessage(L"AppDirectButtonsExit");
 }
 
 UINT GetUpdatePositionMsg()
@@ -42,81 +50,43 @@ HWND GetAppDirectHwnd()
 	return appDirectHwnd;
 }
 
-static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
-static volatile bool bExiting = false;
-static RECT buttonsRect;
 static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam, 
 										  const UINT_PTR uIdSubclass, const DWORD_PTR dwRefData)
 {
-	const APPDIRECT_IPC_MESSAGES* messages = ((APPDIRECT_IPC_MESSAGES*)dwRefData);
+	HWND hwndAdButton = (HWND)dwRefData;
 
-	if ((uMsg == WM_WINDOWPOSCHANGING) && !bExiting)
-	{
-		// prevent rebar from restoring position and hovering our button: return
-		WINDOWPOS* p = (WINDOWPOS*)lParam;
-
-		if (buttonsRect.left < (p->x + p->cx) && buttonsRect.right  > p->x &&
-			buttonsRect.top  < (p->y + p->cy) && buttonsRect.bottom > p->y)
+	if (::IsWindow(hwndAdButton)) {
+		if (uMsg == WM_WINDOWPOSCHANGING)
 		{
-			if (IsVertical())
-			{
-				const int deltaY = buttonsRect.bottom - p->y;
-				if (deltaY > 0)
-				{
-					p->y += deltaY;
-					p->cy -= deltaY;
+			WINDOWPOS* p = (WINDOWPOS*)lParam;
+
+			// Prevent Rebar from restoring its position if the AppDirect button is properly positioned
+			if (g_RectButtons.left <= (p->x + p->cx) && g_RectButtons.right  >= p->x &&
+				g_RectButtons.top  <= (p->y + p->cy) && g_RectButtons.bottom >= p->y) {
+				if (IsVertical()) {
+					const int deltaY = g_RectButtons.bottom - p->y;
+					if (deltaY > 0) {
+						p->y += deltaY;
+						p->cy -= deltaY;
+					}
+				} else {
+					const int deltaX = g_RectButtons.right - p->x;
+					if (deltaX > 0) {
+						p->x += deltaX;
+						p->cx -= deltaX;
+					}
 				}
 			}
-			else
-			{
-				const int deltaX = buttonsRect.right - p->x;
-				if (deltaX > 0)
-				{
-					p->x += deltaX;
-					p->cx -= deltaX;
-				}
-			}
-		}
 
-		// And send them to the main application message queue
-		::PostMessage(messages->AppDirectHwnd, messages->UpdateMessage, FALSE, NULL);
-
-		return 0;	// this message is processed
-	}
-	else 
-	{
-		if (uMsg == messages->ExitMessage)
-		{
-			if (g_bInitDone)
-			{
-				bExiting = true;
-				g_bInitDone = false;
-				HWND rebarHwnd = FindRebar();	_ASSERT(rebarHwnd);
-				BOOL b = ::RemoveWindowSubclass(rebarHwnd, SubclassRebarProc, 0); _ASSERT(b);
-
-				HWND taskbar = FindTaskBar();	_ASSERT(taskbar);
-				b = ::RemoveWindowSubclass(taskbar, SubclassTaskbarProc, 0); _ASSERT(b);
-
-				// force repaint rebar by itself
-				b = ::ShowWindow(rebarHwnd, SW_RESTORE);
-				
-				HWND theButton = GetAppDirectHwnd();
-				_ASSERT(g_hDll);
-				b = ::PostMessage(theButton, messages->ExitMessage, 0, (LPARAM)g_hDll);	_ASSERT(b);
-
-				delete messages;
-
-				g_hDll = NULL;
-			}
+			// Notify the application that the button should be repositioned
+			::PostMessage(hwndAdButton, WM_APPDIRECT_UPDATE, FALSE, NULL);
 
 			return 0;	// this message is processed
-		}
-		else if ((uMsg == messages->UpdateMessage) && !bExiting) 
-		{
-			buttonsRect.left = HIWORD(wParam);
-			buttonsRect.top = LOWORD(wParam);
-			buttonsRect.right = HIWORD(lParam);
-			buttonsRect.bottom = LOWORD(lParam);
+		} else if (uMsg == WM_APPDIRECT_UPDATE) {
+			g_RectButtons.left = HIWORD(wParam);
+			g_RectButtons.top = LOWORD(wParam);
+			g_RectButtons.right = HIWORD(lParam);
+			g_RectButtons.bottom = LOWORD(lParam);
 
 			return 0;	// this message is processed
 		}
@@ -127,23 +97,16 @@ static LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, cons
 
 static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	if (bExiting) 
-		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+	const HWND hwndAdButton = ((HWND)dwRefData);
 
-	const APPDIRECT_IPC_MESSAGES* messages = ((APPDIRECT_IPC_MESSAGES*)dwRefData);
-
-	switch (uMsg)
-	{
-		// Handle on top / topmost Z-Order
-		// place the button on top of Taskbar but not hover the
-		case WM_WINDOWPOSCHANGED:
-		{
-			// place on top of task bar
-			if (messages->AppDirectHwnd)
+	if (::IsWindow(hwndAdButton)) {
+		switch (uMsg) {
+		case WM_WINDOWPOSCHANGED: 
 			{
+				// place on top of task bar
 				WINDOWPOS * p = (WINDOWPOS*)lParam;
 				BOOL b = ::SetWindowPos(
-						messages->AppDirectHwnd, 
+						hwndAdButton, 
 						p->hwndInsertAfter,
 						0, 0, 0, 0, 0
 						| SWP_NOACTIVATE
@@ -153,96 +116,105 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						| SWP_NOOWNERZORDER
 					);
 				_ASSERT(b);
+				break;
 			}
+		case WM_MOVE:
+			// Notify the application that the button should be repositioned
+			::SendMessage(hwndAdButton, WM_APPDIRECT_UPDATE, TRUE, NULL);
+			break;
+		default:
 			break;
 		}
-		case WM_MOVE:
-			if (messages->AppDirectHwnd) {
-				int xPos = (int)(short) LOWORD(lParam);
-				int yPos = (int)(short) HIWORD(lParam);
-				::SendMessage(messages->AppDirectHwnd, messages->UpdateMessage, TRUE, NULL);
-			}
-			break;
 	}
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
-HWND GetProgmanHwnd()
-{
-	HWND progWin = ::FindWindowEx(NULL, NULL, L"Progman", NULL);	_ASSERT(progWin);
-	return progWin;
-}
+/**************/
 
-DWORD GetExplorerProcess()
+LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
 {
-	DWORD ExplorerExeProcess;
-	DWORD ProgmanThread = ::GetWindowThreadProcessId(GetProgmanHwnd(), &ExplorerExeProcess);
-	return ExplorerExeProcess;
-}
+	if (code == HC_ACTION) {
+		PCWPSTRUCT pCW = (PCWPSTRUCT)lParam;
+		
+		HHOOK hHook = (HHOOK)pCW->wParam;
+		HWND adButtonHwnd = (HWND)pCW->lParam;
 
-DWORD GetRebarThread()
-{
-	return ThreadFromWnd(FindRebar());
-}
+		switch (pCW->message) {
+		case WM_APPDIRECT_SETUP_SUBCLASS:
+			{
+				::UnhookWindowsHookEx(hHook);
 
-DWORD ThreadFromWnd(HWND wnd)
-{
-	DWORD ExplProcess;
-	DWORD thr = GetWindowThreadProcessId(wnd, &ExplProcess);	_ASSERT(thr);
-	return thr;
-}
+				// Register update message
+				WM_APPDIRECT_UPDATE = GetUpdatePositionMsg();
 
-HWND FindRebar()
-{
-	return FindRebar(FindTaskBar());
-}
+				// Get current module name
+				TCHAR libName[MAX_PATH]; 
+				::GetModuleFileName(g_hModule, libName, MAX_PATH);
+				::OutputDebugString(libName);
 
-HWND FindRebar(HWND ParentTaskbar)
-{
-	HWND h = ::FindWindowEx(ParentTaskbar, NULL, REBARCLASSNAME, NULL);	_ASSERT(h);	
-	return 	h;
-}
+				// Increment reference counter on the current module
+				// Which will prevent it from unloading when the hook is removed
+				if (::LoadLibrary(libName)) {
+					::OutputDebugString(L"Loaded Library!");
+					// Subclass relevant windows
+					HWND taskBar = ::FindWindow(L"Shell_TrayWnd", NULL); _ASSERT(taskBar);
+					BOOL bTaskBarHook = ::SetWindowSubclass(taskBar, SubclassTaskbarProc, 0, (DWORD_PTR)adButtonHwnd); _ASSERT(bTaskBarHook);
 
-NATIVE_API LRESULT CALLBACK SetupHooks2(int code, WPARAM wParam, LPARAM lParam)
-{
-	if (code == HC_ACTION && !g_bInitDone)
-	{
-		g_bInitDone = true;
-		APPDIRECT_IPC_MESSAGES* messages = new APPDIRECT_IPC_MESSAGES();
-		messages->ExitMessage = GetExitMsg();
-		messages->UpdateMessage = GetUpdatePositionMsg();
-		messages->AppDirectHwnd = GetAppDirectHwnd();
-		g_hDll = ::LoadLibrary(gc_TheDllName); _ASSERT(g_hDll);		// prevent dll from unloading
-		BOOL b = ::SetWindowSubclass(FindRebar(), SubclassRebarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
-		b = ::SetWindowSubclass(FindTaskBar(), SubclassTaskbarProc, 0, (DWORD_PTR)messages);	_ASSERT(b);
+					HWND reBar = ::FindWindowEx(taskBar, NULL, REBARCLASSNAME, NULL); _ASSERT(reBar);	
+					BOOL bReBarHook = ::SetWindowSubclass(reBar, SubclassRebarProc, 0, (DWORD_PTR)adButtonHwnd); _ASSERT(bReBarHook);
+
+					return TRUE;
+				}
+				break;
+			}
+		case WM_APPDIRECT_TEARDOWN_SUBCLASS: 
+			{
+				::UnhookWindowsHookEx(hHook);
+
+				// Remove subclasses
+				HWND hwndTaskBar = FindTaskBar(); _ASSERT(hwndTaskBar);
+				BOOL bTaskBarHook = ::RemoveWindowSubclass(hwndTaskBar, SubclassTaskbarProc, 0); _ASSERT(bTaskBarHook);
+
+				HWND hwndReBar = FindReBar(hwndTaskBar); _ASSERT(hwndReBar);	
+				BOOL bReBarHook = ::RemoveWindowSubclass(hwndReBar, SubclassRebarProc, 0); _ASSERT(bReBarHook);
+
+				// Release the module
+				if (::FreeLibrary(g_hModule)) {
+					return TRUE;
+				}
+				break;
+			}
+		default:
+			break;
+		}
 	}
 
 	return ::CallNextHookEx(NULL, code, wParam, lParam);
 }
 
-volatile HHOOK ExplorerHook = NULL;
-void InjectExplrorerExe()
+BOOL SendMessageWithHook(UINT message, HWND hwndArg) 
 {
-	// install hooks in the explorer process: 
-	// we are hooking another process and must use DLL http://msdn.microsoft.com/en-us/library/windows/desktop/ms644990(v=vs.85).aspx
-
-	HMODULE hHookModule = ::GetModuleHandle(gc_TheDllName);		_ASSERT(hHookModule);	// reference was not counted: do not release	
-	ExplorerHook = ::SetWindowsHookEx(WH_GETMESSAGE, SetupHooks2, hHookModule, GetRebarThread());	_ASSERT(ExplorerHook);
-	if (!ExplorerHook)
-	{
-		int err = GetLastError();
-		//at("Hook FAILS! "); tx(err);
+	HWND shellTrayHwnd = ::FindWindow(L"Shell_TrayWnd", NULL);
+	if (shellTrayHwnd == NULL) {
+		return FALSE;
 	}
-	::PostMessage(FindRebar(), WM_NULL, 0, 0); // make sure there is one message in the queue
+
+	DWORD threadId = ::GetWindowThreadProcessId(shellTrayHwnd, NULL);
+	HHOOK hHook = SetWindowsHookEx(WH_CALLWNDPROC, HookProc, g_hModule, threadId);
+
+	if (!hHook) {
+		return FALSE;
+	}
+
+	return (::SendMessage(shellTrayHwnd, message, (WPARAM)hHook, (LPARAM)hwndArg) != FALSE);
 }
 
-void DetachHooks()
+BOOL SetupSubclass(HWND hwndAdButton) 
 {
-	if (ExplorerHook)
-	{
-		BOOL b = ::UnhookWindowsHookEx(ExplorerHook); _ASSERT(b);
-		ExplorerHook = NULL;
-		HWND reb = FindRebar();	_ASSERT(reb);
-		::PostMessage(reb, GetExitMsg(), 0, 0);
-	}
+	return SendMessageWithHook(WM_APPDIRECT_SETUP_SUBCLASS, hwndAdButton);
+}
+
+BOOL TearDownSubclass()
+{
+	return SendMessageWithHook(WM_APPDIRECT_TEARDOWN_SUBCLASS, NULL);
 }
