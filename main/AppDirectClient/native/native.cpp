@@ -150,12 +150,10 @@ LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
 				// Get current module name
 				TCHAR libName[MAX_PATH]; 
 				::GetModuleFileName(g_hModule, libName, MAX_PATH);
-				::OutputDebugString(libName);
 
 				// Increment reference counter on the current module
 				// Which will prevent it from unloading when the hook is removed
 				if (::LoadLibrary(libName)) {
-					::OutputDebugString(L"Loaded Library!");
 					// Subclass relevant windows
 					HWND taskBar = ::FindWindow(L"Shell_TrayWnd", NULL); _ASSERT(taskBar);
 					BOOL bTaskBarHook = ::SetWindowSubclass(taskBar, SubclassTaskbarProc, 0, (DWORD_PTR)adButtonHwnd); _ASSERT(bTaskBarHook);
