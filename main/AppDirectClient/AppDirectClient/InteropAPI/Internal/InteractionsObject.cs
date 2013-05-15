@@ -647,47 +647,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return NULL;
         }
 
-        /// <summary>
-        /// Eject our native dll from explorer process
-        /// </summary>
-        /// <param name="dllHandle">HANDLE of dll inside explorer process</param>
-        private void EjectNativeDll(IntPtr dllHandle)
-        {
-            if (dllHandle == NULL)
-            {
-                throw new ArgumentNullException("dllHandle");
-            }
-
-            uint pid;
-            User32Dll.GetWindowThreadProcessId(_taskbarHwnd, out pid);
-            var hExplorerProcess = Kernel32Dll.OpenProcess(0
-                | ProcessAccessFlags.CreateThread
-                | ProcessAccessFlags.QueryInformation
-                | ProcessAccessFlags.VMOperation
-                | ProcessAccessFlags.VMRead
-                | ProcessAccessFlags.VMWrite
-                , false, pid);
-
-            if (hExplorerProcess == NULL)
-            {
-                throw new Exception("Cannot get Explorer.exe handle");
-            }
-
-            var k = Kernel32Dll.LoadLibrary("Kernel32.dll");
-            var fl = Kernel32Dll.GetProcAddress(k, "FreeLibrary");
-
-            uint ThreadId;
-            var hNewThread = Kernel32Dll.CreateRemoteThread(hExplorerProcess, IntPtr.Zero, 0, fl, dllHandle, 0, out ThreadId);
-
-            if (hNewThread == NULL)
-            {
-                throw new Exception("hNewThread");
-            }
-
-            Kernel32Dll.CloseHandle(hExplorerProcess);
-            Kernel32Dll.CloseHandle(hNewThread);
-        }
-
         // return one of 4 possible edge
         private TaskbarPosition GetTaskbarEdge(HWND taskBar, ref RectWin taskbarRect)
         {

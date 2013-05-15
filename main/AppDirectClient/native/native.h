@@ -12,7 +12,7 @@
 #define NATIVE_API __declspec(dllimport)
 #endif
 
-void setModuleHandle(HMODULE hModule);
+void SetModuleHandle(HMODULE hModule);
 
 extern "C" NATIVE_API UINT GetUpdatePositionMsg();
 extern "C" NATIVE_API BOOL SetupSubclass(HWND adButtonHwnd);

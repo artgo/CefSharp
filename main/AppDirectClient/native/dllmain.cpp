@@ -25,7 +25,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 {
 	if (ul_reason_for_call == DLL_PROCESS_ATTACH)
 	{
-		setModuleHandle(hModule);
+		SetModuleHandle(hModule);
 	}
 
 	return TRUE;
