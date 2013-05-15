@@ -152,7 +152,7 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						| SWP_ASYNCWINDOWPOS
 						| SWP_NOOWNERZORDER
 					);
-				_ASSERT(b);
+				//_ASSERT(b);
 			}
 			break;
 		}

@@ -1,4 +1,6 @@
-﻿using AppDirect.WindowsClient.API;
+﻿using System.Diagnostics;
+using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
@@ -21,6 +23,7 @@ namespace AppDirect.WindowsClient
         private volatile Mutex _instanceMutex = null;
         private volatile MainWindow _mainWindow;
         private volatile ILatch _mainWindowReadyLatch = new Latch();
+        private ProcessWatcher _watcher;
 
         public App()
         {
@@ -93,6 +96,9 @@ namespace AppDirect.WindowsClient
             var timeElapsed = Environment.TickCount - startTicks;
             helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
             ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
+
+            _watcher = new ProcessWatcher("BrowserManager");
+            helper.StartAsynchronously(_watcher.Watch);
         }
 
         private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
@@ -158,6 +164,7 @@ namespace AppDirect.WindowsClient
         {
             if (_instanceMutex != null)
             {
+                ServiceLocator.UiHelper.IgnoreException(_watcher.Stop);
                 ServiceLocator.UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.CloseBrowserProcess);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Stop);

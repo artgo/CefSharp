@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using System;
@@ -12,6 +13,7 @@ namespace AppDirect.WindowsClient.Browser.API
     {
         private readonly IBrowserWindowsManager _browserWindowsManager;
         private readonly IUiHelper _uiHelper;
+        private ProcessWatcher _watcher;
 
         public BrowsersManagerApi(IBrowserWindowsManager browserWindowsManager, IUiHelper uiHelper)
         {
@@ -27,6 +29,9 @@ namespace AppDirect.WindowsClient.Browser.API
 
             _browserWindowsManager = browserWindowsManager;
             _uiHelper = uiHelper;
+            
+            _watcher = new ProcessWatcher("AppDirectClient");
+            _uiHelper.StartAsynchronously(_watcher.Watch);
         }
 
         public void DisplayApplication(IApplication application)
@@ -99,6 +104,7 @@ namespace AppDirect.WindowsClient.Browser.API
 
         public void CloseBrowserProcess()
         {
+            _watcher.Stop();
             _browserWindowsManager.CloseAllWindows();
             _uiHelper.GracefulShutdown();
         }
