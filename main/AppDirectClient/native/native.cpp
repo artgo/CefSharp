@@ -9,7 +9,7 @@
 UINT WM_APPDIRECT_UPDATE = 0;
 
 
-BOOL g_bInitDone = FALSE;
+BOOL g_bIsLoaded = FALSE;
 HMODULE g_hModule = NULL;
 RECT g_RectButtons;
 
@@ -147,21 +147,24 @@ LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
 				// Register update message
 				WM_APPDIRECT_UPDATE = GetUpdatePositionMsg();
 
-				// Get current module name
-				TCHAR libName[MAX_PATH]; 
-				::GetModuleFileName(g_hModule, libName, MAX_PATH);
+				if (!g_bIsLoaded) {
+					// Get current module name
+					TCHAR libName[MAX_PATH]; 
+					::GetModuleFileName(g_hModule, libName, MAX_PATH);
 
-				// Increment reference counter on the current module
-				// Which will prevent it from unloading when the hook is removed
-				if (::LoadLibrary(libName)) {
-					// Subclass relevant windows
-					HWND taskBar = ::FindWindow(L"Shell_TrayWnd", NULL); _ASSERT(taskBar);
-					BOOL bTaskBarHook = ::SetWindowSubclass(taskBar, SubclassTaskbarProc, 0, (DWORD_PTR)adButtonHwnd); _ASSERT(bTaskBarHook);
+					// Increment reference counter on the current module
+					// Which will prevent it from unloading when the hook is removed
+					if (::LoadLibrary(libName)) {
+						// Subclass relevant windows
+						HWND taskBar = ::FindWindow(L"Shell_TrayWnd", NULL); _ASSERT(taskBar);
+						BOOL bTaskBarHook = ::SetWindowSubclass(taskBar, SubclassTaskbarProc, 0, (DWORD_PTR)adButtonHwnd); _ASSERT(bTaskBarHook);
 
-					HWND reBar = ::FindWindowEx(taskBar, NULL, REBARCLASSNAME, NULL); _ASSERT(reBar);	
-					BOOL bReBarHook = ::SetWindowSubclass(reBar, SubclassRebarProc, 0, (DWORD_PTR)adButtonHwnd); _ASSERT(bReBarHook);
+						HWND reBar = ::FindWindowEx(taskBar, NULL, REBARCLASSNAME, NULL); _ASSERT(reBar);	
+						BOOL bReBarHook = ::SetWindowSubclass(reBar, SubclassRebarProc, 0, (DWORD_PTR)adButtonHwnd); _ASSERT(bReBarHook);
 
-					return TRUE;
+						g_bIsLoaded = TRUE;
+						return TRUE;
+					}
 				}
 				break;
 			}
@@ -169,16 +172,19 @@ LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
 			{
 				::UnhookWindowsHookEx(hHook);
 
-				// Remove subclasses
-				HWND hwndTaskBar = FindTaskBar(); _ASSERT(hwndTaskBar);
-				BOOL bTaskBarHook = ::RemoveWindowSubclass(hwndTaskBar, SubclassTaskbarProc, 0); _ASSERT(bTaskBarHook);
+				if (g_bIsLoaded) {
+					// Remove subclasses
+					HWND hwndTaskBar = FindTaskBar(); _ASSERT(hwndTaskBar);
+					BOOL bTaskBarHook = ::RemoveWindowSubclass(hwndTaskBar, SubclassTaskbarProc, 0); _ASSERT(bTaskBarHook);
 
-				HWND hwndReBar = FindReBar(hwndTaskBar); _ASSERT(hwndReBar);	
-				BOOL bReBarHook = ::RemoveWindowSubclass(hwndReBar, SubclassRebarProc, 0); _ASSERT(bReBarHook);
+					HWND hwndReBar = FindReBar(hwndTaskBar); _ASSERT(hwndReBar);	
+					BOOL bReBarHook = ::RemoveWindowSubclass(hwndReBar, SubclassRebarProc, 0); _ASSERT(bReBarHook);
 
-				// Release the module
-				if (::FreeLibrary(g_hModule)) {
-					return TRUE;
+					// Release the module
+					if (::FreeLibrary(g_hModule)) {
+						g_bIsLoaded = FALSE;
+						return TRUE;
+					}
 				}
 				break;
 			}
