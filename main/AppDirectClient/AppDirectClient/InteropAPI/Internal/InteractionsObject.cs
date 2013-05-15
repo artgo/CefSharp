@@ -176,7 +176,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _hwndSource.AddHook(_wndProcHook);
             _subclassProc = PfnSubclass;
 
-            Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL);
+            bool success = Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL);
 
             DoChangeWidth(_buttonsWidth, true);
 
@@ -467,13 +467,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
             NativeDll.TearDownSubclass(); // detach - can cause reposition by Rebar itself
-            User32Dll.SendMessage(_hwndSource.Handle, (int)_dllUnloadMessageId, 0, 0);
-
-            if (_subclassProc != null)
-            {
-                Comctl32Dll.RemoveWindowSubclass(_hwndSource.Handle, _subclassProc, NULL);
-                _subclassProc = null;
-            }
+            User32Dll.PostMessage(_hwndSource.Handle, _dllUnloadMessageId, IntPtr.Zero, IntPtr.Zero);
 
             var newRebarCoords = CalculateRebarCoords(false);
 
@@ -483,6 +477,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                                         0)) // move to correct coords
             {
                 throw new InteropException("Cannot move Rebar back");
+            }
+
+            if (_subclassProc != null)
+            {
+                Comctl32Dll.RemoveWindowSubclass(_hwndSource.Handle, _subclassProc, NULL);
+                _subclassProc = null;
             }
 
             return true;
