@@ -16,10 +16,10 @@ namespace AppDirect.WindowsClient.Browser.API
     {
         private readonly IBrowserWindowsManager _browserWindowsManager;
         private readonly IUiHelper _uiHelper;
-        public ProcessWatcher Watcher;
+        public IProcessWatcher Watcher;
 
         public BrowsersManagerApi(IBrowserWindowsManager browserWindowsManager, IUiHelper uiHelper,
-                                  ProcessWatcher watcher = null)
+                                  IProcessWatcher watcher)
         {
             if (browserWindowsManager == null)
             {
@@ -34,11 +34,8 @@ namespace AppDirect.WindowsClient.Browser.API
             _browserWindowsManager = browserWindowsManager;
             _uiHelper = uiHelper;
 
-            if (watcher != null)
-            {
-                Watcher = watcher;
-                Watcher.Start();
-            }
+            Watcher = watcher;
+            Watcher.Start();
         }
 
         public void DisplayApplication(IApplication application)

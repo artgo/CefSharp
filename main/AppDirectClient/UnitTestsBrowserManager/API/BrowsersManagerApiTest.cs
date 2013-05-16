@@ -1,4 +1,5 @@
 ﻿using AppDirect.WindowsClient.Browser.API;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Tests.Common.UI;
@@ -23,7 +24,8 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         {
             _uiHelper = new TestUiHelper();
             _browserWindowsManager = Substitute.For<IBrowserWindowsManager>();
-            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
+            var processWatcher = Substitute.For<IProcessWatcher>();
+            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper, processWatcher);
         }
 
         [Test]
@@ -33,7 +35,8 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
             _uiHelper = Substitute.For<IUiHelper>();
             var windowMock = Substitute.For<IBrowserWindow>();
             _browserWindowsManager.GetOrCreateBrowserWindow(null).ReturnsForAnyArgs(windowMock);
-            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
+            var processWatcher = Substitute.For<IProcessWatcher>();
+            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper, processWatcher);
             _browsersManagerApi.DisplayApplication(new Application());
             _browserWindowsManager.Received().GetOrCreateBrowserWindow(Arg.Any<IApplication>());
         }
@@ -78,7 +81,8 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         public void TestCloseAllApplicationsAndRemoveSessionInfoRemovesSessionInfo()
         {
             _uiHelper = Substitute.For<IUiHelper>();
-            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
+            var processWatcher = Substitute.For<IProcessWatcher>();
+            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper, processWatcher);
             var appDirectSession = _browserWindowsManager.Session;
             _browsersManagerApi.CloseAllApplicationsAndRemoveSessionInfo();
             Assert.AreNotEqual(appDirectSession, _browserWindowsManager.Session);
@@ -88,9 +92,29 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         public void TestCloseBrowserProcessCallsShutdown()
         {
             _uiHelper = Substitute.For<IUiHelper>();
-            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
+            var processWatcher = Substitute.For<IProcessWatcher>();
+            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper, processWatcher);
             _browsersManagerApi.CloseBrowserProcess();
             _uiHelper.Received().GracefulShutdown();
+        }
+
+        [Test]
+        public void TestCloseBrowserProcessStopsWatcher()
+        {
+            _uiHelper = Substitute.For<IUiHelper>();
+            var processWatcher = Substitute.For<IProcessWatcher>();
+            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper, processWatcher);
+            _browsersManagerApi.CloseBrowserProcess();
+            processWatcher.Received().Stop();
+        }
+
+        [Test]
+        public void InitializeBrowserProcessStartsWatcher()
+        {
+            _uiHelper = Substitute.For<IUiHelper>();
+            var processWatcher = Substitute.For<IProcessWatcher>();
+            _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper, processWatcher);
+            processWatcher.Received().Start();
         }
 
         [Test]

@@ -102,6 +102,7 @@
     <Compile Include="API\IServiceBuilder.cs" />
     <Compile Include="API\IStartStop.cs" />
     <Compile Include="API\LocalApplication.cs" />
+    <Compile Include="IProcessWatcher.cs" />
     <Compile Include="Log\ILogger.cs" />
     <Compile Include="Log\ILogInitializer.cs" />
     <Compile Include="Log\NLogLogger.cs" />

@@ -7,13 +7,18 @@ using NLog;
 
 namespace AppDirect.WindowsClient.Common
 {
-    public class ProcessWatcher
+    public class ProcessWatcher : IProcessWatcher
     {
         private readonly string _processName;
         private int _restartLimit = 10;
         private ILogger _logger;
 
         public Process Process;
+
+        public ProcessWatcher()
+        {
+            
+        }
 
         public ProcessWatcher(string processName, ILogger logger)
         {
