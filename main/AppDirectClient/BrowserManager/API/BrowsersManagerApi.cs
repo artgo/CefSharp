@@ -17,9 +17,8 @@ namespace AppDirect.WindowsClient.Browser.API
         private readonly IBrowserWindowsManager _browserWindowsManager;
         private readonly IUiHelper _uiHelper;
         private ProcessWatcher _watcher;
-        private readonly string _mainApplicationName = "AppDirectClient";
 
-        public BrowsersManagerApi(IBrowserWindowsManager browserWindowsManager, IUiHelper uiHelper)
+        public BrowsersManagerApi(IBrowserWindowsManager browserWindowsManager, IUiHelper uiHelper, string mainApplicationName = null)
         {
             if (browserWindowsManager == null)
             {
@@ -34,8 +33,11 @@ namespace AppDirect.WindowsClient.Browser.API
             _browserWindowsManager = browserWindowsManager;
             _uiHelper = uiHelper;
 
-            _watcher = new ProcessWatcher(_mainApplicationName);
-            _watcher.Start();
+            if (mainApplicationName != null)
+            {
+                _watcher = new ProcessWatcher(mainApplicationName);
+                _watcher.Start();
+            }
         }
 
         public void DisplayApplication(IApplication application)

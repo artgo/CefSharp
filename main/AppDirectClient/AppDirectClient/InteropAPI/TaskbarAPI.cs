@@ -73,5 +73,10 @@ namespace AppDirect.WindowsClient.InteropAPI
             // use _control
             return _interactionsObject.Remove(shutdownCallback);
         }
+
+        public void Refresh()
+        {
+            _interactionsObject.LoadInitialValues();
+        }
     }
 }

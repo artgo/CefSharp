@@ -76,7 +76,8 @@ namespace AppDirect.WindowsClient
 
             InsertTaskbarWindow(taskbarPanel);
 
-            helper.StartAsynchronously(() => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
+            helper.StartAsynchronously(
+                () => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
 
             helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
 
@@ -91,9 +92,13 @@ namespace AppDirect.WindowsClient
 
             ExplorerWatcher.Start(() => Helper.PerformInUiThread(() =>
                 {
+                    TaskbarApi.Instance.Refresh();
+                    taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
+                    taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition,
+                                                   TaskbarApi.Instance.TaskbarIconsSize);
                     InsertTaskbarWindow(taskbarPanel);
                 }
-            ));
+                                            ));
         }
 
         private void InsertTaskbarWindow(TaskbarPanel taskbarPanel)
