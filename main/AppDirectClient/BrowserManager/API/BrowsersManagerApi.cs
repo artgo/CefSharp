@@ -16,9 +16,10 @@ namespace AppDirect.WindowsClient.Browser.API
     {
         private readonly IBrowserWindowsManager _browserWindowsManager;
         private readonly IUiHelper _uiHelper;
-        private ProcessWatcher _watcher;
+        public ProcessWatcher Watcher;
 
-        public BrowsersManagerApi(IBrowserWindowsManager browserWindowsManager, IUiHelper uiHelper, string mainApplicationName = null)
+        public BrowsersManagerApi(IBrowserWindowsManager browserWindowsManager, IUiHelper uiHelper,
+                                  ProcessWatcher watcher = null)
         {
             if (browserWindowsManager == null)
             {
@@ -33,10 +34,10 @@ namespace AppDirect.WindowsClient.Browser.API
             _browserWindowsManager = browserWindowsManager;
             _uiHelper = uiHelper;
 
-            if (mainApplicationName != null)
+            if (watcher != null)
             {
-                _watcher = new ProcessWatcher(mainApplicationName);
-                _watcher.Start();
+                Watcher = watcher;
+                Watcher.Start();
             }
         }
 
@@ -109,7 +110,7 @@ namespace AppDirect.WindowsClient.Browser.API
 
         public void CloseBrowserProcess()
         {
-            _watcher.Stop();
+            Watcher.Stop();
             _browserWindowsManager.CloseAllWindows();
             _uiHelper.GracefulShutdown();
         }

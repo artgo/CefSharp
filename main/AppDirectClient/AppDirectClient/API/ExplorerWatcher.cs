@@ -2,28 +2,35 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using AppDirect.WindowsClient.Common.UI;
 
 namespace AppDirect.WindowsClient.API
 {
-    public static class ExplorerWatcher
+    public class ExplorerWatcher
     {
-        public static Process ExplorerProcess;
-        private static Action ActionOnCrash;
+        public Process ExplorerProcess;
+        private readonly Action _actionOnCrash;
+        private readonly IUiHelper _uiHelper;
         private const string ExplorerProcessName = "explorer";
 
-        public static void Start(Action actionOnCrash)
+        public ExplorerWatcher(IUiHelper uiHelper, Action actionOnCrash)
         {
-            GetExplorerProcess();
-            ActionOnCrash = actionOnCrash;
+            _uiHelper = uiHelper;
+            _actionOnCrash = actionOnCrash;
         }
 
-        public static void Stop()
+        public void Start()
+        {
+            GetExplorerProcess();
+        }
+
+        public void Stop()
         {
             GetExplorerProcess();
             ExplorerProcess.Exited -= LaunchIfCrashed;
         }
 
-        private static void GetExplorerProcess()
+        private void GetExplorerProcess()
         {
             while (ExplorerProcess == null)
             {
@@ -37,12 +44,12 @@ namespace AppDirect.WindowsClient.API
                 }
                 else
                 {
-                    Thread.Sleep(500);
+                    _uiHelper.Sleep(500);
                 }
             }
         }
 
-        private static void LaunchIfCrashed(object o, EventArgs e)
+        private void LaunchIfCrashed(object o, EventArgs e)
         {
             Process process = (Process)o;
             if (process.ExitCode != 0)
@@ -50,8 +57,8 @@ namespace AppDirect.WindowsClient.API
                 ExplorerProcess = null;
                 GetExplorerProcess();
                 ExplorerProcess.WaitForInputIdle();
-                Thread.Sleep(500);
-                ActionOnCrash.Invoke();
+                _uiHelper.Sleep(500);
+                _actionOnCrash.Invoke();
             }
         }
     }

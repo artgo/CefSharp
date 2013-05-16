@@ -3,6 +3,7 @@ using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
 using AppDirect.WindowsClient.Browser.UI;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using System;
@@ -20,7 +21,7 @@ namespace AppDirect.WindowsClient.Browser
         private static readonly IBrowserWindowsBuilder<IBrowserWindow> BrowserWindowsBuilder = new BrowserWindowsBuilder();
         private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper, BrowserWindowsBuilder);
         private static volatile Mutex _instanceMutex = null;
-        private static string _mainApplicationName = "AppDirectClient";
+        private const string _mainApplicationName = "AppDirectClient";
 
         /// <summary>
         /// The main entry point for the application.
@@ -52,7 +53,7 @@ namespace AppDirect.WindowsClient.Browser
                 return;
             }
 
-            var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper, _mainApplicationName);
+            var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper, new ProcessWatcher(_mainApplicationName));
             var apiStarter = new IpcMainWindowStarter(api);
 
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,

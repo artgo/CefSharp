@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
-using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
 using System;
 using System.Collections.Generic;
@@ -25,6 +23,7 @@ namespace AppDirect.WindowsClient
         private volatile MainWindow _mainWindow;
         private volatile ILatch _mainWindowReadyLatch = new Latch();
         private volatile ProcessWatcher _watcher;
+        private ExplorerWatcher _explorerWatcher;
 
         public App()
         {
@@ -81,16 +80,10 @@ namespace AppDirect.WindowsClient
 
             helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
 
-            base.OnStartup(e);
-
-            var timeElapsed = Environment.TickCount - startTicks;
-            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
-            ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
-
             _watcher = new ProcessWatcher("BrowserManager");
             _watcher.Start();
 
-            ExplorerWatcher.Start(() => Helper.PerformInUiThread(() =>
+            _explorerWatcher = new ExplorerWatcher(helper, () => Helper.PerformInUiThread(() =>
                 {
                     TaskbarApi.Instance.Refresh();
                     taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
@@ -98,7 +91,15 @@ namespace AppDirect.WindowsClient
                                                    TaskbarApi.Instance.TaskbarIconsSize);
                     InsertTaskbarWindow(taskbarPanel);
                 }
-                                            ));
+                                                             ));
+
+            _explorerWatcher.Start();
+
+            base.OnStartup(e);
+
+            var timeElapsed = Environment.TickCount - startTicks;
+            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
+            ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
         }
 
         private void InsertTaskbarWindow(TaskbarPanel taskbarPanel)
@@ -182,6 +183,7 @@ namespace AppDirect.WindowsClient
             if (_instanceMutex != null)
             {
                 ServiceLocator.UiHelper.IgnoreException(_watcher.Stop);
+                ServiceLocator.UiHelper.IgnoreException(_explorerWatcher.Stop);
                 ServiceLocator.UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.CloseBrowserProcess);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Stop);
