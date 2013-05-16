@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace AppDirect.WindowsClient.Common
 {
     public class ProcessWatcher
     {
-        public static string _processName;
+        private static string _processName;
+        private static int count = 10;
+        private bool _gracefulShutdown;
+
+        public Process Process;
 
         public ProcessWatcher(string processName)
         {
-            _processName = processName; 
+            _processName = processName;
         }
-
-        static int count = 10;
-        private bool _gracefulShutdown;
 
         public void Watch()
         {
@@ -34,30 +33,28 @@ namespace AppDirect.WindowsClient.Common
         {
             var processesByName = Process.GetProcessesByName(_processName);
 
-            Process process;
-
             if (processesByName.Any())
             {
-                process = processesByName[0];
-                process.EnableRaisingEvents = true;
-                process.Exited += LaunchIfCrashed;
+                Process = processesByName[0];
+                Process.EnableRaisingEvents = true;
+                Process.Exited += LaunchIfCrashed;
 
-                if (!process.Responding)
+                if (!Process.Responding)
                 {
-                    process.Kill();
+                    Process.Kill();
                 }
             }
             else
             {
-                process = new Process();
+                Process = new Process();
 
-                process.StartInfo.FileName = _processName;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
-                process.EnableRaisingEvents = true;
-                process.Exited += LaunchIfCrashed;
+                Process.StartInfo.FileName = _processName;
+                Process.StartInfo.UseShellExecute = false;
+                Process.StartInfo.CreateNoWindow = true;
+                Process.EnableRaisingEvents = true;
+                Process.Exited += LaunchIfCrashed;
 
-                process.Start();
+                Process.Start();
             }
         }
 
@@ -67,9 +64,13 @@ namespace AppDirect.WindowsClient.Common
             if (process.ExitCode != 0 && !_gracefulShutdown)
             {
                 if (count-- > 0) // restart at max count times
+                {
                     Launch();
+                }
                 else
+                {
                     Environment.Exit(process.ExitCode);
+                }
             }
         }
     }
