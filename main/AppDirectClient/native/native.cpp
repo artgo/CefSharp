@@ -152,7 +152,7 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						| SWP_ASYNCWINDOWPOS
 						| SWP_NOOWNERZORDER
 					);
-				//_ASSERT(b);
+				_ASSERT(b);
 			}
 			break;
 		}
@@ -199,7 +199,7 @@ HWND FindRebar()
 
 HWND FindRebar(HWND ParentTaskbar)
 {
-	HWND h = ::FindWindowEx(ParentTaskbar, NULL, REBARCLASSNAME, NULL);	//_ASSERT(h);	
+	HWND h = ::FindWindowEx(ParentTaskbar, NULL, REBARCLASSNAME, NULL);	_ASSERT(h);	
 	return 	h;
 }
 

@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using AppDirect.WindowsClient.Common.Log;
+using NLog;
 
 namespace AppDirect.WindowsClient.Common
 {
@@ -9,13 +11,14 @@ namespace AppDirect.WindowsClient.Common
     {
         private readonly string _processName;
         private int _restartLimit = 10;
-        private volatile bool _gracefulShutdown;
+        private ILogger _logger;
 
         public Process Process;
 
-        public ProcessWatcher(string processName)
+        public ProcessWatcher(string processName, ILogger logger)
         {
             _processName = processName;
+            _logger = logger;
         }
 
         public void Start()
@@ -49,13 +52,15 @@ namespace AppDirect.WindowsClient.Common
                 Process.Exited += LaunchIfCrashed;
 
                 Process.Start();
+                _logger.Info(String.Format("{0} process started by ProcessWatcher", _processName));
             }
         }
 
         private void LaunchIfCrashed(object o, EventArgs e)
         {
             Process process = (Process)o;
-            if (process.ExitCode != 0 && !_gracefulShutdown)
+            _logger.Info(String.Format("The {0} process was exited with ExitCode {1}.", _processName, process.ExitCode));
+            if (process.ExitCode != 0)
             {
                 if (_restartLimit-- > 0)//limit the number of restarts to prevent infinite crashing
                 {

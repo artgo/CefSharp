@@ -53,7 +53,7 @@ namespace AppDirect.WindowsClient.Browser
                 return;
             }
 
-            var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper, new ProcessWatcher(_mainApplicationName));
+            var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper, new ProcessWatcher(_mainApplicationName, Log));
             var apiStarter = new IpcMainWindowStarter(api);
 
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,

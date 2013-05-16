@@ -80,7 +80,7 @@ namespace AppDirect.WindowsClient
 
             helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
 
-            _watcher = new ProcessWatcher("BrowserManager");
+            _watcher = new ProcessWatcher("BrowserManager", _log);
             _watcher.Start();
 
             _explorerWatcher = new ExplorerWatcher(helper, () => Helper.PerformInUiThread(() =>
