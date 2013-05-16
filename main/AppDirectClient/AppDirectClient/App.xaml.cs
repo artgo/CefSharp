@@ -29,6 +29,14 @@ namespace AppDirect.WindowsClient
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Make sure that Current Directory is the same which contains all the binaries
+            Environment.CurrentDirectory = (
+                from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                where assembly.CodeBase.EndsWith(".exe")
+                select System.IO.Path.GetDirectoryName(assembly.CodeBase.Replace("file:///", ""))
+            ).FirstOrDefault();
+
+
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += _exceptionHandler;
 
