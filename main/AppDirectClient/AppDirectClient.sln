@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowserManager", "BrowserManager\BrowserManager.csproj", "{1F6BF7CC-6C7F-40C0-A48E-981D5CA6428A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{693AC1D5-CF4A-4212-B583-5999CFC20E5E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Windows|Any CPU = Debug_Windows|Any CPU

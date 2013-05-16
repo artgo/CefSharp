@@ -20,8 +20,6 @@ namespace AppDirect.WindowsClient.Browser
         private static readonly IBrowserWindowsBuilder<IBrowserWindow> BrowserWindowsBuilder = new BrowserWindowsBuilder();
         private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper, BrowserWindowsBuilder);
         private static volatile Mutex _instanceMutex = null;
-        private static int _restartLimit = 10;
-        private static string mainApplicationName = "AppDirectClient";
 
         /// <summary>
         /// The main entry point for the application.
