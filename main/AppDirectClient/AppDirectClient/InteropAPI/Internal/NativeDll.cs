@@ -16,8 +16,5 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         public static extern bool TearDownSubclass();
-
-        [DllImport(NativeDllName, CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        public static extern uint GetUpdatePositionMsg();
     }
 }

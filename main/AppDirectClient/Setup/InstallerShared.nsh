@@ -15,8 +15,11 @@
 !define APPEXEPATH "${APPDIR}\${APPEXE}"
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
 !define COPYFILES "/r /x ${APPNAME}\ApplicationData\*.* AppDirectClient\*.*"
+
+;--NB! MAKE SURE THAT THESE VALUES STAY IN SYNC WITH THE APPLICATION AND THE INSTALLER
 !define APPCLOSEMESSAGE "AppDirectForceApplicationCloseMessage"
 !define NATIVETERMINATEMESSAGE "AppDirectNativeTerminateMessage"
+
 !define APPWINDOWCLASSNAME "AppDirectTaskbarButtonsWindow"
 !define SHELLTRAYWINDOWCLASSNAME "Shell_TrayWnd"
 !define SYNC_TERM 0x00100001

@@ -3,6 +3,7 @@
 
 // The following messages are registered with ::RegisterWindowsMessage
 // because they are used across application
+// NB! MAKE SURE THAT THESE VALUES STAY IN SYNC WITH THE APPLICATION AND THE INSTALLER!!!
 #define APPDIRECT_MESSAGE_NAME_UPDATE L"AppDirectButtonPositionUpdateMessage"
 #define APPDIRECT_MESSAGE_NAME_NATIVE_TERMINATE L"AppDirectNativeTerminateMessage"
 UINT WM_APPDIRECT_UPDATE = 0;
@@ -238,7 +239,7 @@ BOOL SendMessageWithHook(UINT message, HWND hwndArg)
 	return (::SendMessage(shellTrayHwnd, message, (WPARAM)hHook, (LPARAM)hwndArg) != FALSE);
 }
 
-BOOL SetupSubclass(HWND hwndAdButton) 
+BOOL SetupSubclass(HWND hwndAdButton)
 {
 	return SendMessageWithHook(WM_APPDIRECT_SETUP_SUBCLASS, hwndAdButton);
 }
