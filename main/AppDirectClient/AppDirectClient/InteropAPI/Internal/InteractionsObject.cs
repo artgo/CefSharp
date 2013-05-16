@@ -38,7 +38,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private int _taskbarMargins = 0;
 
         private const int DefaultStartButtonHeight = 40;
-        private const string UpdatePositionMessageName = @"AppDirectButtonPositionUpdate";
+        private const string UpdatePositionMessageName = @"AppDirectButtonPositionUpdateMessage";
         private const string CloseMessageName = @"AppDirectForceApplicationCloseMessage";
         private const string WindowName = @"AppDirectTaskbarButtonsWindow";
         private readonly static bool IsVistaOrUp;

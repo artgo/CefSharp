@@ -3,10 +3,10 @@
 
 // The following messages are registered with ::RegisterWindowsMessage
 // because they are used across application
-#define APPDIRECT_MESSAGE_NAME_UPDATE L"AppDirectButtonPositionUpdate"
-#define APPDIRECT_MESSAGE_NAME_TERMINATE L"AppDirectTerminate"
+#define APPDIRECT_MESSAGE_NAME_UPDATE L"AppDirectButtonPositionUpdateMessage"
+#define APPDIRECT_MESSAGE_NAME_NATIVE_TERMINATE L"AppDirectNativeTerminateMessage"
 UINT WM_APPDIRECT_UPDATE = 0;
-UINT WM_APPDIRECT_TERMINATE = 0;
+UINT WM_APPDIRECT_NATIVE_TERMINATE = 0;
 
 #define WM_APPDIRECT_SETUP_SUBCLASS WM_USER + 1
 #define WM_APPDIRECT_TEARDOWN_SUBCLASS WM_USER + 2
@@ -43,11 +43,6 @@ BOOL IsVertical()
 	APPBARDATA appbar = {sizeof(appbar), taskBar};
     SHAppBarMessage(ABM_GETTASKBARPOS, &appbar);
 	return (appbar.uEdge == ABE_LEFT) || (appbar.uEdge == ABE_RIGHT);
-}
-
-UINT GetUpdatePositionMsg()
-{
-	return ::RegisterWindowMessage(L"AppDirectButtonPositionUpdate");
 }
 
 LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam, 
@@ -107,7 +102,7 @@ LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
 		DoTearDownSubclass(TRUE);
 		return lResult;
-	} else if (uMsg == WM_APPDIRECT_TERMINATE) {
+	} else if (uMsg == WM_APPDIRECT_NATIVE_TERMINATE) {
 		return DoTearDownSubclass(TRUE);
 	} else {
 		switch (uMsg) {
@@ -145,7 +140,7 @@ BOOL DoSetupSubclass(HWND hwndAdButton)
 {
 	// Register update message
 	WM_APPDIRECT_UPDATE = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_UPDATE);
-	WM_APPDIRECT_TERMINATE = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_TERMINATE);
+	WM_APPDIRECT_NATIVE_TERMINATE = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_NATIVE_TERMINATE);
 
 	if (g_bIsLoaded) {
 		return TRUE;

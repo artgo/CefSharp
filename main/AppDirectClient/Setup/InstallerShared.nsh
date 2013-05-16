@@ -16,7 +16,9 @@
 !define UNINSTALLEXEPATH "${APPDIR}\${UNINSTALLERNAME}"
 !define COPYFILES "/r /x ${APPNAME}\ApplicationData\*.* AppDirectClient\*.*"
 !define APPCLOSEMESSAGE "AppDirectForceApplicationCloseMessage"
+!define NATIVETERMINATEMESSAGE "AppDirectNativeTerminateMessage"
 !define APPWINDOWCLASSNAME "AppDirectTaskbarButtonsWindow"
+!define SHELLTRAYWINDOWCLASSNAME "Shell_TrayWnd"
 !define SYNC_TERM 0x00100001
 !define BROWSERPROCESSNAME "BrowserManager.exe"
 !define NATIVEDLLPATH "$INSTDIR\native.dll"
@@ -43,7 +45,9 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
 
 !macro CloseApplicationIfRunning
   System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
+  System::Call "user32::RegisterWindowMessage(t'${NATIVETERMINATEMESSAGE}') i.r4"
   FindWindow $0 "" "${APPWINDOWCLASSNAME}"
+  FindWindow $2 "" "${SHELLTRAYWINDOWCLASSNAME}"
   ${If} $0 != "0"
   StrCmp $4 "0" gogogo
   MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
@@ -52,6 +56,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   System::Call "user32::GetWindowThreadProcessId(i $0, *i .r1 ) i .r2"
   System::Call "kernel32::OpenProcess(i ${SYNC_TERM}, i 0, i r1)i .r2"
   SendMessage $0 $3 0 0
+  SendMessage $2 $4 0 0
   System::Call "kernel32::WaitForSingleObject(i r2, i 30000) i.r5"
   StrCpy $6 $5
   StrCmp $5 0 end0 error
