@@ -34,6 +34,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         // win 7  default with large buttons
         private const int DefaultStartButtonWidth = 54;
+
         private int _taskbarMargins = 0;
 
         private const int DefaultStartButtonHeight = 40;
@@ -104,6 +105,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         public void Place(Control wnd, ITaskbarInterop notifyee, int initialWidth)
         {
+            if (_hwndSource != null)
+            {
+                _hwndSource.Dispose();
+                _hwndSource = null;
+            }
+
             if (wnd == null)
             {
                 throw new ArgumentNullException("wnd");
@@ -134,9 +141,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             var pos = CalculateButtonPosition();
 
             var hwndSourceParams = new HwndSourceParameters(
-                    WindowName,			// NAME
-                    _buttonsWindowSize.Width,
-                    _buttonsWindowSize.Height		// size of WPF window inside usual Win32 window
+                WindowName, // NAME
+                _buttonsWindowSize.Width,
+                _buttonsWindowSize.Height // size of WPF window inside usual Win32 window
                 );
             hwndSourceParams.PositionX = pos.X;
             hwndSourceParams.PositionY = pos.Y;
@@ -145,22 +152,23 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             // 94000C00 is from the Start button
             hwndSourceParams.WindowStyle = (int)(0
 
-                // popup is prohibiting child style on Win8
+                                                  // popup is prohibiting child style on Win8
                 //| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
-                | (uint)WindowsStyleConstants.WS_VISIBLE							// 10000000
-                | (uint)WindowsStyleConstants.WS_CLIPSIBLINGS						// 04000000
-                | (uint)WindowsStyleConstants.RBS_BANDBORDERS                       // 00000400
-                | (uint)WindowsStyleConstants.RBS_FIXEDORDER                        // 00000800
-            );
+                                                  | (uint)WindowsStyleConstants.WS_VISIBLE // 10000000
+                                                  | (uint)WindowsStyleConstants.WS_CLIPSIBLINGS // 04000000
+                                                  | (uint)WindowsStyleConstants.RBS_BANDBORDERS // 00000400
+                                                  | (uint)WindowsStyleConstants.RBS_FIXEDORDER // 00000800
+                                                 );
 
             // 00080088 is from the Start button
             hwndSourceParams.ExtendedWindowStyle = 0
-                | (int)ExtendedWindowsStyleConstants.WS_EX_TOOLWINDOW               //0x00000080
-                | (int)ExtendedWindowsStyleConstants.WS_EX_LAYERED                  //0x00080000
-                | (int)ExtendedWindowsStyleConstants.WS_EX_TOPMOST                  //0x00000008
-            ;
+                                                   | (int)ExtendedWindowsStyleConstants.WS_EX_TOOLWINDOW //0x00000080
+                                                   | (int)ExtendedWindowsStyleConstants.WS_EX_LAYERED //0x00080000
+                                                   | (int)ExtendedWindowsStyleConstants.WS_EX_TOPMOST //0x00000008
+                ;
 
-            hwndSourceParams.UsesPerPixelOpacity = true;		// set the WS_EX_LAYERED extended window style
+            hwndSourceParams.UsesPerPixelOpacity = true; // set the WS_EX_LAYERED extended window style
+
             _hwndSource = new HwndSource(hwndSourceParams) { RootVisual = wnd };
 
             _wndProcHook = WndProc;

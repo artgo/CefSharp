@@ -4,6 +4,7 @@ using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace AppDirect.WindowsClient
         private volatile Mutex _instanceMutex = null;
         private volatile MainWindow _mainWindow;
         private volatile ILatch _mainWindowReadyLatch = new Latch();
-        private ProcessWatcher _watcher;
+        private volatile ProcessWatcher _watcher;
 
         public App()
         {
@@ -73,6 +74,30 @@ namespace AppDirect.WindowsClient
 
             taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
 
+            InsertTaskbarWindow(taskbarPanel);
+
+            helper.StartAsynchronously(() => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
+
+            helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
+
+            base.OnStartup(e);
+
+            var timeElapsed = Environment.TickCount - startTicks;
+            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
+            ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
+
+            _watcher = new ProcessWatcher("BrowserManager");
+            _watcher.Start();
+
+            ExplorerWatcher.Start(() => Helper.PerformInUiThread(() =>
+                {
+                    InsertTaskbarWindow(taskbarPanel);
+                }
+            ));
+        }
+
+        private void InsertTaskbarWindow(TaskbarPanel taskbarPanel)
+        {
             try
             {
                 TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, taskbarPanel.GetCurrentDimension());
@@ -86,19 +111,6 @@ namespace AppDirect.WindowsClient
                 Current.Shutdown();
                 Environment.Exit(0);
             }
-
-            helper.StartAsynchronously(() => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
-
-            helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
-
-            base.OnStartup(e);
-
-            var timeElapsed = Environment.TickCount - startTicks;
-            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
-            ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
-
-            _watcher = new ProcessWatcher("BrowserManager");
-            helper.StartAsynchronously(_watcher.Watch);
         }
 
         private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)

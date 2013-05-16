@@ -199,7 +199,7 @@ HWND FindRebar()
 
 HWND FindRebar(HWND ParentTaskbar)
 {
-	HWND h = ::FindWindowEx(ParentTaskbar, NULL, REBARCLASSNAME, NULL);	_ASSERT(h);	
+	HWND h = ::FindWindowEx(ParentTaskbar, NULL, REBARCLASSNAME, NULL);	//_ASSERT(h);	
 	return 	h;
 }
 

@@ -7,9 +7,9 @@ namespace AppDirect.WindowsClient.Common
 {
     public class ProcessWatcher
     {
-        private static string _processName;
-        private static int count = 10;
-        private bool _gracefulShutdown;
+        private readonly string _processName;
+        private int _restartLimit = 10;
+        private volatile bool _gracefulShutdown;
 
         public Process Process;
 
@@ -18,18 +18,17 @@ namespace AppDirect.WindowsClient.Common
             _processName = processName;
         }
 
-        public void Watch()
+        public void Start()
         {
-            Launch();
-            Thread.Sleep(Timeout.Infinite);
+            Watch();
         }
 
         public void Stop()
         {
-            _gracefulShutdown = true;
+            Process.Exited -= LaunchIfCrashed;
         }
 
-        private void Launch()
+        private void Watch()
         {
             var processesByName = Process.GetProcessesByName(_processName);
 
@@ -38,11 +37,6 @@ namespace AppDirect.WindowsClient.Common
                 Process = processesByName[0];
                 Process.EnableRaisingEvents = true;
                 Process.Exited += LaunchIfCrashed;
-
-                if (!Process.Responding)
-                {
-                    Process.Kill();
-                }
             }
             else
             {
@@ -63,13 +57,9 @@ namespace AppDirect.WindowsClient.Common
             Process process = (Process)o;
             if (process.ExitCode != 0 && !_gracefulShutdown)
             {
-                if (count-- > 0) // restart at max count times
+                if (_restartLimit-- > 0)//limit the number of restarts to prevent infinite crashing
                 {
-                    Launch();
-                }
-                else
-                {
-                    Environment.Exit(process.ExitCode);
+                    Watch();
                 }
             }
         }

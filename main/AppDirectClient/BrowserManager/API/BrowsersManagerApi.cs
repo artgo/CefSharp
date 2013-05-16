@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common;
+﻿using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using System;
@@ -17,7 +18,6 @@ namespace AppDirect.WindowsClient.Browser.API
         private readonly IUiHelper _uiHelper;
         private ProcessWatcher _watcher;
         private readonly string _mainApplicationName = "AppDirectClient";
-        private string _explorerProcessName = "explorer";
 
         public BrowsersManagerApi(IBrowserWindowsManager browserWindowsManager, IUiHelper uiHelper)
         {
@@ -35,9 +35,7 @@ namespace AppDirect.WindowsClient.Browser.API
             _uiHelper = uiHelper;
 
             _watcher = new ProcessWatcher(_mainApplicationName);
-            _uiHelper.StartAsynchronously(_watcher.Watch);
-
-            _uiHelper.StartAsynchronously(ExplorerWatcher);
+            _watcher.Start();
         }
 
         public void DisplayApplication(IApplication application)
@@ -117,46 +115,6 @@ namespace AppDirect.WindowsClient.Browser.API
         public IEnumerable<IWindowData> GetOpenWindowDatas()
         {
             return _browserWindowsManager.GetBrowserWindowDatas();
-        }
-
-        private void ExplorerWatcher()
-        {
-            GetExplorerProcess();
-            Thread.Sleep(Timeout.Infinite);
-        }
-
-        private void GetExplorerProcess()
-        {
-            Process process = null;
-
-            while (process == null)
-            {
-                var processesByName = Process.GetProcessesByName(_explorerProcessName);
-
-                if (processesByName.Any())
-                {
-                    process = processesByName[0];
-                    process.EnableRaisingEvents = true;
-                    process.Exited += LaunchIfCrashed;
-                }
-                else
-                {
-                    Thread.Sleep(500);
-                }
-            }
-        }
-
-        private void LaunchIfCrashed(object o, EventArgs e)
-        {
-            Process process = (Process)o;
-            if (process.ExitCode != 0)
-            {
-                GetExplorerProcess();
-                if (_watcher.Process != null)
-                {
-                    _watcher.Process.Kill();
-                }
-            }
         }
     }
 }
