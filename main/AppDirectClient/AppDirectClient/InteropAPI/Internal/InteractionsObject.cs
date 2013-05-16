@@ -38,8 +38,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private int _taskbarMargins = 0;
 
         private const int DefaultStartButtonHeight = 40;
+        private const string UpdatePositionMessageName = @"AppDirectButtonPositionUpdate";
         private const string CloseMessageName = @"AppDirectForceApplicationCloseMessage";
-        private const string ExitMessageName = @"AppDirectForceApplicationExitMessage";
         private const string WindowName = @"AppDirectTaskbarButtonsWindow";
         private readonly static bool IsVistaOrUp;
         private readonly static bool IsWin7OrUp;
@@ -61,10 +61,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile HWND _startButtonHwnd = NULL;
         private volatile uint _updateMessageId = 0;
         private volatile uint _closeMessageId = 0;
-        private volatile uint _dllUnloadMessageId = 0;
         private volatile bool _isShutdown = false;
         private volatile bool _shutdownStarted = false;
-        private volatile TaskbarApi.ShutdownCallback _shutdownCallback = null;
         private volatile SubclassProc _subclassProc = null;
         private double _dpiScalingFactor;
 
@@ -136,8 +134,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _buttonsWidth = initialWidth;
             UpdateHandles();
             _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
-            _updateMessageId = NativeDll.GetUpdatePositionMsg();
-            _dllUnloadMessageId = User32Dll.RegisterWindowMessage(ExitMessageName);
+            _updateMessageId = User32Dll.RegisterWindowMessage(UpdatePositionMessageName);
 
             var pos = CalculateButtonPosition();
 
@@ -463,13 +460,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             //   message from hook that unhooking is complete. So we do it on that unhooking complete message.
             _shutdownStarted = true;
 
-            _shutdownCallback = shutdownCallback;
-
             // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
             NativeDll.TearDownSubclass(); // detach - can cause reposition by Rebar itself
-            User32Dll.PostMessage(_hwndSource.Handle, _dllUnloadMessageId, IntPtr.Zero, IntPtr.Zero);
 
             var newRebarCoords = CalculateRebarCoords(false);
+
 
             if (!User32Dll.SetWindowPos(FindReBar(FindTaskBar()), IntPtr.Zero,
                                         newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width,
@@ -483,6 +478,16 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             {
                 Comctl32Dll.RemoveWindowSubclass(_hwndSource.Handle, _subclassProc, NULL);
                 _subclassProc = null;
+            }
+
+            _isShutdown = true;
+            _hwndSource.Dispose();
+            _hwndSource = null;
+            _wndProcHook = null;
+
+            if (shutdownCallback != null)
+            {
+                shutdownCallback();
             }
 
             return true;
@@ -607,25 +612,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 if (!_shutdownStarted && !_isShutdown)
                 {
                     ShutdownHelper.Instance.Shutdown();
-                    handled = true;
-                }
-            }
-            else if (msg == _dllUnloadMessageId)
-            {
-                if (_shutdownStarted && !_isShutdown)
-                {
-                    _isShutdown = true;
-                    if (_hwndSource != null)
-                    {
-                        _hwndSource.Dispose();
-                        _hwndSource = null;
-                        _wndProcHook = null;
-                    }
-                    if (_shutdownCallback != null)
-                    {
-                        _shutdownCallback();
-                        _shutdownCallback = null;
-                    }
                     handled = true;
                 }
             }

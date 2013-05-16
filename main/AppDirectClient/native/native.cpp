@@ -1,13 +1,15 @@
 #include "stdafx.h"
 #include "native.h"
 
-#define WM_APPDIRECT_SETUP_SUBCLASS WM_USER + 1
-#define WM_APPDIRECT_TEARDOWN_SUBCLASS WM_USER + 2
-
 // The following messages are registered with ::RegisterWindowsMessage
 // because they are used across application
+#define APPDIRECT_MESSAGE_NAME_UPDATE L"AppDirectButtonPositionUpdate"
+#define APPDIRECT_MESSAGE_NAME_TERMINATE L"AppDirectTerminate"
 UINT WM_APPDIRECT_UPDATE = 0;
 UINT WM_APPDIRECT_TERMINATE = 0;
+
+#define WM_APPDIRECT_SETUP_SUBCLASS WM_USER + 1
+#define WM_APPDIRECT_TEARDOWN_SUBCLASS WM_USER + 2
 
 
 BOOL g_bIsLoaded = FALSE;
@@ -18,9 +20,7 @@ BOOL DoSetupSubclass();
 BOOL DoTearDownSubclass(BOOL bAsync = FALSE);
 HWND FindTaskBar();
 HWND FindReBar(HWND hwndTaskBar);
-HWND GetAppDirectHwnd();
 BOOL IsVertical();
-UINT GetUpdatePositionMsg();
 
 void SetModuleHandle(HMODULE hModule)
 {
@@ -50,22 +50,15 @@ UINT GetUpdatePositionMsg()
 	return ::RegisterWindowMessage(L"AppDirectButtonPositionUpdate");
 }
 
-HWND GetAppDirectHwnd()
-{
-	static const wchar_t * TheWndCaption = L"AppDirectTaskbarButtonsWindow";
-	HWND appDirectHwnd = NULL;
-	appDirectHwnd = ::FindWindowEx(NULL, NULL, NULL, TheWndCaption);	
-	_ASSERT(appDirectHwnd);
-	return appDirectHwnd;
-}
-
 LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam, 
 										  const UINT_PTR uIdSubclass, const DWORD_PTR dwRefData)
 {
 	HWND hwndAdButton = (HWND)dwRefData;
 
 	if (!::IsWindow(hwndAdButton)) {
+		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
 		DoTearDownSubclass(TRUE);
+		return lResult;
 	} else {
 		if (uMsg == WM_WINDOWPOSCHANGING)
 		{
@@ -111,7 +104,9 @@ LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 	const HWND hwndAdButton = ((HWND)dwRefData);
 
 	if (!::IsWindow(hwndAdButton)) {
+		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
 		DoTearDownSubclass(TRUE);
+		return lResult;
 	} else if (uMsg == WM_APPDIRECT_TERMINATE) {
 		return DoTearDownSubclass(TRUE);
 	} else {
@@ -149,7 +144,8 @@ LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 BOOL DoSetupSubclass(HWND hwndAdButton) 
 {
 	// Register update message
-	WM_APPDIRECT_UPDATE = GetUpdatePositionMsg();
+	WM_APPDIRECT_UPDATE = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_UPDATE);
+	WM_APPDIRECT_TERMINATE = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_TERMINATE);
 
 	if (g_bIsLoaded) {
 		return TRUE;
@@ -254,5 +250,5 @@ BOOL SetupSubclass(HWND hwndAdButton)
 
 BOOL TearDownSubclass()
 {
-	return (BOOL)::SendMessage(FindTaskBar(), WM_APPDIRECT_TERMINATE, NULL, NULL);
+	return SendMessageWithHook(WM_APPDIRECT_TEARDOWN_SUBCLASS, NULL);
 }
