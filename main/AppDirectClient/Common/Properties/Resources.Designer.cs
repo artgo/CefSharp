@@ -61,7 +61,7 @@ namespace AppDirect.WindowsClient.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to appdirect-277.
+        ///   Looks up a localized string similar to AppDirect.
         /// </summary>
         internal static string ConsumerKey {
             get {
@@ -70,7 +70,7 @@ namespace AppDirect.WindowsClient.Common.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to rW-KM2U0q1dP5wyd.
+        ///   Looks up a localized string similar to K4i$lL10;ntrRn6g.
         /// </summary>
         internal static string ConsumerSecret {
             get {
