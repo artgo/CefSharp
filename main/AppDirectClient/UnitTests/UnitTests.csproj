@@ -59,7 +59,6 @@
   <ItemGroup>
     <Compile Include="Analytics\AsyncAnalyticsTest.cs" />
     <Compile Include="API\BrowserWindowsCommunicatorTest.cs" />
-    <Compile Include="API\ExplorerWatcherTests.cs" />
     <Compile Include="API\VO\SubscriptionWSUnitTest.cs" />
     <Compile Include="Common\API\AbstractServiceClientTest.cs" />
     <Compile Include="Common\UI\TestUiHelper.cs" />

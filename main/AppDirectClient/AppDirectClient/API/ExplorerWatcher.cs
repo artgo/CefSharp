@@ -2,11 +2,12 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 
 namespace AppDirect.WindowsClient.API
 {
-    public class ExplorerWatcher
+    public class ExplorerWatcher : IStartStop
     {
         public Process ExplorerProcess;
         private readonly Action _actionOnCrash;

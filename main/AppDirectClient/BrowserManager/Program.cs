@@ -53,7 +53,7 @@ namespace AppDirect.WindowsClient.Browser
                 return;
             }
 
-            var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper, new ProcessWatcher(_mainApplicationName, Log));
+            var api = new BrowsersManagerApi(BrowserWindowsManager, UiHelper);
             var apiStarter = new IpcMainWindowStarter(api);
 
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,
@@ -70,7 +70,7 @@ namespace AppDirect.WindowsClient.Browser
                 bool hadStartException = false;
                 try
                 {
-                    apiStarter.Start();
+                    apiStarter.Start(new ProcessWatcher(_mainApplicationName));
                 }
                 catch (Exception e)
                 {

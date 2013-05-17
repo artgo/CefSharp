@@ -1,5 +1,4 @@
 ﻿using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
@@ -22,7 +21,6 @@ namespace AppDirect.WindowsClient
         private volatile Mutex _instanceMutex = null;
         private volatile MainWindow _mainWindow;
         private volatile ILatch _mainWindowReadyLatch = new Latch();
-        private volatile ProcessWatcher _watcher;
         private ExplorerWatcher _explorerWatcher;
 
         public App()
@@ -69,31 +67,23 @@ namespace AppDirect.WindowsClient
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
 
-            var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
-
-            taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
-
-            InsertTaskbarWindow(taskbarPanel);
+            var taskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
 
             helper.StartAsynchronously(
                 () => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
 
             helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
 
-            _watcher = new ProcessWatcher("BrowserManager", _log);
-            _watcher.Start();
-
             _explorerWatcher = new ExplorerWatcher(helper, () => Helper.PerformInUiThread(() =>
                 {
-                    TaskbarApi.Instance.Refresh();
-                    taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
-                    taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition,
-                                                   TaskbarApi.Instance.TaskbarIconsSize);
-                    InsertTaskbarWindow(taskbarPanel);
-                }
-                                                             ));
+                    var newTaskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
+                    if (_mainWindow != null)
+                    {
+                        _mainWindow.RegisterTaskbarCallbacks(newTaskbarPanel);
+                    }
+                }));
 
-            _explorerWatcher.Start();
+            helper.StartAsynchronously(_explorerWatcher.Start);
 
             base.OnStartup(e);
 
@@ -102,11 +92,15 @@ namespace AppDirect.WindowsClient
             ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
         }
 
-        private void InsertTaskbarWindow(TaskbarPanel taskbarPanel)
+        private TaskbarPanel CreateAndInsertTaskbarPanel(MainViewModel mainViewModel)
         {
             try
             {
+                var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
+                taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
                 TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, taskbarPanel.GetCurrentDimension());
+
+                return taskbarPanel;
             }
             catch (Exception ex)
             {
@@ -117,6 +111,8 @@ namespace AppDirect.WindowsClient
                 Current.Shutdown();
                 Environment.Exit(0);
             }
+
+            return null;
         }
 
         private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
@@ -182,7 +178,6 @@ namespace AppDirect.WindowsClient
         {
             if (_instanceMutex != null)
             {
-                ServiceLocator.UiHelper.IgnoreException(_watcher.Stop);
                 ServiceLocator.UiHelper.IgnoreException(_explorerWatcher.Stop);
                 ServiceLocator.UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.CloseBrowserProcess);
