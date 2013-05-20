@@ -36,12 +36,26 @@ namespace TaskBarControl
         public int DesiredWidth
         {
             get { return _desiredWidth; }
-            set { _desiredWidth = value; OnDesiredWidthChanged(); }
+            set
+            {
+                if (_desiredWidth != value)
+                {
+                    _desiredWidth = value;
+                    OnDesiredWidthChanged();
+                }
+            }
         }
         public int DesiredHeight
         {
             get { return _desiredHeight; }
-            set { _desiredHeight = value; OnDesiredHeightChanged(); }
+            set 
+            {
+                if (_desiredHeight != value)
+                {
+                    _desiredHeight = value;
+                    OnDesiredHeightChanged();
+                }
+            }
         }
     }
 }

@@ -24,5 +24,10 @@ namespace TaskBarControl
             _icon = new TaskBarIcon(wrapper);
             _icon.Setup();
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            _icon.Dispose();
+        }
     }
 }

@@ -60,6 +60,7 @@
     <Compile Include="SampleIconControl.xaml.cs">
       <DependentUpon>SampleIconControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TaskBarHelper.cs" />
     <Compile Include="TaskBarIcon.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

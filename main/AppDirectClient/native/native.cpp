@@ -4,9 +4,11 @@
 // The following messages are registered with ::RegisterWindowsMessage
 // because they are used across application
 // NB! MAKE SURE THAT THESE VALUES STAY IN SYNC WITH THE APPLICATION AND THE INSTALLER!!!
-#define APPDIRECT_MESSAGE_NAME_UPDATE L"AppDirectButtonPositionUpdateMessage"
+#define APPDIRECT_MESSAGE_NAME_MANAGED_REBAR_UPDATED L"AppDirectManagedReBarUpdatedMessage"
+#define APPDIRECT_MESSAGE_NAME_NATIVE_UPDATE_OFFSET L"AppDirectNativeUpdateOffsetMessage"
 #define APPDIRECT_MESSAGE_NAME_NATIVE_TERMINATE L"AppDirectNativeTerminateMessage"
-UINT WM_APPDIRECT_UPDATE = 0;
+UINT WM_APPDIRECT_MANAGED_REBAR_UPDATED = 0;
+UINT WM_APPDIRECT_NATIVE_UPDATE_OFFSET = 0;
 UINT WM_APPDIRECT_NATIVE_TERMINATE = 0;
 
 #define WM_APPDIRECT_SETUP_SUBCLASS WM_USER + 1
@@ -16,18 +18,14 @@ UINT WM_APPDIRECT_NATIVE_TERMINATE = 0;
 
 BOOL g_bIsLoaded = FALSE;
 HMODULE g_hModule = NULL;
-RECT g_RectButtons;
+int g_ReBarOffset = 0;
 
 HWND FindTaskBar();
 HWND FindReBar(HWND hwndTaskBar);
-BOOL IsVertical();
+BOOL IsVertical(HWND hwndTaskBar = NULL);
 BOOL DoSetupSubclass();
-BOOL DoTearDownSubclass(BOOL bAsync = FALSE);
-
-void SetModuleHandle(HMODULE hModule)
-{
-	g_hModule = hModule;
-}
+BOOL DoTearDownSubclass(BOOL bAsync = FALSE, BOOL bResetReBar = FALSE);
+BOOL ResetReBar(HWND hwndTaskBar, HWND hwndReBar, int offset);
 
 HWND FindTaskBar()
 {
@@ -39,9 +37,12 @@ HWND FindReBar(HWND hwndTaskBar)
 	return ::FindWindowEx(hwndTaskBar, NULL, REBARCLASSNAME, NULL);
 }
 
-BOOL IsVertical()
+BOOL IsVertical(HWND taskBar)
 {
-	HWND taskBar = FindTaskBar();
+	if (taskBar == NULL) {
+		taskBar = FindTaskBar();
+	}
+
 	APPBARDATA appbar = {sizeof(appbar), taskBar};
     SHAppBarMessage(ABM_GETTASKBARPOS, &appbar);
 	return (appbar.uEdge == ABE_LEFT) || (appbar.uEdge == ABE_RIGHT);
@@ -54,48 +55,33 @@ LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARA
 
 	if (!::IsWindow(hwndAdButton)) {
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
-		DoTearDownSubclass(TRUE);
+		DoTearDownSubclass(TRUE, TRUE);
 		return lResult;
 	} else if (uMsg == WM_APPDIRECT_NATIVE_TERMINATE) {
 		return DoTearDownSubclass(TRUE);
-	} else {
-		if (uMsg == WM_WINDOWPOSCHANGING)
-		{
-			WINDOWPOS* p = (WINDOWPOS*)lParam;
+	} else if (uMsg == WM_APPDIRECT_NATIVE_UPDATE_OFFSET) {
+		g_ReBarOffset = (int)(wParam);
+		return 0;
+	} else if (uMsg == WM_WINDOWPOSCHANGING) {
+		WINDOWPOS* p = (WINDOWPOS*)lParam;
 
-			LPARAM lParamUpdate = MAKELPARAM(p->y, p->x);
-			LPARAM wParamUpdate = MAKEWPARAM(p->y + p->cy, p->x + p->cx);
+		LPARAM lParamUpdate = MAKELPARAM(p->y, p->x);
+		LPARAM wParamUpdate = MAKEWPARAM(p->y + p->cy, p->x + p->cx);
 
-			// Prevent Rebar from restoring its position if the AppDirect button is properly positioned
-			if (g_RectButtons.left <= (p->x + p->cx) && g_RectButtons.right  >= p->x &&
-				g_RectButtons.top  <= (p->y + p->cy) && g_RectButtons.bottom >= p->y) {
-				if (IsVertical()) {
-					const int deltaY = g_RectButtons.bottom - p->y;
-					if (deltaY > 0) {
-						p->y += deltaY;
-						p->cy -= deltaY;
-					}
-				} else {
-					const int deltaX = g_RectButtons.right - p->x;
-					if (deltaX > 0) {
-						p->x += deltaX;
-						p->cx -= deltaX;
-					}
-				}
+		if (g_ReBarOffset != 0) {
+			if (IsVertical()) {
+				p->y += g_ReBarOffset;
+				p->cy -= g_ReBarOffset;
+			} else {
+				p->x += g_ReBarOffset;
+				p->cx -= g_ReBarOffset;
 			}
-
-			// Notify the application that the button should be repositioned
-			::PostMessage(hwndAdButton, WM_APPDIRECT_UPDATE, wParamUpdate, lParamUpdate);
-
-			return 0;	// this message is processed
-		} else if (uMsg == WM_APPDIRECT_UPDATE) {
-			g_RectButtons.left = HIWORD(wParam);
-			g_RectButtons.top = LOWORD(wParam);
-			g_RectButtons.right = HIWORD(lParam);
-			g_RectButtons.bottom = LOWORD(lParam);
-
-			return 0;	// this message is processed
 		}
+
+		// Notify the application that the button might need to be repositioned
+		::SendMessage(hwndAdButton, WM_APPDIRECT_MANAGED_REBAR_UPDATED, wParamUpdate, lParamUpdate);
+
+		return 0;	// this message is processed
 	}
 
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
@@ -103,40 +89,26 @@ LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARA
 
 LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	const HWND hwndAdButton = ((HWND)dwRefData);
+	const HWND hwndAdButton = ((HWND)dwRefData);	
 
 	if (!::IsWindow(hwndAdButton)) {
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
-		DoTearDownSubclass(TRUE);
+		DoTearDownSubclass(TRUE, TRUE);
 		return lResult;
-	} else if (uMsg == WM_APPDIRECT_NATIVE_TERMINATE) {
-		return DoTearDownSubclass(TRUE);
-	} else {
-		switch (uMsg) {
-		case WM_WINDOWPOSCHANGED: 
-			{
-				// place on top of task bar
-				WINDOWPOS * p = (WINDOWPOS*)lParam;
-				BOOL b = ::SetWindowPos(
-						hwndAdButton, 
-						p->hwndInsertAfter,
-						0, 0, 0, 0, 0
-						| SWP_NOACTIVATE
-						| SWP_NOMOVE
-						| SWP_NOSIZE
-						| SWP_ASYNCWINDOWPOS
-						| SWP_NOOWNERZORDER
-					);
-				_ASSERT(b);
-				break;
-			}
-		case WM_MOVE:
-			// Notify the application that the button should be repositioned
-			//::SendMessage(hwndAdButton, WM_APPDIRECT_UPDATE, NULL, NULL);
-			break;
-		default:
-			break;
-		}
+	} else if (uMsg == WM_WINDOWPOSCHANGED) {
+		// place on top of task bar
+		WINDOWPOS * p = (WINDOWPOS*)lParam;
+		BOOL b = ::SetWindowPos(
+				hwndAdButton, 
+				p->hwndInsertAfter,
+				0, 0, 0, 0, 0
+				| SWP_NOACTIVATE
+				| SWP_NOMOVE
+				| SWP_NOSIZE
+				| SWP_ASYNCWINDOWPOS
+				| SWP_NOOWNERZORDER
+			);
+		_ASSERT(b);
 	}
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
@@ -146,7 +118,8 @@ LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 BOOL DoSetupSubclass(HWND hwndAdButton) 
 {
 	// Register update message
-	WM_APPDIRECT_UPDATE = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_UPDATE);
+	WM_APPDIRECT_MANAGED_REBAR_UPDATED = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_MANAGED_REBAR_UPDATED);
+	WM_APPDIRECT_NATIVE_UPDATE_OFFSET = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_NATIVE_UPDATE_OFFSET);
 	WM_APPDIRECT_NATIVE_TERMINATE = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_NATIVE_TERMINATE);
 
 	if (g_bIsLoaded) {
@@ -175,7 +148,7 @@ BOOL DoSetupSubclass(HWND hwndAdButton)
 	return FALSE;
 }
 
-BOOL DoTearDownSubclass(BOOL bAsync)
+BOOL DoTearDownSubclass(BOOL bAsync, BOOL bResetReBar)
 {
 	if (!g_bIsLoaded) {
 		return TRUE;
@@ -187,6 +160,21 @@ BOOL DoTearDownSubclass(BOOL bAsync)
 
 	HWND hwndReBar = FindReBar(hwndTaskBar); _ASSERT(hwndReBar);	
 	BOOL bReBarHook = ::RemoveWindowSubclass(hwndReBar, SubclassRebarProc, 0); _ASSERT(bReBarHook);
+
+	if (bResetReBar && g_ReBarOffset != 0) {
+		RECT rect;
+		::GetWindowRect(hwndReBar, &rect);
+		POINT tl;
+		tl.x = rect.left;
+		tl.y = rect.top;
+		if (::ScreenToClient(hwndTaskBar, &tl)) {
+			if (::IsVertical(hwndTaskBar)) {
+				::MoveWindow(hwndReBar, tl.x, tl.y - g_ReBarOffset, rect.right - rect.left, rect.right - rect.left + g_ReBarOffset, TRUE);
+			} else {
+				::MoveWindow(hwndReBar, tl.x - g_ReBarOffset, tl.y, rect.right - rect.left + g_ReBarOffset, rect.right - rect.left, TRUE);
+			}
+		}
+	}
 
 	// Release the module
 	if (bAsync) {
