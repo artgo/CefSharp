@@ -20,7 +20,7 @@ namespace AppDirect.WindowsClient.API
             base.Start();
             var process = StartBrowserProcess();
 
-            _watcher = new ProcessWatcher(process);
+            _watcher = new ProcessWatcher(process.ProcessName);
             _watcher.Start();
         }
 

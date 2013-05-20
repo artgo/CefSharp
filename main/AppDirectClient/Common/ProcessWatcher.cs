@@ -1,10 +1,8 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Common.Log;
-using NLog;
 
 namespace AppDirect.WindowsClient.Common
 {
@@ -15,18 +13,10 @@ namespace AppDirect.WindowsClient.Common
         private volatile ILogger _logger;
 
         private volatile Process _process;
-        
+
         public ProcessWatcher(string processName)
         {
             _processName = processName;
-            _logger = new NLogLogger(_processName + "Watcher");
-        }
-
-        public ProcessWatcher(Process process)
-        {
-            // TODO: Complete member initialization
-            _process = process;
-            _processName = process.ProcessName;
             _logger = new NLogLogger(_processName + "Watcher");
         }
 
@@ -43,22 +33,19 @@ namespace AppDirect.WindowsClient.Common
 
         private void Watch()
         {
-            if (_process == null)
+            var processesByName = Process.GetProcessesByName(_processName);
+
+            if (processesByName.Any())
             {
-                var processesByName = Process.GetProcessesByName(_processName);
+                _process = processesByName[0];
+            }
+            else
+            {
+                _process = new Process();
 
-                if (processesByName.Any())
-                {
-                    _process = processesByName[0];
-                }
-                else
-                {
-                    _process = new Process();
-
-                    _process.StartInfo.FileName = _processName;
-                    _process.StartInfo.UseShellExecute = false;
-                    _process.StartInfo.CreateNoWindow = true;
-                }
+                _process.StartInfo.FileName = _processName;
+                _process.StartInfo.UseShellExecute = false;
+                _process.StartInfo.CreateNoWindow = true;
             }
 
             _process.EnableRaisingEvents = true;
