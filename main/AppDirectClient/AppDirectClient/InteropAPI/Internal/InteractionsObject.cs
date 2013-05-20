@@ -174,7 +174,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _hwndSource.AddHook(_wndProcHook);
             _subclassProc = PfnSubclass;
 
-            bool success = Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL);
+            if (!Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL))
+            {
+                throw new InteropException("Failed to install sublass proc on HwndSource");
+            }
 
             DoChangeWidth(_buttonsWidth, true);
 
