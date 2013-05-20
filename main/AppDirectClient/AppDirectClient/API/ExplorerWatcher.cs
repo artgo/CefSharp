@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -27,8 +28,14 @@ namespace AppDirect.WindowsClient.API
 
         public void Stop()
         {
-            GetExplorerProcess();
-            _explorerProcess.Exited -= LaunchIfCrashed;
+            try
+            {
+                _explorerProcess.Exited -= LaunchIfCrashed;
+            }
+            catch (Exception )
+            {
+                
+            }
         }
 
         private void GetExplorerProcess()
@@ -40,8 +47,16 @@ namespace AppDirect.WindowsClient.API
                 if (processesByName.Any())
                 {
                     _explorerProcess = processesByName[0];
-                    _explorerProcess.EnableRaisingEvents = true;
-                    _explorerProcess.Exited += LaunchIfCrashed;
+                    try
+                    {
+                        _explorerProcess.EnableRaisingEvents = true;
+                        _explorerProcess.Exited += LaunchIfCrashed;
+                        return;
+                    }
+                    catch (Win32Exception e)
+                    {
+                        //Vista users may not have the permissions necessary to set EnableRaisingEvents to true
+                    }
                 }
                 else
                 {

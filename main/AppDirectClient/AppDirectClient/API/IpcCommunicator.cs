@@ -18,17 +18,16 @@ namespace AppDirect.WindowsClient.API
         public override void Start()
         {
             base.Start();
-            var process = StartBrowserProcess();
+            StartBrowserProcess();
 
-            _watcher = new ProcessWatcher(process.ProcessName);
+            _watcher = new ProcessWatcher(Helper.BrowserProject);
             _watcher.Start();
         }
 
-        protected virtual Process StartBrowserProcess()
+        protected virtual void StartBrowserProcess()
         {
             var browserWindowProcess = new Process { StartInfo = { FileName = BrowserProjectName } };
             browserWindowProcess.Start();
-            return browserWindowProcess;
         }
 
         public override void Stop()
