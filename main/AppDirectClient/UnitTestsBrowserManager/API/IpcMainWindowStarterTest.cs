@@ -58,26 +58,5 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         {
             Assert.Throws<InvalidOperationException>(() => _ipcMainWindowStarter.Stop());
         }
-
-        [Test]
-        public void TestStopStopsWatcher()
-        {
-            var processWatcher = Substitute.For<IStartStop>();
-            _browsersManagerApi = Substitute.For<IBrowsersManagerApi>();
-            var ipcMainWindowStarter = new IpcMainWindowStarter(_browsersManagerApi);
-            ipcMainWindowStarter.Start(processWatcher);
-            processWatcher.Received().Stop();
-        }
-
-        [Test]
-        public void TestStartStartsWatcher()
-        {
-            var processWatcher = Substitute.For<IStartStop>();
-            _browsersManagerApi = Substitute.For<IBrowsersManagerApi>();
-            var ipcMainWindowStarter = new IpcMainWindowStarter(_browsersManagerApi);
-            ipcMainWindowStarter.Start(processWatcher);
-            processWatcher.Received().Start();
-        }
-
     }
 }

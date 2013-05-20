@@ -59,6 +59,8 @@ namespace AppDirect.WindowsClient.Browser
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,
                                                                  new NLogLogger("MainApplicationServiceClient"));
 
+            var appDirectClientProcessWatcher = new ProcessWatcher(_mainApplicationName);
+
             var sessionKeeper = new SessionKeeper(mainAppClient, BrowserWindowsManager, BrowserWindowsBuilder, new NLogLogger("Browser.SessionKeeper"), UiHelper);
 
             try
@@ -70,13 +72,22 @@ namespace AppDirect.WindowsClient.Browser
                 bool hadStartException = false;
                 try
                 {
-                    apiStarter.Start(new ProcessWatcher(_mainApplicationName));
+                    apiStarter.Start();
                 }
                 catch (Exception e)
                 {
                     Log.ErrorException("Failed to start server communication", e);
 
                     hadStartException = true;
+                }
+
+                try
+                {
+                    appDirectClientProcessWatcher.Start();
+                }
+                catch (Exception e)
+                {
+                    Log.ErrorException("Failed to start appDirectClient Process Watcher", e);
                 }
 
                 if (!hadStartException)
@@ -92,6 +103,7 @@ namespace AppDirect.WindowsClient.Browser
             finally
             {
                 UiHelper.IgnoreException(apiStarter.Stop);
+                UiHelper.IgnoreException(appDirectClientProcessWatcher.Stop);
                 UiHelper.IgnoreException(sessionKeeper.Stop);
                 UiHelper.IgnoreException(BrowserObject.Unload);
                 UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);

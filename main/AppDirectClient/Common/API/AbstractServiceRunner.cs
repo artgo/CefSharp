@@ -7,6 +7,7 @@ namespace AppDirect.WindowsClient.Common.API
     {
         private volatile ICommunicationObject _host;
         private readonly T _service;
+        private volatile ProcessWatcher _processWatcher;
 
         protected AbstractServiceRunner(T service)
         {

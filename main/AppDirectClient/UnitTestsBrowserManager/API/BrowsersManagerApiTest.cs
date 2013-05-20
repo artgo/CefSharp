@@ -89,7 +89,6 @@ namespace AppDirect.WindowsClient.Browser.Tests.API
         public void TestCloseBrowserProcessCallsShutdown()
         {
             _uiHelper = Substitute.For<IUiHelper>();
-            var processWatcher = Substitute.For<IStartStop>();
             _browsersManagerApi = new BrowsersManagerApi(_browserWindowsManager, _uiHelper);
             _browsersManagerApi.CloseBrowserProcess();
             _uiHelper.Received().GracefulShutdown();

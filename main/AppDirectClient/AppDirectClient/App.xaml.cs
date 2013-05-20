@@ -21,7 +21,7 @@ namespace AppDirect.WindowsClient
         private volatile Mutex _instanceMutex = null;
         private volatile MainWindow _mainWindow;
         private volatile ILatch _mainWindowReadyLatch = new Latch();
-        private ExplorerWatcher _explorerWatcher;
+        private volatile ExplorerWatcher _explorerWatcher;
 
         public App()
         {
@@ -77,10 +77,8 @@ namespace AppDirect.WindowsClient
             _explorerWatcher = new ExplorerWatcher(helper, () => Helper.PerformInUiThread(() =>
                 {
                     var newTaskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
-                    if (_mainWindow != null)
-                    {
-                        _mainWindow.RegisterTaskbarCallbacks(newTaskbarPanel);
-                    }
+                    _mainWindowReadyLatch.Wait();
+                    _mainWindow.RegisterTaskbarCallbacks(newTaskbarPanel);
                 }));
 
             helper.StartAsynchronously(_explorerWatcher.Start);

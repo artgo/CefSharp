@@ -11,7 +11,7 @@ namespace AppDirect.WindowsClient.Common
     public class ProcessWatcher : IStartStop
     {
         private readonly string _processName;
-        private int _restartsRemaining = 10;
+        private volatile int _restartsRemaining = 10;
         private volatile ILogger _logger;
 
         private volatile Process _process;
@@ -38,6 +38,7 @@ namespace AppDirect.WindowsClient.Common
         public void Stop()
         {
             _process.Exited -= LaunchIfCrashed;
+            _restartsRemaining = 10;
         }
 
         private void Watch()

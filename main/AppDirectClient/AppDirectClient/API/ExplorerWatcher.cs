@@ -9,7 +9,7 @@ namespace AppDirect.WindowsClient.API
 {
     public class ExplorerWatcher : IStartStop
     {
-        public Process ExplorerProcess;
+        private volatile Process _explorerProcess;
         private readonly Action _actionOnCrash;
         private readonly IUiHelper _uiHelper;
         private const string ExplorerProcessName = "explorer";
@@ -28,20 +28,20 @@ namespace AppDirect.WindowsClient.API
         public void Stop()
         {
             GetExplorerProcess();
-            ExplorerProcess.Exited -= LaunchIfCrashed;
+            _explorerProcess.Exited -= LaunchIfCrashed;
         }
 
         private void GetExplorerProcess()
         {
-            while (ExplorerProcess == null)
+            while (_explorerProcess == null)
             {
                 var processesByName = Process.GetProcessesByName(ExplorerProcessName);
 
                 if (processesByName.Any())
                 {
-                    ExplorerProcess = processesByName[0];
-                    ExplorerProcess.EnableRaisingEvents = true;
-                    ExplorerProcess.Exited += LaunchIfCrashed;
+                    _explorerProcess = processesByName[0];
+                    _explorerProcess.EnableRaisingEvents = true;
+                    _explorerProcess.Exited += LaunchIfCrashed;
                 }
                 else
                 {
@@ -55,9 +55,9 @@ namespace AppDirect.WindowsClient.API
             Process process = (Process)o;
             if (process.ExitCode != 0)
             {
-                ExplorerProcess = null;
+                _explorerProcess = null;
                 GetExplorerProcess();
-                ExplorerProcess.WaitForInputIdle();
+                _explorerProcess.WaitForInputIdle();
                 _uiHelper.Sleep(500);
                 _actionOnCrash.Invoke();
             }
