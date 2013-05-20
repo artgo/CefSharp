@@ -16,4 +16,5 @@ void SetModuleHandle(HMODULE hModule);
 
 extern "C" NATIVE_API BOOL SetupSubclass(HWND adButtonHwnd);
 extern "C" NATIVE_API BOOL TearDownSubclass();
+extern "C" NATIVE_API BOOL IsSubclassed();
 

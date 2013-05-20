@@ -2441,6 +2441,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         [DllImport(Kernel32DllName, SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr LoadLibrary(string lpFileName);
 
+        [DllImport(Kernel32DllName, SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool FreeLibrary(IntPtr handle);
+
         [DllImport(Kernel32DllName, SetLastError = true, ExactSpelling = true)]
         public static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress,
            uint dwSize, AllocationType flAllocationType, MemoryProtection flProtect);

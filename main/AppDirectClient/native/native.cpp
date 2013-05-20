@@ -11,17 +11,18 @@ UINT WM_APPDIRECT_NATIVE_TERMINATE = 0;
 
 #define WM_APPDIRECT_SETUP_SUBCLASS WM_USER + 1
 #define WM_APPDIRECT_TEARDOWN_SUBCLASS WM_USER + 2
+#define WM_APPDIRECT_IS_SUBCLASSED WM_USER + 3
 
 
 BOOL g_bIsLoaded = FALSE;
 HMODULE g_hModule = NULL;
 RECT g_RectButtons;
 
-BOOL DoSetupSubclass();
-BOOL DoTearDownSubclass(BOOL bAsync = FALSE);
 HWND FindTaskBar();
 HWND FindReBar(HWND hwndTaskBar);
 BOOL IsVertical();
+BOOL DoSetupSubclass();
+BOOL DoTearDownSubclass(BOOL bAsync = FALSE);
 
 void SetModuleHandle(HMODULE hModule)
 {
@@ -62,6 +63,9 @@ LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARA
 		{
 			WINDOWPOS* p = (WINDOWPOS*)lParam;
 
+			LPARAM lParamUpdate = MAKELPARAM(p->y, p->x);
+			LPARAM wParamUpdate = MAKEWPARAM(p->y + p->cy, p->x + p->cx);
+
 			// Prevent Rebar from restoring its position if the AppDirect button is properly positioned
 			if (g_RectButtons.left <= (p->x + p->cx) && g_RectButtons.right  >= p->x &&
 				g_RectButtons.top  <= (p->y + p->cy) && g_RectButtons.bottom >= p->y) {
@@ -81,7 +85,7 @@ LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARA
 			}
 
 			// Notify the application that the button should be repositioned
-			::PostMessage(hwndAdButton, WM_APPDIRECT_UPDATE, FALSE, NULL);
+			::PostMessage(hwndAdButton, WM_APPDIRECT_UPDATE, wParamUpdate, lParamUpdate);
 
 			return 0;	// this message is processed
 		} else if (uMsg == WM_APPDIRECT_UPDATE) {
@@ -128,7 +132,7 @@ LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 			}
 		case WM_MOVE:
 			// Notify the application that the button should be repositioned
-			::SendMessage(hwndAdButton, WM_APPDIRECT_UPDATE, TRUE, NULL);
+			//::SendMessage(hwndAdButton, WM_APPDIRECT_UPDATE, NULL, NULL);
 			break;
 		default:
 			break;
@@ -215,6 +219,8 @@ LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
 		case WM_APPDIRECT_TEARDOWN_SUBCLASS: 
 			::UnhookWindowsHookEx(hHook);
 			return DoTearDownSubclass();
+		case WM_APPDIRECT_IS_SUBCLASSED:
+			return g_bIsLoaded;
 		default:
 			break;
 		}
@@ -249,4 +255,9 @@ BOOL SetupSubclass(HWND hwndAdButton)
 BOOL TearDownSubclass()
 {
 	return SendMessageWithHook(WM_APPDIRECT_TEARDOWN_SUBCLASS, NULL);
+}
+
+BOOL IsSubclassed()
+{
+	return SendMessageWithHook(WM_APPDIRECT_IS_SUBCLASSED, NULL);
 }
