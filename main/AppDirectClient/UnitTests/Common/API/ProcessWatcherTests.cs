@@ -23,8 +23,9 @@ namespace AppDirect.WindowsClient.Tests.Common.API
         public void Init()
         {
             _mockProcess = Substitute.For<IAbstractProcess>();
+            var mockLogger = Substitute.For<NLogLogger>();
             _processWatcher = new ProcessWatcher("testProcess", _mockProcess,
-                                                    new NLogLogger("testLogger"));
+                                                    mockLogger);
         }
 
         [Test]
