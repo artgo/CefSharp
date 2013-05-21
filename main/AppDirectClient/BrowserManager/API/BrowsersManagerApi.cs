@@ -1,13 +1,8 @@
-﻿using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.Common;
-using AppDirect.WindowsClient.Common.API;
+﻿using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.ServiceModel;
-using System.Threading;
 
 namespace AppDirect.WindowsClient.Browser.API
 {
@@ -32,8 +27,6 @@ namespace AppDirect.WindowsClient.Browser.API
             _browserWindowsManager = browserWindowsManager;
             _uiHelper = uiHelper;
         }
-
-
 
         public void DisplayApplication(IApplication application)
         {

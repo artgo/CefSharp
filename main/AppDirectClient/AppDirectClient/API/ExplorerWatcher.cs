@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using AppDirect.WindowsClient.Common.API;
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 
 namespace AppDirect.WindowsClient.API
@@ -12,11 +13,13 @@ namespace AppDirect.WindowsClient.API
     {
         private volatile Process _explorerProcess;
         private readonly Action _actionOnCrash;
+        private readonly ILogger _logger;
         private readonly IUiHelper _uiHelper;
         private const string ExplorerProcessName = "explorer";
 
-        public ExplorerWatcher(IUiHelper uiHelper, Action actionOnCrash)
+        public ExplorerWatcher(ILogger logger, IUiHelper uiHelper, Action actionOnCrash)
         {
+            _logger = logger;
             _uiHelper = uiHelper;
             _actionOnCrash = actionOnCrash;
         }
@@ -28,14 +31,7 @@ namespace AppDirect.WindowsClient.API
 
         public void Stop()
         {
-            try
-            {
-                _explorerProcess.Exited -= LaunchIfCrashed;
-            }
-            catch (Exception )
-            {
-                
-            }
+            _uiHelper.IgnoreException(() => _explorerProcess.Exited -= LaunchIfCrashed);
         }
 
         private void GetExplorerProcess()
@@ -55,6 +51,7 @@ namespace AppDirect.WindowsClient.API
                     }
                     catch (Win32Exception e)
                     {
+                        _logger.InfoException("Exception thrown by attempting to EnableRaisingEvents", e);
                         //Vista users may not have the permissions necessary to set EnableRaisingEvents to true
                     }
                 }

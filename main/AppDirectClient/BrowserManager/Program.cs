@@ -59,7 +59,7 @@ namespace AppDirect.WindowsClient.Browser
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,
                                                                  new NLogLogger("MainApplicationServiceClient"));
 
-            var appDirectClientProcessWatcher = new ProcessWatcher(_mainApplicationName);
+            var appDirectClientProcessWatcher = new ProcessWatcher(_mainApplicationName, Log);
 
             var sessionKeeper = new SessionKeeper(mainAppClient, BrowserWindowsManager, BrowserWindowsBuilder, new NLogLogger("Browser.SessionKeeper"), UiHelper);
 
@@ -81,15 +81,8 @@ namespace AppDirect.WindowsClient.Browser
                     hadStartException = true;
                 }
 
-                try
-                {
-                    appDirectClientProcessWatcher.Start();
-                }
-                catch (Exception e)
-                {
-                    Log.ErrorException("Failed to start appDirectClient Process Watcher", e);
-                }
-
+                UiHelper.IgnoreException(appDirectClientProcessWatcher.Start);
+               
                 if (!hadStartException)
                 {
                     var wasInitialized = InitializeClient(mainAppClient);

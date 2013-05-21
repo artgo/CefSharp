@@ -74,7 +74,7 @@ namespace AppDirect.WindowsClient
 
             helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
 
-            _explorerWatcher = new ExplorerWatcher(helper, () => Helper.PerformInUiThread(() =>
+            _explorerWatcher = new ExplorerWatcher(_log, () => Helper.PerformInUiThread(() =>
                 {
                     var newTaskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
                     _mainWindowReadyLatch.Wait();

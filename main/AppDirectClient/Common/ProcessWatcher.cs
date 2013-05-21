@@ -14,10 +14,10 @@ namespace AppDirect.WindowsClient.Common
 
         private volatile Process _process;
 
-        public ProcessWatcher(string processName)
+        public ProcessWatcher(string processName, ILogger logger)
         {
             _processName = processName;
-            _logger = new NLogLogger(_processName + "Watcher");
+            _logger = logger;
         }
 
         public void Start()
