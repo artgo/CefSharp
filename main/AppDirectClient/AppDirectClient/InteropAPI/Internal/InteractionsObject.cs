@@ -38,6 +38,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private int _taskbarMargins = 0;
 
         private const int DefaultStartButtonHeight = 40;
+        // NB! MAKE SURE THAT THESE VALUES STAY IN SYNC WITH THE APPLICATION AND THE INSTALLER!!!
+        private const string UpdatePositionMessageName = @"AppDirectButtonPositionUpdateMessage";
         private const string CloseMessageName = @"AppDirectForceApplicationCloseMessage";
         private const string WindowName = @"AppDirectTaskbarButtonsWindow";
         private readonly static bool IsVistaOrUp;
@@ -60,10 +62,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private volatile HWND _startButtonHwnd = NULL;
         private volatile uint _updateMessageId = 0;
         private volatile uint _closeMessageId = 0;
-        private volatile uint _dllUnloadMessageId = 0;
         private volatile bool _isShutdown = false;
         private volatile bool _shutdownStarted = false;
-        private volatile TaskbarApi.ShutdownCallback _shutdownCallback = null;
         private volatile SubclassProc _subclassProc = null;
         private double _dpiScalingFactor;
 
@@ -135,8 +135,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _buttonsWidth = initialWidth;
             UpdateHandles();
             _closeMessageId = User32Dll.RegisterWindowMessage(CloseMessageName);
-            _updateMessageId = NativeDll.GetUpdatePositionMsg();
-            _dllUnloadMessageId = NativeDll.GetExitMsg();
+            _updateMessageId = User32Dll.RegisterWindowMessage(UpdatePositionMessageName);
 
             var pos = CalculateButtonPosition();
 
@@ -175,7 +174,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _hwndSource.AddHook(_wndProcHook);
             _subclassProc = PfnSubclass;
 
-            Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL);
+            if (!Comctl32Dll.SetWindowSubclass(_hwndSource.Handle, _subclassProc, NULL, NULL))
+            {
+                throw new InteropException("Failed to install sublass proc on HwndSource");
+            }
 
             DoChangeWidth(_buttonsWidth, true);
 
@@ -187,7 +189,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             if (IsVistaOrUp)
             {
-                var availableMessages = new[] { _closeMessageId, _updateMessageId, _dllUnloadMessageId };
+                var availableMessages = new[] { _closeMessageId, _updateMessageId };
 
                 foreach (var availableMessage in availableMessages)
                 {
@@ -196,7 +198,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 }
             }
 
-            NativeDll.InjectExplrorerExe();
+            NativeDll.SetupSubclass(_hwndSource.Handle);
 
             _taskbarPosition = GetTaskbarEdge();
 
@@ -243,12 +245,17 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return User32Dll.FindWindow("Shell_TrayWnd", null);
         }
 
+        private HWND FindReBar(IntPtr hwndTaskBar)
+        {
+            return User32Dll.FindWindowEx(hwndTaskBar, IntPtr.Zero, "ReBarWindow32", null);
+        }
+
         private void UpdateHandles()
         {
             lock (_lockObject)
             {
-                _rebarHwnd = NativeDll.FindRebar();
                 _taskbarHwnd = FindTaskBar();
+                _rebarHwnd = FindReBar(_taskbarHwnd);
 
                 // Start button musto go after taskbar
                 _startButtonHwnd = FindStartButton();
@@ -457,10 +464,19 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             //   message from hook that unhooking is complete. So we do it on that unhooking complete message.
             _shutdownStarted = true;
 
-            _shutdownCallback = shutdownCallback;
-
             // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
-            NativeDll.DetachHooks(); // detach - can cause reposition by Rebar itself
+            NativeDll.TearDownSubclass(); // detach - can cause reposition by Rebar itself
+
+            var newRebarCoords = CalculateRebarCoords(false);
+
+
+            if (!User32Dll.SetWindowPos(FindReBar(FindTaskBar()), IntPtr.Zero,
+                                        newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width,
+                                        newRebarCoords.Height,
+                                        0)) // move to correct coords
+            {
+                throw new InteropException("Cannot move Rebar back");
+            }
 
             if (_subclassProc != null)
             {
@@ -468,14 +484,14 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 _subclassProc = null;
             }
 
-            var newRebarCoords = CalculateRebarCoords(false);
+            _isShutdown = true;
+            _hwndSource.Dispose();
+            _hwndSource = null;
+            _wndProcHook = null;
 
-            if (!User32Dll.SetWindowPos(NativeDll.FindRebar(), IntPtr.Zero,
-                                        newRebarCoords.Left, newRebarCoords.Top, newRebarCoords.Width,
-                                        newRebarCoords.Height,
-                                        0)) // move to correct coords
+            if (shutdownCallback != null)
             {
-                throw new InteropException("Cannot move Rebar back");
+                shutdownCallback();
             }
 
             return true;
@@ -595,26 +611,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     handled = true;
                 }
             }
-            else if (msg == _dllUnloadMessageId)
-            {
-                if (_shutdownStarted && !_isShutdown)
-                {
-                    _isShutdown = true;
-                    EjectNativeDll(lParam);
-                    if (_hwndSource != null)
-                    {
-                        _hwndSource.Dispose();
-                        _hwndSource = null;
-                        _wndProcHook = null;
-                    }
-                    if (_shutdownCallback != null)
-                    {
-                        _shutdownCallback();
-                        _shutdownCallback = null;
-                    }
-                    handled = true;
-                }
-            }
             else if (msg == _closeMessageId)
             {
                 if (!_shutdownStarted && !_isShutdown)
@@ -639,47 +635,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
 
             return NULL;
-        }
-
-        /// <summary>
-        /// Eject our native dll from explorer process
-        /// </summary>
-        /// <param name="dllHandle">HANDLE of dll inside explorer process</param>
-        private void EjectNativeDll(IntPtr dllHandle)
-        {
-            if (dllHandle == NULL)
-            {
-                throw new ArgumentNullException("dllHandle");
-            }
-
-            uint pid;
-            User32Dll.GetWindowThreadProcessId(_taskbarHwnd, out pid);
-            var hExplorerProcess = Kernel32Dll.OpenProcess(0
-                | ProcessAccessFlags.CreateThread
-                | ProcessAccessFlags.QueryInformation
-                | ProcessAccessFlags.VMOperation
-                | ProcessAccessFlags.VMRead
-                | ProcessAccessFlags.VMWrite
-                , false, pid);
-
-            if (hExplorerProcess == NULL)
-            {
-                throw new Exception("Cannot get Explorer.exe handle");
-            }
-
-            var k = Kernel32Dll.LoadLibrary("Kernel32.dll");
-            var fl = Kernel32Dll.GetProcAddress(k, "FreeLibrary");
-
-            uint ThreadId;
-            var hNewThread = Kernel32Dll.CreateRemoteThread(hExplorerProcess, IntPtr.Zero, 0, fl, dllHandle, 0, out ThreadId);
-
-            if (hNewThread == NULL)
-            {
-                throw new Exception("hNewThread");
-            }
-
-            Kernel32Dll.CloseHandle(hExplorerProcess);
-            Kernel32Dll.CloseHandle(hNewThread);
         }
 
         // return one of 4 possible edge
