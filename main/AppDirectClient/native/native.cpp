@@ -4,12 +4,14 @@
 // The following messages are registered with ::RegisterWindowsMessage
 // because they are used across application
 // NB! MAKE SURE THAT THESE VALUES STAY IN SYNC WITH THE APPLICATION AND THE INSTALLER!!!
-#define APPDIRECT_MESSAGE_NAME_MANAGED_REBAR_UPDATED L"AppDirectManagedReBarUpdatedMessage"
-#define APPDIRECT_MESSAGE_NAME_NATIVE_UPDATE_OFFSET L"AppDirectNativeUpdateOffsetMessage"
 #define APPDIRECT_MESSAGE_NAME_NATIVE_TERMINATE L"AppDirectNativeTerminateMessage"
-UINT WM_APPDIRECT_MANAGED_REBAR_UPDATED = 0;
+#define APPDIRECT_MESSAGE_NAME_NATIVE_UPDATE_OFFSET L"AppDirectNativeUpdateOffsetMessage"
+#define APPDIRECT_MESSAGE_NAME_MANAGED_REBAR_UPDATED L"AppDirectManagedReBarUpdatedMessage"
+#define APPDIRECT_MESSAGE_NAME_MANAGED_TASKBAR_UPDATED L"AppDirectManagedTaskBarUpdatedMessage"
 UINT WM_APPDIRECT_NATIVE_UPDATE_OFFSET = 0;
 UINT WM_APPDIRECT_NATIVE_TERMINATE = 0;
+UINT WM_APPDIRECT_MANAGED_REBAR_UPDATED = 0;
+UINT WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = 0;
 
 #define WM_APPDIRECT_SETUP_SUBCLASS WM_USER + 1
 #define WM_APPDIRECT_TEARDOWN_SUBCLASS WM_USER + 2
@@ -95,6 +97,8 @@ LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
 		DoTearDownSubclass(TRUE, TRUE);
 		return lResult;
+	} else if (uMsg == WM_MOVE) {
+		::SendMessage(hwndAdButton, WM_APPDIRECT_MANAGED_TASKBAR_UPDATED, NULL, NULL);
 	} else if (uMsg == WM_WINDOWPOSCHANGED) {
 		// place on top of task bar
 		WINDOWPOS * p = (WINDOWPOS*)lParam;
@@ -118,9 +122,10 @@ LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 BOOL DoSetupSubclass(HWND hwndAdButton) 
 {
 	// Register update message
-	WM_APPDIRECT_MANAGED_REBAR_UPDATED = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_MANAGED_REBAR_UPDATED);
 	WM_APPDIRECT_NATIVE_UPDATE_OFFSET = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_NATIVE_UPDATE_OFFSET);
 	WM_APPDIRECT_NATIVE_TERMINATE = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_NATIVE_TERMINATE);
+	WM_APPDIRECT_MANAGED_REBAR_UPDATED = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_MANAGED_REBAR_UPDATED);
+	WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_MANAGED_TASKBAR_UPDATED);
 
 	if (g_bIsLoaded) {
 		return TRUE;
@@ -169,9 +174,9 @@ BOOL DoTearDownSubclass(BOOL bAsync, BOOL bResetReBar)
 		tl.y = rect.top;
 		if (::ScreenToClient(hwndTaskBar, &tl)) {
 			if (::IsVertical(hwndTaskBar)) {
-				::MoveWindow(hwndReBar, tl.x, tl.y - g_ReBarOffset, rect.right - rect.left, rect.right - rect.left + g_ReBarOffset, TRUE);
+				::MoveWindow(hwndReBar, tl.x, tl.y - g_ReBarOffset, rect.right - rect.left, rect.bottom - rect.top + g_ReBarOffset, TRUE);
 			} else {
-				::MoveWindow(hwndReBar, tl.x - g_ReBarOffset, tl.y, rect.right - rect.left + g_ReBarOffset, rect.right - rect.left, TRUE);
+				::MoveWindow(hwndReBar, tl.x - g_ReBarOffset, tl.y, rect.right - rect.left + g_ReBarOffset, rect.bottom - rect.top, TRUE);
 			}
 		}
 	}

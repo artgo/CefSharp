@@ -17,9 +17,11 @@ namespace TaskBarControl
         private const string WindowName = @"AppDirectTaskBarControl";
         private const string MessageNameNativeUpdateOffset = @"AppDirectNativeUpdateOffsetMessage";
         private const string MessageNameManagedReBarUpdated = @"AppDirectManagedReBarUpdatedMessage";
+        private const string MessageNameManagedTaskBarUpdated = @"AppDirectManagedTaskBarUpdatedMessage";
 
-        private uint WM_APPDIRECT_MANAGED_REBAR_UPDATED = 0;
         private uint WM_APPDIRECT_NATIVE_UPDATE_OFFSET = 0;
+        private uint WM_APPDIRECT_MANAGED_REBAR_UPDATED = 0;
+        private uint WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = 0;
 
         private ControlWrapper _controlWrapper;
         private HwndSource _hwndSource;
@@ -30,8 +32,9 @@ namespace TaskBarControl
             _controlWrapper.DesiredHeightChanged += _controlWrapper_DesiredHeightChanged;
             _controlWrapper.DesiredWidthChanged += _controlWrapper_DesiredWidthChanged;
 
-            WM_APPDIRECT_MANAGED_REBAR_UPDATED = User32Dll.RegisterWindowMessage(MessageNameManagedReBarUpdated);
             WM_APPDIRECT_NATIVE_UPDATE_OFFSET = User32Dll.RegisterWindowMessage(MessageNameNativeUpdateOffset);
+            WM_APPDIRECT_MANAGED_REBAR_UPDATED = User32Dll.RegisterWindowMessage(MessageNameManagedReBarUpdated);
+            WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = User32Dll.RegisterWindowMessage(MessageNameManagedTaskBarUpdated);
         }
 
         public void Setup()
@@ -242,6 +245,26 @@ namespace TaskBarControl
                 UpdateIconPosition(rectIcon);
                 UpdateReBarPosition(helper, helper.ReBarRect);
                 UpdateReBarOffset(helper, offset);
+            }
+            else if (message == WM_APPDIRECT_MANAGED_TASKBAR_UPDATED)
+            {
+                TaskBarHelper helper = new TaskBarHelper();
+                if (!helper.IsValid())
+                {
+                    throw new InteropException("Failed to get TaskBar details");
+                }
+                Rectangle rectIcon = helper.GetWindowRectangle(_hwndSource.Handle);
+                rectIcon.X = helper.ReBarRect.X;
+                rectIcon.Y = helper.ReBarRect.Y;
+                if (helper.TaskBarPosition.IsVertical())
+                {
+                    rectIcon.Y -= rectIcon.Height;
+                }
+                else
+                {
+                    rectIcon.X -= rectIcon.Width;
+                }
+                UpdateIconPosition(rectIcon);
             }
 
             return IntPtr.Zero;
