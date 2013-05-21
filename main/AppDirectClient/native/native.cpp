@@ -152,7 +152,7 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						| SWP_ASYNCWINDOWPOS
 						| SWP_NOOWNERZORDER
 					);
-				//_ASSERT(b);
+				_ASSERT(b);
 			}
 			break;
 		}
@@ -169,7 +169,7 @@ static LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 HWND GetProgmanHwnd()
 {
-	HWND progWin = ::FindWindowEx(NULL, NULL, L"Progman", NULL);	//_ASSERT(progWin);
+	HWND progWin = ::FindWindowEx(NULL, NULL, L"Progman", NULL);	_ASSERT(progWin);
 	return progWin;
 }
 
@@ -188,7 +188,7 @@ DWORD GetRebarThread()
 DWORD ThreadFromWnd(HWND wnd)
 {
 	DWORD ExplProcess;
-	DWORD thr = GetWindowThreadProcessId(wnd, &ExplProcess);	//_ASSERT(thr);
+	DWORD thr = GetWindowThreadProcessId(wnd, &ExplProcess);	_ASSERT(thr);
 	return thr;
 }
 
