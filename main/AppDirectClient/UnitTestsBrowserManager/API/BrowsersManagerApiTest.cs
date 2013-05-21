@@ -1,4 +1,5 @@
 ﻿using AppDirect.WindowsClient.Browser.API;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Tests.Common.UI;

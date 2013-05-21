@@ -21,6 +21,7 @@ namespace AppDirect.WindowsClient
         private volatile Mutex _instanceMutex = null;
         private volatile MainWindow _mainWindow;
         private volatile ILatch _mainWindowReadyLatch = new Latch();
+        private volatile ExplorerWatcher _explorerWatcher;
 
         public App()
         {
@@ -74,13 +75,38 @@ namespace AppDirect.WindowsClient
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
 
-            var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
+            var taskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
 
-            taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
+            helper.StartAsynchronously(
+                () => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
 
+            helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
+
+            _explorerWatcher = new ExplorerWatcher(_log, helper, () => Helper.PerformInUiThread(() =>
+                {
+                    var newTaskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
+                    _mainWindowReadyLatch.Wait();
+                    _mainWindow.RegisterTaskbarCallbacks(newTaskbarPanel);
+                }));
+
+            helper.StartAsynchronously(_explorerWatcher.Start);
+
+            base.OnStartup(e);
+
+            var timeElapsed = Environment.TickCount - startTicks;
+            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
+            ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
+        }
+
+        private TaskbarPanel CreateAndInsertTaskbarPanel(MainViewModel mainViewModel)
+        {
             try
             {
+                var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
+                taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
                 TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, taskbarPanel.GetCurrentDimension());
+
+                return taskbarPanel;
             }
             catch (Exception ex)
             {
@@ -92,15 +118,7 @@ namespace AppDirect.WindowsClient
                 Environment.Exit(0);
             }
 
-            helper.StartAsynchronously(() => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
-
-            helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
-
-            base.OnStartup(e);
-
-            var timeElapsed = Environment.TickCount - startTicks;
-            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
-            ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
+            return null;
         }
 
         private void InitializeMainWindow(MainViewModel mainViewModel, TaskbarPanel taskbarPanel)
@@ -166,6 +184,7 @@ namespace AppDirect.WindowsClient
         {
             if (_instanceMutex != null)
             {
+                ServiceLocator.UiHelper.IgnoreException(_explorerWatcher.Stop);
                 ServiceLocator.UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.CloseBrowserProcess);
                 ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Stop);

@@ -61,6 +61,7 @@
     <Compile Include="API\BrowserWindowsCommunicatorTest.cs" />
     <Compile Include="API\VO\SubscriptionWSUnitTest.cs" />
     <Compile Include="Common\API\AbstractServiceClientTest.cs" />
+    <Compile Include="Common\API\ProcessWatcherTests.cs" />
     <Compile Include="Common\UI\TestUiHelper.cs" />
     <Compile Include="InteropApi\Internal\CoordsPackagerTest.cs" />
     <Compile Include="InteropApi\Internal\InteractionsObjectTest.cs" />

@@ -47,11 +47,7 @@ namespace AppDirect.WindowsClient.UI
             WindowPanels.Add(LoginViewControl);
             WindowPanels.Add(RegistrationViewControl);
 
-            ViewModel.ApplicationAddedNotifier += taskbarPanel.AddAppButton;
-            ViewModel.ApplicationRemovedNotifier += taskbarPanel.RemoveAppButton;
-            ViewModel.LogoutNotifier += taskbarPanel.RemoveAllAppButtons;
-            PinToTaskbarClickNotifier += taskbarPanel.PinToTaskbarClickHandler;
-            UninstallClickNotifier += taskbarPanel.UninstallAppClickHandler;
+            RegisterTaskbarCallbacks(taskbarPanel);
 
             LoginViewControl.RegistrationClick += Login_OnRegistrationClick;
             LoginViewControl.CloseLogin += Login_Close;
@@ -60,6 +56,15 @@ namespace AppDirect.WindowsClient.UI
             LoginViewControl.DataContext = ViewModel.LoginViewModel;
 
             RegistrationViewControl.ClosePanel += Registration_Close;
+        }
+
+        public void RegisterTaskbarCallbacks(TaskbarPanel taskbarPanel)
+        {
+            ViewModel.ApplicationAddedNotifier += taskbarPanel.AddAppButton;
+            ViewModel.ApplicationRemovedNotifier += taskbarPanel.RemoveAppButton;
+            ViewModel.LogoutNotifier += taskbarPanel.RemoveAllAppButtons;
+            PinToTaskbarClickNotifier += taskbarPanel.PinToTaskbarClickHandler;
+            UninstallClickNotifier += taskbarPanel.UninstallAppClickHandler;
         }
 
         public void SetPosition()

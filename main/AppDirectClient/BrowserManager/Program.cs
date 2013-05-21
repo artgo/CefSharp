@@ -3,6 +3,7 @@ using AppDirect.WindowsClient.Browser.Interaction;
 using AppDirect.WindowsClient.Browser.Properties;
 using AppDirect.WindowsClient.Browser.Session;
 using AppDirect.WindowsClient.Browser.UI;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using System;
@@ -20,6 +21,7 @@ namespace AppDirect.WindowsClient.Browser
         private static readonly IBrowserWindowsBuilder<IBrowserWindow> BrowserWindowsBuilder = new BrowserWindowsBuilder();
         private static readonly IBrowserWindowsManager BrowserWindowsManager = new BrowserWindowsManager(BrowserObject, UiHelper, BrowserWindowsBuilder);
         private static volatile Mutex _instanceMutex = null;
+        private const string _mainApplicationName = "AppDirectClient";
 
         /// <summary>
         /// The main entry point for the application.
@@ -57,6 +59,8 @@ namespace AppDirect.WindowsClient.Browser
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,
                                                                  new NLogLogger("MainApplicationServiceClient"));
 
+            var appDirectClientProcessWatcher = new ProcessWatcher(_mainApplicationName, new AbstractProcess(_mainApplicationName), Log);
+
             var sessionKeeper = new SessionKeeper(mainAppClient, BrowserWindowsManager, BrowserWindowsBuilder, new NLogLogger("Browser.SessionKeeper"), UiHelper);
 
             try
@@ -77,6 +81,8 @@ namespace AppDirect.WindowsClient.Browser
                     hadStartException = true;
                 }
 
+                UiHelper.IgnoreException(appDirectClientProcessWatcher.Start);
+               
                 if (!hadStartException)
                 {
                     var wasInitialized = InitializeClient(mainAppClient);
@@ -90,6 +96,7 @@ namespace AppDirect.WindowsClient.Browser
             finally
             {
                 UiHelper.IgnoreException(apiStarter.Stop);
+                UiHelper.IgnoreException(appDirectClientProcessWatcher.Stop);
                 UiHelper.IgnoreException(sessionKeeper.Stop);
                 UiHelper.IgnoreException(BrowserObject.Unload);
                 UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
