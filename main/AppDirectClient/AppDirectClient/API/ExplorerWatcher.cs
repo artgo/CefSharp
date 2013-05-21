@@ -69,7 +69,6 @@ namespace AppDirect.WindowsClient.API
             {
                 _explorerProcess = null;
                 GetExplorerProcess();
-                _explorerProcess.WaitForInputIdle();
                 _uiHelper.Sleep(500);
                 _actionOnCrash.Invoke();
             }

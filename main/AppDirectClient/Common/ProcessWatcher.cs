@@ -1,8 +1,8 @@
-﻿using AppDirect.WindowsClient.Common.API;
+﻿using System.Threading;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using System;
 using System.Diagnostics;
-using System.Linq;
 
 namespace AppDirect.WindowsClient.Common
 {
@@ -12,11 +12,12 @@ namespace AppDirect.WindowsClient.Common
         private volatile int _restartsRemaining = 10;
         private volatile ILogger _logger;
 
-        private volatile Process _process;
+        private volatile IAbstractProcess _process;
 
-        public ProcessWatcher(string processName, ILogger logger)
+        public ProcessWatcher(string processName, IAbstractProcess abstractProcess, ILogger logger)
         {
             _processName = processName;
+            _process = abstractProcess;
             _logger = logger;
         }
 
@@ -27,29 +28,14 @@ namespace AppDirect.WindowsClient.Common
 
         public void Stop()
         {
-            _process.Exited -= LaunchIfCrashed;
+            _process.RemoveRegisteredEvent(LaunchIfCrashed);
             _restartsRemaining = 10;
         }
 
         private void Watch()
         {
-            var processesByName = Process.GetProcessesByName(_processName);
-
-            if (processesByName.Any())
-            {
-                _process = processesByName[0];
-            }
-            else
-            {
-                _process = new Process();
-
-                _process.StartInfo.FileName = _processName;
-                _process.StartInfo.UseShellExecute = false;
-                _process.StartInfo.CreateNoWindow = true;
-            }
-
-            _process.EnableRaisingEvents = true;
-            _process.Exited += LaunchIfCrashed;
+            _process.GetProcess();
+            _process.RegisterExitedEvent(LaunchIfCrashed);
         }
 
         private void LaunchIfCrashed(object o, EventArgs e)
@@ -60,7 +46,7 @@ namespace AppDirect.WindowsClient.Common
             {
                 if (_restartsRemaining-- > 0)//limit the number of restarts to prevent infinite crashing
                 {
-                    _process = null;
+                    _process.GetProcess();
                     Watch();
                     if (_process != null)
                     {

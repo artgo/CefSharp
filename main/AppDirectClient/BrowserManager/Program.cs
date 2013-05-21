@@ -59,7 +59,7 @@ namespace AppDirect.WindowsClient.Browser
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,
                                                                  new NLogLogger("MainApplicationServiceClient"));
 
-            var appDirectClientProcessWatcher = new ProcessWatcher(_mainApplicationName, Log);
+            var appDirectClientProcessWatcher = new ProcessWatcher(_mainApplicationName, new AbstractProcess(_mainApplicationName), Log);
 
             var sessionKeeper = new SessionKeeper(mainAppClient, BrowserWindowsManager, BrowserWindowsBuilder, new NLogLogger("Browser.SessionKeeper"), UiHelper);
 

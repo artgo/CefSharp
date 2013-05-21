@@ -82,6 +82,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractProcess.cs" />
     <Compile Include="API\AbstractServiceClient.cs" />
     <Compile Include="API\AbstractServiceRunner.cs" />
     <Compile Include="API\AppDirectSession.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="API\IServiceBuilder.cs" />
     <Compile Include="API\IStartStop.cs" />
     <Compile Include="API\LocalApplication.cs" />
+    <Compile Include="IAbstractProcess.cs" />
     <Compile Include="Log\ILogger.cs" />
     <Compile Include="Log\ILogInitializer.cs" />
     <Compile Include="Log\NLogLogger.cs" />

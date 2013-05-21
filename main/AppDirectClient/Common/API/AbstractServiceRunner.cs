@@ -3,11 +3,10 @@ using System.ServiceModel;
 
 namespace AppDirect.WindowsClient.Common.API
 {
-    public abstract class AbstractServiceRunner<T> : IAbstractServiceRunner<T> where T : class 
+    public abstract class AbstractServiceRunner<T> : IAbstractServiceRunner<T> where T : class
     {
         private volatile ICommunicationObject _host;
         private readonly T _service;
-        private volatile ProcessWatcher _processWatcher;
 
         protected AbstractServiceRunner(T service)
         {
