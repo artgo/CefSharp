@@ -27,6 +27,7 @@
 !define NATIVEDLLPATH "$INSTDIR\native.dll"
 !define COMMONDLLPATH "$INSTDIR\Common.dll"
 !define BROWSERCACHEPATH "$INSTDIR\CACHE"
+!define BROWSEREXEPATH "$INSTDIR\${BROWSERPROCESSNAME}"
 !define GAACCOUNT "UA-33544164-4"
 
 !define COPY64 "/r 64Bit\*.*"
@@ -48,9 +49,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
 
 !macro CloseApplicationIfRunning
   System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
-  System::Call "user32::RegisterWindowMessage(t'${NATIVETERMINATEMESSAGE}') i.r4"
   FindWindow $0 "" "${APPWINDOWCLASSNAME}"
-  FindWindow $2 "" "${SHELLTRAYWINDOWCLASSNAME}"
   ${If} $0 != "0"
   StrCmp $4 "0" gogogo
   MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
@@ -59,7 +58,6 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   System::Call "user32::GetWindowThreadProcessId(i $0, *i .r1 ) i .r2"
   System::Call "kernel32::OpenProcess(i ${SYNC_TERM}, i 0, i r1)i .r2"
   SendMessage $0 $3 0 0
-  SendMessage $2 $4 0 0
   System::Call "kernel32::WaitForSingleObject(i r2, i 30000) i.r5"
   StrCpy $6 $5
   StrCmp $5 0 end0 error
@@ -78,16 +76,21 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
 	sleep 500
 	StrCmp $1 "20" error loop1 ;try for 10 seconds
   end1:
-  
-  StrCpy $1 0
-  StrCpy $6 "${NATIVEDLLPATH} could not be removed" 
-  loop2:
-	IntOp $1 $1 + 1 ;timeout index
-	IfFileExists ${NATIVEDLLPATH} deleteFile end2
-	deleteFile:
-	  Delete ${NATIVEDLLPATH} 
-      sleep 200
-	  StrCmp $1 "40" error loop2 ;try for 8 seconds
+    
+  Delete ${NATIVEDLLPATH} 
+  IfFileExists ${NATIVEDLLPATH} unloadNative end2
+  unloadNative:    
+  	StrCpy $1 0
+	System::Call "user32::RegisterWindowMessage(t'${NATIVETERMINATEMESSAGE}') i.r4"
+	FindWindow $2 "${SHELLTRAYWINDOWCLASSNAME}" ""
+  loop5:
+  	MessageBox MB_OK "Native.dll unload attempt $1 window is $2 message is $4 return is $3"
+    IntOp $1 $1 + 1 ;timeout index
+    StrCmp $1 "3" error ;try for 10 seconds
+	SendMessage $2 $4 0 0
+	sleep 500
+	Delete ${NATIVEDLLPATH} 
+	IfFileExists ${NATIVEDLLPATH} loop5 end2
   end2:
   
   StrCpy $1 0
