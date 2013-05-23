@@ -211,7 +211,7 @@ Function .onInstSuccess
 FunctionEnd
 
 Function .onInit
-  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Started" "" "" 
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Started" "" ""
   Push $4
   StrCpy $4 1
   !insertmacro CloseApplicationIfRunning

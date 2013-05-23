@@ -66,8 +66,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   StrCpy $6 "Browser Process Is Still Running"  
   loop1:
 	IntOp $1 $1 + 1 ;timeout index
-	nsExec::Exec "taskkill /f /im ${APPEXE}"
-	nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
+	nsExec::Exec "taskkill /f /im ${APPEXE} /im ${BROWSERPROCESSNAME}"
 	${FindProcess} BROWSERPROCESSNAME $0 ;sets $0 to 1 if process is found
 	StrCmp $0 "0" end1 continue
 	continue:
@@ -75,7 +74,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
 	StrCmp $1 "20" error loop1 ;try for 10 seconds
   end1:
     
-  Delete ${NATIVEDLLPATH} 
+  Delete ${NATIVEDLLPATH}
   IfFileExists ${NATIVEDLLPATH} unloadNative end2
   unloadNative:    
   	StrCpy $1 0
