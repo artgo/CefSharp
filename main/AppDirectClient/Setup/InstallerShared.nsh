@@ -10,7 +10,6 @@
 !define UNINSTALLERNAME "uninstall.exe"
 !define REGISTRYPATH "SOFTWARE\${COMPANYNAME}\${APPNAME}"
 !define REGSTR "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
-!define REGSTRCOMPAT "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 !define APPICON "AppIcon.ico"
 !define INSTALLERICON "install.ico"
 !define APPEXEPATH "${APPDIR}\${APPEXE}"
@@ -28,7 +27,6 @@
 !define NATIVEDLLPATH "$INSTDIR\native.dll"
 !define COMMONDLLPATH "$INSTDIR\Common.dll"
 !define BROWSERCACHEPATH "$INSTDIR\CACHE"
-!define BROWSEREXEPATH "$INSTDIR\${BROWSERPROCESSNAME}"
 !define GAACCOUNT "UA-33544164-4"
 
 !define COPY64 "/r 64Bit\*.*"
