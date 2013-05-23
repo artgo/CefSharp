@@ -188,8 +188,6 @@ Section "Create"
   WriteRegStr HKCU "${REGSTR}" "QuietUninstallString"  "${UNINSTALLEXEPATH}"
  
   WriteRegStr HKCU "${REGSTR}" "Publisher" "${COMPANYDISPLAYNAME}"
-  WriteRegStr HKCU "${REGSTRCOMPAT}" "${BROWSEREXEPATH}" "DISABLECICERO"
-  WriteRegStr HKCU "${REGSTRCOMPAT}" "$INSTDIR\cefclient.exe" "DISABLECICERO"
   WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT}
   WriteRegStr HKCU "${REGSTR}" "DisplayIcon" "$INSTDIR\${APPICON}"
   WriteRegDWORD HKCU "${REGSTR}" "NoModify" 1
