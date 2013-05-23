@@ -81,7 +81,7 @@ namespace AppDirect.WindowsClient.Browser
                     hadStartException = true;
                 }
 
-                //UiHelper.IgnoreException(appDirectClientProcessWatcher.Start);
+                UiHelper.IgnoreException(appDirectClientProcessWatcher.Start);
                
                 if (!hadStartException)
                 {

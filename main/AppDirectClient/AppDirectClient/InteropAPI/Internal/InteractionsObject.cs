@@ -465,7 +465,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _shutdownStarted = true;
 
             // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
-            //NativeDll.TearDownSubclass(); // detach - can cause reposition by Rebar itself
+            NativeDll.TearDownSubclass(); // detach - can cause reposition by Rebar itself
 
             var newRebarCoords = CalculateRebarCoords(false);
 

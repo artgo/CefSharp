@@ -10,6 +10,7 @@
 !define UNINSTALLERNAME "uninstall.exe"
 !define REGISTRYPATH "SOFTWARE\${COMPANYNAME}\${APPNAME}"
 !define REGSTR "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
+!define REGSTRCOMPAT "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
 !define APPICON "AppIcon.ico"
 !define INSTALLERICON "install.ico"
 !define APPEXEPATH "${APPDIR}\${APPEXE}"
@@ -81,8 +82,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
 	System::Call "user32::RegisterWindowMessage(t'${NATIVETERMINATEMESSAGE}') i.r4"
 	FindWindow $2 "${SHELLTRAYWINDOWCLASSNAME}" ""
   loop5:
-  	MessageBox MB_OK "Native.dll unload attempt $1 window is $2 message is $4 return is $3"
-    IntOp $1 $1 + 1 ;timeout index
+  	IntOp $1 $1 + 1 ;timeout index
     StrCmp $1 "3" error ;try for 10 seconds
 	SendMessage $2 $4 0 0
 	sleep 500
