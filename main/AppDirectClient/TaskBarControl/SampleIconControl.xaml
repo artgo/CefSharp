@@ -6,4 +6,8 @@
              Width="100"
              Height="100" 
              Background="Red">
+    <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" HorizontalAlignment="Center" >
+       <TextBox Text="100" Name="TextBoxOffset"/>
+       <Button Click="Button_Click" Content="Set"/>
+    </StackPanel>
 </UserControl>

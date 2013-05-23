@@ -2262,7 +2262,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern uint SendMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
 
         [DllImport(User32DllName, CharSet = CharSet.Auto)]
-        public static extern uint SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        public static extern uint SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport(User32DllName, CharSet = CharSet.Auto)]
         public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);

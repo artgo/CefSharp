@@ -26,24 +26,20 @@ namespace TaskBarControl
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty DesiredWidthProperty =
-            DependencyProperty.Register("DesiredWidth", typeof(int), typeof(SampleIconControl), new PropertyMetadata(100));
-	 
-	    [Bindable(true)]
-        public int DesiredWidth
-	    {
-            get { return (int)this.GetValue(DesiredWidthProperty); }
-            set { this.SetValue(DesiredWidthProperty, value); }
-	    }
+        public delegate void OffsetEventHandler(int offset);
 
-        public static readonly DependencyProperty DesiredHeightProperty = 
-            DependencyProperty.Register("DesiredHeight", typeof(int), typeof(SampleIconControl), new PropertyMetadata(100));
+        public event OffsetEventHandler OffsetChanged;
 
-        [Bindable(true)]
-        public int DesiredHeight
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            get { return (int)this.GetValue(DesiredHeightProperty); }
-            set { this.SetValue(DesiredHeightProperty, value); }
+            double offset = 0;
+            if (double.TryParse(TextBoxOffset.Text, out offset))
+            {
+                if (OffsetChanged != null)
+                {
+                    OffsetChanged((int)offset);
+                }
+            }
         }
     }
 }

@@ -19,10 +19,16 @@ namespace TaskBarControl
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             SampleIconControl control = new SampleIconControl();
+            control.OffsetChanged += control_OffsetChanged;
             control.InitializeComponent();
             ControlWrapper wrapper = new ControlWrapper(control);
             _icon = new TaskBarIcon(wrapper);
             _icon.Setup();
+        }
+
+        void control_OffsetChanged(int offset)
+        {
+            _icon.Wrapper.DesiredOffset = offset;
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace TaskBarControl
+namespace AppDirect.WindowsClient.InteropAPI
 {
     public class ControlWrapper
     {
@@ -16,15 +15,23 @@ namespace TaskBarControl
         }
 
         private Control _control;
+
         private int _desiredOffset = 100;
+        private Size _allowedSize;
 
         public Control Control { get { return _control; } }
 
         public event System.EventHandler DesiredOffsetChanged;
+        public event System.EventHandler AllowedSizeChanged;
 
         protected virtual void OnDesiredOffsetChanged()
         {
             if (DesiredOffsetChanged != null) { DesiredOffsetChanged(this, EventArgs.Empty); }
+        }
+
+        protected virtual void OnAllowedSizeChanged()
+        {
+            if (AllowedSizeChanged != null) { AllowedSizeChanged(this, EventArgs.Empty); }
         }
 
         public int DesiredOffset
@@ -40,10 +47,17 @@ namespace TaskBarControl
             }
         }
 
-        public Size Size
+        public Size AllowedSize
         {
-            get { return new Size((int)_control.Width, (int)_control.Height); }
-            set { _control.Width = value.Width; _control.Height = value.Height; }
+            get { return _allowedSize; }
+            set
+            {
+                if (_allowedSize != value)
+                {
+                    _allowedSize = value;
+                    OnAllowedSizeChanged();
+                }
+            }
         }
     }
 }

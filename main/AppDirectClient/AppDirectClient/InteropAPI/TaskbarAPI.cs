@@ -2,13 +2,15 @@
 using System.Windows.Forms;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using Control = System.Windows.Controls.Control;
+using Microsoft.Win32;
+using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.UI;
 
 namespace AppDirect.WindowsClient.InteropAPI
 {
     public class TaskbarApi
     {
-        private readonly InteractionsObject _interactionsObject;
-        private volatile Control _control = null;
+        private TaskBarIcon _taskBarIcon;
 
         #region Singleton
         private static readonly object SyncObject = new object();
@@ -16,8 +18,6 @@ namespace AppDirect.WindowsClient.InteropAPI
 
         private TaskbarApi()
         {
-            _interactionsObject = new InteractionsObject();
-            _interactionsObject.LoadInitialValues();
         }
 
         public static TaskbarApi Instance
@@ -37,11 +37,11 @@ namespace AppDirect.WindowsClient.InteropAPI
         }
         #endregion Singleton
 
-        public int TaskbarHeight { get { return _interactionsObject.TaskbarHeight; } }
-        public TaskbarPosition TaskbarPosition { get { return _interactionsObject.TaskbarPosition; } }
-        public TaskbarIconsSize TaskbarIconsSize { get { return _interactionsObject.TaskbarIconsSize; } }
-        public Screen TaskbarScreen { get { return _interactionsObject.TaskbarScreen; } }
-        public Double DpiScalingFactor { get { return _interactionsObject.DpiScalingFactor; } }
+        public int TaskbarHeight { get { return new TaskBarHelper().TaskBarRect.Height; } }
+        public TaskbarPosition TaskbarPosition { get { return new TaskBarHelper().TaskBarPosition; } }
+        public TaskbarIconsSize TaskbarIconsSize { get { return new TaskBarHelper().TaskBarIconSize; } }
+        public Screen TaskbarScreen { get { return Screen.FromHandle(new TaskBarHelper().TaskBarHwnd); } }
+        public Double DpiScalingFactor { get { return GetDpiScaleFactor(); } }
 
         public static void Cleanup()
         {
@@ -57,26 +57,62 @@ namespace AppDirect.WindowsClient.InteropAPI
         /// Place WPF window on Taskbar
         /// </summary>
         /// <param name="control">WPF window to be placed on taskbar</param>
-        /// <param name="notifyee">An object which will be notified upon taskbar changes</param>
         /// <param name="initialWidth">Initial width</param>
-        public void InsertTaskbarWindow(Control control, ITaskbarInterop notifyee, int initialWidth)
+        public void InsertTaskbarWindow(TaskbarPanel panel)
         {
-            _control = control;
-            _interactionsObject.Place(_control, notifyee, initialWidth);
+            if (_taskBarIcon != null)
+            {
+                RemoveTaskbarWindowAndShutdown();
+            }
+            else
+            {
+                ControlWrapper wrapper = new ControlWrapper(panel);
+                wrapper.DesiredOffset = panel.GetCurrentDimension();
+                _taskBarIcon = new TaskBarIcon(wrapper);
+                _taskBarIcon.Setup();
+                panel.CurrentDimensionChanged += panel_CurrentDimensionChanged;
+                wrapper.AllowedSizeChanged += wrapper_AllowedSizeChanged;
+            }
         }
-        #endregion public interface
 
-        public delegate void ShutdownCallback();
+        void wrapper_AllowedSizeChanged(object sender, EventArgs e)
+        {
+            if (_taskBarIcon != null && _taskBarIcon.Wrapper.Control.GetType() == typeof(TaskbarPanel))
+            {
+                int allowedWidth = _taskBarIcon.Wrapper.AllowedSize.Width;
+                int allowedHeight = _taskBarIcon.Wrapper.AllowedSize.Height;
+                ((TaskbarPanel)_taskBarIcon.Wrapper.Control).LayoutIcons(allowedHeight, allowedWidth);
+            }
+        }
 
-        internal bool RemoveTaskbarWindowAndShutdown(ShutdownCallback shutdownCallback)
+        void panel_CurrentDimensionChanged(object sender, EventArgs e)
+        {
+            if (sender.GetType() == typeof(TaskbarPanel)) 
+            {
+                _taskBarIcon.Wrapper.DesiredOffset = ((TaskbarPanel)sender).GetCurrentDimension();
+            }
+        }
+
+        public void RemoveTaskbarWindowAndShutdown()
         {
             // use _control
-            return _interactionsObject.Remove(shutdownCallback);
+            if (_taskBarIcon != null)
+            {
+                _taskBarIcon.TearDown();
+                _taskBarIcon = null;
+            }
         }
 
-        public void Refresh()
+        #endregion public interface
+
+        private const string DpiSettingPath = @"HKEY_CURRENT_USER\Control Panel\Desktop\Windowmetrics";
+        private const string DpiSettingName = @"AppliedDPI";
+        private const double StandardDpi = 96;
+
+        private double GetDpiScaleFactor()
         {
-            _interactionsObject.LoadInitialValues();
+            var dpiSetting = (double)(int)(Registry.GetValue(DpiSettingPath, DpiSettingName, StandardDpi) ?? StandardDpi);
+            return dpiSetting / StandardDpi;
         }
     }
 }

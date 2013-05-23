@@ -171,16 +171,11 @@
     <Compile Include="API\VO\UserWS.cs" />
     <Compile Include="application.Designer.cs" />
     <Compile Include="InteropAPI\Internal\CoordsPackager.cs" />
-    <Compile Include="InteropAPI\Internal\InteractionsObject.cs" />
     <Compile Include="InteropAPI\Internal\Interop.cs" />
     <Compile Include="InteropAPI\Internal\InteropException.cs" />
     <Compile Include="InteropAPI\Internal\MessageParams.cs" />
     <Compile Include="InteropAPI\Internal\NativeDll.cs" />
     <Compile Include="InteropAPI\Internal\RectWin.cs" />
-    <Compile Include="InteropAPI\Internal\RegistryChangeEventArgs.cs" />
-    <Compile Include="InteropAPI\Internal\RegistryChangeMonitor.cs" />
-    <Compile Include="InteropAPI\ITaskbarInterop.cs" />
-    <Compile Include="InteropAPI\ITaskbarInteropCallback.cs" />
     <Compile Include="InteropAPI\ShutdownHelper.cs" />
     <Compile Include="InteropAPI\TaskbarAPI.cs" />
     <Compile Include="InteropAPI\TaskbarIconsSize.cs" />
@@ -204,6 +199,9 @@
     <Compile Include="StatusHelper.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
+    <Compile Include="InteropAPI\ControlWrapper.cs" />
+    <Compile Include="InteropAPI\TaskBarHelper.cs" />
+    <Compile Include="InteropAPI\TaskBarIcon.cs" />
     <Compile Include="UI\ApplicationViewModel.cs" />
     <Compile Include="UI\AppSessionRefresher.cs" />
     <Compile Include="UI\LoginViewModel.cs" />
@@ -527,7 +525,9 @@
   <ItemGroup>
     <Resource Include="UI\Images\BtnBorder.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="TaskBarAPI\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)libs" "$(TargetDir)" /e /y /i /r

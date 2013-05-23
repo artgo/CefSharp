@@ -35,7 +35,7 @@ namespace AppDirect.WindowsClient.UI
 
             Id = applicationViewModel.Application.Id;
 
-            ChangeIconSize(iconsSize);
+            SetIconSize(iconsSize);
         }
 
         private void TaskbarButton_DoubleClick(object sender, MouseButtonEventArgs e)
@@ -61,7 +61,7 @@ namespace AppDirect.WindowsClient.UI
             UninstallClickNotifier.Invoke(sender, e);
         }
 
-        public void ChangeIconSize(TaskbarIconsSize newIconsSize)
+        public void SetIconSize(TaskbarIconsSize newIconsSize)
         {
             Helper.PerformInUiThread(() =>
                 {

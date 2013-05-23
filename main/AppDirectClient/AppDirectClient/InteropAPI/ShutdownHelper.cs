@@ -5,8 +5,6 @@ namespace AppDirect.WindowsClient.InteropAPI
 {
     public class ShutdownHelper
     {
-        private readonly TaskbarApi.ShutdownCallback _shutdownCallback;
-
         #region Singleton
 
         private static readonly object SyncObject = new object();
@@ -14,7 +12,6 @@ namespace AppDirect.WindowsClient.InteropAPI
 
         private ShutdownHelper()
         {
-            _shutdownCallback = DoShutdown;
         }
 
         public static ShutdownHelper Instance
@@ -60,9 +57,10 @@ namespace AppDirect.WindowsClient.InteropAPI
             PerformInUiThread(() => System.Windows.Application.Current.Shutdown());
         }
 
-        public bool Shutdown()
+        public void Shutdown()
         {
-            return TaskbarApi.Instance.RemoveTaskbarWindowAndShutdown(_shutdownCallback);
+            TaskbarApi.Instance.RemoveTaskbarWindowAndShutdown();
+            DoShutdown();
         }
     }
 }

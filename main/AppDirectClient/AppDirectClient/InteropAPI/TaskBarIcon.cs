@@ -1,15 +1,16 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 
-namespace TaskBarControl
+namespace AppDirect.WindowsClient.InteropAPI
 {
     public class TaskBarIcon : IDisposable
     {
@@ -77,9 +78,9 @@ namespace TaskBarControl
             NativeDll dll = new NativeDll(NativeDllPath);
             dll.SetupSubclass(_hwndSource.Handle);
 
-            UpdateReBarPosition(helper, rectReBar);
             UpdateReBarOffset(helper, offset);
-            _controlWrapper.Size = rectIcon.Size;
+            UpdateReBarPosition(helper, rectReBar);
+            _controlWrapper.AllowedSize = rectIcon.Size;
         }
 
         public void TearDown()
@@ -131,7 +132,7 @@ namespace TaskBarControl
                 rectIcon.Height,
                 flagsIcon);
 
-            _controlWrapper.Size = rectIcon.Size;
+            _controlWrapper.AllowedSize = rectIcon.Size;
         }
 
         private void UpdateReBarPosition(TaskBarHelper helper, Rectangle rectReBar)
@@ -147,7 +148,7 @@ namespace TaskBarControl
 
         private void UpdateReBarOffset(TaskBarHelper helper, int offset)
         {
-            User32Dll.PostMessage(helper.ReBarHwnd, WM_APPDIRECT_NATIVE_UPDATE_OFFSET, new IntPtr(offset), IntPtr.Zero);
+            User32Dll.SendMessage(helper.ReBarHwnd, WM_APPDIRECT_NATIVE_UPDATE_OFFSET, new IntPtr(offset), IntPtr.Zero);
         }
 
         private void UpdateIconSize()
@@ -181,9 +182,9 @@ namespace TaskBarControl
                 rectReBar.Width -= delta;
             }
 
+            UpdateReBarOffset(helper, offset);
             UpdateIconPosition(rectIcon);
             UpdateReBarPosition(helper, rectReBar);
-            UpdateReBarOffset(helper, offset);
         }
 
         private void _controlWrapper_DesiredOffsetChanged(object sender, EventArgs e)
@@ -227,11 +228,6 @@ namespace TaskBarControl
             return rectReBar;
         }
 
-        private Rectangle RectWinToRectangle(RectWin rect)
-        {
-            return new Rectangle(rect.Left, rect.Top, rect.Width, rect.Height);
-        }
-
         private IntPtr TaskBarIconHookProc(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (message == WM_APPDIRECT_MANAGED_REBAR_UPDATED)
@@ -243,7 +239,7 @@ namespace TaskBarControl
                 }
 
                 // Switch to absolute coordinates
-                Rectangle rectReBar = new CoordsPackager().UnpackParams(wParam, lParam);
+                Rectangle rectReBar = helper.RectWinToRectangle(new CoordsPackager().UnpackParams(wParam, lParam));
                 rectReBar.X += helper.TaskBarRect.X;
                 rectReBar.Y += helper.TaskBarRect.Y;
 
@@ -251,9 +247,9 @@ namespace TaskBarControl
                 Rectangle rectIcon = CalculateIconRect(helper.TaskBarPosition.IsVertical(), rectReBar, ref offset);
                 rectReBar = CalculateRebarRect(helper.TaskBarPosition.IsVertical(), rectReBar, rectIcon);
 
+                UpdateReBarOffset(helper, offset);
                 UpdateIconPosition(rectIcon);
                 UpdateReBarPosition(helper, helper.ReBarRect);
-                UpdateReBarOffset(helper, offset);
             }
             else if (message == WM_APPDIRECT_MANAGED_TASKBAR_UPDATED)
             {
