@@ -53,10 +53,9 @@ LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARA
 
 	if (!::IsWindow(hwndAdButton)) {
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
-		//DoTearDownSubclass(TRUE);
+		DoTearDownSubclass(TRUE);
 		return lResult;
 	} else if (uMsg == WM_APPDIRECT_NATIVE_TERMINATE) {
-		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
 		return DoTearDownSubclass(TRUE);
 	} else {
 		if (uMsg == WM_WINDOWPOSCHANGING)
@@ -104,13 +103,10 @@ LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 
 	if (!::IsWindow(hwndAdButton)) {
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
-		//DoTearDownSubclass(TRUE);
-		return lResult;
-	} else if (uMsg == WM_APPDIRECT_NATIVE_TERMINATE) {
-		::MessageBox(NULL, L"111", L"222", MB_OK);
-		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
 		DoTearDownSubclass(TRUE);
 		return lResult;
+	} else if (uMsg == WM_APPDIRECT_NATIVE_TERMINATE) {
+		return DoTearDownSubclass(TRUE);
 	} else {
 		switch (uMsg) {
 		case WM_WINDOWPOSCHANGED: 

@@ -188,6 +188,7 @@ Section "Create"
   WriteRegStr HKCU "${REGSTR}" "QuietUninstallString"  "${UNINSTALLEXEPATH}"
  
   WriteRegStr HKCU "${REGSTR}" "Publisher" "${COMPANYDISPLAYNAME}"
+  WriteRegStr HKCU "${REGSTRCOMPAT}" "$INSTDIR\cefclient.exe" "DISABLECICERO"
   WriteRegStr HKCU "${REGSTR}" "DisplayVersion" ${VERSION_SHORT}
   WriteRegStr HKCU "${REGSTR}" "DisplayIcon" "$INSTDIR\${APPICON}"
   WriteRegDWORD HKCU "${REGSTR}" "NoModify" 1
@@ -210,7 +211,7 @@ Function .onInstSuccess
 FunctionEnd
 
 Function .onInit
-  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Started" "" ""
+  !insertmacro GoogleAnalytics "${GAACCOUNT}" "Install" "Started" "" "" 
   Push $4
   StrCpy $4 1
   !insertmacro CloseApplicationIfRunning

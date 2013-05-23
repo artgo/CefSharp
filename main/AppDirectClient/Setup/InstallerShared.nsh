@@ -59,17 +59,15 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   System::Call "kernel32::OpenProcess(i ${SYNC_TERM}, i 0, i r1)i .r2"
   SendMessage $0 $3 0 0
   System::Call "kernel32::WaitForSingleObject(i r2, i 30000) i.r5"
-  StrCpy $6 $5
-  StrCmp $5 0 end0 error
-  end0:
-  System::Call "kernel32::CloseHandle(i r2) i .r1"
+  System::Call "kernel32::CloseHandle(i r2) i .r1" 
   ${EndIf}
 
   StrCpy $1 0 
   StrCpy $6 "Browser Process Is Still Running"  
-  nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
   loop1:
 	IntOp $1 $1 + 1 ;timeout index
+	nsExec::Exec "taskkill /f /im ${APPEXE}"
+	nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
 	${FindProcess} BROWSERPROCESSNAME $0 ;sets $0 to 1 if process is found
 	StrCmp $0 "0" end1 continue
 	continue:
