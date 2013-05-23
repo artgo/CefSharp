@@ -48,9 +48,7 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
 
 !macro CloseApplicationIfRunning
   System::Call "user32::RegisterWindowMessage(t'${APPCLOSEMESSAGE}') i.r3"
-  System::Call "user32::RegisterWindowMessage(t'${NATIVETERMINATEMESSAGE}') i.r4"
   FindWindow $0 "" "${APPWINDOWCLASSNAME}"
-  FindWindow $2 "" "${SHELLTRAYWINDOWCLASSNAME}"
   ${If} $0 != "0"
   StrCmp $4 "0" gogogo
   MessageBox MB_YESNO "Is it okay if ${APPNAME} closes for a bit while it updates?" IDYES gogogo
@@ -59,35 +57,35 @@ VIAddVersionKey "ProductVersion" "${VERSION_SHORT}"
   System::Call "user32::GetWindowThreadProcessId(i $0, *i .r1 ) i .r2"
   System::Call "kernel32::OpenProcess(i ${SYNC_TERM}, i 0, i r1)i .r2"
   SendMessage $0 $3 0 0
-  SendMessage $2 $4 0 0
   System::Call "kernel32::WaitForSingleObject(i r2, i 30000) i.r5"
-  StrCpy $6 $5
-  StrCmp $5 0 end0 error
-  end0:
-  System::Call "kernel32::CloseHandle(i r2) i .r1"
+  System::Call "kernel32::CloseHandle(i r2) i .r1" 
   ${EndIf}
 
   StrCpy $1 0 
   StrCpy $6 "Browser Process Is Still Running"  
-  nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
   loop1:
 	IntOp $1 $1 + 1 ;timeout index
+	nsExec::Exec "taskkill /f /im ${APPEXE} /im ${BROWSERPROCESSNAME}"
 	${FindProcess} BROWSERPROCESSNAME $0 ;sets $0 to 1 if process is found
 	StrCmp $0 "0" end1 continue
 	continue:
 	sleep 500
 	StrCmp $1 "20" error loop1 ;try for 10 seconds
   end1:
-  
-  StrCpy $1 0
-  StrCpy $6 "${NATIVEDLLPATH} could not be removed" 
-  loop2:
-	IntOp $1 $1 + 1 ;timeout index
-	IfFileExists ${NATIVEDLLPATH} deleteFile end2
-	deleteFile:
-	  Delete ${NATIVEDLLPATH} 
-      sleep 200
-	  StrCmp $1 "40" error loop2 ;try for 8 seconds
+    
+  Delete ${NATIVEDLLPATH}
+  IfFileExists ${NATIVEDLLPATH} unloadNative end2
+  unloadNative:    
+  	StrCpy $1 0
+	System::Call "user32::RegisterWindowMessage(t'${NATIVETERMINATEMESSAGE}') i.r4"
+	FindWindow $2 "${SHELLTRAYWINDOWCLASSNAME}" ""
+  loop5:
+  	IntOp $1 $1 + 1 ;timeout index
+    StrCmp $1 "3" error ;try for 10 seconds
+	SendMessage $2 $4 0 0
+	sleep 500
+	Delete ${NATIVEDLLPATH} 
+	IfFileExists ${NATIVEDLLPATH} loop5 end2
   end2:
   
   StrCpy $1 0

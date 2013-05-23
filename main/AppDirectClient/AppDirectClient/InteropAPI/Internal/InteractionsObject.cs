@@ -151,7 +151,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             // 94000C00 is from the Start button
             hwndSourceParams.WindowStyle = (int)(0
 
-                                                  // popup is prohibiting child style on Win8
+                // popup is prohibiting child style on Win8
                 //| (uint)WindowsStyleConstants.WS_POPUP							// 80000000
                                                   | (uint)WindowsStyleConstants.WS_VISIBLE // 10000000
                                                   | (uint)WindowsStyleConstants.WS_CLIPSIBLINGS // 04000000

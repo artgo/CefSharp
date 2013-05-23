@@ -55,6 +55,8 @@ LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARA
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
 		DoTearDownSubclass(TRUE);
 		return lResult;
+	} else if (uMsg == WM_APPDIRECT_NATIVE_TERMINATE) {
+		return DoTearDownSubclass(TRUE);
 	} else {
 		if (uMsg == WM_WINDOWPOSCHANGING)
 		{
