@@ -461,7 +461,7 @@
                         <local:DisplayStatus>SubscriptionPendingAddition</local:DisplayStatus>
                     </DataTrigger.Value>
                     <Setter Property="Visibility" Value="Visible" />
-                    <Setter Property="ToolTip" Value="Subscription Pending Creation" />
+                    <Setter Property="ToolTip" Value="Your account is being provisioned" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding ApplicationStatus}">
                     <DataTrigger.Value>
