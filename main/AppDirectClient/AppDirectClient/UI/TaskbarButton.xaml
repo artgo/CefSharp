@@ -17,11 +17,12 @@
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Opacity" Value=".5" />
+            <Setter Property="ToolTip" Value="Provisioning In Progress"></Setter>
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Grid ToolTip="{Binding Application.Name}">
+                        <Grid>
                             <Image Name="Icon" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1,1,1,1"
                                        Source="{Binding Application.LocalImagePath}" />
                             <Image Name="HighlightMask" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Images/TaskBarHoverMask.png" Visibility="Hidden" />
@@ -46,7 +47,8 @@
                     <DataTrigger.Value>
                         <local:DisplayStatus>Active</local:DisplayStatus>
                     </DataTrigger.Value>
-                        <Setter Property="Opacity" Value="1" />
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="ToolTip" Value="{Binding Application.Name}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
