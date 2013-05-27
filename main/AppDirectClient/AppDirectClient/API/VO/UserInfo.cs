@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient.API.VO
 {

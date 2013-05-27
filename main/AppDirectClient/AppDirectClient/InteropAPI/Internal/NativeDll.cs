@@ -45,6 +45,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _isSubclassedFunc = (BoolAction)Marshal.GetDelegateForFunctionPointer(procAddress, typeof(BoolAction)); 
         }
 
+        ~NativeDll()
+        {
+            Dispose(false);
+        }
+
         public bool IsValid()
         {
             return _dllHandle != IntPtr.Zero;
@@ -66,6 +71,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         }
 
         public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool isDiposing)
         {
             if (_dllHandle != IntPtr.Zero)
             {

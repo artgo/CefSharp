@@ -183,12 +183,74 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct RECT
+    public class RECT
     {
-        public int left;
-        public int top;
-        public int right;
-        public int bottom;
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+        
+        public int Width
+        {
+            get
+            {
+                return Right - Left;
+            }
+            set
+            {
+                Right = Left + value;
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                return Bottom - Top;
+            }
+            set
+            {
+                Bottom = Top + value;
+            }
+        }
+
+        public RECT()
+        {
+            Left = 0;
+            Top = 0;
+            Right = 0;
+            Bottom = 0;
+        }
+        public RECT(RECT rect)
+        {
+            Left = rect.Left;
+            Top = rect.Top;
+            Right = rect.Right;
+            Bottom = rect.Bottom;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || (GetType() != obj.GetType()))
+            {
+                return false;
+            }
+
+            var r = (RECT)obj;
+
+            return (this.Left == r.Left) && (this.Right == r.Right) && (this.Top == r.Top) && (this.Bottom == r.Bottom);
+        }
+
+        public override int GetHashCode()
+        {
+            const int hbase = 13;
+            return Left * hbase * hbase * hbase + Top * hbase * hbase + Right * hbase + Bottom;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{{ Top={0}, Left={1}, Height={2}, Width={3} }}", Top, Left, Height, Width);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -2337,7 +2399,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
         [DllImport(User32DllName)]
-        public static extern bool GetWindowRect(IntPtr hWnd, [Out] RectWin r);
+        public static extern bool GetWindowRect(IntPtr hWnd, [Out] RECT r);
 
         [DllImport(User32DllName)]
         public static extern uint RegisterWindowMessage(string name);

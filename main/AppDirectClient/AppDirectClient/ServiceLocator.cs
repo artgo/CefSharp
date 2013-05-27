@@ -5,6 +5,7 @@ using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.Updates;
 using Ninject;
+using AppDirect.WindowsClient.InteropAPI;
 
 namespace AppDirect.WindowsClient
 {
@@ -51,6 +52,11 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<IAnalytics>(); }
         }
 
+        public static ITaskBarApi TaskBarApi
+        {
+            get { return Kernel.Get<ITaskBarApi>(); }
+        }
+
         /// <summary>
         /// Initializes Apis, Loads Local Storage, etc
         /// </summary>
@@ -63,6 +69,7 @@ namespace AppDirect.WindowsClient
             Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator(new BrowsersManagerApiServiceBuilder(), Kernel.Get<IUiHelper>(), new NLogLogger("BrowserWindowsCommunicator")));
             Kernel.Rebind<IIpcCommunicator>().ToConstant(new IpcCommunicator(new MainApplication(Kernel.Get<LocalStorage>(), Kernel.Get<IBrowserWindowsCommunicator>())));
             Kernel.Rebind<Updater>().ToConstant(new Updater());
+            Kernel.Rebind<ITaskBarApi>().ToConstant(new TaskBarApi());
         }
     }
 }

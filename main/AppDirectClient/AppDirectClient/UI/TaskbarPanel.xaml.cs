@@ -13,7 +13,7 @@ namespace AppDirect.WindowsClient.UI
     /// <summary>
     /// Interaction logic for AllButtons.xaml
     /// </summary>
-    public partial class TaskbarPanel
+    public partial class TaskbarPanel : ITaskBarControl
     {
         private const int MainIconLargeSize = 30;
         private const int MainIconSmallSize = 20;
@@ -30,12 +30,9 @@ namespace AppDirect.WindowsClient.UI
 
         public TaskbarPanelViewModel ViewModel { get; set; }
 
-        public event System.EventHandler CurrentDimensionChanged;
-
-        protected void OnCurrentDimensionChanged()
-        {
-            if (CurrentDimensionChanged != null) { CurrentDimensionChanged(this, EventArgs.Empty); }
-        }
+        private ITaskBarHost _taskBarHost;
+        private int _allowedHeight;
+        private int _allowedWidth;
 
         public TaskbarPanel(ILatch latch, ILogger logger, MainViewModel mainViewModel)
         {
@@ -48,39 +45,40 @@ namespace AppDirect.WindowsClient.UI
             DataContext = ViewModel;
         }
 
-        public void InitializeButtons(TaskbarPosition taskbarPosition, TaskbarIconsSize taskbarIconsSize)
+        public void SetTaskBarHost(ITaskBarHost host)
         {
-            CurrentIconSize = taskbarIconsSize;
+            _taskBarHost = host;
+        }
 
+        public void InitializeButtons()
+        {
             foreach (var applicationViewModel in ViewModel.PinnedApps.Where(a => a.PinnedToTaskbarNotifier))
             {
                 AddButton(applicationViewModel);
             }
-
-            SetMainButtonIconSize(taskbarIconsSize);
-            PositionChanged(taskbarPosition);
         }
 
         public void LayoutIcons(int allowedWidth, int allowedHeight)
         {
             TaskBarHelper helper = new TaskBarHelper();
-            if (!helper.IsValid())
-            {
-                throw new InteropException("Can not get TaskBar details");
-            }
+            
+            SetIconSize(helper.TaskBarIconsSize);
 
-            if (helper.TaskBarIsVertical)
+            double mrgn = Math.Max(MainButton.Margin.Left, MainButton.Margin.Top);
+
+            if (helper.TaskBarPosition.IsVertical())
             {
                 Width = allowedWidth;
                 ButtonContainer.Orientation = Orientation.Vertical;
+                MainButton.Margin = new Thickness(0, mrgn, 0, mrgn);
             }
             else
             {
                 Height = allowedHeight;
                 ButtonContainer.Orientation = Orientation.Horizontal;
+                MainButton.Margin = new Thickness(mrgn, 0, mrgn, 0);
             }
 
-            SetIconSize(helper.TaskBarIconSize);
             NotifyTaskbarOfChange();
         }
 
@@ -142,7 +140,10 @@ namespace AppDirect.WindowsClient.UI
 
         private void NotifyTaskbarOfChange()
         {
-            OnCurrentDimensionChanged();
+            if (_taskBarHost != null)
+            {
+                _taskBarHost.SetDesiredOffset(GetCurrentDimension());
+            }
         }
 
         public int GetCurrentDimension()
@@ -249,35 +250,6 @@ namespace AppDirect.WindowsClient.UI
                 })).Start();
         }
 
-        public void PositionChanged(TaskbarPosition newPosition)
-        {
-            bool isVertical = newPosition.IsVertical();
-
-            if (isVertical == (ButtonContainer.Orientation == Orientation.Vertical))
-            {
-                return;
-            }
-
-            if (isVertical && ButtonContainer.Orientation != Orientation.Vertical)
-            {
-                ButtonContainer.Orientation = Orientation.Vertical;
-            }
-            else
-            {
-                ButtonContainer.Orientation = Orientation.Horizontal;
-            }
-
-            var widthTemp = Width;
-            Width = Height;
-            Height = widthTemp;
-
-            var marginHorizontal = MainButton.Margin.Left;
-            var marginVertical = MainButton.Margin.Top;
-
-            MainButton.Margin = new Thickness(marginVertical, marginHorizontal, marginVertical, marginHorizontal);
-            NotifyTaskbarOfChange();
-        }
-
         private void SetIconSize(TaskbarIconsSize newIconsSize)
         {
             CurrentIconSize = newIconsSize;
@@ -310,7 +282,18 @@ namespace AppDirect.WindowsClient.UI
 
         private void MenuItemExitClick(object sender, RoutedEventArgs e)
         {
-            ShutdownHelper.Instance.Shutdown();
+            ServiceLocator.TaskBarApi.RemoveTaskbarWindow();
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        public void SetAllowedSize(int allowedWidth, int allowedHeight)
+        {
+            if (_allowedHeight != allowedHeight || _allowedWidth != allowedWidth)
+            {
+                _allowedWidth = allowedWidth;
+                _allowedHeight = allowedHeight;
+                LayoutIcons(allowedWidth, allowedHeight);
+            }
         }
     }
 }

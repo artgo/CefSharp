@@ -2,18 +2,19 @@
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
+    public class MessageParams
+    {
+        public IntPtr LParam { get; set; }
+        public IntPtr WParam { get; set; }
+    }
+
     public class CoordsPackager
     {
         private const int BitsToShift = 16;
         private const int BitMask = 0xFFFF;
 
-        public MessageParams PackParams(RectWin rect)
+        public MessageParams PackParams(RECT rect)
         {
-            if (rect == null)
-            {
-                throw new ArgumentNullException("rect");
-            }
-
             // C++ would unpack it like this:
             //const unsigned int p1 = (unsigned int)wParam;
             //const unsigned int p2 = (unsigned int)lParam;
@@ -30,11 +31,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             return result;
         }
 
-        public RectWin UnpackParams(IntPtr lParam, IntPtr wParam)
+        public RECT UnpackParams(IntPtr lParam, IntPtr wParam)
         {
             var p1 = (uint)wParam;
             var p2 = (uint)lParam;
-            var result = new RectWin
+            var result = new RECT
                 {
                     Left = (int) (p1 >> BitsToShift),
                     Top = (int) (p1 & BitMask),

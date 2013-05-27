@@ -12,7 +12,7 @@ using System.Windows.Interop;
 
 namespace AppDirect.WindowsClient.InteropAPI
 {
-    public class TaskBarIcon : IDisposable
+    public class TaskBarIcon : IDisposable, ITaskBarHost
     {
         private const string NativeDllPath = @"native.dll";
         private const string WindowName = @"AppDirectTaskBarControl";
@@ -24,32 +24,41 @@ namespace AppDirect.WindowsClient.InteropAPI
         private uint WM_APPDIRECT_MANAGED_REBAR_UPDATED = 0;
         private uint WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = 0;
 
-        private ControlWrapper _controlWrapper;
+        private Control _control;
+        private ITaskBarControl _taskBarControl;
+        private int _desiredOffset;
         private HwndSource _hwndSource;
 
-        public ControlWrapper Wrapper { get { return _controlWrapper; } }
+        public Control Wrapper { get { return _control; } }
 
-        public TaskBarIcon(ControlWrapper controlWrapper)
+        public TaskBarIcon(Control control)
         {
-            _controlWrapper = controlWrapper;
-            _controlWrapper.DesiredOffsetChanged += _controlWrapper_DesiredOffsetChanged;
+            _control = control;
+
+            TaskBarHelper helper = new TaskBarHelper();
+            _desiredOffset = (int)(helper.TaskBarPosition.IsVertical() ? _control.Height : _control.Width);
 
             WM_APPDIRECT_NATIVE_UPDATE_OFFSET = User32Dll.RegisterWindowMessage(MessageNameNativeUpdateOffset);
             WM_APPDIRECT_MANAGED_REBAR_UPDATED = User32Dll.RegisterWindowMessage(MessageNameManagedReBarUpdated);
             WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = User32Dll.RegisterWindowMessage(MessageNameManagedTaskBarUpdated);
         }
 
+        ~TaskBarIcon()
+        {
+            Dispose(false);
+        }
+
+        public void SetTaskBarControl(ITaskBarControl control)
+        {
+            _taskBarControl = control;
+        }
+
         public void Setup()
         {
             TaskBarHelper helper = new TaskBarHelper();
-            if (!helper.IsValid())
-            {
-                throw new InteropException("Failed to get TaskBar details");
-            }
 
-            int offset = 0;
-            Rectangle rectIcon = CalculateIconRect(helper.TaskBarPosition.IsVertical(), helper.ReBarRect, ref offset);
-            Rectangle rectReBar = CalculateRebarRect(helper.TaskBarPosition.IsVertical(), helper.ReBarRect, rectIcon);
+            Rectangle rectIcon = CalculateIconRectFromReBar(helper.TaskBarPosition.IsVertical(), helper.ReBarRect, _desiredOffset);
+            Rectangle rectReBar = CalculateRebarRectWithIcon(helper.TaskBarPosition.IsVertical(), helper.ReBarRect, rectIcon);
 
             var hwndSourceParams = new HwndSourceParameters(WindowName, rectIcon.Width, rectIcon.Height);
             hwndSourceParams.PositionX = rectIcon.X;
@@ -73,14 +82,14 @@ namespace AppDirect.WindowsClient.InteropAPI
 
             _hwndSource = new HwndSource(hwndSourceParams);
             _hwndSource.AddHook(TaskBarIconHookProc);
-            _hwndSource.RootVisual = _controlWrapper.Control;
+            _hwndSource.RootVisual = _control;
 
             NativeDll dll = new NativeDll(NativeDllPath);
             dll.SetupSubclass(_hwndSource.Handle);
 
-            UpdateReBarOffset(helper, offset);
-            UpdateReBarPosition(helper, rectReBar);
-            _controlWrapper.AllowedSize = rectIcon.Size;
+            UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
+            UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
+            _taskBarControl.SetAllowedSize(rectIcon.Width, rectIcon.Height);
         }
 
         public void TearDown()
@@ -91,10 +100,6 @@ namespace AppDirect.WindowsClient.InteropAPI
             if (_hwndSource != null)
             {
                 TaskBarHelper helper = new TaskBarHelper();
-                if (!helper.IsValid())
-                {
-                    throw new InteropException("Failed to get TaskBar details");
-                }
 
                 Rectangle rectIcon = helper.GetWindowRectangle(_hwndSource.Handle);
                 Rectangle rectReBar = helper.ReBarRect;
@@ -111,7 +116,7 @@ namespace AppDirect.WindowsClient.InteropAPI
                     rectReBar.X -= offset;
                     rectReBar.Width += offset;
                 }
-                UpdateReBarPosition(helper, rectReBar);
+                UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
 
                 _hwndSource.Dispose();
                 _hwndSource = null;
@@ -132,85 +137,73 @@ namespace AppDirect.WindowsClient.InteropAPI
                 rectIcon.Height,
                 flagsIcon);
 
-            _controlWrapper.AllowedSize = rectIcon.Size;
+            _taskBarControl.SetAllowedSize(rectIcon.Width, rectIcon.Height);
         }
 
-        private void UpdateReBarPosition(TaskBarHelper helper, Rectangle rectReBar)
+        private void UpdateReBarPosition(Rectangle taskBarRect, IntPtr reBarHwnd, Rectangle rectReBar)
         {
-            User32Dll.SetWindowPos(helper.ReBarHwnd,
+            User32Dll.SetWindowPos(reBarHwnd,
                 (IntPtr)WindowZOrderConstants.HWND_TOP,
-                rectReBar.X - helper.TaskBarRect.X,
-                rectReBar.Y - helper.TaskBarRect.Y, 
+                rectReBar.X - taskBarRect.X,
+                rectReBar.Y - taskBarRect.Y, 
                 rectReBar.Width, 
                 rectReBar.Height,
                 (uint)(SetWindowPosConstants.SWP_NOSENDCHANGING));
         }
 
-        private void UpdateReBarOffset(TaskBarHelper helper, int offset)
+        private void UpdateReBarOffset(IntPtr reBarHwnd, int offset)
         {
-            User32Dll.SendMessage(helper.ReBarHwnd, WM_APPDIRECT_NATIVE_UPDATE_OFFSET, new IntPtr(offset), IntPtr.Zero);
+            User32Dll.SendMessage(reBarHwnd, WM_APPDIRECT_NATIVE_UPDATE_OFFSET, new IntPtr(offset), IntPtr.Zero);
         }
 
         private void UpdateIconSize()
         {
             TaskBarHelper helper = new TaskBarHelper();
-            if (!helper.IsValid())
-            {
-                throw new InteropException("Failed to get TaskBar details");
-            }
 
             Rectangle rectIcon = helper.GetWindowRectangle(_hwndSource.Handle);
             Rectangle rectReBar = helper.ReBarRect;
             int oldOffset = 0;
-            int offset = _controlWrapper.DesiredOffset;
             if (helper.TaskBarPosition.IsVertical())
             {
                 oldOffset = rectIcon.Height;
-                rectIcon.Height = offset;
+                rectIcon.Height = _desiredOffset;
 
-                int delta = offset - oldOffset;
+                int delta = _desiredOffset - oldOffset;
                 rectReBar.Y += delta;
                 rectReBar.Height -= delta;
             }
             else
             {
                 oldOffset = rectIcon.Width;
-                rectIcon.Width = offset;
+                rectIcon.Width = _desiredOffset;
 
-                int delta = offset - oldOffset;
+                int delta = _desiredOffset - oldOffset;
                 rectReBar.X += delta;
                 rectReBar.Width -= delta;
             }
 
-            UpdateReBarOffset(helper, offset);
+            UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
             UpdateIconPosition(rectIcon);
-            UpdateReBarPosition(helper, rectReBar);
+            UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
         }
 
-        private void _controlWrapper_DesiredOffsetChanged(object sender, EventArgs e)
-        {
-            UpdateIconSize();
-        }
-
-        private Rectangle CalculateIconRect(bool isVertical, Rectangle rectReBar, ref int offset)
+        private Rectangle CalculateIconRectFromReBar(bool isVertical, Rectangle rectReBar, int offset)
         {
             var rect = rectReBar;
 
             if (isVertical )
             {
-                offset = _controlWrapper.DesiredOffset;
                 rect.Height = offset;
             }
             else
             {
-                offset = _controlWrapper.DesiredOffset;
                 rect.Width = offset;
             }
 
             return rect;
         }
 
-        private Rectangle CalculateRebarRect(bool isVertical, Rectangle rectReBar, Rectangle rectIcon)
+        private Rectangle CalculateRebarRectWithIcon(bool isVertical, Rectangle rectReBar, Rectangle rectIcon)
         {
             if (isVertical)
             {
@@ -233,31 +226,23 @@ namespace AppDirect.WindowsClient.InteropAPI
             if (message == WM_APPDIRECT_MANAGED_REBAR_UPDATED)
             {
                 TaskBarHelper helper = new TaskBarHelper();
-                if (!helper.IsValid())
-                {
-                    throw new InteropException("Failed to get TaskBar details");
-                }
 
                 // Switch to absolute coordinates
                 Rectangle rectReBar = helper.RectWinToRectangle(new CoordsPackager().UnpackParams(wParam, lParam));
                 rectReBar.X += helper.TaskBarRect.X;
                 rectReBar.Y += helper.TaskBarRect.Y;
 
-                int offset = 0;
-                Rectangle rectIcon = CalculateIconRect(helper.TaskBarPosition.IsVertical(), rectReBar, ref offset);
-                rectReBar = CalculateRebarRect(helper.TaskBarPosition.IsVertical(), rectReBar, rectIcon);
+                Rectangle rectIcon = CalculateIconRectFromReBar(helper.TaskBarPosition.IsVertical(), rectReBar, _desiredOffset);
+                rectReBar = CalculateRebarRectWithIcon(helper.TaskBarPosition.IsVertical(), rectReBar, rectIcon);
 
-                UpdateReBarOffset(helper, offset);
+                UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
                 UpdateIconPosition(rectIcon);
-                UpdateReBarPosition(helper, helper.ReBarRect);
+                UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
             }
             else if (message == WM_APPDIRECT_MANAGED_TASKBAR_UPDATED)
             {
                 TaskBarHelper helper = new TaskBarHelper();
-                if (!helper.IsValid())
-                {
-                    throw new InteropException("Failed to get TaskBar details");
-                }
+
                 Rectangle rectIcon = helper.GetWindowRectangle(_hwndSource.Handle);
                 rectIcon.X = helper.ReBarRect.X;
                 rectIcon.Y = helper.ReBarRect.Y;
@@ -277,7 +262,22 @@ namespace AppDirect.WindowsClient.InteropAPI
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
             TearDown();
+        }
+
+        public void SetDesiredOffset(int offset)
+        {
+            if (_desiredOffset != offset)
+            {
+                _desiredOffset = offset;
+                UpdateIconSize();
+            }
         }
     }
 }
