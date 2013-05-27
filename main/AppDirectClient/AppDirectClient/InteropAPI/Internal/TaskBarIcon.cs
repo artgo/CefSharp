@@ -123,8 +123,10 @@ namespace AppDirect.WindowsClient.InteropAPI
             }
         }
 
-        private void UpdateIconPosition(Rectangle rectIcon)
+        private void UpdateIconPosition(Rectangle rectIcon, Rectangle rectScreen)
         {
+            User32Dll.SetWindowRgn(_hwndSource.Handle, IntPtr.Zero, true);
+
             var flagsIcon = (uint)(0
                 | SetWindowPosConstants.SWP_SHOWWINDOW
                 | SetWindowPosConstants.SWP_NOOWNERZORDER
@@ -136,6 +138,17 @@ namespace AppDirect.WindowsClient.InteropAPI
                 rectIcon.Width, 
                 rectIcon.Height,
                 flagsIcon);
+            System.Drawing.Point topLeft = new System.Drawing.Point(rectScreen.Left, rectScreen.Top);
+            User32Dll.ScreenToClient(_hwndSource.Handle, ref topLeft);
+            rectScreen.Y = topLeft.Y;
+            rectScreen.X = topLeft.X;
+            IntPtr hRgn = Gdi32Dll.CreateRectRgn(rectScreen.Left, rectScreen.Top, rectScreen.Right, rectScreen.Bottom);
+            if (hRgn == IntPtr.Zero)
+            {
+                throw new Exception("Failed to create HRGN");
+            }
+            User32Dll.SetWindowRgn(_hwndSource.Handle, hRgn, true);
+            Gdi32Dll.DeleteObject(hRgn);
 
             _taskBarControl.SetAllowedSize(rectIcon.Width, rectIcon.Height);
         }
@@ -183,7 +196,7 @@ namespace AppDirect.WindowsClient.InteropAPI
             }
 
             UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
-            UpdateIconPosition(rectIcon);
+            UpdateIconPosition(rectIcon, helper.TaskbarScreen.Bounds);
             UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
         }
 
@@ -236,7 +249,7 @@ namespace AppDirect.WindowsClient.InteropAPI
                 rectReBar = CalculateRebarRectWithIcon(helper.TaskBarPosition.IsVertical(), rectReBar, rectIcon);
 
                 UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
-                UpdateIconPosition(rectIcon);
+                UpdateIconPosition(rectIcon, helper.TaskbarScreen.Bounds);
                 UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
             }
             else if (message == WM_APPDIRECT_MANAGED_TASKBAR_UPDATED)
@@ -254,7 +267,7 @@ namespace AppDirect.WindowsClient.InteropAPI
                 {
                     rectIcon.X -= rectIcon.Width;
                 }
-                UpdateIconPosition(rectIcon);
+                UpdateIconPosition(rectIcon, helper.TaskbarScreen.Bounds);
             }
 
             return IntPtr.Zero;

@@ -2414,6 +2414,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         [DllImport(User32DllName, SetLastError = true)]
         public static extern bool ClientToScreen(IntPtr hWnd, ref Point lpPoint);
 
+        [DllImport(User32DllName, SetLastError = true)]
+        public static extern bool ScreenToClient(IntPtr hWnd, ref Point lpPoint);
+
         [DllImport(User32DllName, SetLastError = true, CharSet = CharSet.Auto)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
