@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using AppDirect.WindowsClient.Common.Log;
+using Microsoft.Win32;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -50,6 +51,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 if (_taskBarHwnd == IntPtr.Zero || !User32Dll.IsWindow(_taskBarHwnd))
                 {
                     _taskBarHwnd = FindTaskBar();
+
                     if (_taskBarHwnd == IntPtr.Zero)
                     {
                         throw new Exception("TaskBar couldn't be found");
@@ -222,6 +224,24 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 clientRect.Y = pt.Y;
             }
             return clientRect;
+        }
+
+        public void WaitForRebar(ILogger logger)
+        {
+            var _reBarRect = Rectangle.Empty;
+            while (_reBarRect.IsEmpty || _reBarRect.Width < 5 || _reBarRect.Height < 5)
+            {
+                try
+                {
+                    FindReBar();
+                    _reBarRect = GetWindowRectangle(ReBarHwnd);
+                }
+                catch (Exception e)
+                {
+                    ServiceLocator.UiHelper.Sleep(200);
+                    logger.Info(String.Format("RebarRect was not set yet because exception was thrown: {0}", e));
+                }
+            }
         }
     }
 }

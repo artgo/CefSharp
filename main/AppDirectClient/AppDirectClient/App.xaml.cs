@@ -82,13 +82,17 @@ namespace AppDirect.WindowsClient
 
             helper.StartAsynchronously(() => InitializeMainWindow(mainViewModel, taskbarPanel));
 
-            _explorerWatcher = new ExplorerWatcher(_log, helper, () => Helper.PerformInUiThread(() =>
+            _explorerWatcher = new ExplorerWatcher(_log, helper, () =>
                 {
-                    var newTaskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
-                    newTaskbarPanel.ApplicationWindow = _mainWindow;
+                    Helper.PerformInUiThread(() =>
+                        {
+                            taskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
+                        });
+
+                    taskbarPanel.ApplicationWindow = _mainWindow;
                     _mainWindowReadyLatch.Wait();
-                    _mainWindow.RegisterTaskbarCallbacks(newTaskbarPanel);
-                }));
+                    _mainWindow.RegisterTaskbarCallbacks(taskbarPanel);
+                });
 
             helper.StartAsynchronously(_explorerWatcher.Start);
 
@@ -103,7 +107,6 @@ namespace AppDirect.WindowsClient
         {
             try
             {
-
                 var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
                 taskbarPanel.InitializeButtons();
                 ServiceLocator.TaskbarApi.InsertTaskbarWindow(taskbarPanel);
