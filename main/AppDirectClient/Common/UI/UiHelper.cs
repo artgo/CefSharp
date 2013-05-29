@@ -79,17 +79,14 @@ namespace AppDirect.WindowsClient.Common.UI
 
             if (Application.Current != null)
             {
-                PerformInUiThread(() =>
-                    {
-                        Application.Current.Shutdown();
-                    });
+                PerformInUiThread(() => Application.Current.Shutdown(0));
 
                 _log.Info("Application shutdown complete");
             }
 
             _log.Info("Shutdown complete");
 
-            System.Diagnostics.Process.GetCurrentProcess().Kill();
+            Environment.Exit(0);
         }
 
         public void IgnoreException(Action action)
