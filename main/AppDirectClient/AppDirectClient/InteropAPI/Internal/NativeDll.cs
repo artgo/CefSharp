@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
-    public class NativeDll : IDisposable
+    public class NativeDll : INativeDll, IDisposable
     {
         private IntPtr _dllHandle;
 
@@ -81,6 +81,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             if (_dllHandle != IntPtr.Zero)
             {
                 Kernel32Dll.FreeLibrary(_dllHandle);
+                _dllHandle = IntPtr.Zero;
             }
         }
     }

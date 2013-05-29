@@ -26,7 +26,7 @@ HWND FindTaskBar();
 HWND FindReBar(HWND hwndTaskBar);
 BOOL IsVertical(HWND hwndTaskBar = NULL);
 BOOL DoSetupSubclass();
-BOOL DoTearDownSubclass(BOOL bAsync = FALSE, BOOL bResetReBar = FALSE);
+BOOL DoTearDownSubclass(BOOL bAsync);
 BOOL ResetReBar(HWND hwndTaskBar, HWND hwndReBar, int offset);
 
 HWND FindTaskBar()
@@ -57,7 +57,7 @@ LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARA
 
 	if (!::IsWindow(hwndAdButton)) {
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
-		DoTearDownSubclass(TRUE, TRUE);
+		DoTearDownSubclass(TRUE);
 		return lResult;
 	} else if (uMsg == WM_APPDIRECT_NATIVE_TERMINATE) {
 		return DoTearDownSubclass(TRUE);
@@ -91,11 +91,11 @@ LRESULT CALLBACK SubclassRebarProc(const HWND hWnd, const UINT uMsg, const WPARA
 
 LRESULT CALLBACK SubclassTaskbarProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-	const HWND hwndAdButton = ((HWND)dwRefData);	
+	const HWND hwndAdButton = ((HWND)dwRefData);
 
 	if (!::IsWindow(hwndAdButton)) {
 		LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
-		DoTearDownSubclass(TRUE, TRUE);
+		DoTearDownSubclass(TRUE);
 		return lResult;
 	} else if (uMsg == WM_MOVE) {
 		::SendMessage(hwndAdButton, WM_APPDIRECT_MANAGED_TASKBAR_UPDATED, NULL, NULL);
@@ -153,7 +153,7 @@ BOOL DoSetupSubclass(HWND hwndAdButton)
 	return FALSE;
 }
 
-BOOL DoTearDownSubclass(BOOL bAsync, BOOL bResetReBar)
+BOOL DoTearDownSubclass(BOOL bAsync)
 {
 	if (!g_bIsLoaded) {
 		return TRUE;
@@ -166,7 +166,7 @@ BOOL DoTearDownSubclass(BOOL bAsync, BOOL bResetReBar)
 	HWND hwndReBar = FindReBar(hwndTaskBar); _ASSERT(hwndReBar);	
 	BOOL bReBarHook = ::RemoveWindowSubclass(hwndReBar, SubclassRebarProc, 0); _ASSERT(bReBarHook);
 
-	if (bResetReBar && g_ReBarOffset != 0) {
+	if (g_ReBarOffset != 0) {
 		RECT rect;
 		::GetWindowRect(hwndReBar, &rect);
 		POINT tl;
@@ -211,7 +211,7 @@ LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
 			return DoSetupSubclass(hwndAdButton);
 		case WM_APPDIRECT_TEARDOWN_SUBCLASS: 
 			::UnhookWindowsHookEx(hHook);
-			return DoTearDownSubclass();
+			return DoTearDownSubclass(FALSE);
 		case WM_APPDIRECT_IS_SUBCLASSED:
 			return g_bIsLoaded;
 		default:

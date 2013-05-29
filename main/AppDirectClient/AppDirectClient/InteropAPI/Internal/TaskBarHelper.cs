@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-namespace AppDirect.WindowsClient.InteropAPI
+namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
-    public class TaskBarHelper
+    public class TaskbarHelper : ITaskbarHelper
     {
         private const string SmallIconsPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
         private const string SmallIconsFiledName = @"TaskbarSmallIcons";
@@ -19,7 +19,7 @@ namespace AppDirect.WindowsClient.InteropAPI
         private const string DpiSettingName = @"AppliedDPI";
         private const double StandardDpi = 96;
 
-        public TaskBarHelper()
+        public TaskbarHelper()
         {
             var osVersion = Environment.OSVersion.Version;
             var ver6OrUp = osVersion.Major >= 6;

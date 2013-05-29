@@ -6,15 +6,15 @@ using Microsoft.Win32;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
 
-namespace AppDirect.WindowsClient.InteropAPI
+namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
-    public class TaskBarApi : ITaskBarApi
+    public class TaskBarApi : ITaskbarApi
     {
         public TaskBarApi()
         {
         }
 
-        private TaskBarIcon _taskBarIcon;
+        private TaskbarHost _taskBarIcon;
 
         /// <summary>
         /// Place WPF window on Taskbar
@@ -28,7 +28,7 @@ namespace AppDirect.WindowsClient.InteropAPI
                 RemoveTaskbarWindow();
             }
 
-            _taskBarIcon = new TaskBarIcon(panel);
+            _taskBarIcon = new TaskbarHost(panel);
 
             _taskBarIcon.SetTaskBarControl(panel);
             panel.SetTaskBarHost(_taskBarIcon);

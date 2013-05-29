@@ -13,7 +13,7 @@ namespace AppDirect.WindowsClient.UI
     /// <summary>
     /// Interaction logic for AllButtons.xaml
     /// </summary>
-    public partial class TaskbarPanel : ITaskBarControl
+    public partial class TaskbarPanel : ITaskbarControl
     {
         private const int MainIconLargeSize = 30;
         private const int MainIconSmallSize = 20;
@@ -30,7 +30,7 @@ namespace AppDirect.WindowsClient.UI
 
         public TaskbarPanelViewModel ViewModel { get; set; }
 
-        private ITaskBarHost _taskBarHost;
+        private ITaskbarHost _taskBarHost;
         private int _allowedHeight;
         private int _allowedWidth;
 
@@ -45,7 +45,7 @@ namespace AppDirect.WindowsClient.UI
             DataContext = ViewModel;
         }
 
-        public void SetTaskBarHost(ITaskBarHost host)
+        public void SetTaskBarHost(ITaskbarHost host)
         {
             _taskBarHost = host;
         }
@@ -60,7 +60,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void LayoutIcons(int allowedWidth, int allowedHeight)
         {
-            TaskBarHelper helper = new TaskBarHelper();
+            var helper = ServiceLocator.TaskbarHelper;
             
             SetIconSize(helper.TaskBarIconsSize);
 
@@ -282,7 +282,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void MenuItemExitClick(object sender, RoutedEventArgs e)
         {
-            ServiceLocator.TaskBarApi.RemoveTaskbarWindow();
+            ServiceLocator.TaskbarApi.RemoveTaskbarWindow();
             System.Windows.Application.Current.Shutdown();
         }
 

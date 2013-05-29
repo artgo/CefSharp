@@ -2,14 +2,14 @@
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
-    public class MessageParams
-    {
-        public IntPtr LParam { get; set; }
-        public IntPtr WParam { get; set; }
-    }
-
     public class CoordsPackager
     {
+        public class MessageParams
+        {
+            public IntPtr LParam { get; set; }
+            public IntPtr WParam { get; set; }
+        }
+
         private const int BitsToShift = 16;
         private const int BitMask = 0xFFFF;
 
