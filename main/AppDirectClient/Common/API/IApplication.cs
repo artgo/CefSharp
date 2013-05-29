@@ -31,6 +31,9 @@ namespace AppDirect.WindowsClient.Common.API
         public abstract bool IsLocalApp { get; set; }
 
         [DataMember]
+        public abstract bool HideContextMenu { get; set; }
+
+        [DataMember]
         public abstract string UrlString { get; set; }
 
         [DataMember]

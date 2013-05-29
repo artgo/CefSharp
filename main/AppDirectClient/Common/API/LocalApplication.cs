@@ -12,5 +12,6 @@ namespace AppDirect.WindowsClient.Common.API
         public override int AlertCount { get { return 0; } set { } }
         public override bool IsLocalApp { get { return true; } set { } }
         public override string Price { get { return _price; } set { } }
+        public override bool HideContextMenu { get; set; }
     }
 }
