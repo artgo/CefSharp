@@ -103,9 +103,11 @@ namespace AppDirect.WindowsClient
         {
             try
             {
+                var helper = ServiceLocator.TaskbarHelper;
+
                 var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
-                taskbarPanel.InitializeButtons(TaskbarApi.Instance.TaskbarPosition, TaskbarApi.Instance.TaskbarIconsSize);
-                TaskbarApi.Instance.InsertTaskbarWindow(taskbarPanel, taskbarPanel, taskbarPanel.GetCurrentDimension());
+                taskbarPanel.InitializeButtons();
+                ServiceLocator.TaskbarApi.InsertTaskbarWindow(taskbarPanel);
 
                 return taskbarPanel;
             }

@@ -5,6 +5,9 @@ using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.Updates;
 using Ninject;
+using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
+using Ninject.Parameters;
 
 namespace AppDirect.WindowsClient
 {
@@ -51,6 +54,21 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<IAnalytics>(); }
         }
 
+        public static ITaskbarApi TaskbarApi
+        {
+            get { return Kernel.Get<ITaskbarApi>(); }
+        }
+
+        public static ITaskbarHelper TaskbarHelper
+        {
+            get { return Kernel.Get<ITaskbarHelper>(); }
+        }
+
+        public static INativeDll GetNativeDll(string path)
+        {
+            return Kernel.Get<INativeDll>(new ConstructorArgument("path", path));
+        }
+
         /// <summary>
         /// Initializes Apis, Loads Local Storage, etc
         /// </summary>
@@ -63,6 +81,9 @@ namespace AppDirect.WindowsClient
             Kernel.Rebind<IBrowserWindowsCommunicator>().ToConstant(new BrowserWindowsCommunicator(new BrowsersManagerApiServiceBuilder(), Kernel.Get<IUiHelper>(), new NLogLogger("BrowserWindowsCommunicator")));
             Kernel.Rebind<IIpcCommunicator>().ToConstant(new IpcCommunicator(new MainApplication(Kernel.Get<LocalStorage>(), Kernel.Get<IBrowserWindowsCommunicator>())));
             Kernel.Rebind<Updater>().ToConstant(new Updater());
+            Kernel.Rebind<ITaskbarApi>().ToConstant(new TaskBarApi());
+            Kernel.Rebind<ITaskbarHelper>().To<TaskbarHelper>();
+            Kernel.Rebind<INativeDll>().To<NativeDll>();
         }
     }
 }

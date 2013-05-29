@@ -183,12 +183,74 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct RECT
+    public class RECT
     {
-        public int left;
-        public int top;
-        public int right;
-        public int bottom;
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+        
+        public int Width
+        {
+            get
+            {
+                return Right - Left;
+            }
+            set
+            {
+                Right = Left + value;
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                return Bottom - Top;
+            }
+            set
+            {
+                Bottom = Top + value;
+            }
+        }
+
+        public RECT()
+        {
+            Left = 0;
+            Top = 0;
+            Right = 0;
+            Bottom = 0;
+        }
+        public RECT(RECT rect)
+        {
+            Left = rect.Left;
+            Top = rect.Top;
+            Right = rect.Right;
+            Bottom = rect.Bottom;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || (GetType() != obj.GetType()))
+            {
+                return false;
+            }
+
+            var r = (RECT)obj;
+
+            return (this.Left == r.Left) && (this.Right == r.Right) && (this.Top == r.Top) && (this.Bottom == r.Bottom);
+        }
+
+        public override int GetHashCode()
+        {
+            const int hbase = 13;
+            return Left * hbase * hbase * hbase + Top * hbase * hbase + Right * hbase + Bottom;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{{ Top={0}, Left={1}, Height={2}, Width={3} }}", Top, Left, Height, Width);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -2262,7 +2324,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern uint SendMessage(IntPtr hWnd, int Msg, uint wParam, uint lParam);
 
         [DllImport(User32DllName, CharSet = CharSet.Auto)]
-        public static extern uint SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        public static extern uint SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport(User32DllName, CharSet = CharSet.Auto)]
         public static extern uint SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
@@ -2337,7 +2399,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
         [DllImport(User32DllName)]
-        public static extern bool GetWindowRect(IntPtr hWnd, [Out] RectWin r);
+        public static extern bool GetWindowRect(IntPtr hWnd, [Out] RECT r);
 
         [DllImport(User32DllName)]
         public static extern uint RegisterWindowMessage(string name);
@@ -2351,6 +2413,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         [DllImport(User32DllName, SetLastError = true)]
         public static extern bool ClientToScreen(IntPtr hWnd, ref Point lpPoint);
+
+        [DllImport(User32DllName, SetLastError = true)]
+        public static extern bool ScreenToClient(IntPtr hWnd, ref Point lpPoint);
 
         [DllImport(User32DllName, SetLastError = true, CharSet = CharSet.Auto)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
@@ -2440,6 +2505,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         [DllImport(Kernel32DllName, SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr LoadLibrary(string lpFileName);
+
+        [DllImport(Kernel32DllName, SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool FreeLibrary(IntPtr handle);
 
         [DllImport(Kernel32DllName, SetLastError = true, ExactSpelling = true)]
         public static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress,

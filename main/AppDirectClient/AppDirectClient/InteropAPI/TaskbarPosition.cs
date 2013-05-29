@@ -11,7 +11,7 @@ namespace AppDirect.WindowsClient.InteropAPI
     }
 
     public static class TaskbarPositionExtensions
-    {        
+    {
         public static bool IsVertical(this TaskbarPosition position)
         {
             return (position == TaskbarPosition.Left) || (position == TaskbarPosition.Right);

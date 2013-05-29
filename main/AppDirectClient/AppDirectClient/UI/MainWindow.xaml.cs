@@ -69,28 +69,30 @@ namespace AppDirect.WindowsClient.UI
 
         public void SetPosition()
         {
-            var screen = TaskbarApi.Instance.TaskbarScreen;
-            var scalingFactor = 1.0/TaskbarApi.Instance.DpiScalingFactor;
-            switch (TaskbarApi.Instance.TaskbarPosition)
+            var helper = ServiceLocator.TaskbarHelper;
+
+            var screen = helper.TaskbarScreen;
+            var scalingFactor = 1.0 / helper.DpiScalingFactor;
+            switch (helper.TaskBarPosition)
             {
                 case TaskbarPosition.Bottom:
                     Left = screen.WorkingArea.Left * scalingFactor;
-                    Top = ((screen.Bounds.Bottom - TaskbarApi.Instance.TaskbarHeight ) * scalingFactor) - Height;
+                    Top = ((screen.Bounds.Bottom - helper.TaskBarRect.Height) * scalingFactor) - Height;
                     break;
 
                 case TaskbarPosition.Left:
-                    Left = (screen.Bounds.Left + TaskbarApi.Instance.TaskbarHeight) * scalingFactor;
+                    Left = (screen.Bounds.Left + helper.TaskBarRect.Width) * scalingFactor;
                     Top = screen.WorkingArea.Top * scalingFactor;
                     break;
 
                 case TaskbarPosition.Right:
-                    Left = ((screen.Bounds.Right - TaskbarApi.Instance.TaskbarHeight) * scalingFactor) - Width;
+                    Left = ((screen.Bounds.Right - helper.TaskBarRect.Width) * scalingFactor) - Width;
                     Top = screen.WorkingArea.Top * scalingFactor;
                     break;
 
                 case TaskbarPosition.Top:
                     Left = screen.WorkingArea.Left * scalingFactor;
-                    Top = (screen.Bounds.Top + TaskbarApi.Instance.TaskbarHeight) * scalingFactor;
+                    Top = (screen.Bounds.Top + helper.TaskBarRect.Height) * scalingFactor;
                     break;
             }
         }

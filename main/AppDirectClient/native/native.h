@@ -12,8 +12,9 @@
 #define NATIVE_API __declspec(dllimport)
 #endif
 
-void SetModuleHandle(HMODULE hModule);
+extern HMODULE g_hModule;
 
 extern "C" NATIVE_API BOOL SetupSubclass(HWND adButtonHwnd);
 extern "C" NATIVE_API BOOL TearDownSubclass();
+extern "C" NATIVE_API BOOL IsSubclassed();
 

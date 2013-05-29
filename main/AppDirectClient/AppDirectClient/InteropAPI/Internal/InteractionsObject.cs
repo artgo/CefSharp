@@ -38,6 +38,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private int _taskbarMargins = 0;
 
         private const int DefaultStartButtonHeight = 40;
+        private const string NativeDllFileName = "native.dll";
         // NB! MAKE SURE THAT THESE VALUES STAY IN SYNC WITH THE APPLICATION AND THE INSTALLER!!!
         private const string UpdatePositionMessageName = @"AppDirectButtonPositionUpdateMessage";
         private const string CloseMessageName = @"AppDirectForceApplicationCloseMessage";
@@ -198,7 +199,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 }
             }
 
-            NativeDll.SetupSubclass(_hwndSource.Handle);
+            var dll = new NativeDll(NativeDllFileName);
+            dll.SetupSubclass(_hwndSource.Handle);
 
             _taskbarPosition = GetTaskbarEdge();
 
@@ -464,8 +466,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             //   message from hook that unhooking is complete. So we do it on that unhooking complete message.
             _shutdownStarted = true;
 
-            // is called with assumption that it is called from the GUI message pump thread; otherwise race conditions
-            NativeDll.TearDownSubclass(); // detach - can cause reposition by Rebar itself
+            var dll = new NativeDll(NativeDllFileName);
+            dll.TearDownSubclass();
 
             var newRebarCoords = CalculateRebarCoords(false);
 
