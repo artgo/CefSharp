@@ -63,22 +63,18 @@ namespace AppDirect.WindowsClient.UI
 
         public void SetIconSize(TaskbarIconsSize newIconsSize)
         {
-            Helper.PerformInUiThread(() =>
-                {
-                    if (newIconsSize == TaskbarIconsSize.Large)
-                    {
-                        AppButton.Width = LargeIconSize;
-                        AppButton.Height = LargeIconSize;
-                    }
-                    else
-                    {
-                        AppButton.Width = SmallIconSize;
-                        AppButton.Height = SmallIconSize;
-                    }
+            int newSize = newIconsSize == TaskbarIconsSize.Large ? LargeIconSize : SmallIconSize;
+            if (AppButton.Width != newSize)
+            {
+                AppButton.Width = newSize;
+                Width = AppButton.Width + MarginSize;
+            }
 
-                    Width = AppButton.Width + MarginSize;
-                    Height = AppButton.Height + MarginSize;
-                });
+            if (AppButton.Height != newSize)
+            {
+                AppButton.Height = newSize;
+                Height = AppButton.Height + MarginSize;
+            }
         }
     }
 }

@@ -252,32 +252,37 @@ namespace AppDirect.WindowsClient.UI
 
         private void SetIconSize(TaskbarIconsSize newIconsSize)
         {
-            CurrentIconSize = newIconsSize;
+            if (CurrentIconSize != newIconsSize)
+            {
+                CurrentIconSize = newIconsSize;
 
-            Helper.PerformInUiThread(() =>
+                foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
                 {
-                    foreach (var taskbarButton in ButtonContainer.Children.OfType<TaskbarButton>())
-                    {
-                        taskbarButton.SetIconSize(newIconsSize);
-                    }
+                    taskbarButton.SetIconSize(newIconsSize);
+                }
 
-                    SetMainButtonIconSize(newIconsSize);
+                SetMainButtonIconSize(newIconsSize);
 
-                    NotifyTaskbarOfChange();
-                });
+                NotifyTaskbarOfChange();
+            }
+
         }
 
         private void SetMainButtonIconSize(TaskbarIconsSize newIconsSize)
         {
-            Helper.PerformInUiThread(() =>
-                {
-                    MainButton.Height = newIconsSize == TaskbarIconsSize.Small
-                                            ? MainIconSmallSize
-                                            : MainIconLargeSize;
-                    MainButton.Width = newIconsSize == TaskbarIconsSize.Small
-                                           ? MainIconSmallSize
-                                           : MainIconLargeSize;
-                });
+            int newSize = (newIconsSize == TaskbarIconsSize.Small)
+                                    ? MainIconSmallSize
+                                    : MainIconLargeSize;
+
+            if (MainButton.Height != newSize)
+            {
+                MainButton.Height = newSize;
+            }
+
+            if (MainButton.Width != newSize)
+            {
+                MainButton.Width = newSize;
+            }
         }
 
         private void MenuItemExitClick(object sender, RoutedEventArgs e)
