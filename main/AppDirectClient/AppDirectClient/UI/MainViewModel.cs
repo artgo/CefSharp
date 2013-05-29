@@ -314,10 +314,12 @@ namespace AppDirect.WindowsClient.UI
                 SuggestedApplications =
                     new ObservableCollection<ApplicationViewModel>();
 
-                foreach (var installedApps in ServiceLocator.LocalStorage.AllInstalledApplications)
+                foreach (var installedApp in ServiceLocator.LocalStorage.AllInstalledApplications)
                 {
-                    MyApplications.Add(new ApplicationViewModel(installedApps));
+                    MyApplications.Add(new ApplicationViewModel(installedApp));
                 }
+
+                MyApplications.First(a => a.Application == LocalApplications.AppStoreApp).DisplayContextMenu = Visibility.Hidden;
 
                 foreach (var lastSuggestedApp in ServiceLocator.LocalStorage.LastSuggestedApps)
                 {
@@ -548,7 +550,7 @@ namespace AppDirect.WindowsClient.UI
                     ServiceLocator.LocalStorage.SaveAppSettings();
                 }
             }
-            
+
             Helper.PerformInUiThread(() => SuggestedApplications.Add(applicationViewModel));
         }
 

@@ -11,7 +11,7 @@
         AllowsTransparency="True"
         ShowInTaskbar="False">
     <Window.Resources>
-        <ContextMenu x:Key="UninstallContextMenu" Style="{StaticResource ContextMenuStyle}">
+        <ContextMenu x:Key="UninstallContextMenu" Visibility="{Binding DisplayContextMenu}" Style="{StaticResource ContextMenuStyle}">
             <MenuItem Header="Pin to task bar" Style="{StaticResource MenuItem}" IsChecked="{Binding PinnedToTaskbarNotifier}"
                       IsCheckable="True" Click="PinToTaskBarClick" DataContext="{Binding}" />
             <MenuItem Header="Uninstall" Style="{StaticResource MenuItem}" Click="UninstallAppClick"
@@ -574,7 +574,7 @@
                                    Width="42" Height="42" Source="{Binding Application.LocalImagePath}" />
                                 <Image VerticalAlignment="Top" HorizontalAlignment="Left"
                                    Width="42" Height="42" Source="Images/RoundedCorners.png" />
-                                <ContentControl Content="{Binding Application.Name}" ContentTemplateSelector="{StaticResource TemplateSelector }"></ContentControl>
+                                <ContentControl Content="{Binding Application.Name}" ContentTemplateSelector="{StaticResource TemplateSelector}"></ContentControl>
                                 <ContentControl Content="{Binding}" Style="{StaticResource ContentCtrl}" ></ContentControl>
                                 <ContentControl Content="{Binding}" Style="{StaticResource PendingCtrl}" ></ContentControl>
                             </Grid>

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AppDirect.WindowsClient.Common.API;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using AppDirect.WindowsClient.Common.API;
 using Application = AppDirect.WindowsClient.Common.API.Application;
 
 namespace AppDirect.WindowsClient.UI
@@ -14,6 +10,7 @@ namespace AppDirect.WindowsClient.UI
         public ApplicationViewModel(Application application)
         {
             Application = application;
+            DisplayContextMenu = Visibility.Visible;
         }
 
         public Application Application { get; set; }
@@ -38,7 +35,10 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        public Visibility DisplayContextMenu { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
         private Visibility _inProgressVisibility = Visibility.Collapsed;
 
         protected void NotifyPropertyChanged(string propertyName)
