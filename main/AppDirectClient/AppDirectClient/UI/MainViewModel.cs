@@ -319,8 +319,6 @@ namespace AppDirect.WindowsClient.UI
                     MyApplications.Add(new ApplicationViewModel(installedApp));
                 }
 
-                MyApplications.First(a => a.Application == LocalApplications.AppStoreApp).DisplayContextMenu = Visibility.Hidden;
-
                 foreach (var lastSuggestedApp in ServiceLocator.LocalStorage.LastSuggestedApps)
                 {
                     SuggestedApplications.Add(new ApplicationViewModel(lastSuggestedApp));

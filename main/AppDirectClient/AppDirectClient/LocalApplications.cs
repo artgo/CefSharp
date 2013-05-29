@@ -16,6 +16,7 @@ namespace AppDirect.WindowsClient
             LocalImagePath = "Icons/appStore-Icon.png",
             ImagePath = "Icons/appStore-Icon.png",
             Name = "Browse Apps",
+            HideContextMenu = true,
             UrlString = Helper.BaseAppStoreUrl + Properties.Resources.AppStorePath,
             BrowserWidth = 1150,
             BrowserHeight = 830

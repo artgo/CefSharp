@@ -10,7 +10,7 @@ namespace AppDirect.WindowsClient.UI
         public ApplicationViewModel(Application application)
         {
             Application = application;
-            DisplayContextMenu = Visibility.Visible;
+            DisplayContextMenu = application.HideContextMenu ? Visibility.Hidden : Visibility.Visible;
         }
 
         public Application Application { get; set; }
