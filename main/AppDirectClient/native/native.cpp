@@ -13,9 +13,9 @@ UINT WM_APPDIRECT_NATIVE_TERMINATE = 0;
 UINT WM_APPDIRECT_MANAGED_REBAR_UPDATED = 0;
 UINT WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = 0;
 
-#define WM_APPDIRECT_SETUP_SUBCLASS WM_USER + 1
-#define WM_APPDIRECT_TEARDOWN_SUBCLASS WM_USER + 2
-#define WM_APPDIRECT_IS_SUBCLASSED WM_USER + 3
+#define APPDIRECT_MESSAGE_NAME_SETUP_SUBCLASS L"AppDirectInternalSetupSubclass"
+#define APPDIRECT_MESSAGE_NAME_TEARDOWN_SUBCLASS L"AppDirectInternalTeardownSubclass"
+#define APPDIRECT_MESSAGE_NAME_IS_SUBCLASSED L"AppDirectInternalIsSubclassed"
 
 
 BOOL g_bIsLoaded = FALSE;
@@ -205,17 +205,15 @@ LRESULT CALLBACK HookProc(int code, WPARAM wParam, LPARAM lParam)
 		HHOOK hHook = (HHOOK)pCW->wParam;
 		HWND hwndAdButton = (HWND)pCW->lParam;
 
-		switch (pCW->message) {
-		case WM_APPDIRECT_SETUP_SUBCLASS:
+		if (pCW->message == ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_SETUP_SUBCLASS)) {
 			::UnhookWindowsHookEx(hHook);
 			return DoSetupSubclass(hwndAdButton);
-		case WM_APPDIRECT_TEARDOWN_SUBCLASS: 
+		} else if (pCW->message == ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_TEARDOWN_SUBCLASS)) {
 			::UnhookWindowsHookEx(hHook);
 			return DoTearDownSubclass(FALSE);
-		case WM_APPDIRECT_IS_SUBCLASSED:
+		} else if (pCW->message == ::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_IS_SUBCLASSED)) {
+			::UnhookWindowsHookEx(hHook);
 			return g_bIsLoaded;
-		default:
-			break;
 		}
 	}
 
@@ -242,15 +240,15 @@ BOOL SendMessageWithHook(UINT message, HWND hwndArg)
 
 BOOL SetupSubclass(HWND hwndAdButton)
 {
-	return SendMessageWithHook(WM_APPDIRECT_SETUP_SUBCLASS, hwndAdButton);
+	return SendMessageWithHook(::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_SETUP_SUBCLASS), hwndAdButton);
 }
 
 BOOL TearDownSubclass()
 {
-	return SendMessageWithHook(WM_APPDIRECT_TEARDOWN_SUBCLASS, NULL);
+	return SendMessageWithHook(::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_TEARDOWN_SUBCLASS), NULL);
 }
 
 BOOL IsSubclassed()
 {
-	return SendMessageWithHook(WM_APPDIRECT_IS_SUBCLASSED, NULL);
+	return SendMessageWithHook(::RegisterWindowMessage(APPDIRECT_MESSAGE_NAME_IS_SUBCLASSED), NULL);
 }
