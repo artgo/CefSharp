@@ -88,7 +88,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             dll.SetupSubclass(_hwndSource.Handle);
 
             UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
-            UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
+            UpdateReBarPosition(helper.ReBarHwnd, helper.ScreenToClient(helper.TaskBarHwnd, rectReBar));
             _taskBarControl.SetAllowedSize(rectIcon.Width, rectIcon.Height);
         }
 
@@ -106,8 +106,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         private void UpdateIconPosition(Rectangle rectIcon, Rectangle rectScreen)
         {
-            User32Dll.SetWindowRgn(_hwndSource.Handle, IntPtr.Zero, true);
-
             var flagsIcon = (uint)(0
                 | SetWindowPosConstants.SWP_SHOWWINDOW
                 | SetWindowPosConstants.SWP_NOOWNERZORDER
@@ -119,27 +117,16 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 rectIcon.Width, 
                 rectIcon.Height,
                 flagsIcon);
-            System.Drawing.Point topLeft = new System.Drawing.Point(rectScreen.Left, rectScreen.Top);
-            User32Dll.ScreenToClient(_hwndSource.Handle, ref topLeft);
-            rectScreen.Y = topLeft.Y;
-            rectScreen.X = topLeft.X;
-            IntPtr hRgn = Gdi32Dll.CreateRectRgn(rectScreen.Left, rectScreen.Top, rectScreen.Right, rectScreen.Bottom);
-            if (hRgn == IntPtr.Zero)
-            {
-                throw new Exception("Failed to create HRGN");
-            }
-            User32Dll.SetWindowRgn(_hwndSource.Handle, hRgn, true);
-            Gdi32Dll.DeleteObject(hRgn);
 
             _taskBarControl.SetAllowedSize(rectIcon.Width, rectIcon.Height);
         }
 
-        private void UpdateReBarPosition(Rectangle taskBarRect, IntPtr reBarHwnd, Rectangle rectReBar)
+        private void UpdateReBarPosition(IntPtr reBarHwnd, Rectangle rectReBar)
         {
             User32Dll.SetWindowPos(reBarHwnd,
                 (IntPtr)WindowZOrderConstants.HWND_TOP,
-                rectReBar.X - taskBarRect.X,
-                rectReBar.Y - taskBarRect.Y, 
+                rectReBar.X,
+                rectReBar.Y, 
                 rectReBar.Width, 
                 rectReBar.Height,
                 (uint)(SetWindowPosConstants.SWP_NOSENDCHANGING));
@@ -178,7 +165,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
             UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
             UpdateIconPosition(rectIcon, helper.TaskbarScreen.Bounds);
-            UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
+            UpdateReBarPosition(helper.ReBarHwnd, helper.ScreenToClient(helper.TaskBarHwnd, rectReBar));
         }
 
         private Rectangle CalculateIconRectFromReBar(bool isVertical, Rectangle rectReBar, int offset)
@@ -223,15 +210,14 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
                 // Switch to absolute coordinates
                 Rectangle rectReBar = helper.RectWinToRectangle(new CoordsPackager().UnpackParams(wParam, lParam));
-                rectReBar.X += helper.TaskBarRect.X;
-                rectReBar.Y += helper.TaskBarRect.Y;
+                rectReBar = helper.ClientToScreen(helper.TaskBarHwnd, rectReBar);
 
                 Rectangle rectIcon = CalculateIconRectFromReBar(helper.TaskBarPosition.IsVertical(), rectReBar, _desiredOffset);
                 rectReBar = CalculateRebarRectWithIcon(helper.TaskBarPosition.IsVertical(), rectReBar, rectIcon);
 
                 UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
                 UpdateIconPosition(rectIcon, helper.TaskbarScreen.Bounds);
-                UpdateReBarPosition(helper.TaskBarRect, helper.ReBarHwnd, rectReBar);
+                UpdateReBarPosition(helper.ReBarHwnd, helper.ScreenToClient(helper.TaskBarHwnd, rectReBar));
             }
             else if (message == WM_APPDIRECT_MANAGED_TASKBAR_UPDATED)
             {
@@ -240,6 +226,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 Rectangle rectIcon = helper.GetWindowRectangle(_hwndSource.Handle);
                 rectIcon.X = helper.ReBarRect.X;
                 rectIcon.Y = helper.ReBarRect.Y;
+
                 if (helper.TaskBarPosition.IsVertical())
                 {
                     rectIcon.Y -= rectIcon.Height;
