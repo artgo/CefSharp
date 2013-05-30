@@ -25,5 +25,7 @@ namespace AppDirect.WindowsClient.InteropAPI
 
         Rectangle GetWindowRectangle(IntPtr hwnd);
         Rectangle RectWinToRectangle(RECT rectWin);
+        Rectangle ScreenToClient(IntPtr hWnd, Rectangle screenRect);
+        Rectangle ClientToScreen(IntPtr hWnd, Rectangle clientRect);
     }
 }

@@ -198,5 +198,28 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         {
             return User32Dll.FindWindowEx(hwndTaskBar, IntPtr.Zero, "ReBarWindow32", null);
         }
+
+
+        public Rectangle ScreenToClient(IntPtr hWnd, Rectangle screenRect)
+        {
+            Point pt = new Point(screenRect.X, screenRect.Y);
+            if (User32Dll.ScreenToClient(hWnd, ref pt))
+            {
+                screenRect.X = pt.X;
+                screenRect.Y = pt.Y;
+            }
+            return screenRect;
+        }
+
+        public Rectangle ClientToScreen(IntPtr hWnd, Rectangle clientRect)
+        {
+            Point pt = new Point(clientRect.X, clientRect.Y);
+            if (User32Dll.ClientToScreen(hWnd, ref pt))
+            {
+                clientRect.X = pt.X;
+                clientRect.Y = pt.Y;
+            }
+            return clientRect;
+        }
     }
 }
