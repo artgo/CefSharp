@@ -30,10 +30,9 @@ namespace AppDirect.WindowsClient.API
             browserWindowProcess.Start();
         }
 
-        public override void Stop()
+        public void StopWatcher()
         {
             _watcher.Stop();
-            base.Stop();
         }
     }
 }
