@@ -8,7 +8,6 @@ namespace AppDirect.WindowsClient.API
     public class IpcCommunicator : AbstractServiceRunner<MainApplication>, IIpcCommunicator
     {
         private static readonly string BrowserProjectName = Helper.BrowserProject + Helper.ExeExt;
-        private volatile ProcessWatcher _watcher;
 
         public IpcCommunicator(MainApplication service)
             : base(service)
@@ -20,19 +19,13 @@ namespace AppDirect.WindowsClient.API
             base.Start();
             StartBrowserProcess();
 
-            _watcher = new ProcessWatcher(Helper.BrowserProject, new AbstractProcess(Helper.BrowserProject), new NLogLogger("Browser Process Watcher"));
-            _watcher.Start();
+            ServiceLocator.BrowserWatcher.Start();
         }
 
         protected virtual void StartBrowserProcess()
         {
             var browserWindowProcess = new Process { StartInfo = { FileName = BrowserProjectName } };
             browserWindowProcess.Start();
-        }
-
-        public void StopWatcher()
-        {
-            _watcher.Stop();
         }
     }
 }

@@ -4,6 +4,5 @@ namespace AppDirect.WindowsClient.API
 {
     public interface IIpcCommunicator : IAbstractServiceRunner<MainApplication>
     {
-        void StopWatcher();
     }
 }

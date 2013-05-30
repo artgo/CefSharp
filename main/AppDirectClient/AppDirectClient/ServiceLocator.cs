@@ -1,5 +1,6 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Analytics;
+using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Storage;
@@ -44,6 +45,11 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<Updater>(); }
         }
 
+        public static ProcessWatcher BrowserWatcher
+        {
+            get { return Kernel.Get<ProcessWatcher>(); }
+        }
+
         public static IUiHelper UiHelper
         {
             get { return Kernel.Get<IUiHelper>(); }
@@ -84,6 +90,7 @@ namespace AppDirect.WindowsClient
             Kernel.Rebind<ITaskbarApi>().ToConstant(new TaskBarApi());
             Kernel.Rebind<ITaskbarHelper>().To<TaskbarHelper>();
             Kernel.Rebind<INativeDll>().To<NativeDll>();
+            Kernel.Rebind<ProcessWatcher>().ToConstant(new ProcessWatcher("BrowserManager",  new AbstractProcess("BrowserManager"),  new NLogLogger("Browser Process Watcher")));
         }
     }
 }
