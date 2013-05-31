@@ -1,12 +1,7 @@
-﻿using AppDirect.WindowsClient.InteropAPI;
-using AppDirect.WindowsClient.InteropAPI.Internal;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
@@ -29,7 +24,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         }
 
         public bool IsVistaOrUp { get; private set; }
+
         public bool IsWin7OrUp { get; private set; }
+
         public bool IsWin8OrUp { get; private set; }
 
         private IntPtr _taskBarHwnd;
@@ -46,9 +43,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         public Screen TaskbarScreen { get { return Screen.FromHandle(TaskBarHwnd); } }
 
-        public IntPtr TaskBarHwnd 
-        { 
-            get 
+        public IntPtr TaskBarHwnd
+        {
+            get
             {
                 if (_taskBarHwnd == IntPtr.Zero || !User32Dll.IsWindow(_taskBarHwnd))
                 {
@@ -61,6 +58,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 return _taskBarHwnd;
             }
         }
+
         public IntPtr ReBarHwnd
         {
             get
@@ -76,6 +74,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 return _reBarHwnd;
             }
         }
+
         public Rectangle TaskBarRect
         {
             get
@@ -88,6 +87,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 return _taskBarRect;
             }
         }
+
         public Rectangle ReBarRect
         {
             get
@@ -100,6 +100,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 return _reBarRect;
             }
         }
+
         public TaskbarPosition TaskBarPosition
         {
             get
@@ -122,6 +123,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 return _taskBarPosition;
             }
         }
+
         public TaskbarIconsSize TaskBarIconsSize
         {
             get
@@ -147,6 +149,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 return _taskBarIconsSize;
             }
         }
+
         public double DpiScalingFactor
         {
             get
@@ -198,7 +201,6 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         {
             return User32Dll.FindWindowEx(hwndTaskBar, IntPtr.Zero, "ReBarWindow32", null);
         }
-
 
         public Rectangle ScreenToClient(IntPtr hWnd, Rectangle screenRect)
         {

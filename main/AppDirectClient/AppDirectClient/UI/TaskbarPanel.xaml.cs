@@ -1,7 +1,6 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI;
-using AppDirect.WindowsClient.InteropAPI.Internal;
 using System;
 using System.Linq;
 using System.Threading;
@@ -61,7 +60,7 @@ namespace AppDirect.WindowsClient.UI
         public void LayoutIcons(int allowedWidth, int allowedHeight)
         {
             var helper = ServiceLocator.TaskbarHelper;
-            
+
             SetIconSize(helper.TaskBarIconsSize);
 
             double mrgn = Math.Max(MainButton.Margin.Left, MainButton.Margin.Top);
@@ -265,7 +264,6 @@ namespace AppDirect.WindowsClient.UI
 
                 NotifyTaskbarOfChange();
             }
-
         }
 
         private void SetMainButtonIconSize(TaskbarIconsSize newIconsSize)
