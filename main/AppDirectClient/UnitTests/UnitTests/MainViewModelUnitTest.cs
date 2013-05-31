@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.API;
+﻿using System;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
@@ -62,6 +63,11 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             _mainViewModel.InitializeAppsLists();
             _mainViewModel.SyncMyApplications(true, true);
             _mainViewModel.GetSuggestedApplicationsWithApiCall();
+            _mainViewModel.LogoutNotifier += LogoutNotifier ;
+        }
+
+        private void LogoutNotifier(object sender, EventArgs eventArgs)
+        {
         }
 
         #region Constructor Tests
