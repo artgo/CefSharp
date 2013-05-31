@@ -8,13 +8,6 @@ namespace AppDirect.WindowsClient.Tests.InteropApi.Internal
     public class CoordsPackagerTest
     {
         [Test]
-        public void TestPackParamsThrowsOnNullInput()
-        {
-            var packager = new CoordsPackager();
-            Assert.Throws<ArgumentNullException>(() => packager.PackParams(null));
-        }
-
-        [Test]
         public void TestUnpackParamsAreTheSameAsOriginal()
         {
             var packager = new CoordsPackager();

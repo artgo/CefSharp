@@ -89,9 +89,6 @@ namespace AppDirect.WindowsClient.Browser.UI
             }
 
             Activate();
-            Topmost = true;
-            Topmost = false;
-            Focus();
 
             PreInitializeWindow();
         }

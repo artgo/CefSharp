@@ -106,6 +106,11 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
         [Test]
         public void IsLoadedFromFileFalseWithNoFile()
         {
+            if (File.Exists)
+            {
+                File.Delete();
+            }
+            localStorage = new LocalStorage();
             Assert.IsFalse(localStorage.IsLoadedFromFile);
         }
 

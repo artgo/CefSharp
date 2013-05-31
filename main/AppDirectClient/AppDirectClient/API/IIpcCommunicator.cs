@@ -2,7 +2,7 @@
 
 namespace AppDirect.WindowsClient.API
 {
-    public interface IIpcCommunicator : IAbstractServiceRunner<MainApplication>
+    public interface IIpcCommunicator : IAbstractServiceRunner<IMainApplication>
     {
     }
 }
