@@ -5,12 +5,12 @@ using AppDirect.WindowsClient.Common.Log;
 
 namespace AppDirect.WindowsClient.API
 {
-    public class IpcCommunicator : AbstractServiceRunner<MainApplication>, IIpcCommunicator
+    public class IpcCommunicator : AbstractServiceRunner<IMainApplication>, IIpcCommunicator
     {
         private static readonly string BrowserProjectName = Helper.BrowserProject + Helper.ExeExt; 
         private volatile ProcessWatcher _browserWatcher;
 
-        public IpcCommunicator(MainApplication service, ProcessWatcher browserWatcher)
+        public IpcCommunicator(IMainApplication service, ProcessWatcher browserWatcher)
             : base(service)
         {
             _browserWatcher = browserWatcher;

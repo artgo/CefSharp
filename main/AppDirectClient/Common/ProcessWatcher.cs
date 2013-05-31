@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace AppDirect.WindowsClient.Common
 {
-    public class ProcessWatcher : IStartStop
+    public class ProcessWatcher : IProcessWatcher
     {
         private readonly string _processName;
         private volatile int _restartsRemaining = 10;

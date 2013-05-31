@@ -45,9 +45,9 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<Updater>(); }
         }
 
-        public static ProcessWatcher BrowserWatcher
+        public static IProcessWatcher BrowserWatcher
         {
-            get { return Kernel.Get<ProcessWatcher>(); }
+            get { return Kernel.Get<IProcessWatcher>(); }
         }
 
         public static IUiHelper UiHelper
@@ -80,7 +80,7 @@ namespace AppDirect.WindowsClient
         /// </summary>
         public static void Initialize()
         {
-            Kernel.Rebind<ProcessWatcher>().ToConstant(new ProcessWatcher("BrowserManager", new AbstractProcess("BrowserManager"), new NLogLogger("Browser Process Watcher")));
+            Kernel.Rebind<IProcessWatcher>().ToConstant(new ProcessWatcher("BrowserManager", new AbstractProcess("BrowserManager"), new NLogLogger("Browser Process Watcher")));
             Kernel.Rebind<IUiHelper>().ToConstant(new UiHelper(new NLogLogger("UiHelper")));
             Kernel.Rebind<IAnalytics>().ToConstant(new AsyncAnalytics(new GoogleAnalytics(new NLogLogger("Analytics")), Kernel.Get<IUiHelper>()));
             Kernel.Rebind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(new AppDirectApi(), new NLogLogger("CachedAppDirectApi")));
