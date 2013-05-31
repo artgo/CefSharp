@@ -1,14 +1,12 @@
-﻿using System;
-using AppDirect.WindowsClient.API;
+﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.Tests.Common.UI;
 using AppDirect.WindowsClient.UI;
-using AppDirect.WindowsClient.Updates;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -63,7 +61,7 @@ namespace AppDirect.WindowsClient.Tests.UnitTests
             _mainViewModel.InitializeAppsLists();
             _mainViewModel.SyncMyApplications(true, true);
             _mainViewModel.GetSuggestedApplicationsWithApiCall();
-            _mainViewModel.LogoutNotifier += LogoutNotifier ;
+            _mainViewModel.LogoutNotifier += LogoutNotifier;
         }
 
         private void LogoutNotifier(object sender, EventArgs eventArgs)
