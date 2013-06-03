@@ -8,6 +8,20 @@ namespace AppDirect.WindowsClient.Common
     {
         private readonly string _processName;
         private volatile Process _process;
+        private int _currentUserSessionId;
+
+        private int CurrentUserSessionId
+        {
+            get
+            {
+                if (_currentUserSessionId == 0)
+                {
+                    var currentProcess = Process.GetCurrentProcess();
+                    _currentUserSessionId = currentProcess.SessionId;
+                }
+                return _currentUserSessionId;
+            }
+        }
 
         public AbstractProcess(string processName)
         {
@@ -20,7 +34,7 @@ namespace AppDirect.WindowsClient.Common
 
             if (processesByName.Any())
             {
-                _process = processesByName[0];
+                _process = processesByName.LastOrDefault(p => p.SessionId == CurrentUserSessionId);
             }
             else
             {
