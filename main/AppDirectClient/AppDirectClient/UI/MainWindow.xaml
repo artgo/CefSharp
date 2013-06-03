@@ -263,7 +263,7 @@
             <Setter Property="Height" Value="42" />
             <Setter Property="Width" Value="165" />
             <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Margin" Value="0,0,15,16"></Setter>
+            <Setter Property="Margin" Value="0,0,15,4"></Setter>
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}" />
             <Setter Property="Background">
                 <Setter.Value>
@@ -277,7 +277,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="2">
+                        <Border Name="border" Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="0">
                             <ContentPresenter Name="content" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       Margin="{TemplateBinding Padding}"
                                       RecognizesAccessKey="True"
@@ -317,8 +317,7 @@
                                        Height="34" Source="Images/crossBtn_default.png" />
                             </Grid>
                             <TextBlock TextTrimming="CharacterEllipsis" FontSize="12" Height="12" Margin="45,0,0,2"
-                                        VerticalAlignment="Center" Text="{Binding Application.Name}">
-                            </TextBlock>
+                                        VerticalAlignment="Center" Text="{Binding Application.Name}"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -598,8 +597,6 @@
                             <Grid Name="App" Style="{StaticResource YourAppsButtonGrid}">
                                 <Image VerticalAlignment="Center" HorizontalAlignment="Left"
                                    Width="42" Height="42" Source="{Binding Application.LocalImagePath}" />
-                                <Image VerticalAlignment="Top" HorizontalAlignment="Left"
-                                   Width="42" Height="42" Source="Images/RoundedCorners.png" />
                                 <ContentControl Content="{Binding Application.Name}" ContentTemplateSelector="{StaticResource TemplateSelector}"></ContentControl>
                                 <ContentControl Content="{Binding}" Style="{StaticResource ContentCtrl}" ></ContentControl>
                                 <ContentControl Content="{Binding}" Style="{StaticResource PendingCtrl}" ></ContentControl>
@@ -638,7 +635,7 @@
             </Grid>
             <controls:CustomMessageBox x:Name="MessageBoxGrid" DataContext="{Binding}" />
         </Grid>
-        <controls:LoginView x:Name="LoginViewControl"/>
+        <controls:LoginView x:Name="LoginViewControl" Visibility="Hidden"/>
         <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden" />
     </Grid>
 </Window>

@@ -22,12 +22,13 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="3" BorderThickness="1.5" BorderBrush="GhostWhite">
                         <Grid>
-                            <Image Name="Icon" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1,1,1,1"
+                            <Image Name="Icon" HorizontalAlignment="Center" VerticalAlignment="Center"
                                        Source="{Binding Application.LocalImagePath}" />
                             <Image Name="HighlightMask" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Images/TaskBarHoverMask.png" Visibility="Hidden" />
-                            <Image Name="BorderMask" HorizontalAlignment="Center" VerticalAlignment="Center" Source="Images/BtnBorder.png" />
                         </Grid>
+                        </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="HighlightMask" Property="Visibility" Value="Visible" />
