@@ -238,8 +238,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 }
                 catch (Exception e)
                 {
-                    ServiceLocator.UiHelper.Sleep(200);
                     logger.Info(String.Format("RebarRect was not set yet because exception was thrown: {0}", e));
+                    ServiceLocator.UiHelper.Sleep(200);
                 }
             }
         }

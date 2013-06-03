@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 
 namespace AppDirect.WindowsClient.UI
 {
