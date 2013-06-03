@@ -15,7 +15,21 @@ namespace AppDirect.WindowsClient.API
         private readonly Action _actionOnCrash;
         private readonly ILogger _logger;
         private readonly IUiHelper _uiHelper;
+        private int _currentUserSessionId;
         private const string ExplorerProcessName = "explorer";
+
+        private int CurrentUserSessionId
+        {
+            get
+            {
+                if (_currentUserSessionId == 0)
+                {
+                    var currentProcess = Process.GetCurrentProcess();
+                    _currentUserSessionId = currentProcess.SessionId;
+                }
+                return _currentUserSessionId;
+            }
+        }
 
         public ExplorerWatcher(ILogger logger, IUiHelper uiHelper, Action actionOnCrash)
         {
@@ -39,10 +53,10 @@ namespace AppDirect.WindowsClient.API
             while (_explorerProcess == null)
             {
                 var processesByName = Process.GetProcessesByName(ExplorerProcessName);
+                _explorerProcess = processesByName.LastOrDefault(p => p.SessionId == CurrentUserSessionId);
 
-                if (processesByName.Any())
+                if (_explorerProcess != null)
                 {
-                    _explorerProcess = processesByName.Last();
                     try
                     {
                         _explorerProcess.EnableRaisingEvents = true;
