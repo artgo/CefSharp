@@ -42,7 +42,7 @@ namespace AppDirect.WindowsClient.API
 
                 if (processesByName.Any())
                 {
-                    _explorerProcess = processesByName[0];
+                    _explorerProcess = processesByName.Last();
                     try
                     {
                         _explorerProcess.EnableRaisingEvents = true;
@@ -68,8 +68,9 @@ namespace AppDirect.WindowsClient.API
             if (process.ExitCode != 0)
             {
                 _explorerProcess = null;
-                GetExplorerProcess();
-                _uiHelper.Sleep(500);
+                GetExplorerProcess(); 
+                _uiHelper.Sleep(200);
+                ServiceLocator.TaskbarHelper.WaitForRebar(_logger);
                 _actionOnCrash.Invoke();
             }
         }

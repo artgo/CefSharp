@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -285,8 +286,16 @@ namespace AppDirect.WindowsClient.UI
 
         private void MenuItemExitClick(object sender, RoutedEventArgs e)
         {
-            ServiceLocator.TaskbarApi.RemoveTaskbarWindow();
-            System.Windows.Application.Current.Shutdown();
+            try
+            {
+                ServiceLocator.TaskbarApi.RemoveTaskbarWindow();
+                System.Windows.Application.Current.Shutdown();
+            }
+            catch (InteropException ex)
+            {
+                _log.ErrorException("Shutdown Helper threw exception on shutdown.", ex);
+                Environment.Exit(0);
+            }
         }
 
         public void SetAllowedSize(int allowedWidth, int allowedHeight)
