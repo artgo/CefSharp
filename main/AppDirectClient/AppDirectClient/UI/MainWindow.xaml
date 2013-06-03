@@ -635,7 +635,7 @@
             </Grid>
             <controls:CustomMessageBox x:Name="MessageBoxGrid" DataContext="{Binding}" />
         </Grid>
-        <controls:LoginView x:Name="LoginViewControl" Visibility="Hidden"/>
+        <controls:LoginView x:Name="LoginViewControl"/>
         <controls:RegistrationView x:Name="RegistrationViewControl" Visibility="Hidden" />
     </Grid>
 </Window>
