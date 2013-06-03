@@ -109,6 +109,32 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Focusable" Value="False"></Setter>
+            <Setter Property="Margin" Value="4,0,0,0"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border Background="Transparent"
+                    CornerRadius="0"
+                    BorderThickness="3"
+                    x:Name="IconBorder"
+                    Margin="0" >
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="IconBorder" Property="BitmapEffect">
+                                    <Setter.Value>
+                                        <OuterGlowBitmapEffect GlowColor="Transparent" GlowSize="5" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="YourAppsButtonGrid" TargetType="Grid">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Top" />
@@ -565,7 +591,7 @@
                 <ListBox Style="{StaticResource ListBoxStyle}" BorderThickness="0" Background="Transparent"
                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="MyAppsListBox"
-                                 ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2">
+                                 ItemsSource="{Binding MyApplications}" Grid.ColumnSpan="2" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
                     <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Button Style="{StaticResource AppButton}" Click="AppButtonClick" PreviewMouseLeftButtonDown="DoubleClickHandler">
@@ -586,12 +612,6 @@
                             <WrapPanel IsItemsHost="True" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
-                    <ListBox.Resources>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Focusable" Value="False"></Setter>
-                            <Setter Property="Margin" Value="4,0,0,0"></Setter>
-                        </Style>
-                    </ListBox.Resources>
                 </ListBox>
             </Grid>
             <Grid Name="SuggestedAppsGrid" Grid.Column="1" Margin="0,0,0,0">
@@ -600,12 +620,7 @@
                            Margin="30,30,0,0" VerticalAlignment="Top" />
                 <ListBox Style="{StaticResource ListBoxStyle}" Height="250"
                          VerticalAlignment="Top" Margin="30,60,30,0" Name="SuggestedListBox"
-                         ItemsSource="{Binding SuggestedApplications}">
-                    <ListBox.Resources>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Focusable" Value="False"></Setter>
-                        </Style>
-                    </ListBox.Resources>
+                         ItemsSource="{Binding SuggestedApplications}" ItemContainerStyle="{StaticResource ListBoxItemStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Button Style="{StaticResource InstallAppButton}" Height="34" Width="130" Margin="0,0,0,10"
