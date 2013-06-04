@@ -201,4 +201,16 @@
   <data name="GACategory" xml:space="preserve">
     <value>DesktopClient</value>
   </data>
+  <data name="RegistrationConflictMessage" xml:space="preserve">
+    <value>The email address you entered has already been registered! Please login to continue.</value>
+  </data>
+  <data name="RegistrationEmailSuccessMessage" xml:space="preserve">
+    <value>A registration email has been sent to {0}.  Please follow the instructions in the email to complete registration.  When you are done, click OK to log in.</value>
+  </data>
+  <data name="RegistrationErrorMessage" xml:space="preserve">
+    <value>There was an unknown error completing your request.  </value>
+  </data>
+  <data name="RegistrationForbiddenMessage" xml:space="preserve">
+    <value>Registration is not available for this marketplace.</value>
+  </data>
 </root>
