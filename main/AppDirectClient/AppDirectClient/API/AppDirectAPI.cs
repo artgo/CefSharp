@@ -1,14 +1,14 @@
-﻿using System.Text;
-using System.Xml.Linq;
-using AppDirect.WindowsClient.API.VO;
+﻿using AppDirect.WindowsClient.API.VO;
 using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient.API
@@ -421,7 +421,7 @@ namespace AppDirect.WindowsClient.API
             var request = BuildHttpWebRequestForUrl(SendEmailUrl, true, false);
 
             XElement requestXML = new XElement("user", new XElement("email", text));
-            
+
             byte[] bytes = Encoding.UTF8.GetBytes(requestXML.ToString());
 
             request.ContentLength = bytes.Length;
@@ -431,8 +431,8 @@ namespace AppDirect.WindowsClient.API
                 putStream.Write(bytes, 0, bytes.Length);
             }
 
-            var response = (HttpWebResponse)request.GetResponse(); 
-            
+            var response = (HttpWebResponse)request.GetResponse();
+
             var responseStream = response.GetResponseStream();
             if (responseStream == null)
             {
@@ -440,7 +440,12 @@ namespace AppDirect.WindowsClient.API
             }
             var reader = new StreamReader(responseStream);
             var result = reader.ReadToEnd();
-            
+
+            if (((response.StatusCode != HttpStatusCode.Created) && (response.StatusCode != HttpStatusCode.Created)) || String.IsNullOrEmpty(result))
+            {
+                throw new IOException("Response was not successful");
+            }
+
             return result;
         }
 
