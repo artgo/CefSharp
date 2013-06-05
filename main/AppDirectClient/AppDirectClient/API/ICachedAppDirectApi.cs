@@ -74,5 +74,7 @@ namespace AppDirect.WindowsClient.API
         /// <param name="subscriptionId"></param>
         /// <returns>true if success</returns>
         bool DeprovisionApplication(string subscriptionId);
+
+        string SendUserEmail(string text);
     }
 }

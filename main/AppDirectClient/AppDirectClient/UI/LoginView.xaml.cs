@@ -59,6 +59,45 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
+        private void ClearRegistrationEmailFailed()
+        {
+            if (RegistrationEmailFormatErrorMessage.Visibility != Visibility.Visible)
+            {
+                UsernameTextBox.Background = _validColorBrush;
+                RegistrationEmailFormatErrorMessage.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void RegistrationUsernameTextBox_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                UsernameTextBoxRegistration.Background = _validColorBrush;
+                GoToRegistrationButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            }
+        }
+
+        private void RegistrationUsernameTextBox_OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            ClearRegistrationEmailFailed();
+            CheckUsername(UsernameTextBoxRegistration, RegistrationEmailFormatErrorMessage);
+        }
+
+        private void RegistrationUsernameTextBox_OnFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            UsernameTextBoxRegistration.Background = _validColorBrush;
+            RegistrationEmailFormatErrorMessage.Visibility = Visibility.Hidden;
+            ClearRegistrationEmailFailed();
+        }
+
+        private void RegistrationUsernameTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (RegistrationEmailFormatErrorMessage.Visibility == Visibility.Visible)
+            {
+                ClearRegistrationEmailFailed();
+            }
+        }
+
         private void UsernameTextBox_OnKeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
@@ -71,7 +110,7 @@ namespace AppDirect.WindowsClient.UI
         private void UsernameTextBox_OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             ClearLoginFailed();
-            CheckUsername();
+            CheckUsername(UsernameTextBox, EmailFormatErrorMessage);
         }
 
         private void UsernameTextBox_OnFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -87,26 +126,26 @@ namespace AppDirect.WindowsClient.UI
                 LoginFailedMessage.Visibility == Visibility.Visible)
             {
                 ClearLoginFailed();
-                CheckUsername();
+                CheckUsername(UsernameTextBox, EmailFormatErrorMessage);
             }
         }
 
-        private void CheckUsername()
+        private void CheckUsername(TextBox textbox, TextBlock errorMessage)
         {
-            if (String.IsNullOrEmpty(UsernameTextBox.Text))
+            if (String.IsNullOrEmpty(textbox.Text))
             {
-                UsernameTextBox.Background = _defaultColorBrush;
-                EmailFormatErrorMessage.Visibility = Visibility.Hidden;
+                textbox.Background = _defaultColorBrush;
+                errorMessage.Visibility = Visibility.Hidden;
             }
-            else if (Helper.EmailMatchPattern.IsMatch(UsernameTextBox.Text))
+            else if (Helper.EmailMatchPattern.IsMatch(textbox.Text))
             {
-                UsernameTextBox.Background = _validColorBrush;
-                EmailFormatErrorMessage.Visibility = Visibility.Hidden;
+                textbox.Background = _validColorBrush;
+                errorMessage.Visibility = Visibility.Hidden;
             }
             else
             {
-                UsernameTextBox.Background = _errorColorBrush;
-                EmailFormatErrorMessage.Visibility = Visibility.Visible;
+                textbox.Background = _errorColorBrush;
+                errorMessage.Visibility = Visibility.Visible;
             }
         }
 
@@ -114,7 +153,7 @@ namespace AppDirect.WindowsClient.UI
         {
             PasswordBox.Background = _validColorBrush;
             ClearLoginFailed();
-            CheckUsername();
+            CheckUsername(UsernameTextBox, EmailFormatErrorMessage);
         }
 
         private void Password_OnLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -130,7 +169,7 @@ namespace AppDirect.WindowsClient.UI
         private void PasswordBox_OnKeyDown(object sender, KeyEventArgs e)
         {
             ClearLoginFailed();
-            CheckUsername();
+            CheckUsername(UsernameTextBox, EmailFormatErrorMessage);
 
             if (e.Key == Key.Return)
             {
@@ -141,7 +180,7 @@ namespace AppDirect.WindowsClient.UI
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             ClearLoginFailed();
-            CheckUsername();
+            CheckUsername(UsernameTextBox, EmailFormatErrorMessage);
         }
 
         private void ForgotPassword(object sender, RoutedEventArgs e)
@@ -196,8 +235,7 @@ namespace AppDirect.WindowsClient.UI
         private bool ValidateRequiredFields()
         {
             bool passwordIsBad = String.IsNullOrEmpty(PasswordBox.Password);
-            bool emailIsBad = String.IsNullOrEmpty(UsernameTextBox.Text) ||
-                              !Helper.EmailMatchPattern.IsMatch(UsernameTextBox.Text);
+            bool emailIsBad = !ValidateEmail(UsernameTextBox.Text);
 
             if (emailIsBad)
             {
@@ -222,6 +260,12 @@ namespace AppDirect.WindowsClient.UI
             return !(passwordIsBad || emailIsBad);
         }
 
+        private bool ValidateEmail(string text)
+        {
+            return !String.IsNullOrEmpty(text) &&
+                   Helper.EmailMatchPattern.IsMatch(text);
+        }
+
         private void CancelLoginClick(object sender, RoutedEventArgs e)
         {
             PasswordBox.Password = string.Empty;
@@ -230,7 +274,42 @@ namespace AppDirect.WindowsClient.UI
 
         public void GoToRegistrationClick(object sender, EventArgs eventArgs)
         {
-            ServiceLocator.BrowserWindowsCommunicator.DisplayApplicationWithoutSession(LocalApplications.RegistrationApp);
+            var email = UsernameTextBoxRegistration.Text;
+
+            if (!ValidateEmail(email))
+            {
+                RegistrationEmailFormatErrorMessage.Visibility = Visibility.Visible;
+                return;
+            }
+
+            try
+            {   
+                ServiceLocator.CachedAppDirectApi.SendUserEmail(email);
+            }
+            catch (WebException e)
+            {
+                var response = (HttpWebResponse)e.Response;
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.BadRequest:
+                        EmailFormatErrorMessage.Visibility = Visibility.Visible;
+                        return;
+                    case HttpStatusCode.Conflict:
+                        ViewModel.ErrorMessage = Properties.Resources.RegistrationConflictMessage;
+                        return;
+                    case HttpStatusCode.Forbidden:
+                        ViewModel.ErrorMessage = Properties.Resources.RegistrationForbiddenMessage;
+                        return;
+                }
+
+                ViewModel.ErrorMessage = Properties.Resources.RegistrationErrorMessage;
+            }
+
+            ViewModel.ErrorMessage = String.Format(Properties.Resources.RegistrationEmailSuccessMessage, email);
+            UsernameTextBoxRegistration.Text = string.Empty;
+            UsernameTextBox.Text = email;
+            UsernameTextBox.Focus();
         }
 
         public void SetFocusField()

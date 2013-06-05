@@ -25,5 +25,6 @@ namespace AppDirect.WindowsClient.API
         bool UnsubscribeUser(string subscriptionId);
         bool AssignEditionToUser(string companyId, string userId, string subscriptionId);
         bool UnassignEditionFromUser(string companyId, string userId, string subscriptionId);
+        string SendUserEmail(string text);
     }
 }

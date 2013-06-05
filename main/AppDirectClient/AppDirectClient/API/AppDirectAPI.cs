@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace AppDirect.WindowsClient.API
@@ -28,6 +30,7 @@ namespace AppDirect.WindowsClient.API
         private static readonly string LoginUrlStr = DomainPrefix + @"/login?1434449477-1.IFormSubmitListener-loginpanel-signInForm";
         private static readonly string UserInfoUrl = DomainPrefix + @"/api/account/v1/userinfo";
         private static readonly string AppInfoTemplateUrl = DomainPrefix + @"/api/marketplace/v1/products/{0}";
+        private static readonly string SendEmailUrl = DomainPrefix + @"/api/account/v1/users";
 
         private static readonly string SubscribeTemplateUrl = DomainPrefix + @"/api/subscriptions/v1";
         private static readonly string UnsubscribeTemplateUrl = DomainPrefix + @"/api/subscriptions/v1/{0}";
@@ -411,6 +414,39 @@ namespace AppDirect.WindowsClient.API
         public bool UnassignEditionFromUser(string companyId, string userId, string subscriptionId)
         {
             return AssignUnassignApiCall(UnassignTemplateUrl, companyId, userId, subscriptionId);
+        }
+
+        public string SendUserEmail(string text)
+        {
+            var request = BuildHttpWebRequestForUrl(SendEmailUrl, true, false);
+
+            XElement requestXML = new XElement("user", new XElement("email", text));
+
+            byte[] bytes = Encoding.UTF8.GetBytes(requestXML.ToString());
+
+            request.ContentLength = bytes.Length;
+
+            using (Stream putStream = request.GetRequestStream())
+            {
+                putStream.Write(bytes, 0, bytes.Length);
+            }
+
+            var response = (HttpWebResponse)request.GetResponse();
+
+            var responseStream = response.GetResponseStream();
+            if (responseStream == null)
+            {
+                throw new IOException("No response stream returned");
+            }
+            var reader = new StreamReader(responseStream);
+            var result = reader.ReadToEnd();
+
+            if (((response.StatusCode != HttpStatusCode.Created) && (response.StatusCode != HttpStatusCode.Created)) || String.IsNullOrEmpty(result))
+            {
+                throw new IOException("Response was not successful");
+            }
+
+            return result;
         }
 
         public Product GetExtendedAppInfo(string applicationId)

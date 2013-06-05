@@ -268,6 +268,42 @@ namespace AppDirect.WindowsClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The email address you entered has already been registered! Please login to continue..
+        /// </summary>
+        internal static string RegistrationConflictMessage {
+            get {
+                return ResourceManager.GetString("RegistrationConflictMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A registration email has been sent to {0}.  Please follow the instructions in the email to complete registration.  When you are done, click OK to log in..
+        /// </summary>
+        internal static string RegistrationEmailSuccessMessage {
+            get {
+                return ResourceManager.GetString("RegistrationEmailSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an unknown error completing your request.  .
+        /// </summary>
+        internal static string RegistrationErrorMessage {
+            get {
+                return ResourceManager.GetString("RegistrationErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registration is not available for this marketplace..
+        /// </summary>
+        internal static string RegistrationForbiddenMessage {
+            get {
+                return ResourceManager.GetString("RegistrationForbiddenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to /signup.
         /// </summary>
         internal static string RegistrationPath {

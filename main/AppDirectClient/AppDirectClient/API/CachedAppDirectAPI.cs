@@ -252,5 +252,10 @@ namespace AppDirect.WindowsClient.API
         {
             return _appDirectApi.UnsubscribeUser(subscriptionId);
         }
+
+        public string SendUserEmail(string text)
+        {
+            return _appDirectApi.SendUserEmail(text);
+        }
     }
 }
