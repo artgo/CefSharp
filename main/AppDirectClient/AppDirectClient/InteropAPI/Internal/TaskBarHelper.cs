@@ -1,6 +1,7 @@
-﻿using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.Log;
 using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -41,6 +42,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private bool _taskBarIconsSizeLoaded = false;
         private TaskbarIconsSize _taskBarIconsSize;
         private Double _dpiScalingFactor;
+        private Process _explorerProcess;
 
         public Screen TaskbarScreen { get { return Screen.FromHandle(TaskBarHwnd); } }
 
@@ -174,6 +176,34 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             }
         }
 
+        public Process ExplorerProcess
+        {
+            get
+            {
+                if (_explorerProcess == null)
+                {
+                    var hWnd = TaskBarHwnd;
+                    uint procId = 0;
+                    User32Dll.GetWindowThreadProcessId(hWnd, out procId);
+
+                    _explorerProcess = Process.GetProcessById((int)procId);
+                    if (_explorerProcess == null)
+                    {
+                        throw new InteropException("Explorer Process is not running");
+                    }
+                }
+                return _explorerProcess;
+            }
+        }
+
+        public bool IsTaskbarPresent
+        {
+            get
+            {
+                return FindReBar() != IntPtr.Zero;
+            }
+        }
+
         public Rectangle GetWindowRectangle(IntPtr hwnd)
         {
             RECT rect = new RECT();
@@ -245,3 +275,4 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         }
     }
 }
+

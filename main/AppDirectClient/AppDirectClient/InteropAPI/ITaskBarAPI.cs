@@ -9,8 +9,10 @@ namespace AppDirect.WindowsClient.InteropAPI
 {
     public interface ITaskbarApi
     {
-        void InsertTaskbarWindow(TaskbarPanel taskbarPanel);
+        void InsertPanelWhenTaskbarIsAvailable(TaskbarPanel taskbarPanel);
 
-        void RemoveTaskbarWindow();
+        void InsertPanel(TaskbarPanel taskbarPanel);
+
+        void RemovePanel();
     }
 }

@@ -60,7 +60,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void LayoutIcons(int allowedWidth, int allowedHeight)
         {
-            var helper = ServiceLocator.TaskbarHelper;
+            var helper = ServiceLocator.GetTaskbarHelper();
 
             SetIconSize(helper.TaskBarIconsSize);
 
@@ -288,7 +288,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                ServiceLocator.TaskbarApi.RemoveTaskbarWindow();
+                 ServiceLocator.TaskbarApi.RemovePanel();
                 System.Windows.Application.Current.Shutdown();
             }
             catch (InteropException ex)

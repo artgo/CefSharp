@@ -1,6 +1,8 @@
-﻿using AppDirect.WindowsClient.Common.Log;
+
+using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -29,6 +31,10 @@ namespace AppDirect.WindowsClient.InteropAPI
         TaskbarIconsSize TaskBarIconsSize { get; }
 
         double DpiScalingFactor { get; }
+
+        bool IsTaskbarPresent { get; }
+
+        Process ExplorerProcess { get; }
 
         Rectangle GetWindowRectangle(IntPtr hwnd);
 
