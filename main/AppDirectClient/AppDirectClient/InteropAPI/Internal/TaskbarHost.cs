@@ -90,7 +90,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
             UpdateReBarPosition(helper.ReBarHwnd, helper.ScreenToClient(helper.TaskBarHwnd, rectReBar));
             _taskBarControl.SetAllowedSize(rectIcon.Width, rectIcon.Height);
-        }
+        }   
 
         public void TearDown()
         {

@@ -46,28 +46,5 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 _taskBarIcon = null;
             }
         }
-
-        public void InsertPanelWhenTaskbarIsAvailable(TaskbarPanel taskbarPanel)
-        {
-            if (ServiceLocator.GetTaskbarHelper().IsTaskbarPresent)
-            {
-                InsertPanel(taskbarPanel);
-            }
-            else
-            {
-                DispatcherTimer timer = new DispatcherTimer();
-                timer.Interval = new TimeSpan(0, 0, 0, 0, 200);
-                timer.Tick += new EventHandler((object sender, EventArgs e) =>
-                {
-                    if (ServiceLocator.GetTaskbarHelper().IsTaskbarPresent)
-                    {
-                        InsertPanel(taskbarPanel);
-                        timer.Stop();
-                    }
-                });
-
-                timer.Start();
-            }
-        }
     }
 }

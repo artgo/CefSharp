@@ -67,6 +67,8 @@ namespace AppDirect.WindowsClient
                 Environment.Exit(0);
             }
 
+            ServiceLocator.GetTaskbarHelper().WaitForRebar(_log);
+
             var helper = ServiceLocator.UiHelper;
 
             ServiceLocator.LocalStorage.LoadStorage();
@@ -109,7 +111,7 @@ namespace AppDirect.WindowsClient
             {
                 var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
                 taskbarPanel.InitializeButtons();
-                ServiceLocator.TaskbarApi.InsertPanelWhenTaskbarIsAvailable(taskbarPanel);
+                ServiceLocator.TaskbarApi.InsertPanel(taskbarPanel);
 
                 return taskbarPanel;
             }
