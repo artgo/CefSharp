@@ -197,26 +197,29 @@ namespace AppDirect.WindowsClient.UI
 
             ViewModel.LoginInProgress = true;
 
-            BackgroundWorker loginBW = new BackgroundWorker();
-            loginBW.DoWork += LoginTask;
-            loginBW.RunWorkerCompleted += LoginComplete;
+            using (var loginBackgroundWorker = new BackgroundWorker())
+            {
+                loginBackgroundWorker.DoWork += LoginTask;
+                loginBackgroundWorker.RunWorkerCompleted += LoginComplete;
 
-            ServiceLocator.LocalStorage.SetCredentials(UsernameTextBox.Text, PasswordBox.Password);
+                ServiceLocator.LocalStorage.SetCredentials(UsernameTextBox.Text, PasswordBox.Password);
 
-            loginBW.RunWorkerAsync();
+                loginBackgroundWorker.RunWorkerAsync();
+            }
         }
 
         private void LoginTask(object sender, DoWorkEventArgs e)
         {
-            e.Result = Helper.Authenticate();
+            e.Result = Helper.RetryAction<bool>(Helper.Authenticate, 3, TimeSpan.FromMilliseconds(200));
         }
 
         private void LoginComplete(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Error != null && e.Error.GetType() == typeof(WebException))
             {
-                _log.ErrorException("Connection error", e.Error);
-                ViewModel.ShowNetworkProblem();
+                var ex = (WebException) e.Error;
+                _log.ErrorException("Login exception", ex);
+                ViewModel.ShowNetworkProblem(ex);
             }
             else if ((bool)e.Result)
             {
