@@ -184,7 +184,10 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                 {
                     var hWnd = TaskBarHwnd;
                     uint procId = 0;
-                    User32Dll.GetWindowThreadProcessId(hWnd, out procId);
+                    if (!User32Dll.IsWindow(hWnd) || User32Dll.GetWindowThreadProcessId(hWnd, out procId) == 0)
+                    {
+                        throw new InteropException("Can't find explorer process that owns tasbar window");
+                    }
 
                     _explorerProcess = Process.GetProcessById((int)procId);
                     if (_explorerProcess == null)
@@ -198,10 +201,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
 
         public bool IsTaskbarPresent
         {
-            get
-            {
-                return FindReBar() != IntPtr.Zero;
-            }
+            get { return FindReBar() != IntPtr.Zero; }
         }
 
         public Rectangle GetWindowRectangle(IntPtr hwnd)

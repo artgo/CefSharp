@@ -288,7 +288,7 @@ namespace AppDirect.WindowsClient.UI
         {
             try
             {
-                 ServiceLocator.TaskbarApi.RemovePanel();
+                ServiceLocator.TaskbarApi.RemovePanel();
                 System.Windows.Application.Current.Shutdown();
             }
             catch (InteropException ex)
