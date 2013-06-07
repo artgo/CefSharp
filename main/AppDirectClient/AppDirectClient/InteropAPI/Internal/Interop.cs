@@ -2370,8 +2370,8 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         // When you don't want the ProcessId, use this overload and pass IntPtr.Zero for the second parameter
-        [DllImport(User32DllName)]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr processId);
+        [DllImport(User32DllName, SetLastError = true)]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out IntPtr processId);
 
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport(User32DllName, SetLastError = true)]

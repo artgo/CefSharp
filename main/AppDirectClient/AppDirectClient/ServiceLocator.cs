@@ -65,9 +65,9 @@ namespace AppDirect.WindowsClient
             get { return Kernel.Get<ITaskbarApi>(); }
         }
 
-        public static ITaskbarHelper TaskbarHelper
+        public static ITaskbarHelper GetTaskbarHelper()
         {
-            get { return Kernel.Get<ITaskbarHelper>(); }
+            return Kernel.Get<ITaskbarHelper>();
         }
 
         public static INativeDll GetNativeDll(string path)

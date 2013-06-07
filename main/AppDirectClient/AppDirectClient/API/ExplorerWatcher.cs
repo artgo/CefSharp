@@ -52,11 +52,12 @@ namespace AppDirect.WindowsClient.API
         {
             while (_explorerProcess == null)
             {
-                var processesByName = Process.GetProcessesByName(ExplorerProcessName);
-                _explorerProcess = processesByName.LastOrDefault(p => p.SessionId == CurrentUserSessionId);
+                var helper = ServiceLocator.GetTaskbarHelper();
+                var process = helper.ExplorerProcess;
 
-                if (_explorerProcess != null)
+                if (helper.IsTaskbarPresent)
                 {
+                    _explorerProcess = helper.ExplorerProcess;
                     try
                     {
                         _explorerProcess.EnableRaisingEvents = true;
@@ -84,7 +85,7 @@ namespace AppDirect.WindowsClient.API
                 _explorerProcess = null;
                 GetExplorerProcess(); 
                 _uiHelper.Sleep(200);
-                ServiceLocator.TaskbarHelper.WaitForRebar(_logger);
+                ServiceLocator.GetTaskbarHelper().WaitForRebar(_logger);
                 _actionOnCrash.Invoke();
             }
         }

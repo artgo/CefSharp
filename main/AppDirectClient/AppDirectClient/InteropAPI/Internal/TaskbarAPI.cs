@@ -5,6 +5,7 @@ using Control = System.Windows.Controls.Control;
 using Microsoft.Win32;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
+using System.Windows.Threading;
 
 namespace AppDirect.WindowsClient.InteropAPI.Internal
 {
@@ -21,11 +22,11 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         /// </summary>
         /// <param name="control">WPF window to be placed on taskbar</param>
         /// <param name="initialWidth">Initial width</param>
-        public void InsertTaskbarWindow(TaskbarPanel panel)
+        public void InsertPanel(TaskbarPanel panel)
         {
             if (_taskBarIcon != null)
             {
-                RemoveTaskbarWindow();
+                RemovePanel();
             }
 
             _taskBarIcon = new TaskbarHost(panel);
@@ -36,7 +37,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             _taskBarIcon.Setup();
         }
 
-        public void RemoveTaskbarWindow()
+        public void RemovePanel()
         {
             // use _control
             if (_taskBarIcon != null)

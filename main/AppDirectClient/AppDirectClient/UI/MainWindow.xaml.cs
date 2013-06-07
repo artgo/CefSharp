@@ -69,7 +69,7 @@ namespace AppDirect.WindowsClient.UI
 
         public void SetPosition()
         {
-            var helper = ServiceLocator.TaskbarHelper;
+            var helper = ServiceLocator.GetTaskbarHelper();
 
             var screen = helper.TaskbarScreen;
             var scalingFactor = 1.0 / helper.DpiScalingFactor;
