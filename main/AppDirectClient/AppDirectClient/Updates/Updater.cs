@@ -1,13 +1,10 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
-using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.Properties;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Threading;
-using System.Windows;
 
 namespace AppDirect.WindowsClient.Updates
 {
@@ -41,7 +38,7 @@ namespace AppDirect.WindowsClient.Updates
             {
                 ServiceLocator.LocalStorage.SaveOpenBrowserWindows();
             }
-            catch (Exception e )
+            catch (Exception e)
             {
                 _log.ErrorException("Updater threw an exception while attempting to save open browser windows.", e);
             }

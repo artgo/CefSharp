@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net;
 using System.Windows;
 using AppDirect.WindowsClient.Properties;
 
@@ -83,9 +84,21 @@ namespace AppDirect.WindowsClient.UI
             IsVisible = isLoggedIn ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        public void ShowNetworkProblem()
+        public void ShowNetworkProblem(WebException ex)
         {
-            ErrorMessage = Resources.NetworkProblemError;
+            if (ex == null)
+            {
+                throw new ArgumentNullException("ex");
+            }
+
+            if (ex.Status == WebExceptionStatus.NameResolutionFailure || ex.Status == WebExceptionStatus.ProxyNameResolutionFailure)
+            {
+                ErrorMessage = Resources.NetworkProblemError;
+            }
+            else
+            {
+                ErrorMessage = ex.Message;
+            }
         }
 
         public void ClearErrorMessage()

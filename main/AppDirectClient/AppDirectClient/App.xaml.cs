@@ -99,8 +99,10 @@ namespace AppDirect.WindowsClient
             base.OnStartup(e);
 
             var timeElapsed = Environment.TickCount - startTicks;
-            helper.StartAsynchronously(() => _log.Warn("Application startup completed in " + timeElapsed + "ms."));
-            ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
+            helper.StartAsynchronously(() => {
+                _log.Warn("Application startup completed in " + timeElapsed + "ms.");
+                ServiceLocator.Analytics.Notify("ClientStarted", "StartedIn", timeElapsed);
+            });
         }
 
         private TaskbarPanel CreateAndInsertTaskbarPanel(MainViewModel mainViewModel)

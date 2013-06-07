@@ -96,7 +96,7 @@ namespace AppDirect.WindowsClient.Common.API
             }
             catch (CommunicationException e)
             {
-                LogCommunicationError(e);
+                LogCommunicationInfo(e);
 
                 started = false;
             }
@@ -183,6 +183,12 @@ namespace AppDirect.WindowsClient.Common.API
         {
             _failedState = true;
             _log.ErrorException(_connectionErrorStr, e);
+        }
+
+        protected virtual void LogCommunicationInfo(CommunicationException e)
+        {
+            _failedState = true;
+            _log.Info(_connectionErrorStr + " " + e.Message);
         }
     }
 }
