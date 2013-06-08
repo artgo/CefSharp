@@ -19,7 +19,7 @@ namespace AppDirect.WindowsClient.IntegrationTests
         [Test]
         public void GetUpdatesReturnsFalseForCurrentVersion()
         {
-            Assert.IsFalse(_updater.GetUpdates(Helper.ApplicationVersion, 1, 0));
+            Assert.IsFalse(_updater.GetUpdates(Constants.ApplicationVersion, 1, 0));
         }
     }
 }

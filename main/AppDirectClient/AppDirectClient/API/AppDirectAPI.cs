@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.API.VO;
+﻿using System.Threading;
+using AppDirect.WindowsClient.API.VO;
 using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.API;
 using System;
@@ -24,8 +25,8 @@ namespace AppDirect.WindowsClient.API
         private const string UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.0 Safari/537.1";
         private const string LoggedInText = @"window.CurrentUser={";
         private static readonly TimeSpan TimeoutTimeSpan = TimeSpan.FromMinutes(30);
-        private static readonly string DomainName = Helper.BaseAppStoreDomainName;
-        private static readonly string DomainPrefix = Helper.BaseAppStoreUrl;
+        private static readonly string DomainName = Constants.BaseAppStoreDomainName;
+        private static readonly string DomainPrefix = Constants.BaseAppStoreUrl;
         private static readonly string MyAppsUrl = DomainPrefix + @"/api/account/v1/myapps.json";
         private static readonly string LoginUrlStr = DomainPrefix + @"/login?1434449477-1.IFormSubmitListener-loginpanel-signInForm";
         private static readonly string UserInfoUrl = DomainPrefix + @"/api/account/v1/userinfo";
@@ -129,7 +130,13 @@ namespace AppDirect.WindowsClient.API
 
         public bool Authenticate(string key, string secret)
         {
+            return Authenticate(key, secret, Timeout.Infinite);
+        }
+
+        public bool Authenticate(string key, string secret, int timeoutMs)
+        {
             var request = BuildHttpWebRequestForUrl(LoginUrlStr, true, false);
+            request.Timeout = timeoutMs;
             var cookies = new CookieContainer();
             cookies.Add(new Cookie(JSessionIdParamName, InitialSessionIdValue, "/", DomainName));
             request.CookieContainer = cookies;
@@ -164,14 +171,14 @@ namespace AppDirect.WindowsClient.API
             {
                 var oCookie = cookiesForDomain[j];
                 var oC = new Cookie
-                    {
-                        Domain = request.RequestUri.Host,
-                        Expires = oCookie.Expires,
-                        Name = oCookie.Name,
-                        Path = oCookie.Path,
-                        Secure = oCookie.Secure,
-                        Value = oCookie.Value
-                    };
+                {
+                    Domain = request.RequestUri.Host,
+                    Expires = oCookie.Expires,
+                    Name = oCookie.Name,
+                    Path = oCookie.Path,
+                    Secure = oCookie.Secure,
+                    Value = oCookie.Value
+                };
 
                 _cookies.Add(oC);
             }

@@ -33,7 +33,7 @@ namespace AppDirect.WindowsClient
             {
                 while (!ServiceLocator.LocalStorage.UpdateDownloaded)
                 {
-                    bool updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion);
+                    bool updateAvailable = ServiceLocator.Updater.GetUpdates(Constants.ApplicationVersion);
 
                     if (updateAvailable)
                     {

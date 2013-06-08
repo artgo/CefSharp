@@ -17,7 +17,7 @@ namespace AppDirect.WindowsClient
             ImagePath = "Icons/appStore-Icon.png",
             Name = "Browse Apps",
             HideContextMenu = true,
-            UrlString = Helper.BaseAppStoreUrl + Properties.Resources.AppStorePath,
+            UrlString = Constants.BaseAppStoreUrl + Properties.Resources.AppStorePath,
             BrowserWidth = 1150,
             BrowserHeight = 830
         };
@@ -27,7 +27,7 @@ namespace AppDirect.WindowsClient
             Description = "Registration",
             Id = "Register",
             Name = "Register",
-            UrlString = Helper.BaseAppStoreUrl + Properties.Resources.RegistrationPath,
+            UrlString = Constants.BaseAppStoreUrl + Properties.Resources.RegistrationPath,
             BrowserWidth = 1150,
             BrowserHeight = 830
         };

@@ -26,7 +26,7 @@ namespace AppDirect.WindowsClient.Analytics
         {
             try
             {
-                var googleEvent = new GoogleEvent(Helper.BaseAnalyticsDomainName, Helper.GaCategory, action, label, value);
+                var googleEvent = new GoogleEvent(Constants.BaseAnalyticsDomainName, Constants.GaCategory, action, label, value);
 
                 _log.Debug("Building event " + googleEvent);
                 var request = _requestFactory.BuildRequest(googleEvent);

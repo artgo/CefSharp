@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.API.VO;
+﻿using System;
+using AppDirect.WindowsClient.API.VO;
 using AppDirect.WindowsClient.Common.API;
 
 namespace AppDirect.WindowsClient.API
@@ -10,6 +11,7 @@ namespace AppDirect.WindowsClient.API
         AppDirectSession Session { get; }
         bool IsAuthenticated { get; }
         bool Authenticate(string key, string secret);
+        bool Authenticate(string key, string secret, int timeoutMs);
         void UnAuthenticate();
 
         bool RegisterUser(string firstName, string lastName, string password, string confirmPassword,
