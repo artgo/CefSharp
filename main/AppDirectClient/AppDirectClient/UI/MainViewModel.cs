@@ -216,7 +216,7 @@ namespace AppDirect.WindowsClient.UI
             {
                 _log.ErrorException("Provisioning Application Exception", ex);
                 errorInfo = String.Format("{0} can not be added through {1} at this time. {2}",
-                                        applicationVM.Application.Name, Helper.ApplicationName, errorInfo);
+                                        applicationVM.Application.Name, Constants.ApplicationName, errorInfo);
             }
 
             if (!String.IsNullOrEmpty(errorInfo))
@@ -255,7 +255,7 @@ namespace AppDirect.WindowsClient.UI
                 }
                 else
                 {
-                    Helper.PerformInUiThread(() => Message = applicationViewModel.Application.Name + " cannot be removed through " + Helper.ApplicationName);
+                    Helper.PerformInUiThread(() => Message = applicationViewModel.Application.Name + " cannot be removed through " + Constants.ApplicationName);
                 }
             }
         }
@@ -608,7 +608,7 @@ namespace AppDirect.WindowsClient.UI
             var updateAvailable = false;
 
             const int millisecondsToDisplayCheckingString = 1000;
-            Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Helper.ApplicationVersion, 1, 0); }, false, millisecondsToDisplayCheckingString);
+            Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Constants.ApplicationVersion, 1, 0); }, false, millisecondsToDisplayCheckingString);
 
             Helper.PerformInUiThread(() =>
                 {

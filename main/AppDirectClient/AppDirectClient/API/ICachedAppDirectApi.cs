@@ -20,6 +20,7 @@ namespace AppDirect.WindowsClient.API
         UserInfo UserInfo { get; }
 
         bool Authenticate(string key, string secret);
+        bool Authenticate(string key, string secret, int timeoutMs);
 
         void UnAuthenticate();
 

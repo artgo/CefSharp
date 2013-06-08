@@ -7,7 +7,7 @@ namespace AppDirect.WindowsClient.VersionPrint
     {
         static void Main(string[] args)
         {
-            Console.Write(Helper.ApplicationVersion);
+            Console.Write(Constants.ApplicationVersion);
         }
     }
 }

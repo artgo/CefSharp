@@ -4,38 +4,15 @@ using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.UI;
 using System;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace AppDirect.WindowsClient.API
 {
-    public class Helper
+    public abstract class Helper
     {
-        private Helper()
-        {
-        }
-
-        public static readonly AssemblyName AssemblyName = Assembly.GetExecutingAssembly().GetName();
-        public static readonly string ApplicationName = AssemblyName.Name;
-        public static readonly string ApplicationVersion = AssemblyName.Version.ToString();
-        public static readonly string ApplicationDirectory = @"\AppDirect\" + ApplicationName;
-        public static readonly string BrowserProject = "BrowserManager";
-        public static readonly string ExeExt = ".exe";
-        private const int MinimumPasswordLength = 4;
-        private const int MaximumPasswordLength = 18;
-        public static readonly Regex EmailMatchPattern = new Regex(@"^([0-9a-zA-Z]([-\.\w\+]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$");
-        public static readonly Regex PasswordMatchPattern = new Regex(@"^(.{" + MinimumPasswordLength + "," + MaximumPasswordLength + "})$");
-        public static readonly int DefaultBrowserWidth = 1000;
-        public static readonly int DefaultBrowserHeight = 581;
-        public static readonly bool DefaultBrowserResizable = true;
-        public static readonly string BaseAnalyticsDomainName = Properties.Resources.BaseAnalyticsDomainName;
-        public static readonly string GaCategory = Properties.Resources.GACategory;
-        public static readonly string BaseAppStoreDomainName = Properties.Resources.BaseAppStoreUrl;
-        public static readonly string BaseAppStoreUrl = Properties.Resources.BaseUrlProtocol + BaseAppStoreDomainName;
         private static readonly IUiHelper UiHelper = new UiHelper(new NLogLogger("UiHelper"));
         private static readonly ILogger Log = new NLogLogger("Helper");
 
@@ -176,6 +153,15 @@ namespace AppDirect.WindowsClient.API
         /// <returns></returns>
         public static bool Authenticate()
         {
+            return Authenticate(Timeout.Infinite);
+        }
+
+        /// <summary>
+        /// MUST BE WRAPPED IN TRY-CATCH Throws exceptions for network errors or API Errors
+        /// </summary>
+        /// <returns></returns>
+        public static bool Authenticate(int timeoutMs)
+        {
             var localStorage = ServiceLocator.LocalStorage;
 
             lock (localStorage.Locker)
@@ -183,7 +169,8 @@ namespace AppDirect.WindowsClient.API
                 if (localStorage.HasCredentials)
                 {
                     if (ServiceLocator.CachedAppDirectApi.Authenticate(localStorage.LoginInfo.Username,
-                                                                       localStorage.LoginInfo.Password))
+                                                                       localStorage.LoginInfo.Password,
+                                                                       timeoutMs))
                     {
                         ServiceLocator.BrowserWindowsCommunicator.UpdateSession(ServiceLocator.CachedAppDirectApi.Session);
 
@@ -237,11 +224,11 @@ namespace AppDirect.WindowsClient.API
         private static int GetIdleSeconds()
         {
             int idleTime = 0;
-            LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
+            var lastInputInfo = new LASTINPUTINFO();
             lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
             lastInputInfo.dwTime = 0;
 
-            int envTicks = Environment.TickCount;
+            var envTicks = Environment.TickCount;
 
             if (User32Dll.GetLastInputInfo(ref lastInputInfo))
             {

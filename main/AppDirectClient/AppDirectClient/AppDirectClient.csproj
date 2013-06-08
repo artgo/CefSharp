@@ -149,6 +149,7 @@
     <Compile Include="ApiSubscriptionStatus.cs" />
     <Compile Include="API\BrowsersManagerApiServiceBuilder.cs" />
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
+    <Compile Include="API\Constants.cs" />
     <Compile Include="API\ExplorerWatcher.cs" />
     <Compile Include="API\Helper.cs" />
     <Compile Include="API\IBrowserWindowsCommunicator.cs" />

@@ -91,7 +91,9 @@ namespace AppDirect.WindowsClient.UI
                 throw new ArgumentNullException("ex");
             }
 
-            if (ex.Status == WebExceptionStatus.NameResolutionFailure || ex.Status == WebExceptionStatus.ProxyNameResolutionFailure)
+            if (ex.Status == WebExceptionStatus.Timeout || 
+                ex.Status == WebExceptionStatus.NameResolutionFailure || 
+                ex.Status == WebExceptionStatus.ProxyNameResolutionFailure)
             {
                 ErrorMessage = Resources.NetworkProblemError;
             }

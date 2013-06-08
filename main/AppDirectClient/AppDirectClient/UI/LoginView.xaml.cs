@@ -137,7 +137,7 @@ namespace AppDirect.WindowsClient.UI
                 textbox.Background = _defaultColorBrush;
                 errorMessage.Visibility = Visibility.Hidden;
             }
-            else if (Helper.EmailMatchPattern.IsMatch(textbox.Text))
+            else if (Constants.EmailMatchPattern.IsMatch(textbox.Text))
             {
                 textbox.Background = _validColorBrush;
                 errorMessage.Visibility = Visibility.Hidden;
@@ -210,7 +210,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void LoginTask(object sender, DoWorkEventArgs e)
         {
-            e.Result = Helper.RetryAction<bool>(Helper.Authenticate, 3, TimeSpan.FromMilliseconds(200));
+            e.Result = Helper.RetryAction<bool>(() => Helper.Authenticate(Constants.LoginUiTimeout), 2, TimeSpan.FromMilliseconds(200));
         }
 
         private void LoginComplete(object sender, RunWorkerCompletedEventArgs e)
@@ -266,7 +266,7 @@ namespace AppDirect.WindowsClient.UI
         private bool ValidateEmail(string text)
         {
             return !String.IsNullOrEmpty(text) &&
-                   Helper.EmailMatchPattern.IsMatch(text);
+                   Constants.EmailMatchPattern.IsMatch(text);
         }
 
         private void CancelLoginClick(object sender, RoutedEventArgs e)
@@ -318,7 +318,7 @@ namespace AppDirect.WindowsClient.UI
         public void SetFocusField()
         {
             if (String.IsNullOrEmpty(UsernameTextBox.Text) ||
-                                 !Helper.EmailMatchPattern.IsMatch(UsernameTextBox.Text))
+                                 !Constants.EmailMatchPattern.IsMatch(UsernameTextBox.Text))
             {
                 UsernameTextBox.Focus();
             }

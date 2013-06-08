@@ -94,6 +94,11 @@ namespace AppDirect.WindowsClient.API
             return _appDirectApi.Authenticate(key, secret);
         }
 
+        public bool Authenticate(string key, string secret, int timeoutMs)
+        {
+            return _appDirectApi.Authenticate(key, secret, timeoutMs);
+        }
+
         public void UnAuthenticate()
         {
             _appDirectApi.UnAuthenticate();
