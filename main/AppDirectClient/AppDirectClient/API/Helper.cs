@@ -96,7 +96,7 @@ namespace AppDirect.WindowsClient.API
                         throw;
                     }
 
-                    Thread.Sleep(accumulatingTimeSpan);
+                    UiHelper.Sleep(accumulatingTimeSpan);
                     accumulatingTimeSpan += retryInterval;
                 }
 
@@ -126,7 +126,7 @@ namespace AppDirect.WindowsClient.API
             catch (Exception ex)
             {
                 Log.ErrorException("Exception executing onClick", ex);
-                MessageBox.Show(ex.Message);
+                UiHelper.ShowMessage(ex.Message);
             }
         }
 
@@ -134,7 +134,7 @@ namespace AppDirect.WindowsClient.API
         {
             if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.Application.UrlString)))
             {
-                MessageBox.Show("Application developer didn't set application's URL");
+                UiHelper.ShowMessage("Application developer didn't set application's URL");
             }
             else
             {
@@ -216,7 +216,7 @@ namespace AppDirect.WindowsClient.API
                     }
                 }
 
-                Thread.Sleep(intervalBetweenIdleCheck);
+                UiHelper.Sleep(intervalBetweenIdleCheck);
             }
 
             return false;

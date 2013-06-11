@@ -12,9 +12,13 @@ namespace AppDirect.WindowsClient.UI
             Application = application;
             DisplayContextMenu = application.HideContextMenu ? Visibility.Hidden : Visibility.Visible;
             IsUnsupported = UnsupportedApps.IsUnsupported(application);
+            if (IsUnsupported)
+            {
+                application.PinnedToTaskbar = false;
+            }
         }
 
-        public Application Application { get; set; }
+        public Application Application { get; private set; }
 
         public DisplayStatus ApplicationStatus
         {
@@ -36,9 +40,9 @@ namespace AppDirect.WindowsClient.UI
             }
         }
 
-        public Visibility DisplayContextMenu { get; set; }
+        public Visibility DisplayContextMenu { get; private set; }
 
-        public bool IsUnsupported { get; set; }
+        public bool IsUnsupported { get; private set; }
 
         public bool IsEnabled
         {
@@ -46,8 +50,6 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private Visibility _inProgressVisibility = Visibility.Collapsed;
 
         protected void NotifyPropertyChanged(string propertyName)
         {

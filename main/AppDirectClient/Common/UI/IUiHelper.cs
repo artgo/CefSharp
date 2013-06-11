@@ -17,5 +17,7 @@ namespace AppDirect.WindowsClient.Common.UI
         void Sleep(int milliseconds);
 
         void Sleep(TimeSpan sleepTime);
+
+        void ShowMessage(string message);
     }
 }

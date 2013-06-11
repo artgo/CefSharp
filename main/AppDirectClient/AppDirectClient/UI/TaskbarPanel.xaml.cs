@@ -1,12 +1,13 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using AppDirect.WindowsClient.InteropAPI.Internal;
 
 namespace AppDirect.WindowsClient.UI
 {
@@ -19,6 +20,7 @@ namespace AppDirect.WindowsClient.UI
         private const int MainIconSmallSize = 20;
         private readonly ILogger _log;
         private readonly MainViewModel _mainViewModel;
+        private readonly IUiHelper _uiHelper;
 
         public const int DeskbandInitialSize = 40;
         public const int DefaultPanelMargins = 20;
@@ -34,14 +36,16 @@ namespace AppDirect.WindowsClient.UI
         private int _allowedHeight;
         private int _allowedWidth;
 
-        public TaskbarPanel(ILatch latch, ILogger logger, MainViewModel mainViewModel)
+        public TaskbarPanel(ILatch latch, ILogger logger, MainViewModel mainViewModel, IUiHelper uiHelper)
         {
             _log = logger;
             _mainViewModel = mainViewModel;
+            _uiHelper = uiHelper;
+
             InitializeComponent();
             InitializeMainWindowLatch = latch;
 
-            ViewModel = new TaskbarPanelViewModel(_mainViewModel.MyApplications.Where(a => a.Application.PinnedToTaskbar).ToList());
+            ViewModel = new TaskbarPanelViewModel(_mainViewModel.MyApplications.Where(a => a.Application.PinnedToTaskbar && !a.IsUnsupported).ToList());
             DataContext = ViewModel;
         }
 
@@ -91,8 +95,16 @@ namespace AppDirect.WindowsClient.UI
             //Item is checked at this point if when it was clicked it was NOT checked
             if (clickedItem.IsChecked && !ViewModel.PinnedApps.Contains(clickedApp))
             {
-                ViewModel.AddPinnedApp(clickedApp);
-                AddButton(clickedApp);
+                if (clickedApp.IsUnsupported)
+                {
+                    clickedItem.IsChecked = false;
+                    _uiHelper.ShowMessage("Application cannot be pinned because it is unsupported");
+                }
+                else
+                {
+                    ViewModel.AddPinnedApp(clickedApp);
+                    AddButton(clickedApp);
+                }
             }
             else
             {
@@ -221,10 +233,23 @@ namespace AppDirect.WindowsClient.UI
         public void AddAppButton(object sender, EventArgs e)
         {
             var applicationViewModel = sender as ApplicationViewModel;
+
+            if (applicationViewModel == null)
+            {
+                throw new ArgumentNullException("applicationViewModel");
+            }
+
             if (!ViewModel.PinnedApps.Contains(applicationViewModel))
             {
-                ViewModel.AddPinnedApp(applicationViewModel);
-                Helper.PerformInUiThread(() => AddButton(applicationViewModel));
+                if (applicationViewModel.IsUnsupported)
+                {
+                    _uiHelper.ShowMessage("Application cannot be pinned because it is unsupported");
+                }
+                else
+                {
+                    ViewModel.AddPinnedApp(applicationViewModel);
+                    Helper.PerformInUiThread(() => AddButton(applicationViewModel));
+                }
             }
         }
 
@@ -269,7 +294,7 @@ namespace AppDirect.WindowsClient.UI
 
         private void SetMainButtonIconSize(TaskbarIconsSize newIconsSize)
         {
-            int newSize = (newIconsSize == TaskbarIconsSize.Small)
+            var newSize = (newIconsSize == TaskbarIconsSize.Small)
                                     ? MainIconSmallSize
                                     : MainIconLargeSize;
 
