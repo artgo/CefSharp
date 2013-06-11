@@ -118,13 +118,14 @@ namespace AppDirect.WindowsClient.API
                 var clickedApp = GetApplicationFromButtonSender(sender);
 
                 //if the status is not active the application is disabled in the UI
-                if (clickedApp.Application.Status == DisplayStatus.Active)
+                if ((clickedApp.Application.Status == DisplayStatus.Active) && !UnsupportedApps.IsUnsupported(clickedApp.Application))
                 {
                     LaunchApp(clickedApp);
                 }
             }
             catch (Exception ex)
             {
+                Log.ErrorException("Exception executing onClick", ex);
                 MessageBox.Show(ex.Message);
             }
         }

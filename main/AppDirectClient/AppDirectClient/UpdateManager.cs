@@ -1,5 +1,4 @@
 ﻿using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.UI;
 using System;
 using System.Threading;
@@ -12,16 +11,8 @@ namespace AppDirect.WindowsClient
         private static readonly TimeSpan CheckForIdleTimeSpan = TimeSpan.FromMinutes(10);
         private static readonly TimeSpan DelayAfterStartup = TimeSpan.FromMinutes(5);
         private static readonly TimeSpan MinimumIdleInterval = TimeSpan.FromMinutes(5);
-        
-        //Test Values
-        //private static readonly TimeSpan CheckForUpdatesTimeSpan = TimeSpan.FromMinutes(1);
-        //private static readonly TimeSpan CheckForIdleTimeSpan = TimeSpan.FromSeconds(10);
-        //private static readonly TimeSpan DelayAfterStartup = TimeSpan.FromSeconds(5);
-        //private static readonly TimeSpan MinimumIdleInterval = TimeSpan.FromSeconds(5);
-        
         private static readonly TimeSpan MaximumWaitToUpdateInterval = TimeSpan.FromDays(1);
         private static readonly Thread DownloadUpdateThread = new Thread(ManageUpdate);
-
 
         private static volatile MainWindow _mainWindow;
 

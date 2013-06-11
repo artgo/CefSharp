@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using AppDirect.WindowsClient.Common.API;
+﻿using System.Collections.Generic;
 
 namespace AppDirect.WindowsClient.UI
 {
     public class TaskbarPanelViewModel
     {
         public List<ApplicationViewModel> PinnedApps { get; set; }
-        
-        public TaskbarPanelViewModel(List<ApplicationViewModel> myApps )
+
+        public TaskbarPanelViewModel(List<ApplicationViewModel> myApps)
         {
             PinnedApps = myApps;
         }

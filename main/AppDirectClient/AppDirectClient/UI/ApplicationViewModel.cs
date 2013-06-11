@@ -11,6 +11,7 @@ namespace AppDirect.WindowsClient.UI
         {
             Application = application;
             DisplayContextMenu = application.HideContextMenu ? Visibility.Hidden : Visibility.Visible;
+            IsUnsupported = UnsupportedApps.IsUnsupported(application);
         }
 
         public Application Application { get; set; }
@@ -36,6 +37,13 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public Visibility DisplayContextMenu { get; set; }
+
+        public bool IsUnsupported { get; set; }
+
+        public bool IsEnabled
+        {
+            get { return !IsUnsupported && (ApplicationStatus == DisplayStatus.Active); }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

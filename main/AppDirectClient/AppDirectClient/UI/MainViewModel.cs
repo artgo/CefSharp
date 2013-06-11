@@ -488,7 +488,6 @@ namespace AppDirect.WindowsClient.UI
                 {
                     ServiceLocator.LocalStorage.InstalledLocalApps.Add(application);
                 }
-
                 else
                 {
                     ServiceLocator.LocalStorage.InstalledAppDirectApps.Add(application);

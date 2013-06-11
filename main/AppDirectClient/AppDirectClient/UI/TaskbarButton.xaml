@@ -17,7 +17,7 @@
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Opacity" Value=".5" />
-            <Setter Property="ToolTip" Value="Provisioning In Progress"></Setter>
+            <Setter Property="ToolTip" Value="Application Is Unavailable"></Setter>
             <Setter Property="ContextMenu" Value="{StaticResource UninstallContextMenu}" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -45,10 +45,8 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ApplicationStatus}">
-                    <DataTrigger.Value>
-                        <local:DisplayStatus>Active</local:DisplayStatus>
-                    </DataTrigger.Value>
+                <DataTrigger Binding="{Binding IsEnabled}">
+                    <DataTrigger.Value>True</DataTrigger.Value>
                     <Setter Property="Opacity" Value="1" />
                     <Setter Property="ToolTip" Value="{Binding Application.Name}" />
                 </DataTrigger>
