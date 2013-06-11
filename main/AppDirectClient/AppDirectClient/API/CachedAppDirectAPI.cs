@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.API.VO;
+﻿using AppDirect.WindowsClient.API.Subscription;
+using AppDirect.WindowsClient.API.VO;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using System;
@@ -155,10 +156,20 @@ namespace AppDirect.WindowsClient.API
 
             foreach (var applicationsApplication in myApps)
             {
+                var id = applicationsApplication.ProductId;
+                if (string.IsNullOrEmpty(id))
+                {
+                    var match = IdFromUrl.Match(applicationsApplication.MarketplaceUrl);
+                    if (match.Captures.Count > 0)
+                    {
+                        id = IdFromUrl.Match(applicationsApplication.MarketplaceUrl).Captures[0].Value;
+                    }
+                }
+
                 var app = new Application()
                 {
                     Description = applicationsApplication.Description,
-                    Id = IdFromUrl.Match(applicationsApplication.MarketplaceUrl).Captures[0].Value,
+                    Id = id,
                     ImagePath = applicationsApplication.ImageUrl,
                     Name = applicationsApplication.Name,
                     UrlString = applicationsApplication.LoginUrl,

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using AppDirect.WindowsClient.API.Subscription;
 using AppDirect.WindowsClient.Common.API;
 using NUnit.Framework;
 
-namespace AppDirect.WindowsClient.Tests.UnitTests
+namespace AppDirect.WindowsClient.Tests.API.Subscription
 {
     [TestFixture]
     public class StatusHelperUnitTest
