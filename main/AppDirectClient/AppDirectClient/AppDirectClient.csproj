@@ -145,8 +145,6 @@
     <Compile Include="Analytics\AsyncAnalytics.cs" />
     <Compile Include="Analytics\GoogleAnalytics.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
-    <Compile Include="ApiStatus.cs" />
-    <Compile Include="ApiSubscriptionStatus.cs" />
     <Compile Include="API\BrowsersManagerApiServiceBuilder.cs" />
     <Compile Include="API\BrowserWindowsCommunicator.cs" />
     <Compile Include="API\Constants.cs" />
@@ -157,6 +155,10 @@
     <Compile Include="API\ILatch.cs" />
     <Compile Include="API\IpcCommunicator.cs" />
     <Compile Include="API\Latch.cs" />
+    <Compile Include="API\Subscription\ApiEventType.cs" />
+    <Compile Include="API\Subscription\ApiSubscriptionStatus.cs" />
+    <Compile Include="API\Subscription\ApiUserAssingmentStatus.cs" />
+    <Compile Include="API\Subscription\StatusHelper.cs" />
     <Compile Include="API\VO\AddressWS.cs" />
     <Compile Include="API\VO\CompanyEntitlementStatus.cs" />
     <Compile Include="API\VO\CompanyWS.cs" />
@@ -201,7 +203,6 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="ServiceLocator.cs" />
-    <Compile Include="StatusHelper.cs" />
     <Compile Include="Storage\CipherUtility.cs" />
     <Compile Include="Storage\LocalStorage.cs" />
     <Compile Include="InteropAPI\Internal\TaskbarHelper.cs" />

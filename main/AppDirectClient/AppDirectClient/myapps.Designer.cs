@@ -24,36 +24,41 @@ namespace AppDirect.WindowsClient
 
     public partial class MyappsMyapp
     {
-        [XmlElement("description")]
-        public string Description { get; set; }
-        [XmlElement("developerName")]
-        public string DeveloperName { get; set; }
-        [XmlElement("imageUrl")]
-        public string ImageUrl { get; set; }
+        [XmlElement("productId")]
+        public string ProductId { get; set; }
+        [XmlElement("name")]
+        public string Name { get; set; }
+        [XmlElement("productType")]
+        public string ProductType { get; set; }
+        [XmlElement("status")]
+        public string Status { get; set; }
         [XmlElement("loginUrl")]
         public string LoginUrl { get; set; }
         [XmlElement("marketplaceUrl")]
         public string MarketplaceUrl { get; set; }
-        [XmlElement("name")]
-        public string Name { get; set; }
-        [XmlElement("overview")]
-        public string Overview { get; set; }
-        [XmlElement("productType")]
-        public string ProductType { get; set; }
+        [XmlElement("imageUrl")]
+        public string ImageUrl { get; set; }
+        [XmlElement("downloadUuid")]
+        public string DownloadUuid { get; set; }
         [XmlElement("publishedOn")]
         public string PublishedOn { get; set; }
-        [XmlElement("status")]
-        public string Status { get; set; }
         [XmlElement("startingPrice")]
         public string StartingPrice { get; set; }
-        [XmlElement("subscriptionId")]
-        public string SubscriptionId { get; set; }
+        [XmlElement("developerName")]
+        public string DeveloperName { get; set; }
+        [XmlElement("description")]
+        public string Description { get; set; }
+        [XmlElement("overview")]
+        public string Overview { get; set; }
         [XmlElement("subscriptionStatus")]
         public string SubscriptionStatus { get; set; }
+        [XmlElement("subscriptionId")]
+        public string SubscriptionId { get; set; }
+        [XmlElement("pendingEventType")]
+        public string PendingEventType { get; set; }
         [XmlArray(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [XmlArrayItem("entry", typeof(MyappsMyappVersionsEntry), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public List<MyappsMyappVersionsEntry> Versions { get; set; }
-
 
         public MyappsMyapp()
         {

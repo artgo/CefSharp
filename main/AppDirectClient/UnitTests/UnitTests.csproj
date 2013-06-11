@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Analytics\AsyncAnalyticsTest.cs" />
     <Compile Include="API\BrowserWindowsCommunicatorTest.cs" />
+    <Compile Include="API\Subscription\StatusHelperUnitTest.cs" />
     <Compile Include="API\VO\SubscriptionWSUnitTest.cs" />
     <Compile Include="Common\API\AbstractServiceClientTest.cs" />
     <Compile Include="Common\API\ProcessWatcherTests.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="UnitTests\LoginViewModelUnitTest.cs" />
     <Compile Include="UnitTests\MainViewModelUnitTest.cs" />
     <Compile Include="UnitTests\ServiceLocatorTest.cs" />
-    <Compile Include="UnitTests\StatusHelperUnitTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppDirectClient\AppDirectClient.csproj">

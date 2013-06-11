@@ -1,6 +1,6 @@
 ﻿using AppDirect.WindowsClient.API;
-using NUnit.Framework;
 using Ninject;
+using NUnit.Framework;
 
 namespace AppDirect.WindowsClient.Tests.UnitTests
 {
