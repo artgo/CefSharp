@@ -4,6 +4,8 @@ namespace AppDirect.WindowsClient.Common.UI
 {
     public interface IUiHelper
     {
+        string GetPrevLocation(int depth);
+
         void PerformInUiThread(Action action);
 
         void StartAsynchronously(Action action);

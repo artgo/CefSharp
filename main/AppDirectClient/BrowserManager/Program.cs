@@ -29,6 +29,8 @@ namespace AppDirect.WindowsClient.Browser
         [STAThread]
         private static void Main(string[] args)
         {
+            var startTicks = Environment.TickCount;
+
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += ExceptionHandler;
 
@@ -59,7 +61,7 @@ namespace AppDirect.WindowsClient.Browser
             var mainAppClient = new MainApplicationServiceClient(new MainApplicationClientServiceStarter(), UiHelper,
                                                                  new NLogLogger("MainApplicationServiceClient"));
 
-            var appDirectClientProcessWatcher = new ProcessWatcher(_mainApplicationName, new AbstractProcess(_mainApplicationName), Log);
+            var appDirectClientProcessWatcher = new ProcessWatcher(_mainApplicationName, new AbstractProcess(_mainApplicationName, new NLogLogger("BrowserMainProcess")), Log);
 
             var sessionKeeper = new SessionKeeper(mainAppClient, BrowserWindowsManager, BrowserWindowsBuilder, new NLogLogger("Browser.SessionKeeper"), UiHelper);
 
@@ -89,6 +91,8 @@ namespace AppDirect.WindowsClient.Browser
 
                     if (wasInitialized)
                     {
+                        var timeElapsed = Environment.TickCount - startTicks;
+                        Log.Warn("BrowserManager startup completed in " + timeElapsed + "ms.");
                         app.Run();
                     }
                 }

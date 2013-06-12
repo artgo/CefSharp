@@ -1,4 +1,6 @@
-﻿using NLog;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using NLog;
 using System;
 using System.Diagnostics;
 
@@ -118,64 +120,91 @@ namespace AppDirect.WindowsClient.Common.Log
             return new NLogLogger(GetCurrentLogger());
         }
 
+        private string JoinParameters(ParameterInfo[] parameters)
+        {
+            var result = "";
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (i > 0)
+                {
+                    result += ", ";
+                }
+
+                var parameterInfo = parameters[i];
+                result += parameterInfo.ParameterType;
+            }
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private string GetCurrentLocation()
+        {
+            var stackTrace = new StackTrace();
+            var stackFrame = stackTrace.GetFrame(2);
+            var method = stackFrame.GetMethod();
+
+            return method.ReflectedType.FullName + "." + method.Name + "(" + JoinParameters(method.GetParameters()) + ") ";
+        }
+
         public void TraceException(string message, Exception exception)
         {
-            Log.TraceException(message, exception);
+            Log.TraceException(GetCurrentLocation() + message, exception);
         }
 
         public void Trace(string message, params object[] args)
         {
-            Log.Trace(message, args);
+            Log.Trace(GetCurrentLocation() + message, args);
         }
 
         public void DebugException(string message, Exception exception)
         {
-            Log.DebugException(message, exception);
+            Log.DebugException(GetCurrentLocation() + message, exception);
         }
 
         public void Debug(string message, params object[] args)
         {
-            Log.Debug(message, args);
+            Log.Debug(GetCurrentLocation() + message, args);
         }
 
         public void ErrorException(string message, Exception exception)
         {
-            Log.ErrorException(message, exception);
+            Log.ErrorException(GetCurrentLocation() + message, exception);
         }
 
         public void Error(string message, params object[] args)
         {
-            Log.Error(message, args);
+            Log.Error(GetCurrentLocation() + message, args);
         }
 
         public void FatalException(string message, Exception exception)
         {
-            Log.FatalException(message, exception);
+            Log.FatalException(GetCurrentLocation() + message, exception);
         }
 
         public void Fatal(string message, params object[] args)
         {
-            Log.Fatal(message, args);
+            Log.Fatal(GetCurrentLocation() + message, args);
         }
 
         public void InfoException(string message, Exception exception)
         {
-            Log.InfoException(message, exception);
+            Log.InfoException(GetCurrentLocation() + message, exception);
         }
 
         public void Info(string message, params object[] args)
         {
-            Log.Info(message, args);
+            Log.Info(GetCurrentLocation() + message, args);
         }
 
         public void WarnException(string message, Exception exception)
         {
-            Log.WarnException(message, exception);
+            Log.WarnException(GetCurrentLocation() + message, exception);
         }
 
         public void Warn(string message, params object[] args)
         {
-            Log.Warn(message, args);
+            Log.Warn(GetCurrentLocation() + message, args);
         }
 
         public bool IsTraceEnabled
