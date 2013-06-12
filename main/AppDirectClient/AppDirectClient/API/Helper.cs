@@ -96,7 +96,7 @@ namespace AppDirect.WindowsClient.API
                         throw;
                     }
 
-                    Thread.Sleep(accumulatingTimeSpan);
+                    UiHelper.Sleep(accumulatingTimeSpan);
                     accumulatingTimeSpan += retryInterval;
                 }
 
@@ -118,14 +118,15 @@ namespace AppDirect.WindowsClient.API
                 var clickedApp = GetApplicationFromButtonSender(sender);
 
                 //if the status is not active the application is disabled in the UI
-                if (clickedApp.Application.Status == DisplayStatus.Active)
+                if ((clickedApp.Application.Status == DisplayStatus.Active) && !UnsupportedApps.IsUnsupported(clickedApp.Application))
                 {
                     LaunchApp(clickedApp);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Log.ErrorException("Exception executing onClick", ex);
+                UiHelper.ShowMessage(ex.Message);
             }
         }
 
@@ -133,7 +134,7 @@ namespace AppDirect.WindowsClient.API
         {
             if ((clickedApp == null) || (String.IsNullOrEmpty(clickedApp.Application.UrlString)))
             {
-                MessageBox.Show("Application developer didn't set application's URL");
+                UiHelper.ShowMessage("Application developer didn't set application's URL");
             }
             else
             {
@@ -215,7 +216,7 @@ namespace AppDirect.WindowsClient.API
                     }
                 }
 
-                Thread.Sleep(intervalBetweenIdleCheck);
+                UiHelper.Sleep(intervalBetweenIdleCheck);
             }
 
             return false;

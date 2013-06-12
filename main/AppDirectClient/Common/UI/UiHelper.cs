@@ -139,5 +139,10 @@ namespace AppDirect.WindowsClient.Common.UI
         {
             Thread.Sleep(sleepTime);
         }
+
+        public void ShowMessage(string message)
+        {
+            MessageBox.Show(message);
+        }
     }
 }

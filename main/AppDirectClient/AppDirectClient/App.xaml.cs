@@ -1,6 +1,7 @@
 ﻿using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.InteropAPI;
 using AppDirect.WindowsClient.UI;
 using System;
@@ -26,6 +27,9 @@ namespace AppDirect.WindowsClient
         public App()
         {
             _exceptionHandler = CurrentDomainOnUnhandledException;
+
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += _exceptionHandler;
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -36,10 +40,6 @@ namespace AppDirect.WindowsClient
                 where assembly.CodeBase.EndsWith(".exe")
                 select System.IO.Path.GetDirectoryName(assembly.CodeBase.Replace("file:///", ""))
             ).FirstOrDefault();
-
-
-            var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += _exceptionHandler;
 
             var startTicks = Environment.TickCount;
 
@@ -77,7 +77,7 @@ namespace AppDirect.WindowsClient
             var mainViewModel = new MainViewModel();
             mainViewModel.InitializeAppsLists();
 
-            var taskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
+            var taskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel, helper);
 
             helper.StartAsynchronously(
                 () => ServiceLocator.UiHelper.IgnoreException(ServiceLocator.BrowserWindowsCommunicator.Start));
@@ -88,7 +88,7 @@ namespace AppDirect.WindowsClient
                 {
                     Helper.PerformInUiThread(() =>
                         {
-                            taskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel);
+                            taskbarPanel = CreateAndInsertTaskbarPanel(mainViewModel, helper);
                         });
 
                     taskbarPanel.ApplicationWindow = _mainWindow;
@@ -107,11 +107,11 @@ namespace AppDirect.WindowsClient
             });
         }
 
-        private TaskbarPanel CreateAndInsertTaskbarPanel(MainViewModel mainViewModel)
+        private TaskbarPanel CreateAndInsertTaskbarPanel(MainViewModel mainViewModel, IUiHelper uiHelper)
         {
             try
             {
-                var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel);
+                var taskbarPanel = new TaskbarPanel(_mainWindowReadyLatch, new NLogLogger("TaskbarPanel"), mainViewModel, uiHelper);
                 taskbarPanel.InitializeButtons();
                 ServiceLocator.TaskbarApi.InsertPanel(taskbarPanel);
 
@@ -120,8 +120,8 @@ namespace AppDirect.WindowsClient
             catch (Exception ex)
             {
                 _log.ErrorException("Failed to initialize taskbar module", ex);
-                MessageBox.Show(ex.ToString());
-                ServiceLocator.UiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
+                uiHelper.ShowMessage(ex.ToString());
+                uiHelper.IgnoreException(_instanceMutex.ReleaseMutex);
                 _instanceMutex = null;
                 Current.Shutdown();
                 Environment.Exit(0);
@@ -185,7 +185,12 @@ namespace AppDirect.WindowsClient
         private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
         {
             _log.ErrorException("Exception during runtime", unhandledExceptionEventArgs.ExceptionObject as Exception);
-            ServiceLocator.Analytics.Notify("Crash", unhandledExceptionEventArgs.ExceptionObject.GetType().ToString(), 0);
+            
+            if (ServiceLocator.Analytics != null)
+            {
+                ServiceLocator.Analytics.Notify("Crash", unhandledExceptionEventArgs.ExceptionObject.GetType().ToString(), 0);
+            }
+
             MessageBox.Show(unhandledExceptionEventArgs.ExceptionObject.ToString());
         }
 

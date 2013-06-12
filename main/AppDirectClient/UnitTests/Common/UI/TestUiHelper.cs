@@ -39,5 +39,9 @@ namespace AppDirect.WindowsClient.Tests.Common.UI
         public void Sleep(TimeSpan sleepTime)
         {
         }
+
+        public void ShowMessage(string message)
+        {
+        }
     }
 }

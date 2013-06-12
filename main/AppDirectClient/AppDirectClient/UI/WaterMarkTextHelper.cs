@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace AppDirect.WindowsClient.UI
@@ -11,7 +7,7 @@ namespace AppDirect.WindowsClient.UI
     {
         public static bool GetIsMonitoring(DependencyObject obj)
         {
-            return (bool) obj.GetValue(IsMonitoringProperty);
+            return (bool)obj.GetValue(IsMonitoringProperty);
         }
 
         public static void SetIsMonitoring(DependencyObject obj, bool value)
@@ -20,12 +16,12 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public static readonly DependencyProperty IsMonitoringProperty =
-            DependencyProperty.RegisterAttached("IsMonitoring", typeof (bool), typeof (WaterMarkTextHelper),
+            DependencyProperty.RegisterAttached("IsMonitoring", typeof(bool), typeof(WaterMarkTextHelper),
                                                 new UIPropertyMetadata(false, OnIsMonitoringChanged));
 
         public static int GetTextLength(DependencyObject obj)
         {
-            return (int) obj.GetValue(TextLengthProperty);
+            return (int)obj.GetValue(TextLengthProperty);
         }
 
         public static void SetTextLength(DependencyObject obj, int value)
@@ -33,7 +29,6 @@ namespace AppDirect.WindowsClient.UI
             obj.SetValue(TextLengthProperty, value);
             if (value >= 1)
             {
-
                 obj.SetValue(HasTextProperty, true);
             }
             else
@@ -43,16 +38,16 @@ namespace AppDirect.WindowsClient.UI
         }
 
         public static readonly DependencyProperty TextLengthProperty =
-            DependencyProperty.RegisterAttached("TextLength", typeof (int), typeof (WaterMarkTextHelper),
+            DependencyProperty.RegisterAttached("TextLength", typeof(int), typeof(WaterMarkTextHelper),
                                                 new UIPropertyMetadata(0));
 
         private static readonly DependencyProperty HasTextProperty =
-            DependencyProperty.RegisterAttached("HasText", typeof (bool), typeof (WaterMarkTextHelper),
+            DependencyProperty.RegisterAttached("HasText", typeof(bool), typeof(WaterMarkTextHelper),
                                                 new FrameworkPropertyMetadata(false));
 
         public bool HasText
         {
-            get { return (bool) GetValue(HasTextProperty); }
+            get { return (bool)GetValue(HasTextProperty); }
             set { SetValue(HasTextProperty, value); }
         }
 
@@ -61,7 +56,7 @@ namespace AppDirect.WindowsClient.UI
             if (d is TextBox)
             {
                 TextBox txtBox = d as TextBox;
-                if ((bool) e.NewValue)
+                if ((bool)e.NewValue)
                 {
                     txtBox.TextChanged += TextChanged;
                 }
@@ -73,7 +68,7 @@ namespace AppDirect.WindowsClient.UI
             else if (d is PasswordBox)
             {
                 PasswordBox passBox = d as PasswordBox;
-                if ((bool) e.NewValue)
+                if ((bool)e.NewValue)
                 {
                     passBox.PasswordChanged += PasswordChanged;
                 }

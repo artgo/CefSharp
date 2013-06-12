@@ -42,8 +42,6 @@ namespace AppDirect.WindowsClient
         public string DownloadUuid { get; set; }
         [XmlElement("publishedOn")]
         public string PublishedOn { get; set; }
-        [XmlElement("startingPrice")]
-        public string StartingPrice { get; set; }
         [XmlElement("developerName")]
         public string DeveloperName { get; set; }
         [XmlElement("description")]
@@ -56,6 +54,8 @@ namespace AppDirect.WindowsClient
         public string SubscriptionId { get; set; }
         [XmlElement("pendingEventType")]
         public string PendingEventType { get; set; }
+        [XmlElement("startingPrice")]
+        public string StartingPrice { get; set; }
         [XmlArray(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [XmlArrayItem("entry", typeof(MyappsMyappVersionsEntry), Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public List<MyappsMyappVersionsEntry> Versions { get; set; }
