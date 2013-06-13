@@ -68,11 +68,10 @@ namespace SendNotification
             Console.WriteLine("Attempt to send.");
             var recepient = new Jid("admin", "localhost", null);
             Console.WriteLine("Sending to: " + recepient);
-            var message = new Message(recepient, MessageType.chat, @"ClientUpdated");
+            var message = new Message(recepient, MessageType.chat, @"ClientUpdated3");
             message.From = "user@localhost";
             message.Language = "en";
             xmpp.Send(message);
-            xmpp.Send(@"<message from='user@localhost' to='admin@localhost' xml:lang='en'><body>Client Updated</body></message>");
             Console.WriteLine("Did send.");
         }
 
