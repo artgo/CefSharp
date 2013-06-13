@@ -1,7 +1,11 @@
-﻿using AppDirect.WindowsClient.API;
+﻿using System.Windows;
+using AppDirect.WindowsClient.API;
+using AppDirect.WindowsClient.Properties;
 using AppDirect.WindowsClient.UI;
 using System;
 using System.Threading;
+using agsXMPP;
+using agsXMPP.protocol.client;
 
 namespace AppDirect.WindowsClient
 {
@@ -18,25 +22,43 @@ namespace AppDirect.WindowsClient
 
         private static void ManageUpdate()
         {
-            Thread.Sleep(DelayAfterStartup);
+//            Thread.Sleep(DelayAfterStartup);
+//
+//            while (true)
+//            {
+//                while (!ServiceLocator.LocalStorage.UpdateDownloaded)
+//                {
+//                    bool updateAvailable = ServiceLocator.Updater.GetUpdates(Constants.ApplicationVersion);
+//
+//                    if (updateAvailable)
+//                    {
+//                        ServiceLocator.UiHelper.IgnoreException(() => Helper.PerformInUiThread(() => _mainWindow.ViewModel.ResetUpdateText()));
+//                        break;
+//                    }
+//
+//                    ServiceLocator.UiHelper.Sleep(CheckForUpdatesTimeSpan);
+//                }
+//
+//                ServiceLocator.UiHelper.IgnoreException(InstallUpdateOnIdle);
+//            }
 
-            while (true)
+            var xmpp = new XmppClientConnection("ec2-107-22-92-51.compute-1.amazonaws.com");
+            xmpp.Open("user", "user");
+            xmpp.OnMessage += OnMessage;
+        }
+
+        private static void OnMessage(object sender, Message msg)
+        {
+            bool updateAvailable = false;
+            const int millisecondsToDisplayCheckingString = 1000;
+
+            Helper.PerformInUiThread(() =>
             {
-                while (!ServiceLocator.LocalStorage.UpdateDownloaded)
-                {
-                    bool updateAvailable = ServiceLocator.Updater.GetUpdates(Constants.ApplicationVersion);
-
-                    if (updateAvailable)
-                    {
-                        ServiceLocator.UiHelper.IgnoreException(() => Helper.PerformInUiThread(() => _mainWindow.ViewModel.ResetUpdateText()));
-                        break;
-                    }
-
-                    ServiceLocator.UiHelper.Sleep(CheckForUpdatesTimeSpan);
-                }
-
-                ServiceLocator.UiHelper.IgnoreException(InstallUpdateOnIdle);
-            }
+                _mainWindow.ViewModel.UpdateString = updateAvailable ? Resources.InstallUpdateString : Resources.NoUpdateFoundString;
+                _mainWindow.ViewModel.UpdateSpinnerVisibility = Visibility.Hidden;
+                _mainWindow.ViewModel.UpdateAvailable = updateAvailable;
+            });
+            ServiceLocator.UiHelper.StartAsynchronously(() => Helper.PerformForMinimumTime(() => { updateAvailable = ServiceLocator.Updater.GetUpdates(Constants.ApplicationVersion, 1, 0); }, false, millisecondsToDisplayCheckingString));
         }
 
         private static void InstallUpdateOnIdle()

@@ -84,6 +84,8 @@ md "$(SolutionDir)bin\Result"
 move /Y "$(SolutionDir)Setup\AppDirectClientInstaller.exe" "$(SolutionDir)bin\Result"
 move /Y "$(SolutionDir)Setup\updater.exe" "$(SolutionDir)bin\Result"
 move /Y "$(SolutionDir)Setup\version.txt" "$(SolutionDir)bin\Result"
+xcopy "$(TargetDir)agsXMPP.dll" "$(SolutionDir)bin\Result" /y /i /r
+xcopy "$(TargetDir)SendNotification.exe" "$(SolutionDir)bin\Result" /y /i /r
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

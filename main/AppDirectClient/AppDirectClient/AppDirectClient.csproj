@@ -108,6 +108,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="agsXMPP">
+      <HintPath>..\packages\agsXMPP.1.1.1.0\lib\agsXMPP.dll</HintPath>
+    </Reference>
     <Reference Include="GaDotNet.Common">
       <HintPath>libs\GaDotNet.Common.dll</HintPath>
     </Reference>
@@ -539,6 +542,7 @@ xcopy "$(ProjectDir)libs" "$(SolutionDir)Setup\AppDirectClient" /e /y /i /r
 xcopy "$(TargetDir)AppDirectClient.exe" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 xcopy "$(TargetDir)AppDirectClient.exe.config" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 xcopy "$(TargetDir)Ninject.dll" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
+xcopy "$(TargetDir)agsXMPP.dll" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 xcopy "$(TargetDir)AppDirectClient.exe.nlog" "$(SolutionDir)Setup\AppDirectClient" /y /i /r
 </PostBuildEvent>
   </PropertyGroup>
