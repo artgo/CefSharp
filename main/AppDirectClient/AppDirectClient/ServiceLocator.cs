@@ -1,13 +1,13 @@
-﻿using AppDirect.WindowsClient.API;
-using AppDirect.WindowsClient.Analytics;
+﻿using AppDirect.WindowsClient.Analytics;
+using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
+using AppDirect.WindowsClient.InteropAPI;
+using AppDirect.WindowsClient.InteropAPI.Internal;
 using AppDirect.WindowsClient.Storage;
 using AppDirect.WindowsClient.Updates;
 using Ninject;
-using AppDirect.WindowsClient.InteropAPI;
-using AppDirect.WindowsClient.InteropAPI.Internal;
 using Ninject.Parameters;
 
 namespace AppDirect.WindowsClient
@@ -80,7 +80,7 @@ namespace AppDirect.WindowsClient
         /// </summary>
         public static void Initialize()
         {
-            Kernel.Rebind<IProcessWatcher>().ToConstant(new ProcessWatcher("BrowserManager", new AbstractProcess("BrowserManager"), new NLogLogger("Browser Process Watcher")));
+            Kernel.Rebind<IProcessWatcher>().ToConstant(new ProcessWatcher("BrowserManager", new AbstractProcess("BrowserManager", new NLogLogger("BrowserManagerStarter")), new NLogLogger("BrowserProcessWatcher")));
             Kernel.Rebind<IUiHelper>().ToConstant(new UiHelper(new NLogLogger("UiHelper")));
             Kernel.Rebind<IAnalytics>().ToConstant(new AsyncAnalytics(new GoogleAnalytics(new NLogLogger("Analytics")), Kernel.Get<IUiHelper>()));
             Kernel.Rebind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(new AppDirectApi(), new NLogLogger("CachedAppDirectApi")));

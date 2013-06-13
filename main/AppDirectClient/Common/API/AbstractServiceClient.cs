@@ -50,6 +50,7 @@ namespace AppDirect.WindowsClient.Common.API
 
         public void Start()
         {
+            _log.Info("Starting service " + typeof(T).FullName);
             _failedState = true;
             var service = _serviceStarter.CreateServiceAndTryToConnect();
             if (!(service is ICommunicationObject))
@@ -60,6 +61,7 @@ namespace AppDirect.WindowsClient.Common.API
             _communicationObject = (ICommunicationObject)service;
 
             _failedState = false;
+            _log.Info("Service " + typeof(T).FullName + " was started.");
         }
 
         public void Stop()
@@ -68,6 +70,8 @@ namespace AppDirect.WindowsClient.Common.API
             {
                 throw new InvalidOperationException("Service was not started");
             }
+
+            _log.Info("Stopping service " + typeof(T).FullName);
 
             try
             {
@@ -78,7 +82,7 @@ namespace AppDirect.WindowsClient.Common.API
             }
             catch (Exception e)
             {
-                _log.ErrorException("Error while closing service " + typeof(T).FullName, e);
+                _log.Info(_connectionErrorStr + " Error while closing service " + typeof(T).FullName + " "+ e.Message);
             }
             finally
             {
@@ -96,7 +100,8 @@ namespace AppDirect.WindowsClient.Common.API
             }
             catch (CommunicationException e)
             {
-                LogCommunicationInfo(e);
+                _failedState = true;
+                _log.Info(_connectionErrorStr + " " + e.Message);
 
                 started = false;
             }
@@ -116,6 +121,9 @@ namespace AppDirect.WindowsClient.Common.API
                 throw new ArgumentNullException("action");
             }
 
+            var methodName = _uiHelper.GetPrevLocation(2);
+            _log.Debug("Executing " + methodName);
+
             RetryStartUntilReady();
 
             bool failed = true;
@@ -130,7 +138,8 @@ namespace AppDirect.WindowsClient.Common.API
                 }
                 catch (CommunicationException e)
                 {
-                    LogCommunicationError(e);
+                    _failedState = true;
+                    _log.Info(_connectionErrorStr + " while calling " + methodName + " error: " + e.Message);
                 }
 
                 if (failed)
@@ -160,7 +169,9 @@ namespace AppDirect.WindowsClient.Common.API
                 }
                 catch (CommunicationException e)
                 {
-                    LogCommunicationError(e);
+                    _failedState = true;
+                    var methodName = _uiHelper.GetPrevLocation(2);
+                    _log.Info(_connectionErrorStr + " while calling " + methodName + " error: " + e.Message);
                 }
 
                 _uiHelper.Sleep(RestartIntervalMilliseconds);
@@ -177,18 +188,6 @@ namespace AppDirect.WindowsClient.Common.API
                     _uiHelper.Sleep(RestartIntervalMilliseconds);
                 }
             }
-        }
-
-        protected virtual void LogCommunicationError(CommunicationException e)
-        {
-            _failedState = true;
-            _log.ErrorException(_connectionErrorStr, e);
-        }
-
-        protected virtual void LogCommunicationInfo(CommunicationException e)
-        {
-            _failedState = true;
-            _log.Info(_connectionErrorStr + " " + e.Message);
         }
     }
 }

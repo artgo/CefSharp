@@ -23,13 +23,17 @@ namespace AppDirect.WindowsClient.Common
 
         public void Start()
         {
+            _logger.Debug("Starting watcher for " + _processName);
             Watch();
+            _logger.Debug("Watcher for " + _processName + " was started");
         }
 
         public void Stop()
         {
+            _logger.Debug("Stopping watcher for " + _processName);
             _process.RemoveRegisteredEvent(LaunchIfCrashed);
             _restartsRemaining = 10;
+            _logger.Debug("Watcher for " + _processName + " was stopped");
         }
 
         private void Watch()
@@ -44,15 +48,11 @@ namespace AppDirect.WindowsClient.Common
             _logger.Info(String.Format("The {0} process was exited with ExitCode {1}.", _processName, process.ExitCode));
             if (process.ExitCode != 0)
             {
-                if (_restartsRemaining-- > 0)//limit the number of restarts to prevent infinite crashing
+                if ((_process != null) && (_restartsRemaining-- > 0))//limit the number of restarts to prevent infinite crashing
                 {
-                    _process.GetProcess();
                     Watch();
-                    if (_process != null)
-                    {
-                        _process.Start();
-                        _logger.Info(String.Format("{0} process started by ProcessWatcher", _processName));
-                    }
+                    _process.Start();
+                    _logger.Info(String.Format("{0} process started by ProcessWatcher", _processName));
                 }
                 else
                 {

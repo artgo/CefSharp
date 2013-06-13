@@ -1,5 +1,8 @@
 using AppDirect.WindowsClient.Common.Log;
 using System;
+using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
 
@@ -17,6 +20,33 @@ namespace AppDirect.WindowsClient.Common.UI
             }
 
             _log = log;
+        }
+
+        private string JoinParameters(ParameterInfo[] parameters)
+        {
+            var result = "";
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (i > 0)
+                {
+                    result += ", ";
+                }
+
+                var parameterInfo = parameters[i];
+                result += parameterInfo.ParameterType;
+            }
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public string GetPrevLocation(int depth)
+        {
+            var stackTrace = new StackTrace();
+            var stackFrame = stackTrace.GetFrame(depth);
+            var method = stackFrame.GetMethod();
+
+            return method.ReflectedType.FullName + "." + method.Name + "(" + JoinParameters(method.GetParameters()) + ") ";
         }
 
         public void PerformInUiThread(Action action)
