@@ -1,6 +1,5 @@
-﻿using System.Threading;
-using AppDirect.WindowsClient.Common.API;
-using AppDirect.WindowsClient.Common.Log;
+﻿using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Diagnostics;
 
@@ -9,13 +8,14 @@ namespace AppDirect.WindowsClient.Common
     public class ProcessWatcher : IProcessWatcher
     {
         private readonly string _processName;
+        private readonly IUiHelper _uiHelper;
         private volatile int _restartsRemaining = 10;
-        private volatile ILogger _logger;
+        private readonly ILogger _logger;
+        private readonly IAbstractProcess _process;
 
-        private volatile IAbstractProcess _process;
-
-        public ProcessWatcher(string processName, IAbstractProcess abstractProcess, ILogger logger)
+        public ProcessWatcher(string processName, IAbstractProcess abstractProcess, ILogger logger, IUiHelper uiHelper)
         {
+            _uiHelper = uiHelper;
             _processName = processName;
             _process = abstractProcess;
             _logger = logger;

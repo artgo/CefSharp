@@ -26,5 +26,10 @@ namespace AppDirect.WindowsClient.Browser.API
         {
             return MakeSureExecuteAction<IEnumerable<IApplication>>(() => Service.GetMyApps());
         }
+
+        public int Ping(int value)
+        {
+            return MakeSureExecuteAction<int>(() => Service.Ping(value));
+        }
     }
 }

@@ -116,5 +116,10 @@ namespace AppDirect.WindowsClient.BrowsersApi
         {
             return base.Channel.GetOpenWindowDatas();
         }
+
+        public int Ping(int value)
+        {
+            return base.Channel.Ping(value);
+        }
     }
 }

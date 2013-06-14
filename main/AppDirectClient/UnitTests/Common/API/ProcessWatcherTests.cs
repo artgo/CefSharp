@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AppDirect.WindowsClient.Common;
+﻿using AppDirect.WindowsClient.Common;
 using AppDirect.WindowsClient.Common.Log;
+using AppDirect.WindowsClient.Common.UI;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 
 namespace AppDirect.WindowsClient.Tests.Common.API
 {
@@ -14,6 +12,7 @@ namespace AppDirect.WindowsClient.Tests.Common.API
     {
         private IAbstractProcess _mockProcess;
         private ProcessWatcher _processWatcher;
+        private IUiHelper _uiHelper;
 
         private void TestEvent(object o, EventArgs e)
         {
@@ -24,8 +23,8 @@ namespace AppDirect.WindowsClient.Tests.Common.API
         {
             _mockProcess = Substitute.For<IAbstractProcess>();
             var mockLogger = Substitute.For<NLogLogger>();
-            _processWatcher = new ProcessWatcher("testProcess", _mockProcess,
-                                                    mockLogger);
+            _uiHelper = Substitute.For<IUiHelper>();
+            _processWatcher = new ProcessWatcher("testProcess", _mockProcess, mockLogger, _uiHelper);
         }
 
         [Test]

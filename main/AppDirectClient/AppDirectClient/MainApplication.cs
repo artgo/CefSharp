@@ -56,5 +56,10 @@ namespace AppDirect.WindowsClient
                 _browerServiceClient.UpdateApplications(apps);
             }
         }
+
+        public int Ping(int value)
+        {
+            return value + 1;
+        }
     }
 }

@@ -86,5 +86,10 @@ namespace AppDirect.WindowsClient.Browser.MainApp
         {
             return base.Channel.GetMyApps();
         }
+
+        public int Ping(int value)
+        {
+            return base.Channel.Ping(value);
+        }
     }
 }

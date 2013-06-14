@@ -56,5 +56,10 @@ namespace AppDirect.WindowsClient.API
         {
             return MakeSureExecuteAction(() => Service.GetOpenWindowDatas());
         }
+
+        public int Ping(int value)
+        {
+            return MakeSureExecuteAction(() => Service.Ping(value));
+        }
     }
 }

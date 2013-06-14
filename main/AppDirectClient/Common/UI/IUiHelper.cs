@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace AppDirect.WindowsClient.Common.UI
 {
@@ -8,7 +9,7 @@ namespace AppDirect.WindowsClient.Common.UI
 
         void PerformInUiThread(Action action);
 
-        void StartAsynchronously(Action action);
+        Thread StartAsynchronously(Action action);
 
         void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn);
 

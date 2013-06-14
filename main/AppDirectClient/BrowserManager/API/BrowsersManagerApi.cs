@@ -32,10 +32,7 @@ namespace AppDirect.WindowsClient.Browser.API
         {
             var browserWindow = _browserWindowsManager.GetOrCreateBrowserWindow(application);
 
-            _uiHelper.PerformInUiThread(() =>
-            {
-                browserWindow.Display();
-            });
+            _uiHelper.PerformInUiThread(browserWindow.Display);
         }
 
         public void DisplayApplicationWithoutSession(IApplication application)
@@ -104,6 +101,11 @@ namespace AppDirect.WindowsClient.Browser.API
         public IEnumerable<IWindowData> GetOpenWindowDatas()
         {
             return _browserWindowsManager.GetBrowserWindowDatas();
+        }
+
+        public int Ping(int value)
+        {
+            return value + 1;
         }
     }
 }

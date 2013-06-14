@@ -4,7 +4,7 @@ using System.ServiceModel;
 namespace AppDirect.WindowsClient.Common.API
 {
     [ServiceContract(SessionMode = SessionMode.Allowed)]
-    public interface IBrowsersManagerApi
+    public interface IBrowsersManagerApi : IPingable
     {
         [OperationContract(IsOneWay = true)]
         void DisplayApplication(IApplication application);

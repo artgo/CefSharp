@@ -4,7 +4,7 @@ using System.ServiceModel;
 namespace AppDirect.WindowsClient.Common.API
 {
     [ServiceContract(SessionMode = SessionMode.Allowed)]
-    public interface IMainApplication
+    public interface IMainApplication : IPingable
     {
         [OperationContract(IsOneWay = true)]
         void Initialized();

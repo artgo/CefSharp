@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common.UI;
+﻿using System.Threading;
+using AppDirect.WindowsClient.Common.UI;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -42,9 +43,11 @@ namespace AppDirect.WindowsClient.Tests.Common.UI
             action.Invoke();
         }
 
-        public void StartAsynchronously(Action action)
+        public Thread StartAsynchronously(Action action)
         {
             action.Invoke();
+
+            return Thread.CurrentThread;
         }
 
         public virtual void PerformForMinimumTime(Action action, bool requiresUiThread, int minimumMillisecondsBeforeReturn)
