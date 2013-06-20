@@ -20,7 +20,7 @@
 !define APPCLOSEMESSAGE "AppDirectForceApplicationCloseMessage"
 !define NATIVETERMINATEMESSAGE "AppDirectNativeTerminateMessage"
 
-!define APPWINDOWCLASSNAME "AppDirectTaskbarButtonsWindow"
+!define APPWINDOWCLASSNAME "AppDirectTaskbarControl"
 !define SHELLTRAYWINDOWCLASSNAME "Shell_TrayWnd"
 !define SYNC_TERM 0x00100001
 !define BROWSERPROCESSNAME "BrowserManager.exe"

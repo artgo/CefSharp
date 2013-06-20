@@ -19,10 +19,12 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
         private const string MessageNameNativeUpdateOffset = @"AppDirectNativeUpdateOffsetMessage";
         private const string MessageNameManagedReBarUpdated = @"AppDirectManagedReBarUpdatedMessage";
         private const string MessageNameManagedTaskBarUpdated = @"AppDirectManagedTaskBarUpdatedMessage";
+        private const string MessageNameManagedCloseApplication = @"AppDirectForceApplicationCloseMessage";
 
         private uint WM_APPDIRECT_NATIVE_UPDATE_OFFSET = 0;
         private uint WM_APPDIRECT_MANAGED_REBAR_UPDATED = 0;
         private uint WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = 0;
+        private uint WM_APPDIRECT_MANAGED_SHUTDOWN = 0;
 
         private Control _control;
         private ITaskbarControl _taskBarControl;
@@ -41,6 +43,7 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             WM_APPDIRECT_NATIVE_UPDATE_OFFSET = User32Dll.RegisterWindowMessage(MessageNameNativeUpdateOffset);
             WM_APPDIRECT_MANAGED_REBAR_UPDATED = User32Dll.RegisterWindowMessage(MessageNameManagedReBarUpdated);
             WM_APPDIRECT_MANAGED_TASKBAR_UPDATED = User32Dll.RegisterWindowMessage(MessageNameManagedTaskBarUpdated);
+            WM_APPDIRECT_MANAGED_SHUTDOWN = User32Dll.RegisterWindowMessage(MessageNameManagedCloseApplication);
         }
 
         ~TaskbarHost()
@@ -236,6 +239,18 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
                     rectIcon.X -= rectIcon.Width;
                 }
                 UpdateIconPosition(rectIcon, helper.TaskbarScreen.Bounds);
+            }
+            else if (message == WM_APPDIRECT_MANAGED_SHUTDOWN)
+            {
+                try
+                {
+                    ServiceLocator.TaskbarApi.RemovePanel();
+                    System.Windows.Application.Current.Shutdown();
+                }
+                catch (InteropException ex)
+                {
+                    Environment.Exit(0);
+                }
             }
 
             return IntPtr.Zero;
