@@ -65,19 +65,20 @@ Function un.onInit
   System::Call "kernel32::OpenProcess(i ${SYNC_TERM}, i 0, i r1)i .r2"
   SendMessage $0 $3 0 0
   System::Call "kernel32::WaitForSingleObject(i r2, i 12000) i.r5"
-  StrCpy $6 $5
-  StrCmp $5 0 end0 error
+  IntCmp $5 0 end0 error
   end0:
     System::Call "kernel32::CloseHandle(i r2) i .r1"
     Pop $4
+	goto finalEnd
       
   error:
 	!insertmacro GoogleAnalytics "${GAACCOUNT}" "Uninstall" "Failed" "" ""
-    MessageBox MB_OK "${APPNAME} can not uninstall because the application is currently running.  Please close the application before uninstalling. Error: $6"
+    MessageBox MB_OK "${APPNAME} can not uninstall because the application is currently running.  Please close the application before uninstalling. Error: $5"
 	Abort
 	  
   finalEnd:  
 	nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
+	nsExec::Exec "taskkill /f /im ${APPDIRECTCLIENTPROCESSNAME}"
 	sleep 500
 FunctionEnd
 
