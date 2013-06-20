@@ -24,7 +24,6 @@
 !define SHELLTRAYWINDOWCLASSNAME "Shell_TrayWnd"
 !define SYNC_TERM 0x00100001
 !define BROWSERPROCESSNAME "BrowserManager.exe"
-!define APPDIRECTCLIENTPROCESSNAME "AppDirectClient.exe"
 !define NATIVEDLLPATH "$INSTDIR\native.dll"
 !define COMMONDLLPATH "$INSTDIR\Common.dll"
 !define BROWSERCACHEPATH "$INSTDIR\CACHE"

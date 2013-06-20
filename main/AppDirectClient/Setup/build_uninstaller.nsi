@@ -78,7 +78,7 @@ Function un.onInit
 	  
   finalEnd:  
 	nsExec::Exec "taskkill /f /im ${BROWSERPROCESSNAME}"
-	nsExec::Exec "taskkill /f /im ${APPDIRECTCLIENTPROCESSNAME}"
+	nsExec::Exec "taskkill /f /im ${APPEXE}"
 	sleep 500
 FunctionEnd
 
