@@ -12,7 +12,8 @@ namespace AppDirect.WindowsClient.API
     public class ExplorerWatcher : IStartStop
     {
         private volatile Process _explorerProcess;
-        private readonly Action _actionOnCrash;
+        private readonly Action _actionOnStartup;
+        private readonly Action _actionOnShutdown;
         private readonly ILogger _logger;
         private readonly IUiHelper _uiHelper;
         private int _currentUserSessionId;
@@ -31,63 +32,58 @@ namespace AppDirect.WindowsClient.API
             }
         }
 
-        public ExplorerWatcher(ILogger logger, IUiHelper uiHelper, Action actionOnCrash)
+        public ExplorerWatcher(ILogger logger, IUiHelper uiHelper, Action actionOnStartup, Action actionOnShutdown)
         {
             _logger = logger;
             _uiHelper = uiHelper;
-            _actionOnCrash = actionOnCrash;
+            _actionOnStartup = actionOnStartup;
+            _actionOnShutdown = actionOnShutdown;
         }
 
         public void Start()
         {
-            GetExplorerProcess();
+            WaitForExplorerProcess();
+
+            if (_explorerProcess != null)
+            {
+                _actionOnStartup.Invoke();
+            }
         }
 
         public void Stop()
         {
-            _uiHelper.IgnoreException(() => _explorerProcess.Exited -= LaunchIfCrashed);
+            _uiHelper.IgnoreException(() => _explorerProcess.Exited -= OnExplorerCrash);
         }
 
-        private void GetExplorerProcess()
+        private void WaitForExplorerProcess()
         {
-            while (_explorerProcess == null)
-            {
-                var helper = ServiceLocator.GetTaskbarHelper();
-                var process = helper.ExplorerProcess;
+            var helper = ServiceLocator.GetTaskbarHelper();
 
-                if (helper.IsTaskbarPresent)
+            helper.WaitForRebar(_logger);
+
+            if (helper.IsTaskbarPresent)
+            {
+                _explorerProcess = helper.ExplorerProcess;
+                try
                 {
-                    _explorerProcess = helper.ExplorerProcess;
-                    try
-                    {
-                        _explorerProcess.EnableRaisingEvents = true;
-                        _explorerProcess.Exited += LaunchIfCrashed;
-                        return;
-                    }
-                    catch (Win32Exception e)
-                    {
-                        _logger.InfoException("Exception thrown by attempting to EnableRaisingEvents", e);
-                        //Vista users may not have the permissions necessary to set EnableRaisingEvents to true
-                    }
+                    _explorerProcess.EnableRaisingEvents = true;
+                    _explorerProcess.Exited += OnExplorerCrash;
+                    return;
                 }
-                else
+                catch (Win32Exception e)
                 {
-                    _uiHelper.Sleep(500);
+                    _logger.InfoException("Exception thrown by attempting to EnableRaisingEvents", e);
+                    //Vista users may not have the permissions necessary to set EnableRaisingEvents to true
                 }
             }
         }
 
-        private void LaunchIfCrashed(object o, EventArgs e)
+        private void OnExplorerCrash(object o, EventArgs e)
         {
-            Process process = (Process)o;
-            if (process.ExitCode != 0)
-            {
-                _explorerProcess = null;
-                GetExplorerProcess(); 
-                _uiHelper.Sleep(200);
-                ServiceLocator.GetTaskbarHelper().WaitForRebar(_logger);
-                _actionOnCrash.Invoke();
-            }
+            _actionOnShutdown.Invoke();
+
+            _explorerProcess = null;
+            Start();
         }
     }
 }

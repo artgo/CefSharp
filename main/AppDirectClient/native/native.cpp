@@ -140,13 +140,13 @@ BOOL DoSetupSubclass(HWND hwndAdButton)
 	HMODULE hModule = ::LoadLibrary(libName); _ASSERT(hModule == g_hModule);
 	if (hModule) {
 		// Subclass relevant windows
-		HWND taskBar = ::FindWindow(L"Shell_TrayWnd", NULL); _ASSERT(taskBar);
-		BOOL bTaskBarHook = ::SetWindowSubclass(taskBar, SubclassTaskbarProc, 0, (DWORD_PTR)hwndAdButton); _ASSERT(bTaskBarHook);
+		HWND hwndTaskBar = FindTaskBar(); _ASSERT(hwndTaskBar);
+		BOOL bTaskBarHook = ::SetWindowSubclass(hwndTaskBar, SubclassTaskbarProc, 0, (DWORD_PTR)hwndAdButton); _ASSERT(bTaskBarHook);
 
-		HWND reBar = ::FindWindowEx(taskBar, NULL, REBARCLASSNAME, NULL); _ASSERT(reBar);	
-		BOOL bReBarHook = ::SetWindowSubclass(reBar, SubclassRebarProc, 0, (DWORD_PTR)hwndAdButton); _ASSERT(bReBarHook);
+		HWND hwndReBar = ::FindReBar(hwndTaskBar); _ASSERT(hwndReBar);	
+		BOOL bReBarHook = ::SetWindowSubclass(hwndReBar, SubclassRebarProc, 0, (DWORD_PTR)hwndAdButton); _ASSERT(bReBarHook);
 
-		g_bIsLoaded = TRUE;
+		g_bIsLoaded = bTaskBarHook && bReBarHook;
 		return TRUE;
 	}
 
