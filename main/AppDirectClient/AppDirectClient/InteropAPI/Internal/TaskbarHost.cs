@@ -90,9 +90,9 @@ namespace AppDirect.WindowsClient.InteropAPI.Internal
             var dll = ServiceLocator.GetNativeDll(NativeDllPath);
             dll.SetupSubclass(_hwndSource.Handle);
 
-            UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
             UpdateReBarPosition(helper.ReBarHwnd, helper.ScreenToClient(helper.TaskBarHwnd, rectReBar));
             _taskBarControl.SetAllowedSize(rectIcon.Width, rectIcon.Height);
+            UpdateReBarOffset(helper.ReBarHwnd, _desiredOffset);
         }   
 
         public void TearDown()
