@@ -8,11 +8,15 @@ namespace AppDirect.WindowsClient.Common.API
         private const int PingIntervalMs = 5000;
         private readonly ILogger _logger;
         private readonly IUiHelper _uiHelper;
+        private readonly IPingable _pingable;
+        private readonly IProcessRestarter _processRestarter;
 
-        public Pinger(IUiHelper uiHelper, ILogger logger)
+        public Pinger(IUiHelper uiHelper, ILogger logger, IPingable pingable, IProcessRestarter processRestarter)
         {
             _logger = logger;
             _uiHelper = uiHelper;
+            _pingable = pingable;
+            _processRestarter = processRestarter;
         }
 
         private void DoPings()
@@ -20,7 +24,9 @@ namespace AppDirect.WindowsClient.Common.API
             while (true)
             {
                 _uiHelper.Sleep(PingIntervalMs);
-
+                var randomValue = _uiHelper.GetCurrentMilliseconds();
+                var result = _pingable.Ping(randomValue);
+                var failed = result != (randomValue + 1);
             }
         }
 

@@ -22,5 +22,7 @@ namespace AppDirect.WindowsClient.Common.UI
         void Sleep(TimeSpan sleepTime);
 
         void ShowMessage(string message);
+
+        int GetCurrentMilliseconds();
     }
 }

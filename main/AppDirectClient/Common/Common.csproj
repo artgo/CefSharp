@@ -97,9 +97,12 @@
     <Compile Include="API\IApplication.cs" />
     <Compile Include="API\IApplicationWithState.cs" />
     <Compile Include="API\IPingable.cs" />
+    <Compile Include="API\IPinger.cs" />
+    <Compile Include="API\IProcessRestarter.cs" />
     <Compile Include="API\IWindowData.cs" />
     <Compile Include="API\IMainApplication.cs" />
     <Compile Include="API\IBrowsersManagerApi.cs" />
+    <Compile Include="API\Pinger.cs" />
     <Compile Include="API\WindowData.cs" />
     <Compile Include="API\IServiceBuilder.cs" />
     <Compile Include="API\IStartStop.cs" />

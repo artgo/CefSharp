@@ -177,5 +177,10 @@ namespace AppDirect.WindowsClient.Common.UI
         {
             MessageBox.Show(message);
         }
+
+        public int GetCurrentMilliseconds()
+        {
+            return (int) DateTime.Now.TimeOfDay.TotalMilliseconds;
+        }
     }
 }
