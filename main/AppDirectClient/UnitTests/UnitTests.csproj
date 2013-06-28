@@ -62,6 +62,7 @@
     <Compile Include="API\Subscription\StatusHelperUnitTest.cs" />
     <Compile Include="API\VO\SubscriptionWSUnitTest.cs" />
     <Compile Include="Common\API\AbstractServiceClientTest.cs" />
+    <Compile Include="Common\API\PingerTest.cs" />
     <Compile Include="Common\API\ProcessWatcherTests.cs" />
     <Compile Include="Common\UI\ApplicationViewModelTests.cs" />
     <Compile Include="Common\UI\TestUiHelper.cs" />

@@ -81,7 +81,8 @@ namespace AppDirect.WindowsClient
         public static void Initialize()
         {
             Kernel.Rebind<IUiHelper>().ToConstant(new UiHelper(new NLogLogger("UiHelper")));
-            Kernel.Rebind<IProcessWatcher>().ToConstant(new ProcessWatcher("BrowserManager", new AbstractProcess("BrowserManager", new NLogLogger("BrowserManagerStarter")), new NLogLogger("BrowserProcessWatcher"), Kernel.Get<IUiHelper>()));
+            Kernel.Rebind<IAbstractProcess>().ToConstant(new AbstractProcess("BrowserManager", new NLogLogger("BrowserManagerStarter")));
+            Kernel.Rebind<IProcessWatcher>().ToConstant(new ProcessWatcher("BrowserManager", Kernel.Get<IAbstractProcess>(), new NLogLogger("BrowserProcessWatcher"), Kernel.Get<IUiHelper>()));
             Kernel.Rebind<IAnalytics>().ToConstant(new AsyncAnalytics(new GoogleAnalytics(new NLogLogger("Analytics")), Kernel.Get<IUiHelper>()));
             Kernel.Rebind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(new AppDirectApi(), new NLogLogger("CachedAppDirectApi")));
             Kernel.Rebind<LocalStorage>().ToConstant(new LocalStorage());

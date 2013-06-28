@@ -11,12 +11,12 @@ namespace AppDirect.WindowsClient.Tests.Common.API
     [TestFixture]
     public class AbstractServiceClientTest
     {
-        private volatile IBrowsersManagerApi _service;
-        private volatile IServiceBuilder<IBrowsersManagerApi> _serviceStarter;
-        private volatile IUiHelper _uiHelper;
-        private volatile ILogger _log;
-        private volatile ICommunicationObject _communicationObject;
-        private volatile AbstractServiceClient<IBrowsersManagerApi> _serviceClient;
+        private IBrowsersManagerApi _service;
+        private IServiceBuilder<IBrowsersManagerApi> _serviceStarter;
+        private IUiHelper _uiHelper;
+        private ILogger _log;
+        private ICommunicationObject _communicationObject;
+        private AbstractServiceClient<IBrowsersManagerApi> _serviceClient;
 
         [SetUp]
         public void Init()

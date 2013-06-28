@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AppDirect.WindowsClient.Common.Log;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using AppDirect.WindowsClient.Common.Log;
+using System.Threading;
 
 namespace AppDirect.WindowsClient.Common
 {
@@ -43,28 +44,27 @@ namespace AppDirect.WindowsClient.Common
             }
             else
             {
-                _process = new Process();
-
-                _process.StartInfo.FileName = _processName;
-                _process.StartInfo.UseShellExecute = false;
-                _process.StartInfo.CreateNoWindow = true;
-
-                _log.Info("Process " + _processName + " is not found and need to start");
-
-                _needToStart = true;
+                ReCreateProcess();
             }
         }
 
-        public Process Process
+        private void ReCreateProcess()
         {
-            get { return _process; }
+            _process = new Process
+                {
+                    StartInfo = { FileName = _processName, UseShellExecute = false, CreateNoWindow = true }
+                };
+
+            _log.Info("Process " + _processName + " is not found and need to start");
+
+            _needToStart = true;
         }
-        
+
         public void Start()
         {
             if (_needToStart)
             {
-                Process.Start();
+                _process.Start();
                 _log.Info("Process " + _processName + " was started");
             }
 
@@ -73,13 +73,27 @@ namespace AppDirect.WindowsClient.Common
 
         public void RegisterExitedEvent(EventHandler exitedEvent)
         {
-            Process.EnableRaisingEvents = true;
-            Process.Exited += exitedEvent;
+            _process.EnableRaisingEvents = true;
+            _process.Exited += exitedEvent;
         }
 
         public void RemoveRegisteredEvent(EventHandler registeredEvent)
         {
-            Process.Exited -= registeredEvent;
+            _process.Exited -= registeredEvent;
+        }
+
+        public void RestartProcess()
+        {
+            if (_process != null)
+            {
+                _process.Kill();
+                _process = null;
+            }
+
+            Thread.Sleep(1000);
+
+            ReCreateProcess();
+            Start();
         }
     }
 }

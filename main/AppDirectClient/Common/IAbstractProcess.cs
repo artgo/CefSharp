@@ -1,14 +1,16 @@
-﻿using System;
-using System.Diagnostics;
+﻿using AppDirect.WindowsClient.Common.API;
+using System;
 
 namespace AppDirect.WindowsClient.Common
 {
-    public interface IAbstractProcess
+    public interface IAbstractProcess : IProcessRestarter
     {
-        Process Process { get; }
         void Start();
+
         void RegisterExitedEvent(EventHandler exitedAction);
+
         void RemoveRegisteredEvent(EventHandler registeredEvent);
+
         void GetProcess();
     }
 }

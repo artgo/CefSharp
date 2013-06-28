@@ -9,6 +9,7 @@ namespace AppDirect.WindowsClient.Tests.Common.UI
 {
     public class TestUiHelper : IUiHelper
     {
+        public const int CurrentMilliseconds = 10000;
         public virtual bool WasShutdown { get; private set; }
 
         private string JoinParameters(ParameterInfo[] parameters)
@@ -75,6 +76,11 @@ namespace AppDirect.WindowsClient.Tests.Common.UI
 
         public void ShowMessage(string message)
         {
+        }
+
+        public int GetCurrentMilliseconds()
+        {
+            return CurrentMilliseconds;
         }
     }
 }
