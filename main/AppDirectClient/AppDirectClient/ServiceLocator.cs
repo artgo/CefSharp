@@ -1,6 +1,7 @@
 ﻿using AppDirect.WindowsClient.Analytics;
 using AppDirect.WindowsClient.API;
 using AppDirect.WindowsClient.Common;
+using AppDirect.WindowsClient.Common.API;
 using AppDirect.WindowsClient.Common.Log;
 using AppDirect.WindowsClient.Common.UI;
 using AppDirect.WindowsClient.InteropAPI;
@@ -83,6 +84,7 @@ namespace AppDirect.WindowsClient
             Kernel.Rebind<IUiHelper>().ToConstant(new UiHelper(new NLogLogger("UiHelper")));
             Kernel.Rebind<IAbstractProcess>().ToConstant(new AbstractProcess("BrowserManager", new NLogLogger("BrowserManagerStarter")));
             Kernel.Rebind<IProcessWatcher>().ToConstant(new ProcessWatcher("BrowserManager", Kernel.Get<IAbstractProcess>(), new NLogLogger("BrowserProcessWatcher"), Kernel.Get<IUiHelper>()));
+            Kernel.Rebind<IPinger>().ToConstant(new Pinger(Kernel.Get<IUiHelper>(), new NLogLogger("UiHelper"), ,Kernel.Get<IAbstractProcess>()));
             Kernel.Rebind<IAnalytics>().ToConstant(new AsyncAnalytics(new GoogleAnalytics(new NLogLogger("Analytics")), Kernel.Get<IUiHelper>()));
             Kernel.Rebind<ICachedAppDirectApi>().ToConstant(new CachedAppDirectApi(new AppDirectApi(), new NLogLogger("CachedAppDirectApi")));
             Kernel.Rebind<LocalStorage>().ToConstant(new LocalStorage());
