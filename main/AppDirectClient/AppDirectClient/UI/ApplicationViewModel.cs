@@ -1,4 +1,5 @@
-﻿using AppDirect.WindowsClient.Common.API;
+﻿using System.Linq;
+using AppDirect.WindowsClient.Common.API;
 using System.ComponentModel;
 using System.Windows;
 using Application = AppDirect.WindowsClient.Common.API.Application;
@@ -37,6 +38,8 @@ namespace AppDirect.WindowsClient.UI
             {
                 Application.PinnedToTaskbar = value;
                 NotifyPropertyChanged("PinnedToTaskbarNotifier");
+                ServiceLocator.LocalStorage.InstalledAppDirectApps.FirstOrDefault(a => a.Equals(Application)).PinnedToTaskbar = value;
+                ServiceLocator.LocalStorage.SaveAppSettings();
             }
         }
 
